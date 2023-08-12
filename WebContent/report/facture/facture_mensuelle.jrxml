@@ -1,0 +1,384 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="facture_mensuelle" language="groovy" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20">
+	<property name="ireport.zoom" value="1.0"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="36"/>
+	<style name="table">
+		<box>
+			<pen lineWidth="1.0" lineColor="#000000"/>
+		</box>
+	</style>
+	<style name="table_TH" mode="Opaque" backcolor="#FFFFFF">
+		<box>
+			<pen lineWidth="0.5" lineColor="#000000"/>
+		</box>
+	</style>
+	<style name="table_CH" mode="Opaque" backcolor="#FFBFBF">
+		<box>
+			<pen lineWidth="0.5" lineColor="#000000"/>
+		</box>
+	</style>
+	<style name="table_TD" mode="Opaque" backcolor="#FFFFFF">
+		<box>
+			<pen lineWidth="0.5" lineColor="#000000"/>
+		</box>
+	</style>
+	<style name="table 1">
+		<box>
+			<pen lineWidth="1.0" lineColor="#000000"/>
+		</box>
+	</style>
+	<style name="table 1_TH" mode="Opaque" backcolor="#FFBFBF">
+		<box>
+			<pen lineWidth="0.5" lineColor="#000000"/>
+		</box>
+	</style>
+	<style name="table 1_CH" mode="Opaque" backcolor="#FFE6E6">
+		<box>
+			<pen lineWidth="0.5" lineColor="#000000"/>
+		</box>
+	</style>
+	<style name="table 1_TD" mode="Opaque" backcolor="#FFFFFF">
+		<box>
+			<pen lineWidth="0.5" lineColor="#000000"/>
+		</box>
+	</style>
+	<style name="table 2">
+		<box>
+			<pen lineWidth="1.0" lineColor="#000000"/>
+		</box>
+	</style>
+	<style name="table 2_TH" mode="Opaque" backcolor="#F0F8FF">
+		<box>
+			<pen lineWidth="0.5" lineColor="#000000"/>
+		</box>
+	</style>
+	<style name="table 2_CH" mode="Opaque" backcolor="#BFE1FF">
+		<box>
+			<pen lineWidth="0.5" lineColor="#000000"/>
+		</box>
+	</style>
+	<style name="table 2_TD" mode="Opaque" backcolor="#FFFFFF">
+		<box>
+			<pen lineWidth="0.5" lineColor="#000000"/>
+		</box>
+	</style>
+	<subDataset name="Table Dataset 1"/>
+	<subDataset name="Table Dataset 2"/>
+	<subDataset name="dataset1"/>
+	<subDataset name="Table Dataset 3"/>
+	<queryString>
+		<![CDATA[Select MONTH(i.dateintervention) Mois,b.nom,b.prenom,libsecteur,libTypeprestation,libplan,sum(heurefintheorique-heuredebuttheorique) TotalHeure
+from intervenant,lstsecteur,intervention i,lsttypeprestation,PlanAideBeneficiaire,lstplanaide,beneficiaire b
+where intervenant.idsecteur=lstsecteur.idsecteur
+AND intervenant.idintervenant=i.idintervenant
+AND i.idPlanAideBeneficiaire=PlanAideBeneficiaire.idPlanAideBeneficiaire /*Jointure externe a ajouter*/
+AND PlanAideBeneficiaire.idplanaide=lstplanaide.idplanaide
+AND i.idtypeprestation=lsttypeprestation.idTypePrestation and i.idBeneficiaire=b.idBeneficiaire
+and b.idBeneficiaire=1
+AND MONTH(i.dateintervention)=MONTH(now())
+group by intervenant.idintervenant]]>
+	</queryString>
+	<field name="Mois" class="java.lang.Integer"/>
+	<field name="nom" class="java.lang.String"/>
+	<field name="prenom" class="java.lang.String"/>
+	<field name="libsecteur" class="java.lang.String"/>
+	<field name="libTypeprestation" class="java.lang.String"/>
+	<field name="libplan" class="java.lang.String"/>
+	<field name="TotalHeure" class="java.lang.Double"/>
+	<group name="nom">
+		<groupExpression><![CDATA[$F{nom}]]></groupExpression>
+	</group>
+	<group name="libplan">
+		<groupExpression><![CDATA[$F{libplan}]]></groupExpression>
+	</group>
+	<group name="libTypeprestation">
+		<groupExpression><![CDATA[$F{libTypeprestation}]]></groupExpression>
+		<groupHeader>
+			<band height="24">
+				<textField>
+					<reportElement style="table" x="0" y="0" width="64" height="20"/>
+					<textElement/>
+					<textFieldExpression class="java.lang.String"><![CDATA[25]]></textFieldExpression>
+				</textField>
+				<textField>
+					<reportElement style="table" x="64" y="0" width="259" height="20"/>
+					<textElement/>
+					<textFieldExpression class="java.lang.String"><![CDATA[$F{libTypeprestation}]]></textFieldExpression>
+				</textField>
+				<textField>
+					<reportElement style="table" x="323" y="0" width="55" height="20"/>
+					<textElement/>
+					<textFieldExpression class="java.lang.String"><![CDATA[$F{TotalHeure}]]></textFieldExpression>
+				</textField>
+				<textField>
+					<reportElement style="table" x="378" y="0" width="64" height="20"/>
+					<textElement/>
+					<textFieldExpression class="java.lang.String"><![CDATA[$F{TotalHeure}]]></textFieldExpression>
+				</textField>
+				<textField>
+					<reportElement style="table" x="442" y="0" width="65" height="20"/>
+					<textElement/>
+					<textFieldExpression class="java.lang.String"><![CDATA[$F{TotalHeure}]]></textFieldExpression>
+				</textField>
+				<textField>
+					<reportElement style="table" x="507" y="0" width="48" height="20"/>
+					<textElement/>
+					<textFieldExpression class="java.lang.String"><![CDATA[5.5]]></textFieldExpression>
+				</textField>
+			</band>
+		</groupHeader>
+	</group>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="105" splitType="Stretch">
+			<image scaleImage="FillFrame">
+				<reportElement x="0" y="0" width="126" height="91"/>
+				<imageExpression class="java.lang.String"><![CDATA["C:\\workspace\\progisap\\src\\main\\webapp\\report\\facture\\cherry.jpg"]]></imageExpression>
+			</image>
+			<staticText>
+				<reportElement style="table" x="247" y="4" width="308" height="20"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Times New Roman" isBold="true"/>
+				</textElement>
+				<text><![CDATA[FACTURE]]></text>
+			</staticText>
+			<textField>
+				<reportElement style="table" x="247" y="44" width="66" height="20"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Times New Roman"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[1]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement style="table" x="379" y="44" width="79" height="20"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Times New Roman"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{Mois}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement style="table" x="313" y="44" width="66" height="20"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Times New Roman"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{Mois}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement style="table" x="458" y="44" width="97" height="20"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Times New Roman"/>
+				</textElement>
+				<textFieldExpression class="java.lang.String"><![CDATA[1]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement style="table" mode="Opaque" x="247" y="24" width="66" height="20" forecolor="#000000" backcolor="#CCCCCC"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Times New Roman" isBold="true"/>
+				</textElement>
+				<text><![CDATA[N Facture]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="table" mode="Opaque" x="379" y="24" width="79" height="20" backcolor="#CCCCCC"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Times New Roman" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Date Echéance]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="table" mode="Opaque" x="313" y="24" width="66" height="20" backcolor="#CCCCCC"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Times New Roman" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Date]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="table" mode="Opaque" x="458" y="24" width="97" height="20" backcolor="#CCCCCC"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Times New Roman" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Mode de paiement]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="247" y="75" width="79" height="20"/>
+				<textElement/>
+				<text><![CDATA[Code client :]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="326" y="75" width="100" height="20"/>
+				<textElement/>
+				<textFieldExpression class="java.lang.String"><![CDATA[1234455]]></textFieldExpression>
+			</textField>
+		</band>
+	</title>
+	<pageHeader>
+		<band height="133" splitType="Stretch">
+			<staticText>
+				<reportElement x="4" y="0" width="167" height="119"/>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[2 CONFIANCE - "JUNIOR SENIOR"
+45 PLACE SAINT MEDARD
+60100 CREIL
+Tél. : 03.44.56.21.36 Fax : 02.35.19.09.06
+E-mail : jsscreil@hotmail.fr
+Site internet : www.juniorsenior.fr]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="209" y="0" width="132" height="119"/>
+				<textElement/>
+				<text><![CDATA[AKHAMLICH Patricia
+1 Rue Ravel
+La Gatelière
+60300 SENLIS]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="358" y="0" width="149" height="109"/>
+				<textElement/>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{nom}]]></textFieldExpression>
+			</textField>
+		</band>
+	</pageHeader>
+	<columnHeader>
+		<band height="20" splitType="Stretch">
+			<staticText>
+				<reportElement style="table" mode="Opaque" x="0" y="0" width="64" height="20" backcolor="#CCCCCC"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[Ref.]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="table" mode="Opaque" x="323" y="0" width="55" height="20" backcolor="#CCCCCC"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[Quant.]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="table" mode="Opaque" x="378" y="0" width="64" height="20" backcolor="#CCCCCC"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[P.U. TTC]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="table" mode="Opaque" x="64" y="0" width="259" height="20" backcolor="#CCCCCC"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[Description]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="table" mode="Opaque" x="507" y="0" width="48" height="20" backcolor="#CCCCCC"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[Tx TVA]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="table" mode="Opaque" x="442" y="0" width="65" height="20" backcolor="#CCCCCC"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[TOTAL TTC]]></text>
+			</staticText>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="108" splitType="Stretch"/>
+	</detail>
+	<columnFooter>
+		<band height="92" splitType="Stretch">
+			<textField>
+				<reportElement style="table" x="0" y="20" width="64" height="20"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<textFieldExpression class="java.lang.String"><![CDATA[1]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement style="table" mode="Opaque" x="130" y="0" width="79" height="20" backcolor="#CCCCCC"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<text><![CDATA[Montant]]></text>
+			</staticText>
+			<textField>
+				<reportElement style="table" x="129" y="20" width="80" height="20"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{Mois}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement style="table" x="64" y="20" width="65" height="20"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{Mois}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement style="table" mode="Opaque" x="64" y="0" width="66" height="20" backcolor="#CCCCCC"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<text><![CDATA[Base]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="table" mode="Opaque" x="0" y="0" width="64" height="20" backcolor="#CCCCCC"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<text><![CDATA[% TVA]]></text>
+			</staticText>
+			<textField>
+				<reportElement style="table" x="247" y="20" width="66" height="20"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<textFieldExpression class="java.lang.String"><![CDATA[1]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement style="table" x="458" y="20" width="97" height="20"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<textFieldExpression class="java.lang.String"><![CDATA[1]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement style="table" mode="Opaque" x="458" y="0" width="97" height="20" backcolor="#CCCCCC"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<text><![CDATA[Déjà réglé TTC]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="table" mode="Opaque" x="379" y="0" width="79" height="20" backcolor="#CCCCCC"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<text><![CDATA[Total TTC]]></text>
+			</staticText>
+			<textField>
+				<reportElement style="table" x="378" y="20" width="80" height="20"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{Mois}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement style="table" x="313" y="20" width="65" height="20"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<textFieldExpression class="java.lang.String"><![CDATA[$F{Mois}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement style="table" mode="Opaque" x="313" y="0" width="66" height="20" backcolor="#CCCCCC"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<text><![CDATA[Total TVA]]></text>
+			</staticText>
+			<staticText>
+				<reportElement style="table" mode="Opaque" x="247" y="0" width="66" height="20" backcolor="#CCCCCC"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<text><![CDATA[Total HT]]></text>
+			</staticText>
+			<textField>
+				<reportElement style="table" x="458" y="60" width="97" height="20"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<textFieldExpression class="java.lang.String"><![CDATA[1]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement style="table" mode="Opaque" x="458" y="40" width="97" height="20" backcolor="#CCCCCC"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<text><![CDATA[Net à payer]]></text>
+			</staticText>
+		</band>
+	</columnFooter>
+	<pageFooter>
+		<band height="54" splitType="Stretch"/>
+	</pageFooter>
+	<summary>
+		<band height="42" splitType="Stretch"/>
+	</summary>
+</jasperReport>

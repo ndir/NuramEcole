@@ -1,0 +1,57 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-configuration PUBLIC "-//Hibernate/Hibernate Configuration DTD 3.0//EN"
+                                         "http://hibernate.sourceforge.net/hibernate-configuration-3.0.dtd">
+<hibernate-configuration>
+	<session-factory name="">
+		<property name="show_sql">false</property>
+		<property name="order_updates">true</property>
+		<property name="connection.datasource">java:/comp/env/jdbc/DefaultDS</property>
+		<property name="cache.provider_class">org.hibernate.cache.EhCacheProvider</property>
+		<property name="transaction.flush_before_completion">true</property>
+		<property name="transaction.factory_class">org.hibernate.transaction.JDBCTransactionFactory</property>
+		<property name="hibernate.cache.use_query_cache">true</property>
+		<property name="hibernate.cache.use_second_level_cache">true</property>
+		<property name="hibernate.id.new_generator_mappings">true</property>
+		<property name="dialect">org.hibernate.dialect.MySQLChakaDialect</property>
+		<property name="hibernate.hbm2ddl.auto">update</property>
+
+		<mapping class="com.chaka.projet.entity.Utilisateur" />
+		<mapping class="com.chaka.projet.entity.UtilisateurSecurise" />
+		<mapping class="com.chaka.projet.entity.Profile" />
+		<mapping class="com.chaka.projet.entity.DroitUserAccess" />
+		<mapping class="com.chaka.projet.entity.Fonction" />
+		<mapping class="com.ecole.entity.Niveau" />
+		<mapping class="com.ecole.entity.Classe" />
+		<mapping class="com.ecole.entity.Evaluation" />
+		<mapping class="com.ecole.entity.Matiere" />
+		<mapping class="com.ecole.entity.MatiereClasse" />
+		<mapping class="com.ecole.entity.AnneeScolaire" />
+		<mapping class="com.ecole.entity.Eleve" />
+		<mapping class="com.ecole.entity.Absence" />
+		<mapping class="com.ecole.entity.Retard" />
+		<mapping class="com.ecole.entity.Note" />
+		<mapping class="com.ecole.entity.Institution" />
+		<!-- <property name="show_sql">false</property> <property name="use_sql_comments">false</property> 
+			<property name="order_updates">true</property> <property name="transaction.flush_before_completion">true</property> 
+			<property name="transaction.factory_class">org.hibernate.transaction.JDBCTransactionFactory</property> 
+			<property name="hibernate.id.new_generator_mappings">true</property> <property 
+			name="dialect">org.hibernate.dialect.MySQLChakaDialect</property> <property 
+			name="hibernate.connection.defaultRowPrefetch">500</property> <property name="hibernate.jdbc.wrap_result_sets">true</property> 
+			<property name="hibernate.jdbc.use_streams_for_binary">true</property> <property 
+			name="hibernate.jdbc.fetch_size">0</property> <property name="hibernate.jdbc.batch_size">0</property> 
+			<property name="hibernate.statement_cache.size">0</property> <property name="connection.driver_class">com.mysql.jdbc.Driver</property> 
+			<property name="connection.username">root</property> <property name="connection.password"> 
+			</property> <property name="connection.url">jdbc:mysql://localhost:3306/gestionrh_db</property> -->
+
+
+
+
+
+
+
+
+
+
+
+	</session-factory>
+</hibernate-configuration>

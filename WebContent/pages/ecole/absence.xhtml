@@ -1,0 +1,186 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//FR" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!--  V 0.1 : Maj : 09/11/2007 -->
+
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:rich="http://richfaces.ajax4jsf.org/rich"
+	xmlns:a="https://ajax4jsf.dev.java.net/ajax"
+	xmlns:t="http://myfaces.apache.org/tomahawk"
+	xmlns:s="http://jboss.com/products/seam/taglib"
+	xmlns:c="http://java.sun.com/jstl/core"
+	template="/template/template.xhtml">
+	<!-- Page d'accueil -->
+
+	<ui:define name="title">GSS</ui:define>
+	<ui:define name="body">
+		<rich:spacer height="20px;"></rich:spacer>
+		<div class="divtest">
+
+
+			<div class="container" style="margin-left: 5%;">
+
+				<h:form id="liste">
+					<div class="row">
+						<div class="col-md-12">
+							<div class="panel panel-success">
+
+								<div class="panel-heading"></div>
+
+								<div class="panel-body">
+
+
+									<div class="form-group has-success"></div>
+									<FIELDSET>
+										<LEGEND> ABSENCE ELEVE </LEGEND>
+										<TABLE class="table">
+											<tr>
+												<td><h:outputLabel styleClass="grey" value="Niveau" /></td>
+												<td><h:selectOneMenu class="form-control"
+														value="#{absenceService.niveau}"
+														converter="#{niveauConverter}" id="cont"
+														noSelectionLabel="--- Selectionnez ---">
+
+														<s:selectItems value="#{absenceService.listeNiveau}"
+															var="type" label="#{type.libelle}"
+															noSelectionLabel="--- Selectionnez ---" />
+
+														<a:support event="onchange"
+															action="#{absenceService.chargerListeClasse()}"
+															ajaxSingle="true" reRender="classe" status="waitStatus"></a:support>
+													</h:selectOneMenu></td>
+
+												<td><h:outputLabel styleClass="grey" value="Classe" /></td>
+												<td><h:selectOneMenu class="form-control"
+														value="#{absenceService.classe}"
+														converter="#{classeConverter}" id="classe"
+														noSelectionLabel="--- Selectionnez ---">
+
+														<s:selectItems value="#{absenceService.listeClasse}"
+															var="type" label="#{type.libelle}"
+															noSelectionLabel="--- Selectionnez ---" />
+														<a:support event="onchange"
+															action="#{absenceService.chargerListeMatClasse()}"
+															ajaxSingle="true" reRender="matiere" status="waitStatus"></a:support>
+															
+
+
+
+													</h:selectOneMenu></td>
+												<td><h:outputLabel styleClass="grey" value="Matière" /></td>
+												<td><h:selectOneMenu class="form-control"
+														value="#{absenceService.absence.matiereClasse}"
+														converter="#{matiereClasseConverter}" id="matiere"
+														noSelectionLabel="--- Selectionnez ---">
+														<s:selectItems
+															value="#{absenceService.listeMatiereClasse}" var="type"
+															label="#{type.matiere.libelle}"
+															noSelectionLabel="--- Selectionnez ---" />
+														<a:support event="onchange"
+															action="#{absenceService.chargerListeEleve()}"
+															ajaxSingle="true" reRender="eleve" status="waitStatus"></a:support>
+
+													</h:selectOneMenu></td>
+
+											</tr>
+											<tr>
+												<td><h:outputLabel styleClass="grey"
+														value="Date d'absence" /></td>
+												<td><rich:calendar
+														value="#{absenceService.absence.dateAbsence}"
+														cellWidth="0px" cellHeight="20px" datePattern="dd/MM/yyyy"
+														styleClass="form-control"
+														buttonIcon="/img2/calendrier.png"></rich:calendar></td>
+												<td><h:outputLabel styleClass="grey"
+														value="Heure d'absence" /></td>
+												<td><h:selectOneMenu class="form-control"
+														value="#{absenceService.absence.heure}" id="heure"
+														noSelectionLabel="--- Selectionnez ---">
+														<s:selectItems value="#{absenceService.heures}" var="type"
+															label="#{type}" noSelectionLabel="--- Selectionnez ---" />
+
+													</h:selectOneMenu></td>
+
+											</tr>
+										</TABLE>
+									</FIELDSET>
+
+									<rich:dataTable value="#{absenceService.eleves}" var="mat"
+										id="eleve" style="width:100%;" rows="10"
+										rowClasses="row1,row2">
+										<f:facet name="header">
+											<rich:columnGroup>
+
+												<rich:column>
+													<h:outputLabel value="Nom"
+														style="color:white;font-size:12px;font-family: Arial;text-align:center;" />
+												</rich:column>
+
+												<rich:column>
+													<h:outputLabel value="Prénom"
+														style="color:white;font-size:12px;font-family: Arial;text-align:center;" />
+												</rich:column>
+
+												<rich:column>
+													<h:outputLabel value="Action"
+														style="color:white;font-size:12px;font-family: Arial;text-align:center;" />
+												</rich:column>
+
+											</rich:columnGroup>
+										</f:facet>
+
+										<rich:column filterBy="#{mat.nom}" filterEvent="onkeyup">
+											<h:outputLabel value="#{mat.nom}"></h:outputLabel>
+										</rich:column>
+										<rich:column filterBy="#{mat.prenom}" filterEvent="onkeyup">
+											<h:outputLabel value="#{mat.prenom}"></h:outputLabel>
+										</rich:column>
+										<rich:column>
+											<a:commandLink styleClass="btn btn-success" value=""
+												action="#{absenceService.marquerAbsent(mat)}"
+												reRender="eleve" status="waitStatus">
+																		
+																		Absent			
+																				</a:commandLink>
+										</rich:column>
+
+									</rich:dataTable>
+									<rich:datascroller status="waitStatus" stepControls="auto"
+										style="width:100%" for="eleve" ajaxSingle="false"
+										rendered="#{not empty absenceService.listeEleves}" />
+
+								</div>
+
+							</div>
+						</div>
+					</div>
+					
+					<p align="center">
+
+
+						<a:commandLink styleClass="btn btn-danger" value=""
+							action="#{absenceService.annulerAjout()}" reRender="liste"
+							status="waitStatus">
+																		
+																		Annuler			
+																				</a:commandLink>
+						<rich:spacer width="10px;"></rich:spacer>
+
+						<a:commandLink styleClass="btn btn-success" value=""
+							action="#{absenceService.ajouterAbsence()}" reRender="liste"
+							status="waitStatus">
+																		
+																		Valider			
+																				</a:commandLink>
+					</p>
+				</h:form>
+			</div>
+
+
+
+		</div>
+
+
+	</ui:define>
+</ui:composition>

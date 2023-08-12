@@ -1,0 +1,94 @@
+<ui:composition
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:rich="http://richfaces.ajax4jsf.org/rich"
+	xmlns:a="https://ajax4jsf.dev.java.net/ajax"
+	xmlns:s="http://jboss.com/products/seam/taglib"
+	template="/template/template.xhtml">
+	<!-- Page de parametrage -->
+    <ui:define name="title">Application CNSS</ui:define>
+	<ui:define name="body">
+		<!-- Message d'avertissement-->
+		<a:loadScript src="/js/common.js"/>
+	<h:form>
+	<a:outputPanel id="searchResultsIntervenants">
+			<div id="zoneResultat" class="zoneResultat">
+			<div class="label">
+				Profil(s)
+			</div>
+	<div class="panel">
+				<div class="head">
+					<div class="ico"></div>
+					<div class="left perso"></div>
+					<div class="titre">
+						Administration Profil
+					</div>
+					<div class="clear"></div>
+				</div>
+				<div class="content">
+	<rich:dataTable width="100%" value="#{profilService.lstProfils}" var ="row" styleClass="tableauEnfants" id="listProfil" rowClasses="row1, row2" >
+	              <f:facet name="header" >
+						<rich:columnGroup >
+						    <rich:column>
+				       			#{msgBundle['profile.gestion.menu.libprofil']}
+				       		</rich:column>						    
+				       		
+				       		
+				       		<rich:column>
+				       			#{msgBundle['profile.gestion.menu.actif']}
+				       		</rich:column>	
+				       		<rich:column>
+				       			Action
+				       		</rich:column>	
+				       		
+				       		
+				       		
+				       		
+	
+				       	</rich:columnGroup>
+				 	</f:facet>
+	<h:column >
+	    <f:facet name="header">
+	       <h:inputText value="#{profilService.profil.libelle}" />
+	    </f:facet>
+	    <h:outputText value="#{row.libelle}" /> 
+	 </h:column>
+	
+	
+	
+	
+	 <h:column >
+	    <f:facet name="header">
+	    <h:selectBooleanCheckbox value="#{profilService.profil.actif}" />
+	     
+	    </f:facet>
+	    <h:outputText value="#{row.actif}" /> 
+	 </h:column>
+	
+	 
+	 
+	
+	 
+	 <h:column>
+	 <f:facet name="header">
+	     <a:commandLink status="waitStatus" action="#{profilService.ajouterModifierProfil()}" value=""
+				id="idModif"  styleClass="sansOmbre" 	reRender="listProfil" oncomplete="dateEtHeureInputs();" >																						
+					<h:graphicImage value="/picto/add.png" title="ajouter" alt="" style="border:0;" />
+		</a:commandLink>
+	  </f:facet>
+	  <h:outputText value="" />
+	 </h:column>
+	
+	</rich:dataTable>
+	</div>
+	</div>
+	</div>
+	</a:outputPanel>
+	</h:form>
+	
+</ui:define>
+</ui:composition>
+
+	

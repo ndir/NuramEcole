@@ -1,0 +1,73 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:a4j="https://ajax4jsf.dev.java.net/ajax"
+	xmlns:rich="http://richfaces.ajax4jsf.org/rich"
+	xmlns:s="http://jboss.com/products/seam/taglib"
+	xmlns:t="http://myfaces.apache.org/tomahawk">
+<head>
+
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"></meta>
+<title>GSS->CONNEXION</title>
+
+
+<link href="css/style.css" rel="stylesheet" type="text/css" />
+<link rel="stylesheet" href="css/stylelog.css" />
+
+
+<script type="text/javascript"
+	src="http://ajax.googleapis.com/ajax/libs/jquery/1.2.6/jquery.min.js"></script>
+<script src="css/js/js/index.js"></script>
+
+<script type="text/javascript">
+	$(document).ready(function() {
+		$(".username").focus(function() {
+			$(".user-icon").css("left", "-48px");
+		});
+		$(".username").blur(function() {
+			$(".user-icon").css("left", "0px");
+		});
+
+		$(".password").focus(function() {
+			$(".pass-icon").css("left", "-48px");
+		});
+		$(".password").blur(function() {
+			$(".pass-icon").css("left", "0px");
+		});
+	});
+</script>
+
+
+</head>
+<body>
+
+	<div class="wrapper">
+		<div class="container">
+
+			<br /> <br />
+			<br /><br />
+			<h:form class="form">
+
+				<h:inputText id="username" required="true" requiredMessage="X"
+					class="input username" onfocus="this.value=''"
+					value="#{identity.username}" />
+				<h:message for="username" style="color:white;" />
+				<h:inputSecret id="password" value="#{identity.password}"
+					required="true" requiredMessage="X" class="input password"
+					onfocus="this.value=''" />
+				<h:message for="password" style="color:white;" />
+
+				<input type="submit" name="submit" value="Se Connecter"> <h:commandButton
+						action="#{authenticator.login}" alt="" value="" rendered="false" />
+				</input>
+
+
+			</h:form>
+		</div>
+
+	</div>
+
+</body>
+</html>

@@ -1,0 +1,443 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//FR" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!--  V 0.1 : Maj : 09/11/2007 -->
+
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:rich="http://richfaces.ajax4jsf.org/rich"
+	xmlns:a="https://ajax4jsf.dev.java.net/ajax"
+	xmlns:t="http://myfaces.apache.org/tomahawk"
+	xmlns:s="http://jboss.com/products/seam/taglib"
+	xmlns:c="http://java.sun.com/jstl/core"
+	template="/template/template.xhtml">
+	<!-- Page d'accueil -->
+	
+	
+	
+
+
+	<ui:define name="title">Application ch@k@</ui:define>
+	<ui:define name="body">
+		<h:form id="note">
+		
+		<script>
+jQuery.noConflict();
+
+jQuery(document).ready(function(){
+var newsoption1 = {
+  firstname: "mynews",
+  secondname: "showhere",
+  thirdname:"news_display",
+  fourthname:"news_button",
+   newsspeed:'15000',
+   imagedir: "/cnss/img2/",
+   playingtitle : 'News : ',
+   nexttitle:"News Suivante :",
+	prevtitle:"News Précédente :",
+	effectis: 1
+}
+jQuery.init_news(newsoption1);
+
+
+var myoffset=jQuery('#news_button').offset();
+
+var mytop=myoffset.top-1;
+
+jQuery('#news_button').css({top:mytop});
+
+});
+</script>
+		
+		<!-- Panel principal-->
+		
+		<div class="margTop30px width80pct" >
+			<div class="left width80pct margRight30px">			
+				<s:div  rendered="#{!s:hasRole('int') and !s:hasRole('benef') and !s:hasRole('franchiseur') }"  >
+				<div class="zoneNote width100pct">
+					<div>
+						<div class="pictoNote left pictoFieldset">
+							
+						</div>
+						<div class="note left pictoFieldset">
+							
+						</div>
+							<a:commandButton id="ajoutNote"  styleClass="ajoutnote right margTop10px margRight10px" style="border:0px;" status="waitStatus" 
+								reRender="AjoutNote" action="#{notesService.addNote}" title="Cliquez ici pour ajouter une note"
+								oncomplete="javascript:Richfaces.showModalPanel('panel2',{width:630, top:180, height:360})">
+							</a:commandButton>
+						<div class="clear"></div>			
+					</div>
+					<div>
+					
+					
+					
+					<div style="min-height:40px; max-height: 200px;overflow: auto; " >
+					<a:outputPanel id="panelNote" >
+					<rich:dataTable width="zz0%" styleClass="tableListe " headerClass="thorange" id="notesTable" rows="0" 
+						value="#{notesService.lstNotesDto}" var="note"  cellspacing="0" cellpadding="1"  columnClasses="tdorange" >
+						<rich:column style="#{note.statut ? 'background:grey':''}">
+							<f:facet  name="header" >
+								Auteur
+							</f:facet>
+							<s:graphicImage fileName="new.png" rendered="#{note.recent}" value="/picto/new.png" />&nbsp;
+							<h:outputText  value="#{note.nomCompletCourt}" />
+						</rich:column>
+						<rich:column style="#{note.statut ? 'background:grey':''}">
+							<f:facet name="header">
+								Date Maj
+							</f:facet>
+							<h:outputText  value="#{note.dateMaj}">
+								<s:convertDateTime pattern="dd.MM.yyyy à HH'h'mm"/>
+							</h:outputText>
+						</rich:column>
+						<rich:column style="#{note.statut ? 'background:grey':''}">
+							<f:facet name="header">
+								Urgence
+							</f:facet>
+							<a:commandLink immediate="true"  status="waitStatus" 
+								action="#{notesService.initialisationCreation(note)}"
+								reRender="AjoutNote" styleClass="plus" title="#{note.urgence ? 'Cette note est urgente' : '' }"
+								oncomplete="javascript:Richfaces.showModalPanel('panel2',{width:630, top:180, height:360})">
+								<center>
+									<s:div rendered="#{note.urgence}" styleClass="plus" ></s:div>
+									<s:div rendered="#{!note.urgence}" styleClass="moins" ></s:div>
+								</center>
+							</a:commandLink>
+						</rich:column>					
+						<rich:column style="#{note.statut ? 'background:grey':''}">
+							<f:facet name="header" >
+								Note Interne
+							</f:facet>
+							<a:commandLink immediate="true"  styleClass="orange" status="waitStatus" 
+								action="#{notesService.initialisationCreation(note)}"
+								reRender="AjoutNote"
+								oncomplete="javascript:Richfaces.showModalPanel('panel2',{width:630, top:180, height:360})">
+								#{note.texte}
+							</a:commandLink>
+						</rich:column>
+						<rich:column style="#{note.statut ? 'background:grey':''}">
+							<f:facet name="header">
+								Destinataire
+							</f:facet>
+							<a:commandLink immediate="true"  status="waitStatus" 
+								action="#{notesService.initialisationCreation(note)}"
+								reRender="AjoutNote" styleClass="lienSansSoulignement"
+								oncomplete="javascript:Richfaces.showModalPanel('panel2',{width:630, top:180, height:360})">
+								<h:outputText value="#{note.nomDestinataire != '' ? note.nomDestinataire : 'Tous'}" />
+							</a:commandLink>					
+						</rich:column>
+						<rich:column style="#{note.statut ? 'background:grey':''}">
+							<f:facet name="header">
+								Statut/Traité
+							</f:facet>
+							<a:commandLink immediate="true"  status="waitStatus" 
+								action="#{notesService.initialisationCreation(note)}"
+								reRender="AjoutNote" styleClass="lienSansSoulignement"
+								oncomplete="javascript:Richfaces.showModalPanel('panel2',{width:630, top:180, height:360})">
+								<h:outputText  value="#{note.statut ? 'Oui':'Non'}" />
+							</a:commandLink>
+					</rich:column >
+					<rich:column style="text-align:center;#{note.statut ? 'background:grey':''}"> 
+						<f:facet name="header">
+							Action
+						</f:facet>
+						<a:commandLink immediate="true" style="text-align:center;" status="waitStatus"  action="#{notesService.supprimerNote(note)}"
+							reRender="panelNote" styleClass="del" title="Cliquez ici pour supprimer cette note" onclick="if (!confirm('Voulez vous supprimer la note interne ?')) return false" >
+							<center>
+								<div style="text-align:center;" class="del">
+								</div>
+							</center>
+						</a:commandLink>
+					</rich:column>
+					<f:facet name="footer">
+					</f:facet>
+				</rich:dataTable>
+				</a:outputPanel>
+				</div>
+				<br/>
+					</div>
+				</div>
+				
+				
+				
+				<div class="zoneAlerte"  >
+					<div>
+						<div class="pictoAlerte left pictoFieldset">
+						</div>
+						<div class="alerte left pictoFieldset">
+						</div>
+						<div class=" right margTop10px margRight10px">
+						</div>
+						<div class="clear"></div>			
+					</div>
+				
+					
+					<br/>
+				</div>
+				
+				<div style="height: 17px;" />
+				
+				<div class="zoneEvenement"  >
+					<div>
+						<div class="pictoEvenement left pictoFieldset">
+						</div>
+						<div class="evenement left pictoFieldset">
+						</div>
+						<div class=" right margTop10px margRight10px">
+						</div>
+						<div class="clear"></div>			
+					</div>
+				
+					<div style="max-height: 250px;overflow-y: auto;overflow-x: hidden " >
+						<rich:dataTable styleClass="tableListe alertesStyle"  headerClass="througe" 
+							rendered="#{not empty evenementService.listeDesEvenementsAffiches}"
+							value="#{evenementService.listeDesEvenementsAffiches}" var="evt"  cellspacing="0" cellpadding="1"  columnClasses="tdrouge" >
+							<rich:column>
+								<a:commandLink onclick="return false;"  status="waitStatus" >
+									<h:outputText value="#{evt.message} (" />
+									<h:outputText value="#{evt.dateEvenement}" >
+										<s:convertDateTime pattern="dd/MM/yyyy" />
+									</h:outputText>
+									<h:outputText value=")" />
+								</a:commandLink>
+							</rich:column>
+						</rich:dataTable>
+					</div>
+					<br/>
+				</div>
+								
+				</s:div>
+			</div>
+			
+			
+			
+			</div>
+			<div >
+			
+			<table cellpadding="0" cellspacing="0" >
+				<tr><td class="titreActualite" >
+					Alertes Notes
+				</td></tr>
+				<tr>
+					<td>
+						
+			
+	<a:outputPanel id="planelDates">				
+	<div align="left" id="alertes">
+
+<div class="news_border">
+	<div id="showherealert" class="news_show" >
+	
+<ui:repeat var="alerte" value="#{alerteService.alertesCorrespondances}">
+<table><tr><td valign="middle"><img src="/cnss/img2/alert-green.png" align="left" width="30" height="30"/>
+	#{alerte.texteAlerte}</td></tr>
+	<tr height="5px;" />
+	</table>
+</ui:repeat>
+</div>
+		
+		
+	</div>
+	<div class="alertsbuttondiv" id="alerts_button">
+	
+<a:commandLink  value="&lt;&lt; " title="Mois précédent" action="#{alerteService.moisDebutMoinsUn}"
+									status="waitStatus" reRender="planelDates" ajaxSingle="true"
+									rendered="#{not empty alerteService.dateCorrespondance}" style="color: #FF6600;text-decoration: none;font-weight:bold;"  />
+							<rich:calendar id="dateDebut" enableManualInput="true" validatorMessage="X" maxlength="10"  
+								value="#{alerteService.dateCorrespondance}" locale="fr" popup="#{true}" required="true"
+								datePattern="dd/MM/yyyy" showApplyButton="#{false}" buttonIcon="/img2/calendar.png" 
+								cellWidth="1px" cellHeight="22px" style="width:200px" direction="bottom-right" >
+								<a:support event="oninputchange" action="#{alerteService.getAlertesCorrespondances}" status="waitStatus" ajaxSingle="true" reRender="planelDates" oncomplete="dateEtHeureInputs();" />
+								<a:support event="onchanged" action="#{alerteService.getAlertesCorrespondances}" status="waitStatus" ajaxSingle="true" reRender="planelDates" oncomplete="dateEtHeureInputs();" />
+							</rich:calendar>
+						<a:commandLink  value=" &gt;&gt;" title="Mois suivant" action="#{alerteService.moisDebutPlusUn}"
+								status="waitStatus" reRender="planelDates" ajaxSingle="true"
+								rendered="#{not empty alerteService.dateCorrespondance}" style="color: #FF6600;text-decoration: none;font-weight:bold;"  />
+							<h:outputText  style="color:red;font-size: large;font-weight: bold;" value=" *" />
+							<h:message for="dateDebut" style="color:red"/>	
+							
+						
+	</div>
+	
+</div>			
+		</a:outputPanel>		
+			
+		
+</td>
+
+				</tr>
+			</table>
+			<BR />
+			<BR />	
+			<BR />	
+			<BR />	
+			<BR />
+			<table cellpadding="0" cellspacing="0" >
+				<tr><td class="titreActualite" >
+					Actualités
+				</td></tr>
+				<tr>
+					<td>
+					
+			
+			<div align="left" id="mynewsdis">
+
+<div class="news_border">
+	<div id="showhere" class="news_show" ></div>
+	</div>
+	<div class="buttondiv" id="news_button">
+	<img src="/cnss/img2/prev.gif" align="absmiddle" id="news_prev"/><img src="/cnss/img2/pause.gif" align="absmiddle" id="news_pause"/><img src="/cnss/img2/next.gif" align="absmiddle" id="news_next" />
+	</div>
+	<div class="news_mark"><div id="news_display" class="news_title"></div>
+	</div>
+</div>			
+			
+<div id="mynews">
+<ui:repeat var="actu" value="#{actualiteService.listeActualite}">
+<div class="news_style" rel="Nouveauté #{actu.module}" >
+	<table><tr><td><img src="/cnss/img2/actualite.jpg" align="left" width="50" height="60"/>
+	<b>#{actu.module}</b> -- #{actu.libelle}</td></tr>
+	</table>
+	</div>
+
+</ui:repeat>
+
+		
+	</div>
+</td>
+
+				</tr>
+			</table>
+			</div>
+			
+			
+		</h:form>
+
+
+
+
+		
+		<rich:modalPanel id="panel2" resizeable="false" moveable="false" >
+		
+		<div id="fbmodal" class="fbmodal"  >
+		<div class="popup">
+		<h:form id="AjoutNote"  >
+		
+			<script>
+
+
+			function fermerToujours()
+			{
+				Richfaces.hideModalPanel('panel2');
+			}
+
+			
+	        </script>
+		
+			<table width="100%" style="height: 100%"  >
+				<tbody>
+					<tr>
+						<td class="tl" /><td class="b" /><td class="tr" />
+					</tr>
+					<tr>
+						<td class="b" /> 
+						
+						
+						
+						<td class="body"> 
+							<div class="title">
+								<h:outputText rendered="#{notesService.note.id == null}" value="Ajouter une nouvelle note" />
+								<h:outputText rendered="#{notesService.note.id != null}" value="Modifier une note" />
+							
+							</div> 
+							<div class="container">
+								<div class="content">
+									<table border="0" width="100%">
+										<tr>
+											<td>
+												<label style="font-weight: bold;">Texte de la note</label> 
+											</td>
+											<td width="20px"/>
+											<td style="font-weight:bold;">
+												<label style="font-weight: bold;" for="note-target">Destinataire : </label>
+											</td>
+											<td>
+												<h:selectOneMenu styleClass="textBleu" style="width: 200px;" value="#{notesService.destinataireDto}"
+													converter="#{utilisateurDtoConverter}" id="aaaa" >
+													<s:selectItems noSelectionLabel="Tous" value="#{utilisateurList.lstUsersGroupe}" var="userDto"
+														label="#{userDto.nomComplet}" />
+												</h:selectOneMenu>
+												<h:message for="aaaa" />
+											</td>			
+										</tr>
+										<tr>
+											<td>			
+												<h:inputTextarea styleClass="textBleu" cols="30" rows="6" value="#{notesService.note.texte}"></h:inputTextarea> 
+											</td>
+											<td width="20px"/>
+											<td >
+												<label style="font-weight: bold;">Urgent : </label>
+											</td>
+											<td >
+												<h:selectOneRadio id="urgence" styleClass="textBleu" 
+													value="#{notesService.note.urgence}" >
+													<f:selectItem itemLabel="Oui" itemValue="#{true}" />
+													<f:selectItem itemLabel="Non" itemValue="#{false}" />
+												</h:selectOneRadio>
+											</td>
+										</tr>
+										<tr>
+											<td>
+												<label style="font-weight: bold;">Traité : </label>
+												<h:selectOneRadio id="statut" styleClass="textBleu" 
+													value="#{notesService.note.statut}" >
+													<f:selectItem itemLabel="Oui" itemValue="#{true}" />
+													<f:selectItem itemLabel="Non" itemValue="#{false}" />
+												</h:selectOneRadio>
+											</td>
+										</tr>
+									</table>
+								</div> 
+								<div class="footer"> 
+									<div class="right">
+										<div class="button_outside_border_blue" id="ok">
+											<div class="button_inside_border_blue" id="okay">
+												<a:commandLink value="Valider" oncomplete="fermerToujours();" status="waitStatus" 
+													action="#{notesService.creerNote}" reRender="panelNote,AjoutNote" /> 
+											</div>
+										</div>
+										<div class="button_outside_border_grey" id="close">
+											<div class="button_inside_border_grey" >
+												<a:commandLink value="Annuler" oncomplete="fermerToujours();"
+													status="waitStatus" immediate="true" ajaxSingle="true" action="#{notesService.find}"
+													reRender="panelNote" />
+											</div>
+										</div>
+									</div>
+									<div class="clear">
+									</div>
+								</div>
+							</div>
+						</td> 
+						
+						
+						
+						
+						<td class="b"/> 
+					</tr>
+					<tr> 
+						<td class="bl"/><td class="b"/><td class="br"/> 
+					</tr>
+				</tbody>			
+			</table>
+			</h:form>
+		</div>
+		
+		</div>
+			
+		</rich:modalPanel>
+		
+		
+	</ui:define>
+</ui:composition>

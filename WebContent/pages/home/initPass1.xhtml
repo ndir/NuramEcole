@@ -1,0 +1,119 @@
+
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:rich="http://richfaces.ajax4jsf.org/rich"
+	xmlns:a="https://ajax4jsf.dev.java.net/ajax"
+	xmlns:s="http://jboss.com/products/seam/taglib"
+	xmlns:t="http://myfaces.apache.org/tomahawk"
+	template="/template/template1.xhtml">
+
+	-->
+
+
+	<!-- Page de parametrage -->
+	<ui:define name="title">E-SCHOOL</ui:define>
+	<ui:define name="body">
+		<!-- Message d'avertissement-->
+		<a:loadScript src="/js/common.js" />
+	<div id="zoneResultat" class="zoneResultat2">
+
+		<div class="row">
+			<div class="col-md-12">
+
+				<h:form>
+
+
+					<rich:panel header="Modification Mot de  Passe">
+
+						<table cellpadding="3">
+							<tr>
+
+
+								<td><h:outputText value="Prénom" styleClass="grey" /></td>
+								<td><h:inputText value="#{instService.utilisateur.prenom}"
+										id="prenom" required="true" requiredMessage="Obligatoire"
+										styleClass="form-control" disablead="true" /> <h:message
+										for="prenom" style="color:red;" /></td>
+							</tr>
+							<tr>
+								<td><h:outputText value="Nom" styleClass="grey" /></td>
+								<td><h:inputText value="#{instService.utilisateur.nom}"
+										id="nom" required="true" requiredMessage="Obligatoire"
+										styleClass="form-control" disablead="true" /> <h:message
+										for="nom" style="color:red;" /></td>
+
+
+
+							</tr>
+
+							<tr>
+
+								<td><h:outputText value="Email" styleClass="grey" /></td>
+								<td><h:inputText value="#{instService.utilisateur.email}"
+										id="email" required="true" requiredMessage="Obligatoire"
+										styleClass="form-control" disablead="true" /> <h:message
+										for="email" style="color:red;" /></td>
+
+							</tr>
+							<tr>
+
+								<td><h:outputText value="Login" styleClass="grey" /></td>
+								<td><h:inputText value="#{instService.utilisateur.login}"
+										id="log" required="true" requiredMessage="Obligatoire"
+										styleClass="form-control" /> <h:message for="log"
+										style="color:red;" disablead="true" /></td>
+							</tr>
+							<tr>
+								<td><h:outputText value="Mot de Passe" styleClass="grey" /></td>
+								<td><h:inputSecret
+										value="#{instService.utilisateur.password}" id="pas"
+										required="true" requiredMessage="Obligatoire"
+										styleClass="form-control" /> <h:message for="pas"
+										style="color:red;" /></td>
+
+
+							</tr>
+
+
+
+						</table>
+
+						<p align="center">
+
+
+							<a:commandLink styleClass="btn btn-danger" value="" action="#"
+								ajaxSingle="true"> 
+																		
+																		Annuler			
+																				</a:commandLink>
+							<rich:spacer width="10px;"></rich:spacer>
+
+							<a:commandLink styleClass="btn btn-success" value=""
+								action="#{instService.modifierPwd}" title="Modifier Password"
+								status="waitStatus">
+																		
+																		Valider			
+																				</a:commandLink>
+						</p>
+
+
+					</rich:panel>
+
+				</h:form>
+			</div>
+		</div></div>
+
+
+
+
+
+
+
+
+	</ui:define>
+
+
+</ui:composition>
+

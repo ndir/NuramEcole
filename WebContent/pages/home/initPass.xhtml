@@ -1,0 +1,93 @@
+
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:rich="http://richfaces.ajax4jsf.org/rich"
+	xmlns:a="https://ajax4jsf.dev.java.net/ajax"
+	xmlns:s="http://jboss.com/products/seam/taglib"
+	xmlns:t="http://myfaces.apache.org/tomahawk"
+	template="/template/template1.xhtml">
+
+	-->
+
+
+	<!-- Page de parametrage -->
+	<ui:define name="title">SHELL FUEL SAVE</ui:define>
+	<ui:define name="body">
+		<!-- Message d'avertissement-->
+		<a:loadScript src="/js/common.js" />
+
+		<a:outputPanel>
+
+			<rich:spacer height="100px;"></rich:spacer>
+
+			<h:form>
+
+
+				<rich:panel header="Modification Mot de  Passe">
+					<h:commandButton image="/img2/deconnection.png"
+						action="#{identity.logout}" title="Déconnexion" immediate="true" />
+					<table width="90%" cellpadding="3">
+
+
+						<tr>
+
+							<td><h:outputText value="Email" styleClass="grey" /></td>
+							<td><h:inputText value="#{userService.user.email}"
+									id="email" required="true" requiredMessage="Obligatoire"
+									styleClass="form-control" /> <h:message for="email"
+									style="color:red;" /></td>
+
+						</tr>
+						<tr>
+
+							<td><h:outputText value="Login" styleClass="grey" /></td>
+							<td><h:inputText value="#{userService.user.login}" id="log"
+									required="true" requiredMessage="Obligatoire"
+									styleClass="form-control" /> <h:message for="log"
+									style="color:red;" /></td>
+						</tr>
+						
+
+					</table>
+					<p align="center">
+					<table align="center">
+						<tr>
+							<td><a:commandLink value="" status="waitStatus"
+									title="Annuler" reRender="add" ajaxSingle="true"
+									action="#{userService.annulerajout}">
+									<s:graphicImage fileName="annuler.png" style="border:0px;"
+										value="/images/annuler.png" alt="" />
+								</a:commandLink></td>
+							<td><rich:spacer widht="30px;" /></td>
+							<td><rich:spacer widht="30px;" /></td>
+							<td><rich:spacer widht="30px;" /></td>
+
+							<td><rich:spacer widht="30px;" /></td>
+							<td><a:commandLink value="" status="waitStatus"
+									action="#{userService.modifierMotdePasse}"
+									title="Modifier Password" reRender="add">
+									<s:graphicImage fileName="ok.png" style="border:0px;"
+										value="/images/ok.png" alt="" />
+								</a:commandLink></td>
+						</tr>
+					</table>
+
+
+					</p>
+				</rich:panel>
+			</h:form>
+
+
+
+
+
+		</a:outputPanel>
+
+
+	</ui:define>
+
+
+</ui:composition>
+

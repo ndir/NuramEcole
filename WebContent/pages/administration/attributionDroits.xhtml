@@ -1,0 +1,178 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:rich="http://richfaces.ajax4jsf.org/rich"
+	xmlns:a="https://ajax4jsf.dev.java.net/ajax"
+	xmlns:s="http://jboss.com/products/seam/taglib">
+	<div class="content">
+	
+	<h:form id="idforme">
+	   <div class="zoneResultat2">
+		<a:outputPanel id="panelPrincipal">
+	
+	
+
+   	
+	<table width="90%" >
+	 <tr>
+	 	<td valign="top" width="30%" >
+		 	    	
+   	        	
+	 	
+	   		<fieldset>
+   	         
+   	      <table width="100%">
+   	      
+   	        <tr>   	          
+   	           <td>
+   	           
+   	           <div style="width:100%;height:460px;overflow: auto;">
+   	             <legend>#{msgBundle['gestock.listeProfile']} </legend>  
+   	            	           	
+   	           	<rich:dataTable value="#{gestionMenuService.listeProfile}" var="varProfile" id="listUser" 
+						width="100%"  rendered="#{not empty gestionMenuService.listeProfile}">		                  	
+								                  	
+							<rich:column style="float:right;border:0 " styleClass="labelNonAtt" >
+			                     <h:outputLabel value="#{varProfile.libelle}" styleClass="grey"  style="color:#0275d8"  />
+		                  	</rich:column>
+		                  	
+		                  	 <rich:column >
+								        <TABLE align="right" >  <tr >  <td align="right" >
+									    <a:commandLink immediate="true" status="waitStatus"  
+														action="#{gestionMenuService.selectProfile(varProfile)}" value="" title="Voir Details "
+														reRender="idFormSaisi,idforme" styleClass="lienSansSoulignement"
+														oncomplete="javascript:Richfaces.showModalPanel('panelSaisi',{width:400, top:5, height:400});jQuery('#ModificationPassword\\:prenomEnfant').focus();">
+														<s:graphicImage fileName="etape.png" style="border:0px;" value="/picto/etape.png" width="16" height="16" alt="" />
+													 </a:commandLink>
+									     </td>
+									     </tr>
+									     </TABLE>
+						    </rich:column>
+		                  	
+   	           		</rich:dataTable>
+   	           		
+   	           	</div>   
+   	           </td>
+   	        </tr>
+   	      </table>     
+   	   </fieldset>
+   	  </td>
+   	  
+   	  <td valign="top" > 
+   	  
+   	  <fieldset>
+		 	<table width="100%" >
+   	        <tr>
+   	        	<td>
+   	        		<h:outputText value="Profile En cours:" styleClass="grey"  />
+   	        	
+   	        		<h:outputText value=" #{gestionMenuService.profilSelected.libelle}" styleClass="grey"  style="color:#0275d8"   />
+   	        	</td>   	        	   	        	
+   	        </tr> 
+   	        </table>
+   	        </fieldset> 
+   	        
+	  <fieldset>
+   	    
+   	   <div style="height:400px;overflow: auto;">   	           	
+   	          
+   	           		
+   	     <table width="100%"> 
+	  <tr>
+	  <td valign="top" >
+   	     <rich:dataTable id="listModules"  value="#{gestionMenuService.listeFonction}" var="varModule">
+   	      	 <rich:column style="float:left;border:0" styleClass="labelNonAtt" >
+			   <s:graphicImage style="border:0px;" value="/picto/oui.png" alt="" height="15" title="Des permissions sont accordées sur ce module" 
+			   			width="15" rendered="#{varModule.dejaAttribuee}"/>
+			   <s:graphicImage style="border:0px;" value="/picto/encours.png" alt="" height="15" title="Aucune permission n'a été accordée sur ce module"
+			   			 width="15" rendered="#{not varModule.dejaAttribuee}"/>			 									 	
+			 </rich:column>
+			 <rich:column style="float:right;border:0" styleClass="labelNonAtt" >			   
+			   <h:outputText value="#{varModule.nomFonction}"  styleClass="grey"  style="color:#0275d8" /> 									 	
+			 </rich:column>
+			 <rich:column >
+			 	<a:commandLink value="" actionListener="#{gestionMenuService.selectModule(varModule)}" ajaxSingle="true"
+			 		status="waitStatus" reRender="panelPrincipal" title="Sélectionner ce module">							 	  						
+                   					<s:graphicImage style="border:0px;" value="/picto/etape.png" alt="" height="15" width="15"/>																			                         																						
+				</a:commandLink>
+			 </rich:column>
+		</rich:dataTable>
+   	  </td>
+	  <td valign="top">  
+	  
+	     	  
+	    <rich:dataTable id="listSousModules"  value="#{gestionMenuService.listModulesSelected}" rendered="#{gestionMenuService.listModulesSelected.size() !=0}" var="varModule">
+   	      	
+   	      	 <f:facet name="caption">
+					<rich:columnGroup>
+						<rich:column style="float:left;border:0" styleClass="labelNonAtt">
+									  <h:selectBooleanCheckbox value="#{gestionMenuService.moduleEncours.selected}" valueChangeListener="#{gestionMenuService.choixMultiple}" > 
+									   <a:support event="onchange" bypassUpdates="true"
+															ajaxSingle="true" status="waitStatus"
+															reRender="panelPrincipal"
+															oncomplete="dateEtHeureInputs();" />
+                   		                </h:selectBooleanCheckbox>
+									  <h:outputText value="#{gestionMenuService.moduleEncours.nomFonction}" styleClass="grey"  style="color:#0275d8"  /> 	
+						</rich:column>
+						<rich:column>
+						</rich:column>
+						<rich:column>
+						</rich:column>
+						
+					</rich:columnGroup>
+			</f:facet>
+   	      	  <rich:column rowspan="2" style="float:left;border:0" styleClass="labelNonAtt" >
+   	      	      
+			 </rich:column>
+			 <rich:column style="float:left;border:0" styleClass="labelNonAtt" >	
+			    <h:selectBooleanCheckbox value="#{varModule.selected}" valueChangeListener="#{gestionMenuService.selectMenu(varModule)}"  >	
+			               <a:support event="onchange" bypassUpdates="true"
+															ajaxSingle="true" status="waitStatus"
+															reRender="panelPrincipal"
+															oncomplete="dateEtHeureInputs();" />
+                   		                </h:selectBooleanCheckbox>	   
+			    <h:outputText value="#{varModule.nomFonction}" styleClass="grey"  style="color:#0275d8"  /> 									 	
+			 </rich:column>
+			 <rich:column >
+			 	<a:commandLink value="" rendered="#{gestionMenuService.estParent(varModule)}" actionListener="#{gestionMenuService.selectModule(varModule)}" ajaxSingle="true"
+			 		status="waitStatus" reRender="listSousModules" title="Sélectionner ce module">							 	  						
+                   					<s:graphicImage style="border:0px;" value="/picto/etape.png" alt="" height="15" width="15"/>																			                         																						
+				</a:commandLink>
+			 </rich:column>
+		</rich:dataTable>   									   
+	    
+       </td>
+		 </tr> 
+		 </table>
+   	           		
+   	           	</div> 
+   	   
+	   
+	   <table width="100%">				
+				<tr>				
+					<td align="right">
+						<a:commandButton value="Valider les mises à jour" style="text-align:right;" status="waitStatus" 
+							action="#{gestionMenuService.saveOrUpdateDroits}" ajaxSingle="true"	image="/picto/valide.jpg"						
+							reRender="idforme">
+							
+					     </a:commandButton>
+			   			
+					</td>					
+				</tr>
+			</table>
+	 </fieldset>  
+	</td>
+	</tr>
+	</table>
+	</a:outputPanel>
+	</div>
+	</h:form>
+	
+	
+	
+	</div>	
+</ui:composition>
+	

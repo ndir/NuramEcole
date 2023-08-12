@@ -1,0 +1,1946 @@
+-- phpMyAdmin SQL Dump
+-- version 3.3.9
+-- http://www.phpmyadmin.net
+--
+-- Serveur: localhost
+-- Généré le : Dim 15 Novembre 2015 à 21:36
+-- Version du serveur: 5.1.36
+-- Version de PHP: 5.3.0
+
+SET SQL_MODE="NO_AUTO_VALUE_ON_ZERO";
+
+
+/*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
+/*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
+/*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
+/*!40101 SET NAMES utf8 */;
+
+--
+-- Base de données: `gestockdb`
+--
+
+-- --------------------------------------------------------
+
+--
+-- Structure de la table `c3p0test`
+--
+
+CREATE TABLE IF NOT EXISTS `c3p0test` (
+  `a` char(1) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+--
+-- Contenu de la table `c3p0test`
+--
+
+
+-- --------------------------------------------------------
+
+--
+-- Structure de la table `caisse`
+--
+
+CREATE TABLE IF NOT EXISTS `caisse` (
+  `idCaisse` bigint(20) NOT NULL AUTO_INCREMENT,
+  `libelle_court` varchar(255) DEFAULT NULL,
+  `libelle` varchar(255) DEFAULT NULL,
+  `dateOuverture` datetime DEFAULT NULL,
+  `ouvertON` bit(1) NOT NULL,
+  `caissePrincipalON` bit(1) DEFAULT NULL,
+  `idCaissier` bigint(20) DEFAULT NULL,
+  `soldeCaisse` double DEFAULT NULL,
+  PRIMARY KEY (`idCaisse`),
+  KEY `FK77DD127AE70FFB77` (`idCaissier`)
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=9 ;
+
+--
+-- Contenu de la table `caisse`
+--
+
+INSERT INTO `caisse` (`idCaisse`, `libelle_court`, `libelle`, `dateOuverture`, `ouvertON`, `caissePrincipalON`, `idCaissier`, `soldeCaisse`) VALUES
+(1, 'C1', 'Caisse 1', '2015-10-20 22:01:46', b'0', b'1', NULL, 99000),
+(2, 'C2', 'Caisse 2', '2015-10-22 22:02:04', b'1', b'0', NULL, 99999),
+(4, 'C3', 'CAISSE 3', NULL, b'1', b'0', 3, 89270),
+(6, 'C4', 'CAISSE 4', NULL, b'1', b'0', 1, 103100),
+(7, 'CP', 'Caisse Principale', NULL, b'0', b'0', 1, 99900),
+(8, 'C5', 'Caisse 5', NULL, b'0', b'0', 2, 0);
+
+-- --------------------------------------------------------
+
+--
+-- Structure de la table `client`
+--
+
+CREATE TABLE IF NOT EXISTS `client` (
+  `idClient` bigint(20) NOT NULL AUTO_INCREMENT,
+  `tauxContrat` double DEFAULT NULL,
+  `adresse` varchar(255) DEFAULT NULL,
+  `tel1` varchar(255) DEFAULT NULL,
+  `tel2` varchar(255) DEFAULT NULL,
+  `email1` varchar(255) DEFAULT NULL,
+  `email2` varchar(255) DEFAULT NULL,
+  `nom` varchar(255) DEFAULT NULL,
+  `prenom` varchar(255) DEFAULT NULL,
+  `numeroClient` varchar(255) DEFAULT NULL,
+  `dateContrat` datetime DEFAULT NULL,
+  `idTypeClient` bigint(20) DEFAULT NULL,
+  `montantRistourne` double DEFAULT NULL,
+  `montantAvoir` double DEFAULT NULL,
+  `montantDette` double DEFAULT NULL,
+  PRIMARY KEY (`idClient`),
+  KEY `FK7877DFEB6C10C209` (`idTypeClient`)
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=4 ;
+
+--
+-- Contenu de la table `client`
+--
+
+INSERT INTO `client` (`idClient`, `tauxContrat`, `adresse`, `tel1`, `tel2`, `email1`, `email2`, `nom`, `prenom`, `numeroClient`, `dateContrat`, `idTypeClient`, `montantRistourne`, `montantAvoir`, `montantDette`) VALUES
+(1, 2, 'thies ', '77 757 56 56', '77 565 44 54', 'serigne@gmail.com', '', 'CISSE', 'NGOYE', 'F233', '2015-10-01 00:00:00', NULL, 7718.4, 0, 393045),
+(2, 2, 'vdvv', '77 757 76 76', '77 756 57 56', 'fd@gmail.com', '', 'DIOP', 'NDEYE', 'F3456', '2015-10-07 00:00:00', NULL, 0, 0, 230330),
+(3, 2, 'charbonnage', '3456', '4567', 'm@gmail.com', '', 'DIALLO', 'MOUSTAPHA', 'F345', '2015-08-12 00:00:00', NULL, NULL, 0, 0);
+
+-- --------------------------------------------------------
+
+--
+-- Structure de la table `compterenduoperation`
+--
+
+CREATE TABLE IF NOT EXISTS `compterenduoperation` (
+  `idCompteRenduOperation` bigint(20) NOT NULL AUTO_INCREMENT,
+  `libelle` varchar(255) DEFAULT NULL,
+  `libelleSup` varchar(255) DEFAULT NULL,
+  `refOperation` varchar(255) DEFAULT NULL,
+  `montant` double DEFAULT NULL,
+  `codeTransaction` varchar(255) DEFAULT NULL,
+  `dateMouvement` datetime DEFAULT NULL,
+  `dateValidation` datetime DEFAULT NULL,
+  `idNature` bigint(20) DEFAULT NULL,
+  `idUserCreat` bigint(20) DEFAULT NULL,
+  `idClient` bigint(20) DEFAULT NULL,
+  `idUserValide` bigint(20) DEFAULT NULL,
+  `idDistibuteur` bigint(20) DEFAULT NULL,
+  `idCaisse` bigint(20) DEFAULT NULL,
+  `idOperateur` bigint(20) DEFAULT NULL,
+  `idSens` bigint(20) DEFAULT NULL,
+  PRIMARY KEY (`idCompteRenduOperation`),
+  KEY `FKD112D63B6C1ED2B4` (`idUserCreat`),
+  KEY `FKD112D63B63D73F83` (`idOperateur`),
+  KEY `FKD112D63BD3A22BAB` (`idDistibuteur`),
+  KEY `FKD112D63B2CD90B13` (`idCaisse`),
+  KEY `FKD112D63BC3F0E4A0` (`idUserValide`),
+  KEY `FKD112D63BE47310FE` (`idNature`),
+  KEY `FKD112D63B61DE694D` (`idSens`),
+  KEY `FKD112D63B2E0EA5F5` (`idClient`)
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=17 ;
+
+--
+-- Contenu de la table `compterenduoperation`
+--
+
+INSERT INTO `compterenduoperation` (`idCompteRenduOperation`, `libelle`, `libelleSup`, `refOperation`, `montant`, `codeTransaction`, `dateMouvement`, `dateValidation`, `idNature`, `idUserCreat`, `idClient`, `idUserValide`, `idDistibuteur`, `idCaisse`, `idOperateur`, `idSens`) VALUES
+(1, 'VENTE---F3456 --- NDEYE DIOP -- Du 05/11/2015', NULL, NULL, 123840, '', '2015-11-05 21:48:40', '2015-11-05 21:48:40', 1, 1, 2, 1, NULL, 6, NULL, NULL),
+(2, 'VENTE---F3456 --- NDEYE DIOP -- Du 05/11/2015', NULL, NULL, 118790, '', '2015-11-05 21:54:45', '2015-11-05 21:54:45', 1, 1, 2, 1, NULL, 6, NULL, NULL),
+(3, 'VENTE---D2333DDJ --- SERIGNE FALL -- Du 05/11/2015', NULL, NULL, 502080, '', '2015-11-05 21:55:10', '2015-11-05 21:55:10', 1, 1, NULL, 1, 1, 6, NULL, NULL),
+(4, 'VENTE---D2333DDJ --- SERIGNE FALL -- Du 05/11/2015', NULL, NULL, 153600, '', '2015-11-05 21:55:46', '2015-11-05 21:55:46', 1, 1, NULL, 1, 1, 6, NULL, NULL),
+(5, 'ENCAISSEMENT---F3456 --- NDEYE DIOP -- Du 05/11/2015', NULL, NULL, 2000, '', '2015-11-05 22:42:35', '2015-11-05 22:42:35', 2, 1, 2, 1, NULL, 6, NULL, NULL),
+(6, 'ENCAISSEMENT---F3456 --- NDEYE DIOP -- Du 05/11/2015', NULL, NULL, 2300, '', '2015-11-05 22:44:02', '2015-11-05 22:44:02', 2, 1, 2, 1, NULL, 6, NULL, NULL),
+(7, 'ENCAISSEMENT---F3456 --- NDEYE DIOP -- Du 06/11/2015', NULL, NULL, 2000, '', '2015-11-06 16:48:56', '2015-11-06 16:48:56', 2, 1, 2, 1, NULL, 6, NULL, NULL),
+(8, 'ENCAISSEMENT---F3456 --- NDEYE DIOP -- Du 06/11/2015', NULL, NULL, 2000, '', '2015-11-06 16:58:13', '2015-11-06 16:58:13', 2, 2, 2, 2, NULL, 4, NULL, NULL),
+(9, 'ENCAISSEMENT---F3456 --- NDEYE DIOP -- Du 06/11/2015', NULL, NULL, 270, '', '2015-11-06 16:59:26', '2015-11-06 16:59:26', 2, 2, 2, 2, NULL, 4, NULL, NULL),
+(10, 'VENTE---F233 --- NGOYE CISSE -- Du 07/11/2015', NULL, NULL, 385920, '', '2015-11-07 21:22:23', '2015-11-07 21:22:23', 1, 1, 1, 1, NULL, 6, NULL, NULL),
+(11, 'VENTE---F233 --- NGOYE CISSE -- Du 08/11/2015', NULL, NULL, 7125, '', '2015-11-08 14:46:04', '2015-11-08 14:46:04', 1, 1, 1, 1, NULL, 6, NULL, NULL),
+(12, 'VENTE---D0016 --- SALA DIALLO -- Du 13/11/2015', NULL, NULL, 30580, '', '2015-11-13 16:15:18', '2015-11-13 16:15:18', 1, 1, NULL, 1, 16, 6, NULL, NULL),
+(13, 'VENTE---D0016 --- SALA DIALLO -- Du 13/11/2015', NULL, NULL, 38340, '', '2015-11-13 16:31:55', '2015-11-13 16:31:55', 1, 1, NULL, 1, 16, 6, NULL, NULL),
+(14, 'VENTE---D2333DDJ --- SERIGNE FALL -- Du 13/11/2015', NULL, NULL, 17760, '', '2015-11-13 16:32:24', '2015-11-13 16:32:24', 1, 1, NULL, 1, 1, 6, NULL, NULL),
+(15, 'VENTE---D0016 --- SALA DIALLO -- Du 13/11/2015', NULL, NULL, 1332510, '', '2015-11-13 23:56:35', '2015-11-13 23:56:35', 1, 1, NULL, 1, 16, 6, NULL, NULL),
+(16, 'VENTE---D0016 --- SALA DIALLO -- Du 15/11/2015', NULL, NULL, 140160, '', '2015-11-15 02:52:37', '2015-11-15 02:52:37', 1, 1, NULL, 1, 16, 6, NULL, NULL);
+
+-- --------------------------------------------------------
+
+--
+-- Structure de la table `contratdistribclient`
+--
+
+CREATE TABLE IF NOT EXISTS `contratdistribclient` (
+  `idContrat` bigint(20) NOT NULL AUTO_INCREMENT,
+  `taux` double DEFAULT NULL,
+  `montantAvoir` double NOT NULL,
+  `dateContrat` datetime DEFAULT NULL,
+  `dateFinContrat` datetime DEFAULT NULL,
+  `actifON` bit(1) DEFAULT NULL,
+  `idUtilsateur` bigint(20) DEFAULT NULL,
+  `idDistributeurPrinc` bigint(20) DEFAULT NULL,
+  `idClient` bigint(20) DEFAULT NULL,
+  PRIMARY KEY (`idContrat`),
+  KEY `FK18982CFD9B5E9425` (`idDistributeurPrinc`),
+  KEY `FK18982CFD2E0EA5F5` (`idClient`),
+  KEY `FK18982CFDB539AFCA` (`idUtilsateur`)
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=4 ;
+
+--
+-- Contenu de la table `contratdistribclient`
+--
+
+INSERT INTO `contratdistribclient` (`idContrat`, `taux`, `montantAvoir`, `dateContrat`, `dateFinContrat`, `actifON`, `idUtilsateur`, `idDistributeurPrinc`, `idClient`) VALUES
+(1, NULL, 0, NULL, NULL, b'1', NULL, NULL, NULL),
+(2, NULL, 0, NULL, NULL, b'1', NULL, NULL, NULL),
+(3, NULL, 0, NULL, NULL, b'1', NULL, NULL, NULL);
+
+-- --------------------------------------------------------
+
+--
+-- Structure de la table `contratdistribdistrib`
+--
+
+CREATE TABLE IF NOT EXISTS `contratdistribdistrib` (
+  `idContrat` bigint(20) NOT NULL AUTO_INCREMENT,
+  `dateContrat` datetime DEFAULT NULL,
+  `taux` double DEFAULT NULL,
+  `idDistributeurPrinc` bigint(20) DEFAULT NULL,
+  `idDistributeurSecond` bigint(20) DEFAULT NULL,
+  `idUtilsateur` bigint(20) DEFAULT NULL,
+  `montantAvoir` double DEFAULT NULL,
+  `dateFinContrat` datetime DEFAULT NULL,
+  `actifON` bit(1) DEFAULT NULL,
+  PRIMARY KEY (`idContrat`),
+  KEY `FK2AC8EEB39B5E9425` (`idDistributeurPrinc`),
+  KEY `FK2AC8EEB34239394F` (`idDistributeurSecond`),
+  KEY `FK2AC8EEB3B539AFCA` (`idUtilsateur`)
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=26 ;
+
+--
+-- Contenu de la table `contratdistribdistrib`
+--
+
+INSERT INTO `contratdistribdistrib` (`idContrat`, `dateContrat`, `taux`, `idDistributeurPrinc`, `idDistributeurSecond`, `idUtilsateur`, `montantAvoir`, `dateFinContrat`, `actifON`) VALUES
+(1, NULL, 2, 1, 2, NULL, 0, NULL, b'1'),
+(2, NULL, 2, 1, 1, NULL, 0, NULL, b'1'),
+(3, NULL, NULL, NULL, NULL, NULL, 0, NULL, b'1'),
+(4, NULL, NULL, NULL, NULL, NULL, 0, NULL, b'1'),
+(5, NULL, NULL, NULL, NULL, NULL, 0, NULL, b'1'),
+(6, NULL, NULL, NULL, NULL, NULL, 0, NULL, b'1'),
+(7, NULL, NULL, NULL, NULL, NULL, 0, NULL, b'1'),
+(8, NULL, NULL, NULL, NULL, NULL, 0, NULL, b'1'),
+(9, NULL, NULL, NULL, NULL, NULL, 0, NULL, b'1'),
+(10, NULL, NULL, NULL, NULL, NULL, 0, NULL, b'1'),
+(11, NULL, NULL, NULL, NULL, NULL, 0, NULL, b'1'),
+(12, NULL, NULL, NULL, NULL, NULL, 0, NULL, b'1'),
+(13, NULL, NULL, NULL, NULL, NULL, 0, NULL, b'1'),
+(14, NULL, NULL, NULL, NULL, NULL, 0, NULL, b'1'),
+(15, NULL, NULL, NULL, NULL, NULL, 0, NULL, b'1'),
+(16, NULL, NULL, NULL, NULL, NULL, 0, NULL, b'1'),
+(17, NULL, NULL, NULL, NULL, NULL, 0, NULL, b'1'),
+(18, NULL, NULL, NULL, NULL, NULL, 0, NULL, b'1'),
+(19, NULL, NULL, NULL, NULL, NULL, 0, NULL, b'1'),
+(20, NULL, NULL, NULL, NULL, NULL, 0, NULL, b'1'),
+(21, NULL, NULL, NULL, NULL, NULL, 0, NULL, b'1'),
+(22, NULL, NULL, NULL, NULL, NULL, 0, NULL, b'1'),
+(23, NULL, NULL, NULL, NULL, NULL, 0, NULL, b'1'),
+(24, NULL, NULL, NULL, NULL, NULL, 0, NULL, b'1'),
+(25, NULL, NULL, NULL, NULL, NULL, 0, NULL, b'1');
+
+-- --------------------------------------------------------
+
+--
+-- Structure de la table `contratmaisonmeredistrib`
+--
+
+CREATE TABLE IF NOT EXISTS `contratmaisonmeredistrib` (
+  `idContrat` bigint(20) NOT NULL AUTO_INCREMENT,
+  `idDistributeur` bigint(20) DEFAULT NULL,
+  `idOperateur` bigint(20) DEFAULT NULL,
+  `dateContrat` datetime DEFAULT NULL,
+  `taux` double DEFAULT NULL,
+  `idUtilsateur` bigint(20) DEFAULT NULL,
+  `montantAvoir` double DEFAULT NULL,
+  `dateFinContrat` datetime DEFAULT NULL,
+  `actifON` bit(1) DEFAULT NULL,
+  PRIMARY KEY (`idContrat`),
+  KEY `FK817F3DAA63D73F83` (`idOperateur`),
+  KEY `FK817F3DAA6E2BB9B` (`idDistributeur`),
+  KEY `FK817F3DAAB539AFCA` (`idUtilsateur`)
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=6 ;
+
+--
+-- Contenu de la table `contratmaisonmeredistrib`
+--
+
+INSERT INTO `contratmaisonmeredistrib` (`idContrat`, `idDistributeur`, `idOperateur`, `dateContrat`, `taux`, `idUtilsateur`, `montantAvoir`, `dateFinContrat`, `actifON`) VALUES
+(1, 1, 5, '2015-10-07 00:00:00', 2, NULL, 0, NULL, b'1'),
+(2, 1, 6, '2015-10-07 00:00:00', 2, NULL, 0, NULL, b'1'),
+(3, 1, 4, '2015-10-21 14:00:58', 3, NULL, 0, NULL, b'1'),
+(4, 1, 7, '2015-10-28 14:02:11', 2, NULL, 0, NULL, b'1'),
+(5, NULL, NULL, NULL, NULL, NULL, 0, NULL, b'1');
+
+-- --------------------------------------------------------
+
+--
+-- Structure de la table `detaillivraison`
+--
+
+CREATE TABLE IF NOT EXISTS `detaillivraison` (
+  `idDetailLivraison` bigint(20) NOT NULL AUTO_INCREMENT,
+  `quantite` int(11) DEFAULT NULL,
+  `prixUnitaire` double NOT NULL,
+  `montantTotal` double NOT NULL,
+  `idOperateur` bigint(20) DEFAULT NULL,
+  `idLivraison` bigint(20) DEFAULT NULL,
+  `idTypeCarte` bigint(20) DEFAULT NULL,
+  `idNature` bigint(20) DEFAULT NULL,
+  `idProduit` bigint(20) DEFAULT NULL,
+  `tauxRistourne` double DEFAULT NULL,
+  PRIMARY KEY (`idDetailLivraison`),
+  KEY `FK1E8A35C0DA285DB7` (`idTypeCarte`),
+  KEY `FK1E8A35C063D73F83` (`idOperateur`),
+  KEY `FK1E8A35C026442171` (`idLivraison`),
+  KEY `FK1E8A35C06EC58A80` (`idNature`),
+  KEY `FK1E8A35C084AA8D3` (`idProduit`)
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=113 ;
+
+--
+-- Contenu de la table `detaillivraison`
+--
+
+INSERT INTO `detaillivraison` (`idDetailLivraison`, `quantite`, `prixUnitaire`, `montantTotal`, `idOperateur`, `idLivraison`, `idTypeCarte`, `idNature`, `idProduit`, `tauxRistourne`) VALUES
+(47, 130442, 480, 62612160, 6, 12, NULL, NULL, 1, 2),
+(48, 2178, 4800, 10454400, 6, 12, NULL, NULL, 3, 2),
+(49, 36000, 480, 17280000, 5, 13, NULL, NULL, 1, 2),
+(50, 240, 28800, 6912000, 5, 13, NULL, NULL, 5, 2),
+(51, 5500, 475, 2612500, 4, 14, NULL, NULL, 1, 2),
+(52, 2000, 500, 1000000, 4, 14, NULL, NULL, 6, 2),
+(53, 23700, 475, 11257500, 7, 15, NULL, NULL, 1, 2),
+(54, 30035, 4750, 142666250, 7, 15, NULL, NULL, 3, 2),
+(55, 23, 9500, 218500, 7, 15, NULL, NULL, 4, 2),
+(56, 3722, 480, 1786560, 6, 16, NULL, NULL, 1, 2),
+(57, 101500, 960, 97440000, 6, 16, NULL, NULL, 2, 2),
+(58, 100, 4800, 480000, 6, 16, NULL, NULL, 3, 2),
+(59, 43000, 475, 20425000, 6, 16, NULL, NULL, 6, 2),
+(60, 344586, 28800, 9924076800, 6, 16, NULL, NULL, 5, 2),
+(61, 24200, 960, 23232000, 6, 17, NULL, NULL, 2, 2),
+(62, 622, 480, 298560, 6, 17, NULL, NULL, 1, 2),
+(63, 45777, 9600, 439459200, 6, 17, NULL, NULL, 4, 2),
+(64, 344554, 28800, 9923155200, 6, 17, NULL, NULL, 5, 2),
+(65, 5, 9500, 47500, 4, 17, NULL, NULL, 4, 2),
+(66, 29, 4750, 137750, 4, 17, NULL, NULL, 3, 2),
+(67, 353, 950, 335350, 4, 17, NULL, NULL, 2, 2),
+(68, 500, 475, 237500, 4, 17, NULL, NULL, 1, 2),
+(69, 20, 28800, 576000, 5, 17, NULL, NULL, 5, 2),
+(70, 100, 9600, 960000, 5, 17, NULL, NULL, 4, 2),
+(71, 250, 4800, 1200000, 5, 17, NULL, NULL, 3, 2),
+(72, 1000, 960, 960000, 5, 17, NULL, NULL, 2, 2),
+(73, 5000, 480, 2400000, 5, 17, NULL, NULL, 1, 2),
+(74, 5, 4750, 23750, 7, 17, NULL, NULL, 3, 2),
+(75, 50, 950, 47500, 7, 17, NULL, NULL, 2, 2),
+(76, 100, 475, 47500, 7, 17, NULL, NULL, 1, 2),
+(77, 20, 5000, 100000, 8, 17, NULL, NULL, 3, 2),
+(78, 10, 10000, 100000, 8, 17, NULL, NULL, 4, 2),
+(79, 3000, 470, 1410000, 5, 17, NULL, NULL, 6, 2),
+(80, 6000, 475, 2850000, 6, 17, NULL, NULL, 6, 2),
+(81, 122, 480, 58560, 6, 18, NULL, NULL, 1, 2),
+(82, 13000, 960, 12480000, 6, 19, NULL, NULL, 2, 2),
+(83, 1200, 960, 1152000, 6, 19, NULL, NULL, 2, 2),
+(84, 153, 950, 145350, 4, 20, NULL, NULL, 2, 2),
+(85, 65, 950, 61750, 4, 20, NULL, NULL, 2, 2),
+(86, 19, 4750, 90250, 4, 20, NULL, NULL, 3, 2),
+(87, 73, 57600, 4204800, 6, 21, NULL, NULL, 17, 2),
+(88, 3, 57600, 172800, 6, 21, NULL, NULL, 17, 2),
+(89, 344552, 28800, 9923097600, 6, 22, NULL, NULL, 5, 2),
+(90, 45677, 9600, 438499200, 6, 22, NULL, NULL, 4, 2),
+(91, 54, 28800, 1555200, 6, 22, NULL, NULL, 5, 2),
+(92, 20, 28800, 576000, 6, 23, NULL, NULL, 5, 2),
+(93, 10, 9600, 96000, 5, 23, NULL, NULL, 4, 2),
+(94, 20, 960, 19200, 6, 23, NULL, NULL, 2, 2),
+(95, 1, 4800, 4800, 6, 23, NULL, NULL, 3, 2),
+(96, 12, 960, 11520, 5, 24, NULL, NULL, 2, 2),
+(97, 100, 28800, 2880000, 5, 24, NULL, NULL, 5, 2),
+(98, 30, 28800, 864000, 5, 24, NULL, NULL, 5, 2),
+(99, 1000, 475, 475000, 4, 25, NULL, NULL, 1, 2),
+(100, 100, 9500, 950000, 4, 25, NULL, NULL, 4, 2),
+(101, 100, 57000, 5700000, 4, 25, NULL, NULL, 17, 2),
+(102, 40, 480, 19200, 6, 26, NULL, NULL, 1, 2),
+(103, 100, 9500, 950000, 7, 26, NULL, NULL, 4, 0),
+(104, 12, 960, 11520, 6, 27, NULL, NULL, 2, 2),
+(105, 4, 475, 1900, 6, 27, NULL, NULL, 6, 3),
+(106, 23, 0, 109250, 6, 27, NULL, NULL, 18, 0),
+(107, 30, 57600, 1728000, 6, 27, NULL, NULL, 17, 2),
+(108, 23, 480, 11040, 6, 28, NULL, NULL, 1, 2),
+(109, 340, 475, 161500, 6, 28, NULL, NULL, 6, 3),
+(110, 1234, 480, 592320, 6, 29, NULL, NULL, 1, 2),
+(111, 3456, 960, 3317760, 5, 29, NULL, NULL, 2, 2),
+(112, 500, 500, 250000, 4, 29, NULL, NULL, 6, 3);
+
+-- --------------------------------------------------------
+
+--
+-- Structure de la table `detailvente`
+--
+
+CREATE TABLE IF NOT EXISTS `detailvente` (
+  `idDetailVente` bigint(20) NOT NULL AUTO_INCREMENT,
+  `quantite` int(11) DEFAULT NULL,
+  `prixUnitaire` double NOT NULL,
+  `montantTotal` double NOT NULL,
+  `idProduit` bigint(20) DEFAULT NULL,
+  `idVente` bigint(20) DEFAULT NULL,
+  `idNature` bigint(20) DEFAULT NULL,
+  `idOperateur` bigint(20) DEFAULT NULL,
+  `tauxRistourne` double DEFAULT NULL,
+  PRIMARY KEY (`idDetailVente`),
+  KEY `FK8548EC7F63D73F83` (`idOperateur`),
+  KEY `FK8548EC7FD5B58290` (`idVente`),
+  KEY `FK8548EC7F6EC58A80` (`idNature`),
+  KEY `FK8548EC7F84AA8D3` (`idProduit`)
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=44 ;
+
+--
+-- Contenu de la table `detailvente`
+--
+
+INSERT INTO `detailvente` (`idDetailVente`, `quantite`, `prixUnitaire`, `montantTotal`, `idProduit`, `idVente`, `idNature`, `idOperateur`, `tauxRistourne`) VALUES
+(11, 12, 480, 5760, 1, 5, NULL, 6, 2),
+(12, 123, 960, 118080, 2, 5, NULL, 6, 2),
+(13, 23, 480, 11040, 1, 6, NULL, 6, 2),
+(14, 100, 960, 96000, 2, 6, NULL, 6, 2),
+(15, 25, 470, 11750, 6, 6, NULL, 5, 2),
+(16, 123, 960, 118080, 2, 7, NULL, 6, 2),
+(17, 400, 960, 384000, 2, 7, NULL, 6, 2),
+(18, 234, 480, 112320, 1, 8, NULL, 6, 2),
+(19, 43, 960, 41280, 2, 8, NULL, 6, 2),
+(20, 34, 480, 16320, 1, 11, NULL, 6, 2),
+(21, 34, 4800, 163200, 3, 11, NULL, 6, 2),
+(22, 43, 4800, 206400, 3, 11, NULL, 6, 2),
+(23, 10, 475, 4750, 1, 12, NULL, 4, 2),
+(24, 5, 475, 2375, 1, 12, NULL, 4, 2),
+(25, 12, 480, 5760, 1, 13, NULL, 6, 2),
+(26, 12, 950, 11400, 2, 13, NULL, 4, 0),
+(27, 12, 480, 5760, 1, 13, NULL, 5, 0),
+(28, 12, 480, 5760, 1, 13, NULL, 6, 2),
+(29, 4, 475, 1900, 1, 13, NULL, 4, 0),
+(30, 8, 480, 3840, 1, 14, NULL, 6, 2),
+(31, 7, 470, 3290, 6, 14, NULL, 5, 0),
+(32, 5, 5000, 25000, 3, 14, NULL, 8, 0),
+(33, 6, 475, 2850, 1, 14, NULL, 7, 0),
+(34, 7, 480, 3360, 1, 14, NULL, 6, 2),
+(35, 7, 480, 3360, 1, 15, NULL, 6, 2),
+(36, 3, 4800, 14400, 3, 15, NULL, 6, 2),
+(37, 12, 480, 5760, 1, 16, NULL, 6, 2),
+(38, 12, 28800, 345600, 5, 16, NULL, 6, 2),
+(39, 100, 9600, 960000, 4, 16, NULL, 6, 2),
+(40, 45, 470, 21150, 6, 16, NULL, 5, 0),
+(41, 12, 480, 5760, 1, 17, NULL, 6, 2),
+(42, 100, 480, 48000, 1, 17, NULL, 6, 2),
+(43, 90, 960, 86400, 2, 17, NULL, 6, 2);
+
+-- --------------------------------------------------------
+
+--
+-- Structure de la table `distributeur`
+--
+
+CREATE TABLE IF NOT EXISTS `distributeur` (
+  `idDistributeur` bigint(20) NOT NULL AUTO_INCREMENT,
+  `adresse` varchar(255) DEFAULT NULL,
+  `telephone` varchar(255) DEFAULT NULL,
+  `email` varchar(255) DEFAULT NULL,
+  `distributeur` varchar(255) DEFAULT NULL,
+  `tel1` varchar(255) DEFAULT NULL,
+  `tel2` varchar(255) DEFAULT NULL,
+  `email1` varchar(255) DEFAULT NULL,
+  `email2` varchar(255) DEFAULT NULL,
+  `numeroDistributeur` varchar(255) DEFAULT NULL,
+  `intetule` varchar(255) DEFAULT NULL,
+  `intitule` varchar(255) DEFAULT NULL,
+  `distPrincipal` bit(1) DEFAULT NULL,
+  `tauxContrat` double DEFAULT NULL,
+  `dateContrat` datetime DEFAULT NULL,
+  `montantAvoir` double DEFAULT NULL,
+  PRIMARY KEY (`idDistributeur`)
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=17 ;
+
+--
+-- Contenu de la table `distributeur`
+--
+
+INSERT INTO `distributeur` (`idDistributeur`, `adresse`, `telephone`, `email`, `distributeur`, `tel1`, `tel2`, `email1`, `email2`, `numeroDistributeur`, `intetule`, `intitule`, `distPrincipal`, `tauxContrat`, `dateContrat`, `montantAvoir`) VALUES
+(1, 'okala', NULL, NULL, NULL, '521144', '', 's@gmail.com', 'g', 'D2333DDJ', 'g', 'SERIGNE FALL', b'1', 2, '2015-10-01 00:00:00', 0),
+(2, 'charbonage', NULL, NULL, NULL, '445555', '', 'babs@gmail.com', '', 'D246788', NULL, 'BABACAR NGOM', NULL, 3, '2015-10-01 00:00:00', 0),
+(16, 'okala', NULL, NULL, NULL, '45678', '45678', 'serigne@gmail.com', '', 'D0016', NULL, 'SALA DIALLO', b'0', 0, NULL, 0);
+
+-- --------------------------------------------------------
+
+--
+-- Structure de la table `droituseraccess`
+--
+
+CREATE TABLE IF NOT EXISTS `droituseraccess` (
+  `idDroitUsr` bigint(20) NOT NULL AUTO_INCREMENT,
+  `canInsert` bit(1) DEFAULT NULL,
+  `canDelete` bit(1) DEFAULT NULL,
+  `canPrint` bit(1) DEFAULT NULL,
+  `canValider` bit(1) DEFAULT NULL,
+  `canModifyAfV` bit(1) DEFAULT NULL,
+  `canModifyBfV` bit(1) DEFAULT NULL,
+  `dateEcheance` date DEFAULT NULL,
+  `idProfile` bigint(20) DEFAULT NULL,
+  `idFonction` bigint(20) DEFAULT NULL,
+  PRIMARY KEY (`idDroitUsr`),
+  KEY `FK3363CC9B7E3C6B25` (`idProfile`),
+  KEY `FK3363CC9BEA9FC331` (`idFonction`)
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=245 ;
+
+--
+-- Contenu de la table `droituseraccess`
+--
+
+INSERT INTO `droituseraccess` (`idDroitUsr`, `canInsert`, `canDelete`, `canPrint`, `canValider`, `canModifyAfV`, `canModifyBfV`, `dateEcheance`, `idProfile`, `idFonction`) VALUES
+(198, b'0', b'0', b'0', b'0', b'0', b'0', NULL, 1, 73),
+(199, b'0', b'0', b'0', b'0', b'0', b'0', NULL, 1, 74),
+(200, b'0', b'0', b'0', b'0', b'0', b'0', NULL, 1, 75),
+(201, b'0', b'0', b'0', b'0', b'0', b'0', NULL, 1, 76),
+(202, b'0', b'0', b'0', b'0', b'0', b'0', NULL, 1, 77),
+(203, b'0', b'0', b'0', b'0', b'0', b'0', NULL, 1, 78),
+(204, b'0', b'0', b'0', b'0', b'0', b'0', NULL, 1, 79),
+(205, b'0', b'0', b'0', b'0', b'0', b'0', NULL, 1, 80),
+(206, b'0', b'0', b'0', b'0', b'0', b'0', NULL, 1, 81),
+(208, b'0', b'0', b'0', b'0', b'0', b'0', NULL, 3, 74),
+(211, b'0', b'0', b'0', b'0', b'0', b'0', NULL, 3, 77),
+(216, b'0', b'0', b'0', b'0', b'0', b'0', NULL, 1, 56),
+(217, b'0', b'0', b'0', b'0', b'0', b'0', NULL, 1, 57),
+(218, b'0', b'0', b'0', b'0', b'0', b'0', NULL, 1, 58),
+(219, b'0', b'0', b'0', b'0', b'0', b'0', NULL, 1, 59),
+(220, b'0', b'0', b'0', b'0', b'0', b'0', NULL, 1, 60),
+(221, b'0', b'0', b'0', b'0', b'0', b'0', NULL, 1, 83),
+(222, b'0', b'0', b'0', b'0', b'0', b'0', NULL, 1, 62),
+(223, b'0', b'0', b'0', b'0', b'0', b'0', NULL, 1, 63),
+(224, b'0', b'0', b'0', b'0', b'0', b'0', NULL, 1, 64),
+(225, b'0', b'0', b'0', b'0', b'0', b'0', NULL, 1, 68),
+(226, b'0', b'0', b'0', b'0', b'0', b'0', NULL, 1, 69),
+(227, b'0', b'0', b'0', b'0', b'0', b'0', NULL, 1, 70),
+(228, b'0', b'0', b'0', b'0', b'0', b'0', NULL, 1, 71),
+(229, b'0', b'0', b'0', b'0', b'0', b'0', NULL, 1, 66),
+(230, b'0', b'0', b'0', b'0', b'0', b'0', NULL, 3, 72),
+(231, b'0', b'0', b'0', b'0', b'0', b'0', NULL, 1, 86),
+(232, b'0', b'0', b'0', b'0', b'0', b'0', NULL, 1, 85),
+(233, b'0', b'0', b'0', b'0', b'0', b'0', NULL, 1, 87),
+(234, b'0', b'0', b'0', b'0', b'0', b'0', NULL, 1, 88),
+(236, b'0', b'0', b'0', b'0', b'0', b'0', NULL, 2, 83),
+(237, b'0', b'0', b'0', b'0', b'0', b'0', NULL, 2, 86),
+(238, b'0', b'0', b'0', b'0', b'0', b'0', NULL, 3, 72),
+(239, b'0', b'0', b'0', b'0', b'0', b'0', NULL, 3, 83),
+(240, b'0', b'0', b'0', b'0', b'0', b'0', NULL, 3, 86),
+(241, b'0', b'0', b'0', b'0', b'0', b'0', NULL, 3, 87),
+(242, b'0', b'0', b'0', b'0', b'0', b'0', NULL, 3, 88),
+(243, b'0', b'0', b'0', b'0', b'0', b'0', NULL, 1, 89),
+(244, b'0', b'0', b'0', b'0', b'0', b'0', NULL, 1, 90);
+
+-- --------------------------------------------------------
+
+--
+-- Structure de la table `dtpassationfondcaisse`
+--
+
+CREATE TABLE IF NOT EXISTS `dtpassationfondcaisse` (
+  `idDtPassFondCaisse` bigint(20) NOT NULL AUTO_INCREMENT,
+  `quantite` int(11) DEFAULT NULL,
+  `datePassation` datetime DEFAULT NULL,
+  `prixUnite` double DEFAULT NULL,
+  `idOperateur` bigint(20) DEFAULT NULL,
+  `idCaisseDestinatair` bigint(20) DEFAULT NULL,
+  `idPassationFonds` bigint(20) DEFAULT NULL,
+  PRIMARY KEY (`idDtPassFondCaisse`),
+  KEY `FK24B554DAEE29BA0` (`idCaisseDestinatair`),
+  KEY `FK24B554D63D73F83` (`idOperateur`),
+  KEY `FK24B554DAC033004` (`idPassationFonds`)
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=25 ;
+
+--
+-- Contenu de la table `dtpassationfondcaisse`
+--
+
+INSERT INTO `dtpassationfondcaisse` (`idDtPassFondCaisse`, `quantite`, `datePassation`, `prixUnite`, `idOperateur`, `idCaisseDestinatair`, `idPassationFonds`) VALUES
+(13, 100, NULL, 475, 7, 1, 15),
+(14, 130, NULL, 4750, 7, 3, 15),
+(15, 3, NULL, 475, 4, 1, 16),
+(16, 3, NULL, 960, 5, 2, 16),
+(17, 7000, NULL, 475, 6, 6, 16),
+(18, 1, NULL, 24000, 5, 5, 17),
+(19, 100, NULL, 480, 6, 1, 17),
+(20, 100, NULL, 475, 7, 1, 18),
+(21, 11, NULL, 480, 5, 1, 18),
+(22, 10, NULL, 950, 4, 2, 19),
+(23, 8, NULL, 950, 4, 2, 19),
+(24, 7, NULL, 24000, 5, 5, 19);
+
+-- --------------------------------------------------------
+
+--
+-- Structure de la table `ecriturecomptable`
+--
+
+CREATE TABLE IF NOT EXISTS `ecriturecomptable` (
+  `idEcritureComptable` bigint(20) NOT NULL AUTO_INCREMENT,
+  `sequence` int(11) DEFAULT NULL,
+  `libelle` varchar(255) DEFAULT NULL,
+  `montant` double NOT NULL,
+  `intitule` varchar(255) DEFAULT NULL,
+  `idCaisse` bigint(20) DEFAULT NULL,
+  `idCro` bigint(20) NOT NULL,
+  `idSens` bigint(20) DEFAULT NULL,
+  `idDistributeur` bigint(20) DEFAULT NULL,
+  `idOperateur` bigint(20) DEFAULT NULL,
+  `idClient` bigint(20) DEFAULT NULL,
+  PRIMARY KEY (`idEcritureComptable`),
+  KEY `FK20BCE6D663D73F83` (`idOperateur`),
+  KEY `FK20BCE6D62CD90B13` (`idCaisse`),
+  KEY `FK20BCE6D6C1E9C8D7` (`idCro`),
+  KEY `FK20BCE6D62E0EA5F5` (`idClient`),
+  KEY `FK20BCE6D661DE694D` (`idSens`),
+  KEY `FK20BCE6D66E2BB9B` (`idDistributeur`)
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=33 ;
+
+--
+-- Contenu de la table `ecriturecomptable`
+--
+
+INSERT INTO `ecriturecomptable` (`idEcritureComptable`, `sequence`, `libelle`, `montant`, `intitule`, `idCaisse`, `idCro`, `idSens`, `idDistributeur`, `idOperateur`, `idClient`) VALUES
+(1, NULL, 'F3456 --- NDEYE DIOP', 123840, NULL, NULL, 1, 2, NULL, NULL, 2),
+(2, NULL, 'C4 --- CAISSE 4', 123840, NULL, 6, 1, 3, NULL, NULL, NULL),
+(3, NULL, 'F3456 --- NDEYE DIOP', 118790, NULL, NULL, 2, 2, NULL, NULL, 2),
+(4, NULL, 'C4 --- CAISSE 4', 118790, NULL, 6, 2, 3, NULL, NULL, NULL),
+(5, NULL, 'D2333DDJ --- SERIGNE FALL', 502080, NULL, NULL, 3, 2, 1, NULL, NULL),
+(6, NULL, 'C4 --- CAISSE 4', 502080, NULL, 6, 3, 3, NULL, NULL, NULL),
+(7, NULL, 'D2333DDJ --- SERIGNE FALL', 153600, NULL, NULL, 4, 2, 1, NULL, NULL),
+(8, NULL, 'C4 --- CAISSE 4', 153600, NULL, 6, 4, 3, NULL, NULL, NULL),
+(9, NULL, 'F3456 NDEYE DIOP', 2000, NULL, NULL, 5, 3, NULL, NULL, 2),
+(10, NULL, 'C4 CAISSE 4', 2000, NULL, 6, 5, 2, NULL, NULL, NULL),
+(11, NULL, 'F3456 NDEYE DIOP', 2300, NULL, NULL, 6, 3, NULL, NULL, 2),
+(12, NULL, 'C4 CAISSE 4', 2300, NULL, 6, 6, 2, NULL, NULL, NULL),
+(13, NULL, 'F3456 NDEYE DIOP', 2000, NULL, NULL, 7, 3, NULL, NULL, 2),
+(14, NULL, 'C4 CAISSE 4', 2000, NULL, 6, 7, 2, NULL, NULL, NULL),
+(15, NULL, 'F3456 NDEYE DIOP', 2000, NULL, NULL, 8, 3, NULL, NULL, 2),
+(16, NULL, 'C3 CAISSE 3', 2000, NULL, 4, 8, 2, NULL, NULL, NULL),
+(17, NULL, 'F3456 NDEYE DIOP', 270, NULL, NULL, 9, 3, NULL, NULL, 2),
+(18, NULL, 'C3 CAISSE 3', 270, NULL, 4, 9, 2, NULL, NULL, NULL),
+(19, NULL, 'F233 --- NGOYE CISSE', 385920, NULL, NULL, 10, 2, NULL, NULL, 1),
+(20, NULL, 'C4 --- CAISSE 4', 385920, NULL, 6, 10, 3, NULL, NULL, NULL),
+(21, NULL, 'F233 --- NGOYE CISSE', 7125, NULL, NULL, 11, 2, NULL, NULL, 1),
+(22, NULL, 'C4 --- CAISSE 4', 7125, NULL, 6, 11, 3, NULL, NULL, NULL),
+(23, NULL, 'D0016 --- SALA DIALLO', 30580, NULL, NULL, 12, 2, 16, NULL, NULL),
+(24, NULL, 'C4 --- CAISSE 4', 30580, NULL, 6, 12, 3, NULL, NULL, NULL),
+(25, NULL, 'D0016 --- SALA DIALLO', 38340, NULL, NULL, 13, 2, 16, NULL, NULL),
+(26, NULL, 'C4 --- CAISSE 4', 38340, NULL, 6, 13, 3, NULL, NULL, NULL),
+(27, NULL, 'D2333DDJ --- SERIGNE FALL', 17760, NULL, NULL, 14, 2, 1, NULL, NULL),
+(28, NULL, 'C4 --- CAISSE 4', 17760, NULL, 6, 14, 3, NULL, NULL, NULL),
+(29, NULL, 'D0016 --- SALA DIALLO', 1332510, NULL, NULL, 15, 2, 16, NULL, NULL),
+(30, NULL, 'C4 --- CAISSE 4', 1332510, NULL, 6, 15, 3, NULL, NULL, NULL),
+(31, NULL, 'D0016 --- SALA DIALLO', 140160, NULL, NULL, 16, 2, 16, NULL, NULL),
+(32, NULL, 'C4 --- CAISSE 4', 140160, NULL, 6, 16, 3, NULL, NULL, NULL);
+
+-- --------------------------------------------------------
+
+--
+-- Structure de la table `encaissement`
+--
+
+CREATE TABLE IF NOT EXISTS `encaissement` (
+  `idEncaissement` bigint(20) NOT NULL AUTO_INCREMENT,
+  `montant` double NOT NULL,
+  `dateEncaissement` datetime DEFAULT NULL,
+  `observation` varchar(255) DEFAULT NULL,
+  `ristournON` bit(1) DEFAULT NULL,
+  `intituleClient` varchar(255) DEFAULT NULL,
+  `idClient` bigint(20) DEFAULT NULL,
+  `idDistributeur` bigint(20) DEFAULT NULL,
+  `idUtilisateur` bigint(20) DEFAULT NULL,
+  `idTypeEncaissement` bigint(20) DEFAULT NULL,
+  `idCaisse` bigint(20) DEFAULT NULL,
+  PRIMARY KEY (`idEncaissement`),
+  KEY `FKD2778C218B659D59` (`idUtilisateur`),
+  KEY `FKD2778C212CD90B13` (`idCaisse`),
+  KEY `FKD2778C21ED3B1075` (`idTypeEncaissement`),
+  KEY `FKD2778C212E0EA5F5` (`idClient`),
+  KEY `FKD2778C216E2BB9B` (`idDistributeur`)
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=14 ;
+
+--
+-- Contenu de la table `encaissement`
+--
+
+INSERT INTO `encaissement` (`idEncaissement`, `montant`, `dateEncaissement`, `observation`, `ristournON`, `intituleClient`, `idClient`, `idDistributeur`, `idUtilisateur`, `idTypeEncaissement`, `idCaisse`) VALUES
+(1, 1000, '2015-11-05 22:00:11', NULL, b'0', '', NULL, NULL, 1, 1, NULL),
+(2, 1000, '2015-11-05 22:00:13', NULL, b'0', '', NULL, NULL, 1, 1, NULL),
+(3, 1000, '2015-11-05 22:01:09', NULL, b'0', '', NULL, NULL, 1, 1, NULL),
+(4, 1000, '2015-11-05 22:01:23', NULL, b'0', '', NULL, NULL, 1, 1, NULL),
+(5, 2000, '2015-11-05 22:25:08', NULL, b'0', '', NULL, NULL, 1, NULL, NULL),
+(6, 2000, '2015-11-05 22:28:56', NULL, b'0', '', NULL, NULL, 1, NULL, NULL),
+(7, 2000, '2015-11-05 22:42:35', NULL, b'0', 'NDEYE DIOP', 2, NULL, 1, 1, NULL),
+(8, 2300, '2015-11-05 22:44:02', NULL, b'0', 'NDEYE DIOP', 2, NULL, 1, 1, NULL),
+(9, 2000, '2015-11-06 16:48:56', NULL, b'0', 'NDEYE DIOP', 2, NULL, 1, 1, NULL),
+(10, 2000, '2015-11-06 16:58:13', NULL, b'0', 'NDEYE DIOP', 2, NULL, 2, 1, NULL),
+(11, 270, '2015-11-06 16:59:26', NULL, b'0', 'NDEYE DIOP', 2, NULL, 2, 1, NULL),
+(12, 0, '2015-11-06 18:49:07', NULL, b'0', '', NULL, NULL, 1, NULL, NULL),
+(13, 0, '2015-11-08 14:24:35', NULL, b'0', '', NULL, NULL, 1, 1, NULL);
+
+-- --------------------------------------------------------
+
+--
+-- Structure de la table `etablissement`
+--
+
+CREATE TABLE IF NOT EXISTS `etablissement` (
+  `idEtablissement` bigint(20) NOT NULL AUTO_INCREMENT,
+  `code` varchar(3) DEFAULT NULL,
+  `libelle` varchar(80) DEFAULT NULL,
+  `adresse` varchar(250) DEFAULT NULL,
+  `tel1` varchar(8) DEFAULT NULL,
+  `tel2` varchar(8) DEFAULT NULL,
+  `telMobile` varchar(8) DEFAULT NULL,
+  `fax` varchar(8) DEFAULT NULL,
+  `personneContact` varchar(50) DEFAULT NULL,
+  `email1` varchar(50) DEFAULT NULL,
+  `email2` varchar(50) DEFAULT NULL,
+  `dateCreation` datetime DEFAULT NULL,
+  `dateMaj` datetime DEFAULT NULL,
+  `nomResponsable` varchar(50) DEFAULT NULL,
+  `zoneComment` varchar(255) DEFAULT NULL,
+  `idSiege` bigint(20) DEFAULT NULL,
+  PRIMARY KEY (`idEtablissement`),
+  KEY `FK3A9C0DB6CCE68595` (`idSiege`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
+
+--
+-- Contenu de la table `etablissement`
+--
+
+
+-- --------------------------------------------------------
+
+--
+-- Structure de la table `fonction`
+--
+
+CREATE TABLE IF NOT EXISTS `fonction` (
+  `idFonction` bigint(20) NOT NULL AUTO_INCREMENT,
+  `numFonction` varchar(255) DEFAULT NULL,
+  `ligFonction` varchar(255) DEFAULT NULL,
+  `actif` bit(1) DEFAULT NULL,
+  `nomFonction` varchar(255) DEFAULT NULL,
+  `idParent` bigint(20) DEFAULT NULL,
+  PRIMARY KEY (`idFonction`),
+  KEY `FK18C47472C2D08649` (`idParent`)
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=91 ;
+
+--
+-- Contenu de la table `fonction`
+--
+
+INSERT INTO `fonction` (`idFonction`, `numFonction`, `ligFonction`, `actif`, `nomFonction`, `idParent`) VALUES
+(55, NULL, '1', b'1', 'Paramétrage', NULL),
+(56, NULL, '1_1', b'1', 'Profile utilisateur', 55),
+(57, NULL, '1_2', b'1', 'Utililisateurs', 55),
+(58, NULL, '1_3', b'1', 'Type produit/ Produit', 55),
+(59, NULL, '1_4', b'1', 'Sens', 55),
+(60, NULL, '1_5', b'1', 'Créatino/Modification Menu', 55),
+(61, NULL, '2', b'1', 'Fournisseur', NULL),
+(62, NULL, '2_1', b'1', 'CrÃƒÆ’Ã‚Â©ation Maison mÃƒÆ’Ã‚Â¨re', 61),
+(63, NULL, '2_2', b'1', 'Création Maison Mère', 61),
+(64, NULL, '2_3', b'1', 'Gestion Contrats ', 61),
+(65, NULL, '3', b'1', 'Client', NULL),
+(66, NULL, '3_1', b'1', 'Creation / Modification /Recherche', 65),
+(67, NULL, '4', b'1', 'Livraison', NULL),
+(68, NULL, '4_1', b'1', 'PrÃƒÆ’Ã‚Â©paration livraison', 67),
+(69, NULL, '4_2', b'1', 'Validation PrÃƒÆ’Ã‚Â©paration ', 67),
+(70, NULL, '4_3', b'1', 'Enregistrement Paiement Livraison', 67),
+(71, NULL, '4_4', b'1', 'Mouvement produit', 67),
+(72, NULL, '5', b'1', 'Caisse', NULL),
+(73, NULL, '5_1', b'1', 'CrÃƒÆ’Ã‚Â©ation/Modifiction Caisse', 72),
+(74, NULL, '5_10', b'1', 'Stock', 72),
+(75, NULL, '5_9', b'1', 'Affectation Caissier', 72),
+(76, NULL, '5_2', b'1', 'Dispatching Caisse', 72),
+(77, NULL, '5_3', b'1', 'Retoure Produit ', 72),
+(78, NULL, '5_4', b'1', 'Historique Passation Fonds', 72),
+(79, NULL, '5_8', b'1', 'Historique Affectation', 72),
+(80, NULL, '5_6', b'1', 'fonds de roulement', 72),
+(81, NULL, '5_7', b'1', 'Historique Fonds Roulement', 72),
+(82, NULL, '6', b'1', 'Vente', NULL),
+(83, NULL, '6_1', b'1', 'Enregistrer Vente', 82),
+(84, NULL, '7', b'1', 'Comtabilité', NULL),
+(85, NULL, '7_1', b'1', 'Edition', 84),
+(86, NULL, '6_2', b'1', 'recherche Vente', 82),
+(87, NULL, '6_3', b'1', 'Encaissement', 82),
+(88, NULL, '6_4', b'1', 'Journal Caisse', 82),
+(89, NULL, '1_6', b'1', 'Institution', 55),
+(90, NULL, '6_5', b'1', 'Paiement Ristourne ', 82);
+
+-- --------------------------------------------------------
+
+--
+-- Structure de la table `histofondsroulement`
+--
+
+CREATE TABLE IF NOT EXISTS `histofondsroulement` (
+  `idHistoFondsRoulement` bigint(20) NOT NULL AUTO_INCREMENT,
+  `date` date DEFAULT NULL,
+  `montant` double DEFAULT NULL,
+  `idUtilisateur` bigint(20) DEFAULT NULL,
+  `idCaisse` bigint(20) DEFAULT NULL,
+  `idCaissier` bigint(20) DEFAULT NULL,
+  PRIMARY KEY (`idHistoFondsRoulement`),
+  KEY `FKB63E0F48E70FFB77` (`idCaissier`),
+  KEY `FKB63E0F488B659D59` (`idUtilisateur`),
+  KEY `FKB63E0F482CD90B13` (`idCaisse`)
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=3 ;
+
+--
+-- Contenu de la table `histofondsroulement`
+--
+
+INSERT INTO `histofondsroulement` (`idHistoFondsRoulement`, `date`, `montant`, `idUtilisateur`, `idCaisse`, `idCaissier`) VALUES
+(1, '2015-11-05', 1200, 1, 6, 1),
+(2, '2015-11-15', 1000, 1, 4, 3);
+
+-- --------------------------------------------------------
+
+--
+-- Structure de la table `historiquecaisseuser`
+--
+
+CREATE TABLE IF NOT EXISTS `historiquecaisseuser` (
+  `idHistoriqueCaisseUser` bigint(20) NOT NULL AUTO_INCREMENT,
+  `dateDebut` datetime DEFAULT NULL,
+  `dateFin` datetime DEFAULT NULL,
+  `idCaisse` bigint(20) DEFAULT NULL,
+  `idUtilisateur` bigint(20) DEFAULT NULL,
+  PRIMARY KEY (`idHistoriqueCaisseUser`),
+  KEY `FKA0F865028B659D59` (`idUtilisateur`),
+  KEY `FKA0F865022CD90B13` (`idCaisse`)
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=12 ;
+
+--
+-- Contenu de la table `historiquecaisseuser`
+--
+
+INSERT INTO `historiquecaisseuser` (`idHistoriqueCaisseUser`, `dateDebut`, `dateFin`, `idCaisse`, `idUtilisateur`) VALUES
+(1, '2015-10-23 15:55:39', '2015-10-23 15:59:18', 7, 2),
+(2, '2015-10-23 15:59:18', '2015-10-23 16:00:06', 7, 3),
+(3, '2015-10-23 15:59:25', NULL, 6, 2),
+(4, '2015-10-23 16:00:06', NULL, 7, 1),
+(5, '2015-10-27 12:37:34', NULL, 2, 1),
+(6, '2015-10-27 00:00:00', '2015-11-14 00:00:00', 4, 2),
+(7, '2015-10-27 00:00:00', '2015-10-31 00:00:00', 6, 1),
+(8, '2015-10-31 00:00:00', '2015-10-31 00:00:00', 7, 1),
+(9, '2015-10-31 00:00:00', NULL, 2, NULL),
+(10, '2015-11-14 00:00:00', NULL, 4, 3),
+(11, '2015-11-14 00:00:00', NULL, 8, 2);
+
+-- --------------------------------------------------------
+
+--
+-- Structure de la table `institution`
+--
+
+CREATE TABLE IF NOT EXISTS `institution` (
+  `idInstitution` bigint(20) NOT NULL AUTO_INCREMENT,
+  `libelle` varchar(255) DEFAULT NULL,
+  `libelle_court` varchar(255) DEFAULT NULL,
+  `cacherMenuON` bit(1) DEFAULT NULL,
+  `adresseSociete` varchar(255) DEFAULT NULL,
+  `telSociete` varchar(255) DEFAULT NULL,
+  `bpSociete` varchar(255) DEFAULT NULL,
+  `emailSociete` varchar(255) DEFAULT NULL,
+  `recreatMenu` bit(1) DEFAULT NULL,
+  `cheminLogoSociete` varchar(255) DEFAULT NULL,
+  `jourPaiementRistourne` int(11) DEFAULT NULL,
+  `faxeSociete` varchar(255) DEFAULT NULL,
+  `monnaie` varchar(255) DEFAULT NULL,
+  `sloganSociete` varchar(255) DEFAULT NULL,
+  `dateMaj` datetime DEFAULT NULL,
+  PRIMARY KEY (`idInstitution`)
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=4 ;
+
+--
+-- Contenu de la table `institution`
+--
+
+INSERT INTO `institution` (`idInstitution`, `libelle`, `libelle_court`, `cacherMenuON`, `adresseSociete`, `telSociete`, `bpSociete`, `emailSociete`, `recreatMenu`, `cheminLogoSociete`, `jourPaiementRistourne`, `faxeSociete`, `monnaie`, `sloganSociete`, `dateMaj`) VALUES
+(3, 'C . D . R PIKINE', 'CDR', b'1', 'Charbonnage Nouvelle Galerie', '00241 01 44 22 89', '3205 LIBREVILLE', 'telcom@gmail.com', b'0', NULL, 5, '', 'FCFA', 'S.U.R.L au Capital de 1 000 000 F CFA siège social Charbonnage N° STAT : 0776440 H Téléphone :01 44 22 89 / Télécopie:', '2015-11-05 02:21:43');
+
+-- --------------------------------------------------------
+
+--
+-- Structure de la table `livraison`
+--
+
+CREATE TABLE IF NOT EXISTS `livraison` (
+  `idLivraison` bigint(20) NOT NULL AUTO_INCREMENT,
+  `reference` varchar(255) DEFAULT NULL,
+  `dateLivraison` datetime DEFAULT NULL,
+  `numFacture` varchar(255) DEFAULT NULL,
+  `idOperateur` bigint(20) DEFAULT NULL,
+  `dateSaisi` datetime DEFAULT NULL,
+  `idUtilisateur` bigint(20) DEFAULT NULL,
+  `idDistributeur` bigint(20) DEFAULT NULL,
+  `validerON` bit(1) DEFAULT NULL,
+  `tauxRistourne` double DEFAULT NULL,
+  `fournisseur` varchar(255) DEFAULT NULL,
+  `montantRestant` double DEFAULT NULL,
+  `ristourneON` bit(1) DEFAULT NULL,
+  `mntRistournePayer` double DEFAULT NULL,
+  `ristournePayerON` bit(1) DEFAULT NULL,
+  PRIMARY KEY (`idLivraison`),
+  KEY `FK526A631163D73F83` (`idOperateur`),
+  KEY `FK526A63118B659D59` (`idUtilisateur`),
+  KEY `FK526A63116E2BB9B` (`idDistributeur`)
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=30 ;
+
+--
+-- Contenu de la table `livraison`
+--
+
+INSERT INTO `livraison` (`idLivraison`, `reference`, `dateLivraison`, `numFacture`, `idOperateur`, `dateSaisi`, `idUtilisateur`, `idDistributeur`, `validerON`, `tauxRistourne`, `fournisseur`, `montantRestant`, `ristourneON`, `mntRistournePayer`, `ristournePayerON`) VALUES
+(12, 'R0000-12', '2015-10-16 00:00:00', 'F5899JJ', 6, '2015-10-16 00:00:00', 1, NULL, b'1', 2, 'ZAIN', 0, b'0', 1231488, b'1'),
+(13, 'R0000-13', '2015-10-17 00:00:00', 'F235678', 5, '2015-10-16 00:00:00', 1, NULL, b'1', 2, 'LIBERTIS', 0, b'0', 0, b'0'),
+(14, 'R0000-14', '2015-10-17 00:00:00', 'F34567', 4, '2015-10-16 00:00:00', 1, NULL, b'1', 3, 'MOOV', 0, b'0', 87000, b'1'),
+(15, 'R0000-15', '2015-10-17 00:00:00', 'F1222121', 7, '2015-10-16 00:00:00', 1, NULL, b'1', 2, 'AZUR', 0, b'0', 0, b'0'),
+(16, 'R0000-16', '2015-10-02 00:00:00', 'F234567', 6, '2015-10-18 00:00:00', 2, NULL, b'1', 2, 'ZAIN', 0, b'0', 1893452, b'1'),
+(17, 'R0000-17', '2015-10-18 00:00:00', 'F5678', NULL, '2015-10-18 14:28:37', 2, 2, b'1', 3, 'BABACAR NGOM', 0, b'0', 0, b'0'),
+(18, 'R0000-18', '2015-10-22 00:00:00', 'F232323', 6, '2015-10-20 00:00:00', 1, NULL, b'1', 2, 'ZAIN', 0, b'0', 1171.2, b'1'),
+(19, 'R0000-19', '2015-10-28 00:00:00', 'F3345555', 6, '2015-10-28 00:00:00', 1, NULL, b'1', 2, 'ZAIN', 0, b'1', 0, b'1'),
+(20, 'R0000-20', '2015-10-31 00:00:00', 'FA33999', 4, '2015-10-31 00:00:00', 1, NULL, b'1', 3, 'MOOV', 0, b'1', 0, b'0'),
+(21, 'R0000-21', '2015-10-15 00:00:00', 'FSDFGHJKL', 6, '2015-10-31 00:00:00', 1, NULL, b'1', 2, 'ZAIN', 0, b'1', 0, b'0'),
+(22, 'R0000-22', '2015-10-31 00:00:00', 'F345678', 6, '2015-10-31 00:00:00', 1, NULL, b'1', 2, 'ZAIN', 0, b'0', 0, b'0'),
+(23, 'R0000-23', NULL, '', NULL, '2015-10-31 00:00:00', 1, 2, b'1', 3, 'BABACAR NGOM', 0, b'1', 0, b'0'),
+(24, 'R0000-24', NULL, '', 5, '2015-10-31 00:00:00', 1, NULL, b'1', 2, 'LIBERTIS', 0, b'0', 0, b'0'),
+(25, 'R0000-25', NULL, NULL, 4, '2015-11-01 00:00:00', NULL, NULL, b'0', 3, 'MOOV', 0, b'0', 0, b'0'),
+(26, 'R0000-26', NULL, NULL, NULL, '2015-11-13 00:00:00', NULL, 1, b'0', 2, 'SERIGNE FALL', 0, b'0', 0, b'0'),
+(27, 'R0000-27', '2015-11-13 00:00:00', 'F343434', 6, '2015-11-13 00:00:00', 1, NULL, b'1', 2, 'ZAIN', 0, b'0', 0, b'0'),
+(28, 'R0000-28', '2015-11-14 00:00:00', 'F345789', 6, '2015-11-15 00:00:00', 1, NULL, b'1', 2, 'ZAIN', 0, b'0', 0, b'0'),
+(29, 'R0000-29', NULL, NULL, NULL, '2015-11-15 00:00:00', NULL, 1, b'0', 2, 'SERIGNE FALL', 4160080, b'0', 0, b'0');
+
+-- --------------------------------------------------------
+
+--
+-- Structure de la table `lnktauxdistributeur`
+--
+
+CREATE TABLE IF NOT EXISTS `lnktauxdistributeur` (
+  `idLnkTauxDist` bigint(20) NOT NULL AUTO_INCREMENT,
+  `taux` double DEFAULT NULL,
+  `dateContrat` datetime DEFAULT NULL,
+  `idOperateur` bigint(20) DEFAULT NULL,
+  `idNatureProduit` bigint(20) DEFAULT NULL,
+  `idLnkDistributeur` bigint(20) DEFAULT NULL,
+  PRIMARY KEY (`idLnkTauxDist`),
+  KEY `FKFF9FCF5763D73F83` (`idOperateur`),
+  KEY `FKFF9FCF57F185EEE5` (`idNatureProduit`),
+  KEY `FKFF9FCF571104662E` (`idLnkDistributeur`)
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=26 ;
+
+--
+-- Contenu de la table `lnktauxdistributeur`
+--
+
+INSERT INTO `lnktauxdistributeur` (`idLnkTauxDist`, `taux`, `dateContrat`, `idOperateur`, `idNatureProduit`, `idLnkDistributeur`) VALUES
+(15, 2, NULL, 6, 1, 1),
+(16, 3, NULL, 6, 2, 1),
+(17, 2, NULL, 4, 1, 1),
+(18, 3, NULL, 4, 2, 1),
+(19, 2, NULL, 5, 1, 1),
+(20, 2, NULL, 6, 1, 2),
+(21, 3, NULL, 6, 2, 2),
+(22, 2, NULL, 4, 1, 2),
+(23, 2.5, NULL, 4, 2, 2),
+(24, 2, NULL, 6, 1, 16),
+(25, 3, NULL, 6, 2, 16);
+
+-- --------------------------------------------------------
+
+--
+-- Structure de la table `lnktauxoperateur`
+--
+
+CREATE TABLE IF NOT EXISTS `lnktauxoperateur` (
+  `idLnkTauxOp` bigint(20) NOT NULL AUTO_INCREMENT,
+  `taux` double DEFAULT NULL,
+  `idOperateur` bigint(20) DEFAULT NULL,
+  `idNatureProduit` bigint(20) DEFAULT NULL,
+  PRIMARY KEY (`idLnkTauxOp`),
+  KEY `FK921636A863D73F83` (`idOperateur`),
+  KEY `FK921636A8F185EEE5` (`idNatureProduit`)
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=10 ;
+
+--
+-- Contenu de la table `lnktauxoperateur`
+--
+
+INSERT INTO `lnktauxoperateur` (`idLnkTauxOp`, `taux`, `idOperateur`, `idNatureProduit`) VALUES
+(1, 2, 5, 1),
+(2, 2.5, 5, 2),
+(3, 2, 4, 1),
+(4, 3, 4, 2),
+(5, 1.3, 8, 1),
+(6, 3, 7, 1),
+(7, 2, 7, 2),
+(8, 2, 6, 1),
+(9, 3, 6, 2);
+
+-- --------------------------------------------------------
+
+--
+-- Structure de la table `lnk_encaissvente`
+--
+
+CREATE TABLE IF NOT EXISTS `lnk_encaissvente` (
+  `idLnk_encaissVente` bigint(20) NOT NULL AUTO_INCREMENT,
+  `montant` double DEFAULT NULL,
+  `idVenteEnc` bigint(20) DEFAULT NULL,
+  `idEncaissement` bigint(20) DEFAULT NULL,
+  PRIMARY KEY (`idLnk_encaissVente`),
+  KEY `FK8B8FF08411B62B20` (`idVenteEnc`),
+  KEY `FK8B8FF08431906313` (`idEncaissement`)
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=9 ;
+
+--
+-- Contenu de la table `lnk_encaissvente`
+--
+
+INSERT INTO `lnk_encaissvente` (`idLnk_encaissVente`, `montant`, `idVenteEnc`, `idEncaissement`) VALUES
+(1, 1000, 5, 1),
+(2, 1000, 5, 3),
+(3, 2000, 5, 5),
+(4, 2000, 5, 7),
+(5, 2300, 5, 8),
+(6, 2000, 5, 9),
+(7, 2000, 5, 10),
+(8, 270, 5, 11);
+
+-- --------------------------------------------------------
+
+--
+-- Structure de la table `lstprofile`
+--
+
+CREATE TABLE IF NOT EXISTS `lstprofile` (
+  `idProfile` bigint(20) NOT NULL AUTO_INCREMENT,
+  `libelle` varchar(255) DEFAULT NULL,
+  `actif` bit(1) DEFAULT NULL,
+  `libelle_court` varchar(80) DEFAULT NULL,
+  PRIMARY KEY (`idProfile`)
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=5 ;
+
+--
+-- Contenu de la table `lstprofile`
+--
+
+INSERT INTO `lstprofile` (`idProfile`, `libelle`, `actif`, `libelle_court`) VALUES
+(1, 'profile.admin', b'1', NULL),
+(2, 'profile.user', b'1', NULL),
+(3, 'profile.caissier', b'1', 'CAISSIER'),
+(4, 'profile.developpeur', b'1', NULL);
+
+-- --------------------------------------------------------
+
+--
+-- Structure de la table `lst_langues`
+--
+
+CREATE TABLE IF NOT EXISTS `lst_langues` (
+  `idLangue` bigint(20) NOT NULL AUTO_INCREMENT,
+  `libelle` varchar(80) DEFAULT NULL,
+  `dateCreation` datetime DEFAULT NULL,
+  `dateMaj` datetime DEFAULT NULL,
+  `codeLangue` int(11) DEFAULT NULL,
+  `libelle_court` varchar(20) DEFAULT NULL,
+  `idUtilisateur` bigint(20) NOT NULL,
+  PRIMARY KEY (`idLangue`),
+  KEY `FK45F0F0C38B659D59` (`idUtilisateur`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
+
+--
+-- Contenu de la table `lst_langues`
+--
+
+
+-- --------------------------------------------------------
+
+--
+-- Structure de la table `natureoperation`
+--
+
+CREATE TABLE IF NOT EXISTS `natureoperation` (
+  `idNatureOperation` bigint(20) NOT NULL AUTO_INCREMENT,
+  `libelle_court` varchar(255) DEFAULT NULL,
+  `libelle` varchar(80) DEFAULT NULL,
+  PRIMARY KEY (`idNatureOperation`)
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=4 ;
+
+--
+-- Contenu de la table `natureoperation`
+--
+
+INSERT INTO `natureoperation` (`idNatureOperation`, `libelle_court`, `libelle`) VALUES
+(1, 'V', 'VENTE'),
+(2, 'E', 'ENCAISSEMENT'),
+(3, 'A', 'ACHAT');
+
+-- --------------------------------------------------------
+
+--
+-- Structure de la table `natureproduit`
+--
+
+CREATE TABLE IF NOT EXISTS `natureproduit` (
+  `idNatureProduit` bigint(20) NOT NULL AUTO_INCREMENT,
+  `libelle` varchar(80) DEFAULT NULL,
+  `libelle_court` varchar(3) DEFAULT NULL,
+  PRIMARY KEY (`idNatureProduit`)
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=5 ;
+
+--
+-- Contenu de la table `natureproduit`
+--
+
+INSERT INTO `natureproduit` (`idNatureProduit`, `libelle`, `libelle_court`) VALUES
+(1, 'CARTE', 'C'),
+(2, 'FLASH', 'U'),
+(4, 'CANAL', 'CN');
+
+-- --------------------------------------------------------
+
+--
+-- Structure de la table `niveauadministratif`
+--
+
+CREATE TABLE IF NOT EXISTS `niveauadministratif` (
+  `idNiveauAdministratif` bigint(20) NOT NULL AUTO_INCREMENT,
+  `dateCreation` datetime DEFAULT NULL,
+  `dateMaj` datetime DEFAULT NULL,
+  `niveauAdmin` varchar(255) DEFAULT NULL,
+  `niveau` varchar(255) DEFAULT NULL,
+  `idSiege` bigint(20) DEFAULT NULL,
+  PRIMARY KEY (`idNiveauAdministratif`),
+  KEY `FK7B23F749CCE68595` (`idSiege`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
+
+--
+-- Contenu de la table `niveauadministratif`
+--
+
+
+-- --------------------------------------------------------
+
+--
+-- Structure de la table `niveauhierarchique`
+--
+
+CREATE TABLE IF NOT EXISTS `niveauhierarchique` (
+  `idNiveauHierarchique` bigint(20) NOT NULL AUTO_INCREMENT,
+  `dateCreation` datetime DEFAULT NULL,
+  `dateMaj` datetime DEFAULT NULL,
+  `niveau` varchar(255) DEFAULT NULL,
+  `niveauHiera` varchar(255) DEFAULT NULL,
+  `idSiege` bigint(20) DEFAULT NULL,
+  PRIMARY KEY (`idNiveauHierarchique`),
+  KEY `FKCCFDD0FACCE68595` (`idSiege`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
+
+--
+-- Contenu de la table `niveauhierarchique`
+--
+
+
+-- --------------------------------------------------------
+
+--
+-- Structure de la table `operateur`
+--
+
+CREATE TABLE IF NOT EXISTS `operateur` (
+  `idoperateur` bigint(20) NOT NULL AUTO_INCREMENT,
+  `adresse` text,
+  `tel1` varchar(8) DEFAULT NULL,
+  `tel2` varchar(8) DEFAULT NULL,
+  `fax` varchar(8) DEFAULT NULL,
+  `email1` varchar(50) DEFAULT NULL,
+  `email2` varchar(50) DEFAULT NULL,
+  `dateCreation` datetime DEFAULT NULL,
+  `dateMaj` datetime DEFAULT NULL,
+  `libelle_court` varchar(3) DEFAULT NULL,
+  `libelleCarte` varchar(80) DEFAULT NULL,
+  `libelleFlash` varchar(80) DEFAULT NULL,
+  `tauxRC` float NOT NULL,
+  `tauxRF` float NOT NULL,
+  `ristourneFlashON` bit(1) NOT NULL,
+  `intitule` varchar(255) DEFAULT NULL,
+  `numeroOperateur` varchar(255) DEFAULT NULL,
+  `tauxContrat` double DEFAULT NULL,
+  `dateContrat` datetime DEFAULT NULL,
+  `montantAvoir` double DEFAULT NULL,
+  PRIMARY KEY (`idoperateur`)
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=9 ;
+
+--
+-- Contenu de la table `operateur`
+--
+
+INSERT INTO `operateur` (`idoperateur`, `adresse`, `tel1`, `tel2`, `fax`, `email1`, `email2`, `dateCreation`, `dateMaj`, `libelle_court`, `libelleCarte`, `libelleFlash`, `tauxRC`, `tauxRF`, `ristourneFlashON`, `intitule`, `numeroOperateur`, `tauxContrat`, `dateContrat`, `montantAvoir`) VALUES
+(4, NULL, '77777', '77777', NULL, 'm@gmail.com', 'HG', NULL, NULL, 'MOV', 'CARTE MOOV', 'FLASH MOV', 5, 0, b'1', 'MOOV', NULL, 3, '2015-10-01 00:00:00', 75000),
+(5, NULL, '45678', '', NULL, 'l@gmail.com', '', NULL, NULL, 'LIB', 'LIBERTIS', 'EXPRESS', 4, 6, b'1', 'LIBERTIS', NULL, 2, '2015-10-08 00:00:00', 0),
+(6, NULL, '144444', '2412222', NULL, 'z@gmail', '', NULL, NULL, NULL, 'ZAIN', 'ZAIN', 4, 5, b'1', 'ZAIN', NULL, 2, '2015-10-01 00:00:00', 100000),
+(7, NULL, '2414547', '', NULL, 'a@gmail.com', '', NULL, NULL, NULL, 'AZUR', 'AZUR FACILE', 5, 6, b'1', 'AZUR', NULL, 2, '2015-10-01 00:00:00', 356500),
+(8, NULL, '', '45677777', NULL, 's@mail', '', NULL, NULL, NULL, 'CANAL', '', 0, 0, b'1', 'CANAL', NULL, 4, '2015-10-01 00:00:00', 0);
+
+-- --------------------------------------------------------
+
+--
+-- Structure de la table `operationlivraison`
+--
+
+CREATE TABLE IF NOT EXISTS `operationlivraison` (
+  `idOperation` bigint(20) NOT NULL AUTO_INCREMENT,
+  `dateOperation` datetime DEFAULT NULL,
+  `montant` double NOT NULL,
+  `observation` varchar(255) DEFAULT NULL,
+  `ristournON` bit(1) DEFAULT NULL,
+  `idLivraisonOP` bigint(20) DEFAULT NULL,
+  `idSens` bigint(20) DEFAULT NULL,
+  `idUtilisateur` bigint(20) DEFAULT NULL,
+  PRIMARY KEY (`idOperation`),
+  KEY `FKA8ADD16A8B659D59` (`idUtilisateur`),
+  KEY `FKA8ADD16A8BDC71D2` (`idLivraisonOP`),
+  KEY `FKA8ADD16A61DE694D` (`idSens`)
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=85 ;
+
+--
+-- Contenu de la table `operationlivraison`
+--
+
+INSERT INTO `operationlivraison` (`idOperation`, `dateOperation`, `montant`, `observation`, `ristournON`, `idLivraisonOP`, `idSens`, `idUtilisateur`) VALUES
+(30, '2015-10-16 00:00:00', 37334400, 'ACHAT', b'0', 12, 2, 1),
+(31, '2015-10-16 00:00:00', 746688, 'RISTOURNE', b'1', 12, 3, 1),
+(32, '2015-10-13 00:00:00', 4000000, 'PAIEMENT', b'0', 12, 3, 1),
+(33, '2015-10-16 00:00:00', 38000000, 'PAIEMENT', b'0', 12, 3, 1),
+(34, '2015-10-09 00:00:00', 34555, 'PAIEMENT', b'0', 12, 3, 1),
+(35, '2015-10-17 00:00:00', 2880000, 'ACHAT', b'0', 13, 2, 1),
+(36, '2015-10-17 00:00:00', 57600, 'RISTOURNE', b'1', 13, 3, 1),
+(37, '2015-10-22 00:00:00', 2880000, 'PAIEMENT', b'0', 13, 3, 1),
+(38, '2015-10-22 00:00:00', 2880000, 'PAIEMENT', b'0', 13, 3, 1),
+(39, '2015-10-15 00:00:00', -2880000, 'PAIEMENT', b'0', 13, 3, 1),
+(40, '2015-10-21 00:00:00', 0, 'PAIEMENT', b'0', 13, 3, 1),
+(41, '2015-10-17 00:00:00', 1475000, 'ACHAT', b'0', 14, 2, 1),
+(42, '2015-10-17 00:00:00', 44250, 'RISTOURNE', b'1', 14, 3, 1),
+(43, '2015-10-17 00:00:00', 1475000, 'PAIEMENT', b'0', 14, 3, 1),
+(44, '2015-10-17 00:00:00', 153643500, 'ACHAT', b'0', 15, 2, 1),
+(45, '2015-10-17 00:00:00', 3072870, 'RISTOURNE', b'1', 15, 3, 1),
+(46, NULL, 100000000, 'PAIEMENT', b'0', 15, 3, 1),
+(47, '2015-10-17 00:00:00', 5000000, 'PAIEMENT', b'0', 15, 3, 1),
+(48, '2015-10-25 00:00:00', 48643500, 'PAIEMENT', b'0', 15, 3, 1),
+(49, '2015-10-02 00:00:00', 2059000, 'ACHAT', b'0', 16, 2, 2),
+(50, '2015-10-02 00:00:00', 41180, 'RISTOURNE', b'1', 16, 3, 2),
+(51, '2015-10-17 00:00:00', 1000000, 'PAIEMENT', b'0', 16, 3, 2),
+(52, '2015-10-18 00:00:00', 559000, 'PAIEMENT', b'0', 16, 3, 2),
+(53, '2015-10-19 00:00:00', 500000, 'PAIEMENT', b'0', 16, 3, 2),
+(54, '2015-10-18 00:00:00', 13414850, 'ACHAT', b'0', 17, 2, 2),
+(55, '2015-10-18 00:00:00', 402445.5, 'RISTOURNE', b'1', 17, 3, 2),
+(56, '2015-10-18 00:00:00', 13414850, 'PAIEMENT', b'0', 17, 3, 2),
+(57, '2015-10-28 00:00:00', 2112000, 'ACHAT', b'0', 19, 2, 1),
+(58, '2015-10-28 00:00:00', 0, 'RISTOURNE', b'1', 19, 3, 1),
+(59, '2015-10-28 00:00:00', 2112000, 'PAIEMENT', b'0', 19, 3, 1),
+(60, '2015-10-22 00:00:00', 58560, 'ACHAT', b'0', 18, 2, 1),
+(61, '2015-10-22 00:00:00', 1171.2, 'RISTOURNE', b'1', 18, 3, 1),
+(62, '2015-10-31 00:00:00', 173850, 'PAYER AVEC RISTOURNE', b'0', 20, 3, 1),
+(63, '2015-10-31 00:00:00', 173850, 'ACHAT', b'0', 20, 2, 1),
+(64, '2015-10-15 00:00:00', 3340800, 'PAYER AVEC RISTOURNE', b'0', 21, 3, 1),
+(65, '2015-10-15 00:00:00', 3340800, 'ACHAT', b'0', 21, 2, 1),
+(66, '2015-10-31 00:00:00', 207200832, 'RISTOURNE', b'1', 22, 3, 1),
+(67, '2015-10-31 00:00:00', 10360041600, 'ACHAT', b'0', 22, 2, 1),
+(68, '2015-10-31 00:00:00', 10000000000, 'PAIEMENT', b'0', 22, 3, 1),
+(69, '2015-10-24 00:00:00', 360041600, 'PAIEMENT', b'0', 22, 3, 1),
+(70, NULL, 696000, 'PAYER AVEC RISTOURNE', b'0', 23, 3, 1),
+(71, NULL, 696000, 'ACHAT', b'0', 23, 2, 1),
+(72, NULL, 125222.4, 'RISTOURNE', b'1', 24, 3, 1),
+(73, NULL, 6261120, 'ACHAT', b'0', 24, 2, 1),
+(74, NULL, 135590.4, 'RISTOURNE', b'1', 24, 3, 1),
+(75, NULL, 6779520, 'ACHAT', b'0', 24, 2, 1),
+(76, NULL, 75302.4, 'RISTOURNE', b'1', 24, 3, 1),
+(77, NULL, 3765120, 'ACHAT', b'0', 24, 2, 1),
+(78, NULL, 75110.4, 'RISTOURNE', b'1', 24, 3, 1),
+(79, NULL, 3755520, 'ACHAT', b'0', 24, 2, 1),
+(80, '2015-11-13 00:00:00', 34847.4, 'RISTOURNE', b'1', 27, 3, 1),
+(81, '2015-11-13 00:00:00', 1850670, 'ACHAT', b'0', 27, 2, 1),
+(82, '2015-11-13 00:00:00', 1850670, 'PAIEMENT', b'0', 27, 3, 1),
+(83, '2015-11-14 00:00:00', 5065.8, 'RISTOURNE', b'1', 28, 3, 1),
+(84, '2015-11-14 00:00:00', 172540, 'ACHAT', b'0', 28, 2, 1);
+
+-- --------------------------------------------------------
+
+--
+-- Structure de la table `operationmaisonmeredistrub`
+--
+
+CREATE TABLE IF NOT EXISTS `operationmaisonmeredistrub` (
+  `idOperation` bigint(20) NOT NULL AUTO_INCREMENT,
+  `dateOperation` datetime DEFAULT NULL,
+  `montant` double NOT NULL,
+  `idSens` bigint(20) DEFAULT NULL,
+  `idUtilisateur` bigint(20) DEFAULT NULL,
+  `idOperateur` bigint(20) DEFAULT NULL,
+  `idDistributeur` bigint(20) DEFAULT NULL,
+  PRIMARY KEY (`idOperation`),
+  KEY `FK2510C7CA8B659D59` (`idUtilisateur`),
+  KEY `FK2510C7CA63D73F83` (`idOperateur`),
+  KEY `FK2510C7CA61DE694D` (`idSens`),
+  KEY `FK2510C7CA6E2BB9B` (`idDistributeur`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
+
+--
+-- Contenu de la table `operationmaisonmeredistrub`
+--
+
+
+-- --------------------------------------------------------
+
+--
+-- Structure de la table `passationfondcaisse`
+--
+
+CREATE TABLE IF NOT EXISTS `passationfondcaisse` (
+  `idPassationFondCaisse` bigint(20) NOT NULL AUTO_INCREMENT,
+  `quantite` int(11) DEFAULT NULL,
+  `datePassation` datetime DEFAULT NULL,
+  `idCaisseDestinatair` bigint(20) DEFAULT NULL,
+  `idUtilisateur` bigint(20) DEFAULT NULL,
+  `idCaisseExpediteur` bigint(20) DEFAULT NULL,
+  `idCaissier` bigint(20) DEFAULT NULL,
+  PRIMARY KEY (`idPassationFondCaisse`),
+  KEY `FKB454FBFD8B659D59` (`idUtilisateur`),
+  KEY `FKB454FBFD314326D9` (`idCaisseDestinatair`),
+  KEY `FKB454FBFD81B77F8E` (`idCaisseExpediteur`),
+  KEY `FKB454FBFDE70FFB77` (`idCaissier`)
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=20 ;
+
+--
+-- Contenu de la table `passationfondcaisse`
+--
+
+INSERT INTO `passationfondcaisse` (`idPassationFondCaisse`, `quantite`, `datePassation`, `idCaisseDestinatair`, `idUtilisateur`, `idCaisseExpediteur`, `idCaissier`) VALUES
+(15, NULL, '2015-10-27 12:02:35', 6, 1, 1, NULL),
+(16, NULL, '2015-10-28 12:27:59', 1, 1, 6, 1),
+(17, NULL, '2015-10-31 00:00:00', 1, 2, 4, 2),
+(18, NULL, '2015-10-31 00:00:00', 4, 2, 1, 2),
+(19, NULL, '2015-11-15 00:00:00', 2, 1, 1, NULL);
+
+-- --------------------------------------------------------
+
+--
+-- Structure de la table `produit`
+--
+
+CREATE TABLE IF NOT EXISTS `produit` (
+  `idProduit` bigint(20) NOT NULL AUTO_INCREMENT,
+  `libelle` varchar(80) DEFAULT NULL,
+  `libelle_court` varchar(3) DEFAULT NULL,
+  `prix` double NOT NULL,
+  `idNatureProduit` bigint(20) DEFAULT NULL,
+  PRIMARY KEY (`idProduit`),
+  KEY `FKED8DCDA9F185EEE5` (`idNatureProduit`)
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=22 ;
+
+--
+-- Contenu de la table `produit`
+--
+
+INSERT INTO `produit` (`idProduit`, `libelle`, `libelle_court`, `prix`, `idNatureProduit`) VALUES
+(1, 'CARTE 500', NULL, 500, 1),
+(2, 'CARTE 1000', NULL, 1000, 1),
+(3, 'CARTE 5 000', NULL, 5000, 1),
+(4, 'CARTE 10 000', NULL, 10000, 1),
+(5, 'CARTE 30 000', '', 30000, 1),
+(6, 'UNITE', 'U', 500, 2),
+(9, 'CARTE CANAL 50 000', 'CC', 50000, NULL),
+(10, 'CARTE CANAL 50 000', 'CC', 50000, NULL),
+(11, 'CARTE CANAL 50 000', 'CC', 50000, NULL),
+(12, 'CARTE 60 000', '', 60000, NULL),
+(13, 'CARTE 60000', '', 600000, NULL),
+(14, 'CARTE CANAL 5 000', 'CC5', 5000, NULL),
+(15, 'CANAL 5000', 'CC5', 5000, NULL),
+(16, 'CARTE 60 000', 'C6', 60000, NULL),
+(17, 'CARTE 60 000', 'C6', 60000, 1),
+(18, 'CANAL 5 000', 'CA5', 5000, 4),
+(19, 'CANAL 10 000', 'CA1', 10000, 4),
+(20, 'CANAL 18 000', 'CA8', 18000, 4),
+(21, 'CANAL 40 000', 'CA4', 40000, 4);
+
+-- --------------------------------------------------------
+
+--
+-- Structure de la table `sens`
+--
+
+CREATE TABLE IF NOT EXISTS `sens` (
+  `idSens` bigint(20) NOT NULL AUTO_INCREMENT,
+  `libelle` varchar(80) DEFAULT NULL,
+  `libelle_court` varchar(3) DEFAULT NULL,
+  PRIMARY KEY (`idSens`)
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=4 ;
+
+--
+-- Contenu de la table `sens`
+--
+
+INSERT INTO `sens` (`idSens`, `libelle`, `libelle_court`) VALUES
+(2, 'DEBITE', 'D'),
+(3, 'CREDITE', 'C');
+
+-- --------------------------------------------------------
+
+--
+-- Structure de la table `siege_cnss`
+--
+
+CREATE TABLE IF NOT EXISTS `siege_cnss` (
+  `idSiege` bigint(20) NOT NULL AUTO_INCREMENT,
+  `adresse` varchar(250) DEFAULT NULL,
+  `tel1` varchar(8) DEFAULT NULL,
+  `tel2` varchar(8) DEFAULT NULL,
+  `telMobile` varchar(8) DEFAULT NULL,
+  `fax` varchar(8) DEFAULT NULL,
+  `email1` varchar(50) DEFAULT NULL,
+  `email2` varchar(50) DEFAULT NULL,
+  `dateCreation` datetime DEFAULT NULL,
+  `dateMaj` datetime DEFAULT NULL,
+  `libelle_court` varchar(20) DEFAULT NULL,
+  `identification` varchar(120) DEFAULT NULL,
+  `ville` varchar(50) DEFAULT NULL,
+  `pays` varchar(50) DEFAULT NULL,
+  `dateDebutExercice` datetime DEFAULT NULL,
+  `dateFinExercice` datetime DEFAULT NULL,
+  `matriculeFiscal` varchar(20) DEFAULT NULL,
+  `matriculeSocial` varchar(20) DEFAULT NULL,
+  `matriculeAssurance` varchar(20) DEFAULT NULL,
+  `registreCommerce` varchar(20) DEFAULT NULL,
+  `dateMatFiscal` datetime DEFAULT NULL,
+  `dateMatSocial` datetime DEFAULT NULL,
+  `dateMatAssurance` datetime DEFAULT NULL,
+  `dateRegistreComm` datetime DEFAULT NULL,
+  `dateImmatriculation` datetime DEFAULT NULL,
+  `codePostal` varchar(5) DEFAULT NULL,
+  `idUtilisateur` bigint(20) NOT NULL,
+  `idLangue` bigint(20) DEFAULT NULL,
+  PRIMARY KEY (`idSiege`),
+  KEY `FK834ABF1D8B659D59` (`idUtilisateur`),
+  KEY `FK834ABF1DD0A87D84` (`idLangue`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
+
+--
+-- Contenu de la table `siege_cnss`
+--
+
+
+-- --------------------------------------------------------
+
+--
+-- Structure de la table `stock`
+--
+
+CREATE TABLE IF NOT EXISTS `stock` (
+  `idStock` bigint(20) NOT NULL AUTO_INCREMENT,
+  `quantite` int(11) DEFAULT NULL,
+  `prixUnitaire` double NOT NULL,
+  `montantTotal` double NOT NULL,
+  `idNature` bigint(20) DEFAULT NULL,
+  `idProduit` bigint(20) DEFAULT NULL,
+  `idCaisse` bigint(20) DEFAULT NULL,
+  `idOperateur` bigint(20) DEFAULT NULL,
+  PRIMARY KEY (`idStock`),
+  KEY `FK68AF71663D73F83` (`idOperateur`),
+  KEY `FK68AF7162CD90B13` (`idCaisse`),
+  KEY `FK68AF7166EC58A80` (`idNature`),
+  KEY `FK68AF71684AA8D3` (`idProduit`)
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=124 ;
+
+--
+-- Contenu de la table `stock`
+--
+
+INSERT INTO `stock` (`idStock`, `quantite`, `prixUnitaire`, `montantTotal`, `idNature`, `idProduit`, `idCaisse`, `idOperateur`) VALUES
+(35, 76900, 480, 36960000, NULL, 1, 4, 6),
+(36, 63, 4800, 302400, NULL, 3, 4, 6),
+(37, 981, 480, 470880, NULL, 1, 4, 5),
+(38, 89, 24000, 2160000, NULL, 5, 4, 5),
+(39, 996, 475, 475000, NULL, 1, 2, 4),
+(40, 1996, 500, 1000000, NULL, 6, 2, 4),
+(41, 22700, 475, 10877500, NULL, 1, 1, 7),
+(42, 29853, 4750, 142419250, NULL, 3, 1, 7),
+(43, 3, 9500, 28500, NULL, 4, 1, 7),
+(44, 117, 480, 288000, NULL, 1, 6, 6),
+(45, 621, 960, 1440000, NULL, 2, 6, 6),
+(46, 20, 4800, 480000, NULL, 3, 6, 6),
+(47, 10, 28800, 633600, NULL, 5, 6, 6),
+(48, 0, 475, 3325000, NULL, 6, 6, 6),
+(49, 478, 475, 237500, NULL, 1, 6, 4),
+(50, 4988, 480, 2400000, NULL, 1, 6, 5),
+(51, 94, 475, 47500, NULL, 1, 6, 7),
+(52, 184, 950, 186200, NULL, 2, 6, 4),
+(53, 997, 960, 960000, NULL, 2, 6, 5),
+(54, 50, 950, 47500, NULL, 2, 6, 7),
+(55, 10, 4750, 47500, NULL, 3, 6, 4),
+(56, 250, 4800, 1200000, NULL, 3, 6, 5),
+(57, 5, 4750, 23750, NULL, 3, 6, 7),
+(58, 15, 5000, 100000, NULL, 3, 6, 8),
+(59, 0, 9600, 960000, NULL, 4, 6, 6),
+(60, 5, 9500, 47500, NULL, 4, 6, 4),
+(61, 100, 9600, 960000, NULL, 4, 6, 5),
+(62, 10, 10000, 100000, NULL, 4, 6, 8),
+(63, 13, 28800, 374400, NULL, 5, 6, 5),
+(64, 2923, 470, 1410000, NULL, 6, 6, 5),
+(66, 20, 9500, 190000, NULL, 4, 2, 7),
+(67, 100, 475, 47500, NULL, 1, 2, 7),
+(68, 17, 4750, 80750, NULL, 3, 2, 7),
+(69, 16, 4800, 76800, NULL, 3, 1, 6),
+(70, 0, 480, 6720, NULL, 1, 1, 5),
+(71, 129, 24000, 3888000, NULL, 5, 1, 5),
+(72, 5, 480, 2400, NULL, 1, 1, 5),
+(74, 0, 0, 0, NULL, NULL, NULL, NULL),
+(77, 0, 0, 0, NULL, NULL, NULL, NULL),
+(78, 0, 0, 0, NULL, NULL, NULL, NULL),
+(79, 0, 0, 0, NULL, NULL, NULL, NULL),
+(80, 0, 0, 0, NULL, NULL, NULL, NULL),
+(81, 0, 0, 0, NULL, NULL, NULL, NULL),
+(83, 0, 0, 0, NULL, NULL, NULL, NULL),
+(84, 1, 475, 475, NULL, 1, 1, 4),
+(85, 3, 500, 1500, NULL, 6, 1, 4),
+(86, 0, 0, 0, NULL, NULL, NULL, NULL),
+(87, 3, 500, 1500, NULL, 6, 1, 4),
+(88, 0, 0, 0, NULL, NULL, NULL, NULL),
+(89, 1, 475, 475, NULL, 1, 1, 4),
+(90, 0, 0, 0, NULL, NULL, NULL, NULL),
+(91, 1, 475, 475, NULL, 1, 1, 4),
+(92, 0, 0, 0, NULL, NULL, NULL, NULL),
+(93, 1, 475, 475, NULL, 1, 1, 4),
+(94, 0, 0, 0, NULL, NULL, NULL, NULL),
+(95, 0, 0, 0, NULL, NULL, NULL, NULL),
+(96, 0, 0, 0, NULL, NULL, NULL, NULL),
+(97, 0, 0, 0, NULL, NULL, NULL, NULL),
+(99, 0, 0, 0, NULL, NULL, NULL, NULL),
+(100, 15, 960, 14400, NULL, 2, 1, 5),
+(101, 7344, 475, 3488400, NULL, 6, 1, 6),
+(102, 0, 0, 0, NULL, NULL, NULL, NULL),
+(103, 2232, 960, 2142720, NULL, 2, 1, 6),
+(104, 145, 480, 69600, NULL, 1, 1, 6),
+(105, 0, 0, 0, NULL, NULL, NULL, NULL),
+(106, 0, 0, 0, NULL, NULL, NULL, NULL),
+(107, 100, 475, 47500, NULL, 1, 4, 7),
+(108, 0, 0, 0, NULL, NULL, NULL, NULL),
+(109, 0, 0, 0, NULL, NULL, NULL, NULL),
+(110, 70, 950, 83600, NULL, 2, 1, 4),
+(111, 19, 4750, 90250, NULL, 3, 1, 4),
+(112, 88, 57600, 5068800, NULL, 17, 1, 6),
+(113, 45677, 9600, 438499200, NULL, 4, 1, 6),
+(114, 344518, 28800, 9922118400, NULL, 5, 1, 6),
+(115, 10, 9600, 96000, NULL, 4, 1, 5),
+(116, 23, 0, 109250, NULL, 18, 1, 6),
+(118, 0, 0, 0, NULL, NULL, NULL, NULL),
+(119, 10, 950, 9500, NULL, 2, 2, 4),
+(120, 0, 0, 0, NULL, NULL, NULL, NULL),
+(121, 10, 950, 9500, NULL, 2, 2, 4),
+(122, 7, 24000, 168000, NULL, 5, 2, 5),
+(123, 0, 0, 0, NULL, NULL, NULL, NULL);
+
+-- --------------------------------------------------------
+
+--
+-- Structure de la table `typecarte`
+--
+
+CREATE TABLE IF NOT EXISTS `typecarte` (
+  `idTypeCarte` bigint(20) NOT NULL AUTO_INCREMENT,
+  `libelle` varchar(80) DEFAULT NULL,
+  `libelle_court` varchar(3) DEFAULT NULL,
+  `prix` double DEFAULT NULL,
+  PRIMARY KEY (`idTypeCarte`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
+
+--
+-- Contenu de la table `typecarte`
+--
+
+
+-- --------------------------------------------------------
+
+--
+-- Structure de la table `typeclient`
+--
+
+CREATE TABLE IF NOT EXISTS `typeclient` (
+  `idTypeClient` bigint(20) NOT NULL AUTO_INCREMENT,
+  `libelle` varchar(80) DEFAULT NULL,
+  `libelle_court` varchar(3) DEFAULT NULL,
+  PRIMARY KEY (`idTypeClient`)
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=3 ;
+
+--
+-- Contenu de la table `typeclient`
+--
+
+INSERT INTO `typeclient` (`idTypeClient`, `libelle`, `libelle_court`) VALUES
+(1, 'Client Simple', 'CS'),
+(2, 'Boutiquier', NULL);
+
+-- --------------------------------------------------------
+
+--
+-- Structure de la table `typeencaissement`
+--
+
+CREATE TABLE IF NOT EXISTS `typeencaissement` (
+  `idTypeEncaissement` bigint(20) NOT NULL AUTO_INCREMENT,
+  `libelle_court` varchar(255) DEFAULT NULL,
+  `libelle` varchar(255) DEFAULT NULL,
+  PRIMARY KEY (`idTypeEncaissement`)
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=3 ;
+
+--
+-- Contenu de la table `typeencaissement`
+--
+
+INSERT INTO `typeencaissement` (`idTypeEncaissement`, `libelle_court`, `libelle`) VALUES
+(1, 'C', ' COMMANDE'),
+(2, 'F', 'FONDS DE ROULEMENT');
+
+-- --------------------------------------------------------
+
+--
+-- Structure de la table `utilisateur`
+--
+
+CREATE TABLE IF NOT EXISTS `utilisateur` (
+  `idUtilisateur` bigint(20) NOT NULL AUTO_INCREMENT,
+  `login` varchar(255) DEFAULT NULL,
+  `dateCreation` datetime DEFAULT NULL,
+  `actif` bit(1) NOT NULL,
+  `prenom` varchar(255) DEFAULT NULL,
+  `email` varchar(255) DEFAULT NULL,
+  `dateMaj` datetime DEFAULT NULL,
+  `nom` varchar(255) DEFAULT NULL,
+  `idProfile` bigint(20) DEFAULT NULL,
+  `securePassword` blob,
+  `salt` blob,
+  `idEtablissement` bigint(20) DEFAULT NULL,
+  PRIMARY KEY (`idUtilisateur`),
+  UNIQUE KEY `login` (`login`),
+  KEY `FKDD1633837E3C6B25` (`idProfile`),
+  KEY `FKDD1633832E9F1227` (`idEtablissement`)
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=5 ;
+
+--
+-- Contenu de la table `utilisateur`
+--
+
+INSERT INTO `utilisateur` (`idUtilisateur`, `login`, `dateCreation`, `actif`, `prenom`, `email`, `dateMaj`, `nom`, `idProfile`, `securePassword`, `salt`, `idEtablissement`) VALUES
+(1, 'fall', '2015-10-12 22:16:43', b'1', 'SERIGNE', '', '2015-10-12 22:16:43', 'FALL', 1, 0xa86e0f454e87debb5fcdf4431e11f1d2f9873e4e, 0x487a1a3cacbb1712, NULL),
+(2, 'ngom', '2015-10-18 12:50:51', b'1', 'ngom', 'jj@gmail.com', '2015-10-30 11:27:13', 'babacar', 3, 0xe5612de6966809b48a14ee1f25913ff63a82b4a6, 0x50c3444fba48ffb5, NULL),
+(3, 'mareme', '2015-10-23 13:31:47', b'1', 'mareme', '', '2015-10-23 13:31:47', 'niang', 1, 0x90ca753201a694a564a26c134637f38bf328b848, 0xaf43dfdf3348b485, NULL),
+(4, 'diallo', '2015-11-06 18:52:53', b'1', 'MOUSTAPHA', 'd@gmail.com', '2015-11-06 18:52:53', 'Diallo', 2, 0x05f93b6809d74b613e7c318d0d944402b11812b4, 0xb79603c49082532e, NULL);
+
+-- --------------------------------------------------------
+
+--
+-- Structure de la table `vente`
+--
+
+CREATE TABLE IF NOT EXISTS `vente` (
+  `idVente` bigint(20) NOT NULL AUTO_INCREMENT,
+  `reference` varchar(255) DEFAULT NULL,
+  `numFacture` varchar(255) DEFAULT NULL,
+  `dateSaisi` datetime DEFAULT NULL,
+  `validerON` bit(1) DEFAULT NULL,
+  `tauxRistourne` double DEFAULT NULL,
+  `montantRegle` double DEFAULT NULL,
+  `montantRestant` double NOT NULL,
+  `ristourneON` bit(1) DEFAULT NULL,
+  `mntRistournePayer` double NOT NULL,
+  `ristournePayerON` bit(1) DEFAULT NULL,
+  `dateVente` datetime DEFAULT NULL,
+  `idUtilisateur` bigint(20) DEFAULT NULL,
+  `idDistributeurSecond` bigint(20) DEFAULT NULL,
+  `idClient` bigint(20) DEFAULT NULL,
+  `idCaisse` bigint(20) DEFAULT NULL,
+  `idDistributeurPrinc` bigint(20) DEFAULT NULL,
+  `positionRistourneON` bit(1) DEFAULT NULL,
+  `payerON` bit(1) DEFAULT NULL,
+  PRIMARY KEY (`idVente`),
+  KEY `FK6AE6A509B5E9425` (`idDistributeurPrinc`),
+  KEY `FK6AE6A508B659D59` (`idUtilisateur`),
+  KEY `FK6AE6A502CD90B13` (`idCaisse`),
+  KEY `FK6AE6A502E0EA5F5` (`idClient`),
+  KEY `FK6AE6A504239394F` (`idDistributeurSecond`)
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=18 ;
+
+--
+-- Contenu de la table `vente`
+--
+
+INSERT INTO `vente` (`idVente`, `reference`, `numFacture`, `dateSaisi`, `validerON`, `tauxRistourne`, `montantRegle`, `montantRestant`, `ristourneON`, `mntRistournePayer`, `ristournePayerON`, `dateVente`, `idUtilisateur`, `idDistributeurSecond`, `idClient`, `idCaisse`, `idDistributeurPrinc`, `positionRistourneON`, `payerON`) VALUES
+(5, 'R0000-5', 'F0000-5', '2015-11-05 21:48:40', b'1', 2, 12570, -12570, b'0', 0, b'0', '2015-11-05 21:48:40', 1, NULL, 2, NULL, NULL, b'1', NULL),
+(6, 'R0000-6', 'F0000-6', '2015-11-05 21:54:45', b'1', 2, 0, 0, b'0', 0, b'0', '2015-11-05 21:54:45', 1, NULL, 2, NULL, NULL, b'1', NULL),
+(7, 'R0000-7', 'F0000-7', '2015-11-05 21:55:10', b'1', 2, 0, 0, b'0', 0, b'0', '2015-11-05 21:55:10', 1, 1, NULL, NULL, NULL, b'1', NULL),
+(8, 'R0000-8', 'F0000-8', '2015-11-05 21:55:46', b'1', 2, 0, 0, b'0', 0, b'0', '2015-11-05 21:55:46', 1, 1, NULL, NULL, NULL, b'1', NULL),
+(9, 'R0000-9', 'F0000-9', '2015-11-06 21:07:26', b'1', 2, 0, 0, b'0', 0, b'0', '2015-11-06 21:07:26', 4, NULL, 1, NULL, NULL, b'0', NULL),
+(10, 'R0000-9', 'F0000-9', '2015-11-06 21:07:27', b'1', 2, 0, 0, b'0', 0, b'0', '2015-11-06 21:07:26', 4, NULL, 1, NULL, NULL, b'0', NULL),
+(11, 'R0000-11', 'F0000-11', '2015-11-07 21:22:22', b'1', 2, 0, 0, b'0', 0, b'0', '2015-11-07 21:22:22', 1, NULL, 1, 6, NULL, b'1', NULL),
+(12, 'R0000-12', 'F0000-12', '2015-11-08 14:46:04', b'1', 2, 0, 0, b'1', 0, b'0', '2015-11-08 14:46:04', 1, NULL, 1, 6, NULL, b'0', b'0'),
+(13, 'R0000-13', 'F0000-13', '2015-11-13 16:15:18', b'1', 0, 0, 0, b'0', 0, b'0', '2015-11-13 16:15:18', 1, 16, NULL, 6, NULL, b'0', b'0'),
+(14, 'R0000-14', 'F0000-14', '2015-11-13 16:31:55', b'1', 0, 0, 0, b'0', 0, b'0', '2015-11-13 16:31:55', 1, 16, NULL, 6, NULL, b'0', b'0'),
+(15, 'R0000-15', 'F0000-15', '2015-11-13 16:32:24', b'1', 2, 0, 0, b'0', 0, b'0', '2015-11-13 16:32:24', 1, 1, NULL, 6, NULL, b'0', b'0'),
+(16, 'R0000-16', 'F0000-16', '2015-11-13 23:56:35', b'1', 0, 0, 0, b'0', 0, b'0', '2015-11-13 23:56:35', 1, 16, NULL, 6, NULL, b'0', b'0'),
+(17, 'R0000-17', 'F0000-17', '2015-11-15 02:52:37', b'1', 0, 0, 0, b'0', 0, b'0', '2015-11-15 02:52:37', 1, 16, NULL, 6, NULL, b'0', b'0');
+
+--
+-- Contraintes pour les tables exportées
+--
+
+--
+-- Contraintes pour la table `caisse`
+--
+ALTER TABLE `caisse`
+  ADD CONSTRAINT `FK77DD127AE70FFB77` FOREIGN KEY (`idCaissier`) REFERENCES `utilisateur` (`idUtilisateur`);
+
+--
+-- Contraintes pour la table `client`
+--
+ALTER TABLE `client`
+  ADD CONSTRAINT `FK7877DFEB6C10C209` FOREIGN KEY (`idTypeClient`) REFERENCES `typeclient` (`idTypeClient`);
+
+--
+-- Contraintes pour la table `compterenduoperation`
+--
+ALTER TABLE `compterenduoperation`
+  ADD CONSTRAINT `FKD112D63B2CD90B13` FOREIGN KEY (`idCaisse`) REFERENCES `caisse` (`idCaisse`),
+  ADD CONSTRAINT `FKD112D63B2E0EA5F5` FOREIGN KEY (`idClient`) REFERENCES `client` (`idClient`),
+  ADD CONSTRAINT `FKD112D63B61DE694D` FOREIGN KEY (`idSens`) REFERENCES `sens` (`idSens`),
+  ADD CONSTRAINT `FKD112D63B63D73F83` FOREIGN KEY (`idOperateur`) REFERENCES `operateur` (`idoperateur`),
+  ADD CONSTRAINT `FKD112D63B6C1ED2B4` FOREIGN KEY (`idUserCreat`) REFERENCES `utilisateur` (`idUtilisateur`),
+  ADD CONSTRAINT `FKD112D63BC3F0E4A0` FOREIGN KEY (`idUserValide`) REFERENCES `utilisateur` (`idUtilisateur`),
+  ADD CONSTRAINT `FKD112D63BD3A22BAB` FOREIGN KEY (`idDistibuteur`) REFERENCES `distributeur` (`idDistributeur`),
+  ADD CONSTRAINT `FKD112D63BE47310FE` FOREIGN KEY (`idNature`) REFERENCES `natureoperation` (`idNatureOperation`);
+
+--
+-- Contraintes pour la table `contratdistribclient`
+--
+ALTER TABLE `contratdistribclient`
+  ADD CONSTRAINT `FK18982CFD2E0EA5F5` FOREIGN KEY (`idClient`) REFERENCES `client` (`idClient`),
+  ADD CONSTRAINT `FK18982CFD9B5E9425` FOREIGN KEY (`idDistributeurPrinc`) REFERENCES `distributeur` (`idDistributeur`),
+  ADD CONSTRAINT `FK18982CFDB539AFCA` FOREIGN KEY (`idUtilsateur`) REFERENCES `utilisateur` (`idUtilisateur`);
+
+--
+-- Contraintes pour la table `contratdistribdistrib`
+--
+ALTER TABLE `contratdistribdistrib`
+  ADD CONSTRAINT `FK2AC8EEB34239394F` FOREIGN KEY (`idDistributeurSecond`) REFERENCES `distributeur` (`idDistributeur`),
+  ADD CONSTRAINT `FK2AC8EEB39B5E9425` FOREIGN KEY (`idDistributeurPrinc`) REFERENCES `distributeur` (`idDistributeur`),
+  ADD CONSTRAINT `FK2AC8EEB3B539AFCA` FOREIGN KEY (`idUtilsateur`) REFERENCES `utilisateur` (`idUtilisateur`);
+
+--
+-- Contraintes pour la table `contratmaisonmeredistrib`
+--
+ALTER TABLE `contratmaisonmeredistrib`
+  ADD CONSTRAINT `FK817F3DAA63D73F83` FOREIGN KEY (`idOperateur`) REFERENCES `operateur` (`idoperateur`),
+  ADD CONSTRAINT `FK817F3DAA6E2BB9B` FOREIGN KEY (`idDistributeur`) REFERENCES `distributeur` (`idDistributeur`),
+  ADD CONSTRAINT `FK817F3DAAB539AFCA` FOREIGN KEY (`idUtilsateur`) REFERENCES `utilisateur` (`idUtilisateur`);
+
+--
+-- Contraintes pour la table `detaillivraison`
+--
+ALTER TABLE `detaillivraison`
+  ADD CONSTRAINT `FK1E8A35C026442171` FOREIGN KEY (`idLivraison`) REFERENCES `livraison` (`idLivraison`),
+  ADD CONSTRAINT `FK1E8A35C063D73F83` FOREIGN KEY (`idOperateur`) REFERENCES `operateur` (`idoperateur`),
+  ADD CONSTRAINT `FK1E8A35C06EC58A80` FOREIGN KEY (`idNature`) REFERENCES `natureproduit` (`idNatureProduit`),
+  ADD CONSTRAINT `FK1E8A35C084AA8D3` FOREIGN KEY (`idProduit`) REFERENCES `produit` (`idProduit`),
+  ADD CONSTRAINT `FK1E8A35C0DA285DB7` FOREIGN KEY (`idTypeCarte`) REFERENCES `typecarte` (`idTypeCarte`);
+
+--
+-- Contraintes pour la table `detailvente`
+--
+ALTER TABLE `detailvente`
+  ADD CONSTRAINT `FK8548EC7F63D73F83` FOREIGN KEY (`idOperateur`) REFERENCES `operateur` (`idoperateur`),
+  ADD CONSTRAINT `FK8548EC7F6EC58A80` FOREIGN KEY (`idNature`) REFERENCES `natureproduit` (`idNatureProduit`),
+  ADD CONSTRAINT `FK8548EC7F84AA8D3` FOREIGN KEY (`idProduit`) REFERENCES `produit` (`idProduit`),
+  ADD CONSTRAINT `FK8548EC7FD5B58290` FOREIGN KEY (`idVente`) REFERENCES `vente` (`idVente`);
+
+--
+-- Contraintes pour la table `droituseraccess`
+--
+ALTER TABLE `droituseraccess`
+  ADD CONSTRAINT `FK3363CC9B7E3C6B25` FOREIGN KEY (`idProfile`) REFERENCES `lstprofile` (`idProfile`),
+  ADD CONSTRAINT `FK3363CC9BEA9FC331` FOREIGN KEY (`idFonction`) REFERENCES `fonction` (`idFonction`);
+
+--
+-- Contraintes pour la table `dtpassationfondcaisse`
+--
+ALTER TABLE `dtpassationfondcaisse`
+  ADD CONSTRAINT `FK24B554D63D73F83` FOREIGN KEY (`idOperateur`) REFERENCES `operateur` (`idoperateur`),
+  ADD CONSTRAINT `FK24B554DAC033004` FOREIGN KEY (`idPassationFonds`) REFERENCES `passationfondcaisse` (`idPassationFondCaisse`),
+  ADD CONSTRAINT `FK24B554DAEE29BA0` FOREIGN KEY (`idCaisseDestinatair`) REFERENCES `produit` (`idProduit`);
+
+--
+-- Contraintes pour la table `ecriturecomptable`
+--
+ALTER TABLE `ecriturecomptable`
+  ADD CONSTRAINT `FK20BCE6D62CD90B13` FOREIGN KEY (`idCaisse`) REFERENCES `caisse` (`idCaisse`),
+  ADD CONSTRAINT `FK20BCE6D62E0EA5F5` FOREIGN KEY (`idClient`) REFERENCES `client` (`idClient`),
+  ADD CONSTRAINT `FK20BCE6D661DE694D` FOREIGN KEY (`idSens`) REFERENCES `sens` (`idSens`),
+  ADD CONSTRAINT `FK20BCE6D663D73F83` FOREIGN KEY (`idOperateur`) REFERENCES `operateur` (`idoperateur`),
+  ADD CONSTRAINT `FK20BCE6D66E2BB9B` FOREIGN KEY (`idDistributeur`) REFERENCES `distributeur` (`idDistributeur`),
+  ADD CONSTRAINT `FK20BCE6D6C1E9C8D7` FOREIGN KEY (`idCro`) REFERENCES `compterenduoperation` (`idCompteRenduOperation`);
+
+--
+-- Contraintes pour la table `encaissement`
+--
+ALTER TABLE `encaissement`
+  ADD CONSTRAINT `FKD2778C212CD90B13` FOREIGN KEY (`idCaisse`) REFERENCES `caisse` (`idCaisse`),
+  ADD CONSTRAINT `FKD2778C212E0EA5F5` FOREIGN KEY (`idClient`) REFERENCES `client` (`idClient`),
+  ADD CONSTRAINT `FKD2778C216E2BB9B` FOREIGN KEY (`idDistributeur`) REFERENCES `distributeur` (`idDistributeur`),
+  ADD CONSTRAINT `FKD2778C218B659D59` FOREIGN KEY (`idUtilisateur`) REFERENCES `utilisateur` (`idUtilisateur`),
+  ADD CONSTRAINT `FKD2778C21ED3B1075` FOREIGN KEY (`idTypeEncaissement`) REFERENCES `typeencaissement` (`idTypeEncaissement`);
+
+--
+-- Contraintes pour la table `etablissement`
+--
+ALTER TABLE `etablissement`
+  ADD CONSTRAINT `FK3A9C0DB6CCE68595` FOREIGN KEY (`idSiege`) REFERENCES `siege_cnss` (`idSiege`);
+
+--
+-- Contraintes pour la table `fonction`
+--
+ALTER TABLE `fonction`
+  ADD CONSTRAINT `FK18C47472C2D08649` FOREIGN KEY (`idParent`) REFERENCES `fonction` (`idFonction`);
+
+--
+-- Contraintes pour la table `histofondsroulement`
+--
+ALTER TABLE `histofondsroulement`
+  ADD CONSTRAINT `FKB63E0F482CD90B13` FOREIGN KEY (`idCaisse`) REFERENCES `caisse` (`idCaisse`),
+  ADD CONSTRAINT `FKB63E0F488B659D59` FOREIGN KEY (`idUtilisateur`) REFERENCES `utilisateur` (`idUtilisateur`),
+  ADD CONSTRAINT `FKB63E0F48E70FFB77` FOREIGN KEY (`idCaissier`) REFERENCES `utilisateur` (`idUtilisateur`);
+
+--
+-- Contraintes pour la table `historiquecaisseuser`
+--
+ALTER TABLE `historiquecaisseuser`
+  ADD CONSTRAINT `FKA0F865022CD90B13` FOREIGN KEY (`idCaisse`) REFERENCES `caisse` (`idCaisse`),
+  ADD CONSTRAINT `FKA0F865028B659D59` FOREIGN KEY (`idUtilisateur`) REFERENCES `utilisateur` (`idUtilisateur`);
+
+--
+-- Contraintes pour la table `livraison`
+--
+ALTER TABLE `livraison`
+  ADD CONSTRAINT `FK526A631163D73F83` FOREIGN KEY (`idOperateur`) REFERENCES `operateur` (`idoperateur`),
+  ADD CONSTRAINT `FK526A63116E2BB9B` FOREIGN KEY (`idDistributeur`) REFERENCES `distributeur` (`idDistributeur`),
+  ADD CONSTRAINT `FK526A63118B659D59` FOREIGN KEY (`idUtilisateur`) REFERENCES `utilisateur` (`idUtilisateur`);
+
+--
+-- Contraintes pour la table `lnktauxdistributeur`
+--
+ALTER TABLE `lnktauxdistributeur`
+  ADD CONSTRAINT `FKFF9FCF571104662E` FOREIGN KEY (`idLnkDistributeur`) REFERENCES `distributeur` (`idDistributeur`),
+  ADD CONSTRAINT `FKFF9FCF5763D73F83` FOREIGN KEY (`idOperateur`) REFERENCES `operateur` (`idoperateur`),
+  ADD CONSTRAINT `FKFF9FCF57F185EEE5` FOREIGN KEY (`idNatureProduit`) REFERENCES `natureproduit` (`idNatureProduit`);
+
+--
+-- Contraintes pour la table `lnktauxoperateur`
+--
+ALTER TABLE `lnktauxoperateur`
+  ADD CONSTRAINT `FK921636A863D73F83` FOREIGN KEY (`idOperateur`) REFERENCES `operateur` (`idoperateur`),
+  ADD CONSTRAINT `FK921636A8F185EEE5` FOREIGN KEY (`idNatureProduit`) REFERENCES `natureproduit` (`idNatureProduit`);
+
+--
+-- Contraintes pour la table `lnk_encaissvente`
+--
+ALTER TABLE `lnk_encaissvente`
+  ADD CONSTRAINT `FK8B8FF08411B62B20` FOREIGN KEY (`idVenteEnc`) REFERENCES `vente` (`idVente`),
+  ADD CONSTRAINT `FK8B8FF08431906313` FOREIGN KEY (`idEncaissement`) REFERENCES `encaissement` (`idEncaissement`);
+
+--
+-- Contraintes pour la table `lst_langues`
+--
+ALTER TABLE `lst_langues`
+  ADD CONSTRAINT `FK45F0F0C38B659D59` FOREIGN KEY (`idUtilisateur`) REFERENCES `utilisateur` (`idUtilisateur`);
+
+--
+-- Contraintes pour la table `niveauadministratif`
+--
+ALTER TABLE `niveauadministratif`
+  ADD CONSTRAINT `FK7B23F749CCE68595` FOREIGN KEY (`idSiege`) REFERENCES `siege_cnss` (`idSiege`);
+
+--
+-- Contraintes pour la table `niveauhierarchique`
+--
+ALTER TABLE `niveauhierarchique`
+  ADD CONSTRAINT `FKCCFDD0FACCE68595` FOREIGN KEY (`idSiege`) REFERENCES `siege_cnss` (`idSiege`);
+
+--
+-- Contraintes pour la table `operationlivraison`
+--
+ALTER TABLE `operationlivraison`
+  ADD CONSTRAINT `FKA8ADD16A61DE694D` FOREIGN KEY (`idSens`) REFERENCES `sens` (`idSens`),
+  ADD CONSTRAINT `FKA8ADD16A8B659D59` FOREIGN KEY (`idUtilisateur`) REFERENCES `utilisateur` (`idUtilisateur`),
+  ADD CONSTRAINT `FKA8ADD16A8BDC71D2` FOREIGN KEY (`idLivraisonOP`) REFERENCES `livraison` (`idLivraison`);
+
+--
+-- Contraintes pour la table `operationmaisonmeredistrub`
+--
+ALTER TABLE `operationmaisonmeredistrub`
+  ADD CONSTRAINT `FK2510C7CA61DE694D` FOREIGN KEY (`idSens`) REFERENCES `sens` (`idSens`),
+  ADD CONSTRAINT `FK2510C7CA63D73F83` FOREIGN KEY (`idOperateur`) REFERENCES `operateur` (`idoperateur`),
+  ADD CONSTRAINT `FK2510C7CA6E2BB9B` FOREIGN KEY (`idDistributeur`) REFERENCES `distributeur` (`idDistributeur`),
+  ADD CONSTRAINT `FK2510C7CA8B659D59` FOREIGN KEY (`idUtilisateur`) REFERENCES `utilisateur` (`idUtilisateur`);
+
+--
+-- Contraintes pour la table `passationfondcaisse`
+--
+ALTER TABLE `passationfondcaisse`
+  ADD CONSTRAINT `FKB454FBFD314326D9` FOREIGN KEY (`idCaisseDestinatair`) REFERENCES `caisse` (`idCaisse`),
+  ADD CONSTRAINT `FKB454FBFD81B77F8E` FOREIGN KEY (`idCaisseExpediteur`) REFERENCES `caisse` (`idCaisse`),
+  ADD CONSTRAINT `FKB454FBFD8B659D59` FOREIGN KEY (`idUtilisateur`) REFERENCES `utilisateur` (`idUtilisateur`),
+  ADD CONSTRAINT `FKB454FBFDE70FFB77` FOREIGN KEY (`idCaissier`) REFERENCES `utilisateur` (`idUtilisateur`);
+
+--
+-- Contraintes pour la table `produit`
+--
+ALTER TABLE `produit`
+  ADD CONSTRAINT `FKED8DCDA9F185EEE5` FOREIGN KEY (`idNatureProduit`) REFERENCES `natureproduit` (`idNatureProduit`);
+
+--
+-- Contraintes pour la table `siege_cnss`
+--
+ALTER TABLE `siege_cnss`
+  ADD CONSTRAINT `FK834ABF1D8B659D59` FOREIGN KEY (`idUtilisateur`) REFERENCES `utilisateur` (`idUtilisateur`),
+  ADD CONSTRAINT `FK834ABF1DD0A87D84` FOREIGN KEY (`idLangue`) REFERENCES `lst_langues` (`idLangue`);
+
+--
+-- Contraintes pour la table `stock`
+--
+ALTER TABLE `stock`
+  ADD CONSTRAINT `FK68AF7162CD90B13` FOREIGN KEY (`idCaisse`) REFERENCES `caisse` (`idCaisse`),
+  ADD CONSTRAINT `FK68AF71663D73F83` FOREIGN KEY (`idOperateur`) REFERENCES `operateur` (`idoperateur`),
+  ADD CONSTRAINT `FK68AF7166EC58A80` FOREIGN KEY (`idNature`) REFERENCES `natureproduit` (`idNatureProduit`),
+  ADD CONSTRAINT `FK68AF71684AA8D3` FOREIGN KEY (`idProduit`) REFERENCES `produit` (`idProduit`);
+
+--
+-- Contraintes pour la table `utilisateur`
+--
+ALTER TABLE `utilisateur`
+  ADD CONSTRAINT `FKDD1633832E9F1227` FOREIGN KEY (`idEtablissement`) REFERENCES `etablissement` (`idEtablissement`),
+  ADD CONSTRAINT `FKDD1633837E3C6B25` FOREIGN KEY (`idProfile`) REFERENCES `lstprofile` (`idProfile`);
+
+--
+-- Contraintes pour la table `vente`
+--
+ALTER TABLE `vente`
+  ADD CONSTRAINT `FK6AE6A502CD90B13` FOREIGN KEY (`idCaisse`) REFERENCES `caisse` (`idCaisse`),
+  ADD CONSTRAINT `FK6AE6A502E0EA5F5` FOREIGN KEY (`idClient`) REFERENCES `client` (`idClient`),
+  ADD CONSTRAINT `FK6AE6A504239394F` FOREIGN KEY (`idDistributeurSecond`) REFERENCES `distributeur` (`idDistributeur`),
+  ADD CONSTRAINT `FK6AE6A508B659D59` FOREIGN KEY (`idUtilisateur`) REFERENCES `utilisateur` (`idUtilisateur`),
+  ADD CONSTRAINT `FK6AE6A509B5E9425` FOREIGN KEY (`idDistributeurPrinc`) REFERENCES `distributeur` (`idDistributeur`);

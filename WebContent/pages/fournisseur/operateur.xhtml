@@ -1,0 +1,384 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//FR" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!--  V 0.1 : Maj : 09/11/2007 -->
+
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:rich="http://richfaces.ajax4jsf.org/rich"
+	xmlns:a="https://ajax4jsf.dev.java.net/ajax"
+	xmlns:t="http://myfaces.apache.org/tomahawk"
+	xmlns:s="http://jboss.com/products/seam/taglib"
+	xmlns:c="http://java.sun.com/jstl/core"
+	template="/template/template.xhtml">
+	<!-- Page d'accueil -->
+
+
+
+
+
+	<ui:define name="title">GESTION FOURNISSEUR</ui:define>
+	<ui:define name="body">
+		<h:form id="note">
+
+			
+			<div class="zoneResultat2">
+			<h1> PARAMETRAGE OPERATEUR  </h1>
+			
+			<rich:panel header="GESTION OPERATEUR">
+			
+			<fieldset>
+			<legend>Formulaire Ajout Operateur</legend>
+			
+			<table width="100%">
+			<tr>  
+			    <td> <h:outputText value="Intitule" styleClass="grey" />  </td>
+				<td> <h:inputText value="#{operteurService.operateurCreation.intitule}" disabled="true"  styleClass="textBleu2"  /> </td>
+				<td> <h:outputText value="Libelle Carte" styleClass="grey" />  </td>
+				<td> <h:inputText value="#{operteurService.operateurCreation.libelleCarte}" styleClass="textBleu2"   /> </td>
+				<td> <h:outputText value="Libelle Flash " styleClass="grey" />  </td>
+				<td> <h:inputText value="#{operteurService.operateurCreation.libelleFlash}"  styleClass="textBleu2" /> </td>
+				
+				<td colspan="1" rowspan="3">
+			       <fieldset>
+			<legend> </legend>
+			
+			<table width="100%">
+			 <tr align="right"> 
+			     <td align="right"><a:commandLink value="Ajout Taux " status="waitStatus" styleClass="grey"
+									title="Add inFo Contrat"   reRender="idDetailt"
+									oncomplete="javascript:Richfaces.showModalPanel('panelDetails',{width:700, top:5, height:400});jQuery('#ModificationPassword\\:prenomEnfant').focus();"
+										
+									action="#" >
+									<s:graphicImage fileName="info.png" style="border:0px;"
+										value="/picto/info.png" alt="" styleClass="buton" />
+					</a:commandLink> 
+			   </td> </tr>
+			   </table>
+			  </fieldset>
+			 </td>
+				
+			</tr>  <tr> 
+				<td> <h:outputText value="Taux Reduction Carte " styleClass="grey" />  </td>
+				<td> <h:inputText value="#{operteurService.operateurCreation.tauxRC}" styleClass="textBleu2"  /> </td>
+				
+				<td> <h:outputText value="Taux Reduction Flash " styleClass="grey" />  </td>
+				<td> <h:inputText value="#{operteurService.operateurCreation.tauxRF}" styleClass="textBleu2"  /> </td>
+				
+				<td> <h:outputText value="Tel 1 : " styleClass="grey" />  </td>
+				<td> <h:inputText value="#{operteurService.operateurCreation.tel1}" styleClass="textBleu2"  /> </td>
+			</tr>  <tr> 
+			
+				<td> <h:outputText value="Tel 2 : " styleClass="grey" />  </td>
+				<td> <h:inputText value="#{operteurService.operateurCreation.tel2}" styleClass="textBleu2"  /> </td>
+				
+				<td> <h:outputText value="Email 1 : " styleClass="grey" />  </td>
+				<td> <h:inputText value="#{operteurService.operateurCreation.email1}" styleClass="textBleu2"  /> </td>
+				
+				<td> <h:outputText value="Email 2 : " styleClass="grey" />  </td>
+				<td> <h:inputText value="#{operteurService.operateurCreation.email2}" styleClass="textBleu2"  /> </td>
+			</tr> 
+			
+			</table>
+			
+			</fieldset>
+			
+				<rich:spacer height="5px;"></rich:spacer>
+					<table width="100%" >
+				<tr>
+					<td width="1175px;"  align="right" >
+						<div id="trd_submenu" class="trd_kb">
+							<ul>
+								<li>
+									<a:commandLink  action="#{operteurService.ajouterOperateur}" status="waitStatus"  reRender="note" value="">
+										<s:graphicImage fileName="find.png" style="border:0px;" value="/picto/find.png" width="16" height="16" alt="" />
+										Valider
+									</a:commandLink>
+								</li>
+								
+							
+							</ul>
+						</div>
+					</td>
+					<td>
+						&#10;
+					</td>
+				</tr>
+			</table>
+			
+				
+			
+		
+			<fieldset>
+			<legend> Liste des Operateurs </legend>
+			  <div style="height:400px;overflow: auto">	
+			<rich:dataTable value="#{operteurService.listeOperateur}" var="it"
+							id="cc" style="width:100%;" rowClasses="row1,row2">
+							<f:facet name="header">
+								<rich:columnGroup>
+									<rich:column>
+										<h:outputLabel value="Intitule"
+											style="color:white;font-size:12px;font-family: Arial;text-align:center;" />
+									</rich:column>
+									<rich:column>
+										<h:outputLabel value="Libelle Carte"
+											style="color:white;font-size:12px;font-family: Arial;text-align:center;" />
+									</rich:column>
+									<rich:column>
+										<h:outputLabel value="Libelle Flash"
+											style="color:white;font-size:12px;font-family: Arial;text-align:center;" />
+									</rich:column>
+									<rich:column>
+										<h:outputLabel value="Taux RC"
+											style="color:white;font-size:12px;font-family: Arial;text-align:center;" />
+									</rich:column>
+									<rich:column>
+										<h:outputLabel value="Taux RF"
+											style="color:white;font-size:12px;font-family: Arial;text-align:center;" />
+									</rich:column>
+										<rich:column>
+										<h:outputLabel value="TEL "
+											style="color:white;font-size:12px;font-family: Arial;text-align:center;" />
+									</rich:column>
+									
+									<rich:column>
+										<h:outputLabel value="TAUX RISTOURNE "
+											style="color:white;font-size:12px;font-family: Arial;text-align:center;" />
+									</rich:column>
+									
+									<rich:column>
+										<h:outputLabel value="Actions"
+											style="color:white;font-size:12px;font-family: Arial;text-align:center;" />
+									</rich:column>
+								</rich:columnGroup>
+							</f:facet>
+
+							
+							<rich:column >
+								<h:outputText value="#{it.intitule}" styleClass="grey" />
+							</rich:column>
+							<rich:column >
+								<h:outputText value="#{it.libelleCarte}" styleClass="grey" />
+							</rich:column>
+							<rich:column >
+								<h:outputText value="#{it.libelleFlash}" styleClass="grey" />
+							</rich:column>
+							
+							<rich:column>
+							 <TABLE align="center" >  <tr >  <td align="center" >
+								<h:outputText value="#{it.tauxRC} %" styleClass="grey" />
+							    </td> </tr> </TABLE>
+							</rich:column>
+							
+							<rich:column>
+							   <TABLE align="center" >  <tr >  <td align="center" >
+								<h:outputText value="#{it.tauxRF} %" styleClass="grey" />
+								   </td> </tr> </TABLE>
+							</rich:column>
+							
+							<rich:column>
+								<h:outputText value="#{it.tel1}" styleClass="grey" />
+							</rich:column>
+							<rich:column>
+								<TABLE align="center" >  <tr >  <td align="center" >
+								 <a:commandLink value=" " status="waitStatus" styleClass="grey"
+									title="Voir Taux Contrat "   reRender="idDetailt"
+														action="#" >
+														<s:graphicImage fileName="detail.jpg" style="border:0px;"
+															value="/picto/detail.jpg" alt="" styleClass="buton" />
+								</a:commandLink>
+								 </td> </tr> </TABLE>
+								
+								<rich:toolTip id="firstToolTip2" horizontalOffset="10" verticalOffset="10"    > 
+							             <rich:dataTable value="#{it.getListTaux()}" var="it"
+														id="comm" style="width:100%;" rowClasses="row1,row2">
+														<f:facet name="header">
+															<rich:columnGroup>
+																<rich:column>
+																	<h:outputLabel value=" #{msgBundle['gestock.natureProduit']} " style="color:white;font-size:12px;font-family: Arial;text-align:center;" />
+																</rich:column>
+																<rich:column>
+																	<h:outputLabel value=" #{msgBundle['gestock.taux']} " style="color:white;font-size:12px;font-family: Arial;text-align:center;" />
+																</rich:column>
+															</rich:columnGroup>
+														</f:facet>
+																    <rich:column >
+																		<h:outputText value="#{it.natureProduit.libelle}" styleClass="grey" />
+																    </rich:column>
+																   
+																     <rich:column >
+																        <TABLE align="center" >  <tr >  <td align="center" >
+																		<h:outputText value="#{it.taux}" styleClass="grey" >
+																		</h:outputText>
+																		%
+																	    </td> </tr> </TABLE>
+																    </rich:column>
+								    
+							                    </rich:dataTable>
+													    </rich:toolTip>
+							</rich:column>
+
+							
+							<rich:column width="60px">
+
+								<table width="100%">
+									<tr>
+										<td width="20px;" align="center">
+											
+											<a:commandLink value="" status="waitStatus" reRender="note" title="Modifier" action="#{operteurService.initmodifier(it)}">
+												<s:graphicImage fileName="edit.png" style="border:0px;" value="/picto/edit.png" width="16" height="16" alt="" />
+											</a:commandLink></td>
+
+										
+										<td width="20px;" align="center"><a:commandLink value="" status="waitStatus" action="#{operteurService.supprimer(it)}"
+												 reRender="note" title="Supprimer (Operateur: #{it.libelle_court})">
+												<s:graphicImage fileName="cross.png" style="border:0px;" value="/picto/cross.png" width="16" height="16" alt="" />
+											</a:commandLink></td>
+
+									</tr>
+								</table>
+
+							</rich:column>
+
+						</rich:dataTable>
+					</div>
+			</fieldset>
+			
+			
+			
+			</rich:panel>
+			</div>
+			</h:form>
+			
+			<rich:modalPanel id="panelDetails" style="background:url('../img2/fond.jpg') repeat-x scroll 0 0 #FFF;height:590; " >
+			<div class="cadreBordOrange margTop30px padLeft30px padRight30px"  >
+			<div class="zoneTitreOrange margTop10px padLeft10px">
+			 Taux Ristourne
+			</div>
+			<br />
+			<div class="margtop30px">
+			<f:facet name="controls">
+				<a onclick="Richfaces.hideModalPanel('panelDetails');" style="cursor:pointer" href="#">#{msgBundle['label.fermer']}</a>
+			</f:facet>
+
+
+			<div ><!-- Holds the form -->
+			
+			<h:form class="note-form" id="idDetailt">
+				<a:outputPanel ajaxRendered="true">
+					<h:message id="erreur" infoClass="confirmationerror" errorClass="confirmationerror" warnClass="confirmationerror" for="passwordErreur"    />
+        			<h:inputHidden id="passwordErreur" value="" />
+        			<div style="visibility: hidden;display: none;" >
+						<h:messages id="error2"></h:messages>
+					</div>
+				</a:outputPanel>
+			<script>
+				jQuery(document).ready(function()
+				{
+					dateEtHeureInputs();
+				});
+
+				function ajaxRequestContainsErrors() {
+					var retour = jQuery("#idDetailt\\:erreur").text();
+					var retour2 = jQuery("#idDetailt\\:error2").text();
+					var resultat =  retour != '' || retour2 != "";
+					return resultat;
+				}
+
+				function fermerSiOk()
+				{
+					if (!ajaxRequestContainsErrors()) Richfaces.hideModalPanel('panelDetails');
+				}
+				
+			</script>
+			   	<table width="100%">
+			   	     <tr>
+							 	<td ><h:outputText value="#{msgBundle['gestock.natureProduit']} :" styleClass="grey" style="min-width:150px;"   /> </td>
+							    <td> 
+							         <h:selectOneMenu required="true"  value="#{operteurService.lnkTauxOperateurEncours.natureProduit}"   styleClass="textBleu2"  id="nat" requiredMessage="Selectionnez...." converter="#{natureProduitConverter}"  >
+									     <s:selectItems  value="#{listeParamStock.listeNatureProduit}" noSelectionLabel="Selectionnez...."  var="it" label="#{it.libelle}" />
+										 <a:support  event="onchange"  ajaxSingle="true" reRender="zone2,infoFourni,lab" />	
+									</h:selectOneMenu> 
+								 </td>
+							 
+					    <td> <h:outputText value="#{msgBundle['gestock.taux']}" styleClass="grey" />  </td>
+						<td>
+						   <h:inputText required="true" value="#{operteurService.lnkTauxOperateurEncours.taux}" styleClass="textBleu2" />
+						    
+						</td>
+						<td>    <TABLE align="center" >	
+						 	<tr>
+								<td colspan="2" align="center">
+									<br />
+											<a:commandLink value="" status="waitStatus" reRender="idDetailt" title="Ajouter" action="#{operteurService.ajouerTaux()}">
+												<s:graphicImage fileName="bas.png" style="border:0px;" value="/picto/bas.png" width="20" height="20" alt="" />
+											</a:commandLink>
+								</td>
+							</tr>
+						 </TABLE>
+						</td>
+					</tr>
+				</table> 
+				
+				 
+			<div  style="height:200px;overflow: auto">
+			 
+							
+				<rich:dataTable value="#{operteurService.operateurCreation.getListTaux()}" var="it"
+								id="comm" style="width:100%;" rowClasses="row1,row2">
+								<f:facet name="header">
+									<rich:columnGroup>
+									   
+										<rich:column>
+											<h:outputLabel value=" #{msgBundle['gestock.natureProduit']} " style="color:white;font-size:12px;font-family: Arial;text-align:center;" />
+										</rich:column>
+										<rich:column>
+											<h:outputLabel value=" #{msgBundle['gestock.taux']} " style="color:white;font-size:12px;font-family: Arial;text-align:center;" />
+										</rich:column>
+										<rich:column>
+										</rich:column>
+									</rich:columnGroup>
+								</f:facet>
+								    <rich:column >
+										<h:outputText value="#{it.natureProduit.libelle}" styleClass="grey" />
+								    </rich:column>
+								   
+								     <rich:column >
+								        <TABLE align="center" >  <tr >  <td align="center" >
+										<h:outputText value="#{it.taux}" styleClass="grey" >
+										</h:outputText>
+										%
+									    </td> </tr> </TABLE>
+								    </rich:column>
+								    
+								      <rich:column >
+								     <table width="100%">
+									    <tr>
+										      <td width="20px;" align="center"><a:commandLink value="" status="waitStatus" action="#{operteurService.supprimerTaux(it)}"
+												 reRender="note" title="Supprimer (Nature Produit: #{it.natureProduit.libelle} ">
+												<s:graphicImage fileName="cross.png" style="border:0px;" value="/picto/cross.png" width="16" height="16" alt="" />
+											 </a:commandLink></td>
+
+									</tr>
+								</table>
+								    </rich:column>
+								   
+								  
+								    
+							</rich:dataTable>
+						</div>
+							
+						
+						
+							
+			</h:form>
+			</div>
+		</div>
+		<div class="clear"></div>
+		</div>
+		</rich:modalPanel>
+			
+		
+			
+	</ui:define>
+</ui:composition>

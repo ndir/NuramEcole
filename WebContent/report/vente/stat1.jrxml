@@ -1,0 +1,142 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="stat1" language="groovy" pageWidth="842" pageHeight="595" orientation="Landscape" columnWidth="802" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="408ade39-cc9f-467e-b820-d43c2a72c45b">
+	<property name="ireport.zoom" value="1.0"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="220"/>
+	<queryString language="hql">
+		<![CDATA[FROM DetailVente
+]]>
+	</queryString>
+	<field name="idDetailVente" class="java.lang.Long"/>
+	<field name="montantTotal" class="java.lang.Double"/>
+	<field name="nature" class="com.chaka.parametrage.entity.gestionStock.NatureProduit"/>
+	<field name="operateur" class="com.chaka.parametrage.entity.gestionStock.Operateur"/>
+	<field name="prixUnitaire" class="java.lang.Double"/>
+	<field name="produit" class="com.chaka.parametrage.entity.gestionStock.Produit"/>
+	<field name="quantite" class="java.lang.Integer"/>
+	<field name="vente" class="com.chaka.gestionStock.vente.entity.Vente"/>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="1" splitType="Stretch"/>
+	</title>
+	<pageHeader>
+		<band splitType="Stretch"/>
+	</pageHeader>
+	<columnHeader>
+		<band splitType="Stretch"/>
+	</columnHeader>
+	<detail>
+		<band splitType="Stretch"/>
+	</detail>
+	<columnFooter>
+		<band splitType="Stretch"/>
+	</columnFooter>
+	<pageFooter>
+		<band splitType="Stretch"/>
+	</pageFooter>
+	<lastPageFooter>
+		<band height="542">
+			<pieChart>
+				<chart>
+					<reportElement uuid="33dce1d4-b8c1-45c0-854f-6db70b9a2468" x="0" y="0" width="249" height="249"/>
+					<chartTitle/>
+					<chartSubtitle/>
+					<chartLegend/>
+				</chart>
+				<pieDataset>
+					<keyExpression><![CDATA[$F{operateur}.getIntitule()]]></keyExpression>
+					<valueExpression><![CDATA[$F{quantite}]]></valueExpression>
+				</pieDataset>
+				<piePlot>
+					<plot/>
+					<itemLabel/>
+				</piePlot>
+			</pieChart>
+			<bar3DChart>
+				<chart>
+					<reportElement uuid="323f4b36-4834-4100-9f4b-d60eda83cf8c" x="249" y="0" width="553" height="249"/>
+					<chartTitle/>
+					<chartSubtitle/>
+					<chartLegend/>
+				</chart>
+				<categoryDataset>
+					<categorySeries>
+						<seriesExpression><![CDATA[$F{produit}.getLibelle()]]></seriesExpression>
+						<categoryExpression><![CDATA[$F{operateur}.getIntitule()]]></categoryExpression>
+						<valueExpression><![CDATA[$F{quantite}]]></valueExpression>
+					</categorySeries>
+				</categoryDataset>
+				<bar3DPlot>
+					<plot/>
+					<itemLabel/>
+					<categoryAxisFormat>
+						<axisFormat/>
+					</categoryAxisFormat>
+					<valueAxisFormat>
+						<axisFormat/>
+					</valueAxisFormat>
+				</bar3DPlot>
+			</bar3DChart>
+			<barChart>
+				<chart>
+					<reportElement uuid="655206e8-a6cb-4b28-894f-67dbac4d5045" x="369" y="249" width="433" height="243"/>
+					<chartTitle/>
+					<chartSubtitle/>
+					<chartLegend/>
+				</chart>
+				<categoryDataset>
+					<categorySeries>
+						<seriesExpression><![CDATA[$F{produit}.getLibelle()]]></seriesExpression>
+						<categoryExpression><![CDATA[$F{operateur}.getIntitule()]]></categoryExpression>
+						<valueExpression><![CDATA[$F{quantite}]]></valueExpression>
+					</categorySeries>
+				</categoryDataset>
+				<barPlot>
+					<plot/>
+					<itemLabel/>
+					<categoryAxisFormat>
+						<axisFormat/>
+					</categoryAxisFormat>
+					<valueAxisFormat>
+						<axisFormat/>
+					</valueAxisFormat>
+				</barPlot>
+			</barChart>
+			<componentElement>
+				<reportElement uuid="3f97a3de-085b-4fdc-955c-0d1568078738" x="458" y="492" width="200" height="50"/>
+				<jr:Code39 xmlns:jr="http://jasperreports.sourceforge.net/jasperreports/components" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports/components http://jasperreports.sourceforge.net/xsd/components.xsd" textPosition="bottom">
+					<jr:codeExpression><![CDATA[]]></jr:codeExpression>
+				</jr:Code39>
+			</componentElement>
+			<xyLineChart>
+				<chart>
+					<reportElement uuid="d24a4c23-4778-4cb0-bf00-e44b3367489a" x="29" y="316" width="200" height="100"/>
+					<chartTitle/>
+					<chartSubtitle/>
+					<chartLegend/>
+				</chart>
+				<xyDataset>
+					<xySeries>
+						<seriesExpression><![CDATA[$F{operateur}.getIntitule()]]></seriesExpression>
+						<xValueExpression><![CDATA[$F{produit}.getLibelle()]]></xValueExpression>
+						<yValueExpression><![CDATA[$F{vente}.getMontantAPaye()]]></yValueExpression>
+					</xySeries>
+				</xyDataset>
+				<linePlot>
+					<plot/>
+					<categoryAxisFormat>
+						<axisFormat/>
+					</categoryAxisFormat>
+					<valueAxisFormat>
+						<axisFormat/>
+					</valueAxisFormat>
+				</linePlot>
+			</xyLineChart>
+		</band>
+	</lastPageFooter>
+	<summary>
+		<band splitType="Stretch"/>
+	</summary>
+</jasperReport>

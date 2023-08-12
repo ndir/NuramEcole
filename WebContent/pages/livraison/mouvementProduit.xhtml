@@ -1,0 +1,192 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//FR" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!--  V 0.1 : Maj : 09/11/2007 -->
+
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:rich="http://richfaces.ajax4jsf.org/rich"
+	xmlns:a="https://ajax4jsf.dev.java.net/ajax"
+	xmlns:t="http://myfaces.apache.org/tomahawk"
+	xmlns:s="http://jboss.com/products/seam/taglib"
+	xmlns:c="http://java.sun.com/jstl/core"
+	template="/template/template.xhtml">
+	<!-- Page d'alistLivueil -->
+
+
+
+
+
+	<ui:define name="title"> MOUVEMENT PRODUIT </ui:define>
+	<ui:define name="body">
+		<h:form id="note">
+
+			
+			<div class="zoneResultat2" style="height: 100%;"  >
+				
+		<!--  <table> <tr> 
+			      <td> <s:graphicImage fileName="candidat_64.png" style="border:0px;" value="/picto/candidat_64.png" width="4" height="4" alt="Peupler" /> </td> 
+			        <td> <h1> MOUVEMENT PRODUIT  </h1>  </td> 
+			      </tr>    
+			</table>
+		-->	
+				
+			<rich:panel header="MOUVEMENT PRODUIT">
+			<fieldset>
+			   <table width="100%">
+					  <tr>
+					    <td>Maison Mère : </td>
+					    <td>
+					        <h:selectOneMenu   value="#{recapProduitService.operateur}"   styleClass="textBleu2"  id="op" requiredMessage="Selectionnez...." converter="#{operateurConverter}"  >
+							     <s:selectItems  value="#{listeParamStock.listeOperateur}" noSelectionLabel="Selectionnez...."  var="it" label="#{it.intitule}" />
+								 <a:support  event="onchange"  ajaxSingle="true" reRender="zone2,infoFourni,lab" />	
+							</h:selectOneMenu>  
+					     </td>
+					     <td> Produit : </td>
+					     <td>
+					        <h:selectOneMenu   value="#{recapProduitService.produit}"   styleClass="textBleu2"  id="pro" requiredMessage="Selectionnez...." converter="#{produitConverter}"  >
+							     <s:selectItems  value="#{listeParamStock.listeProduit}" noSelectionLabel="Selectionnez...."  var="it" label="#{it.libelle}" />
+								 <a:support  event="onchange"  ajaxSingle="true" reRender="zone2,infoFourni,lab" />	
+							</h:selectOneMenu>  
+					     </td>
+					    
+					    
+					  </tr>
+					   <tr>
+					    <td> Distributeur  : </td>
+					    <td>
+					    	 <h:selectOneMenu   value="#{recapProduitService.distributeur}"   styleClass="textBleu2"  id="distributeur" requiredMessage="Selectionnez...." converter="#{distributeurConverter}"  >
+							     <s:selectItems  value="#{listeParamStock.listeDistributeur}" noSelectionLabel="Selectionnez...."  var="it" label="#{it.intitule}" />
+								 <a:support  event="onchange"  ajaxSingle="true" reRender="zone2,infoFourni,lab" />	
+							 </h:selectOneMenu>  
+					     </td>
+					   
+					    
+					  </tr>
+					    <tr>
+					    <td> Date Debut : </td>
+					    <td>
+					    	<rich:calendar required="true"
+										value="#{recapProduitService.dateDebut}" rendered="true"
+										buttonIcon="/img2/calendrier.png" cellWidth="0px"
+										cellHeight="20px"
+										style="width:200px;border: 3px solid #006a39;"
+										styleClass="textBleu2" datePattern="dd/MM/yyyy">
+						     </rich:calendar>
+					     </td>
+					     <td> Date Fin : </td>
+					    <td> 
+					   		 <rich:calendar required="true"
+										value="#{recapProduitService.dateFin}" rendered="true"
+										buttonIcon="/img2/calendrier.png" cellWidth="0px"
+										cellHeight="20px"
+										style="width:200px;border: 3px solid #006a39;"
+										styleClass="textBleu2" datePattern="dd/MM/yyyy">
+						     </rich:calendar>
+					     </td>
+					    
+					  </tr>
+					</table>
+
+			</fieldset>			 
+			<div style="height: 7px;" />
+				<table width="100%" >
+				<tr>
+					<td width="1175px;"  align="right" >
+						<div id="trd_submenu" class="trd_kb">
+							<ul>
+								<li>
+									<a:commandLink  action="#{recapProduitService.recapProduit}" status="waitStatus"  reRender="listDetailLivraison" value="">
+										<s:graphicImage fileName="find.png" style="border:0px;" value="/picto/find.png" width="16" height="16" alt="" />
+										Rechercher
+									</a:commandLink>
+								</li>
+								<li>
+									<a:commandLink  action="#{recapProduitService.imprimer}" status="waitStatus" oncomplete="javascript:Richfaces.showModalPanel('modalPdf')"  value="">
+										<s:graphicImage fileName="printer.png" style="border:0px;" value="/picto/printer.png" width="16" height="16" alt="" />
+										Immprimer 
+									</a:commandLink>
+								</li>
+							
+							</ul>
+						</div>
+					</td>
+					<td>
+						&#160;
+					</td>
+				</tr>
+			</table>
+			
+			<fieldset>
+			<div  style="height:400px;overflow: auto">	
+			<rich:dataTable value="#{recapProduitService.listDetailLivraison}" var="it"
+								id="listDetailLivraison" style="width:100%;" rowClasses="row1,row2">
+								<f:facet name="header">
+									<rich:columnGroup>
+									   
+										 <rich:column>
+											<h:outputLabel value="Operateur " style="color:white;font-size:12px;font-family: Arial;text-align:center;" />
+										</rich:column>
+										<rich:column>
+											<h:outputLabel value="Libelle produit " style="color:white;font-size:12px;font-family: Arial;text-align:center;" />
+										</rich:column>
+										<rich:column>
+											<h:outputLabel value="Quantite " style="color:white;font-size:12px;font-family: Arial;text-align:center;" />
+										</rich:column>
+										<rich:column>
+											<h:outputLabel value="Prix U " style="color:white;font-size:12px;font-family: Arial;text-align:center;" />
+										</rich:column>
+										<rich:column>
+											<h:outputLabel value="Montant Total" style="color:white;font-size:12px;font-family: Arial;text-align:center;" />
+										</rich:column>
+										<rich:column>
+											
+										</rich:column>
+									</rich:columnGroup>
+								</f:facet>
+								   
+								     <rich:column >
+										<h:outputText value="#{it.operateur.intitule}" styleClass="grey" />
+								    </rich:column>
+								    <rich:column >
+										<h:outputText value="#{it.produit.libelle}" styleClass="grey" />
+								    </rich:column>
+								    <rich:column >
+										<h:outputText value="#{it.quantite}" styleClass="grey" />
+								    </rich:column>
+								     <rich:column >
+								        <TABLE align="right" >  <tr >  <td align="right" >
+										<h:outputText value="#{it.prixUnitaire}" styleClass="grey" >
+										   <f:convertNumber pattern="#,###" />
+										</h:outputText>
+										#{msgBundle['monnaie.unite']}
+									    </td> </tr> </TABLE>
+								    </rich:column>
+								    <rich:column >
+								       <TABLE align="right" >  <tr >  <td align="right" >
+										<h:outputText value="#{it.montantTotal}" styleClass="grey" >
+										  <f:convertNumber pattern="#,###" />
+										</h:outputText>
+										#{msgBundle['monnaie.unite']}
+									   </td> </tr> </TABLE>
+								    </rich:column>
+								    
+								    <rich:column >
+								        <TABLE align="right" >  <tr >  <td align="right" >
+									       ---------- 
+									     </td>
+									     </tr>
+									     </TABLE>
+								     </rich:column>
+								    
+							</rich:dataTable>
+ 				</div>
+			
+			</fieldset>
+			
+		</rich:panel>
+		</div>
+	</h:form>
+	
+	</ui:define>
+</ui:composition>

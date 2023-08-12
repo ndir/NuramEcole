@@ -1,0 +1,138 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//FR" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!--  V 0.1 : Maj : 09/11/2007 -->
+
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:rich="http://richfaces.ajax4jsf.org/rich"
+	xmlns:a="https://ajax4jsf.dev.java.net/ajax"
+	xmlns:t="http://myfaces.apache.org/tomahawk"
+	xmlns:s="http://jboss.com/products/seam/taglib"
+	xmlns:c="http://java.sun.com/jstl/core"
+	template="/template/template.xhtml">
+	<!-- Page d'accueil -->
+
+
+
+
+	<ui:define name="title">>#{msgBundle['gestock.paramInsti']}</ui:define>
+	<ui:define name="body">
+		<h:form id="note">
+
+<div class="container" style="margin-left: 5%;">		
+	<div class="row">
+	 <div class="col-md-12">
+		<div class="panel panel-success">
+						<div class="panel-heading">
+								<h3 class="panel-title" style="text-align: center;">  #{msgBundle['gestock.paramInsti']}
+						
+									</h3>
+			</div>		
+							
+		<div class="panel-body">
+		<div class="form-group has-success">
+	     
+			
+			<rich:panel >
+			
+			
+			
+			<fieldset>
+			<legend>#{msgBundle['gestock.infoSociete']}</legend>
+			
+			<table class="table">
+			<tr>  
+				<td> <h:outputText value="#{msgBundle['gestock.libSociete']} : "  styleClass="grey" />  </td>
+				<td> <h:inputText value="#{ institutionService.intitutionEncours.libelle}"  class="form-control" /> </td>
+				<td> <h:outputText value="#{msgBundle['gestock.codeSociete']} : " styleClass="grey" />  </td>
+				<td> <h:inputText value="#{ institutionService.intitutionEncours.libelle_court}" class="form-control" /> </td>
+				<td> <h:outputText value="#{msgBundle['gestock.telSociete']} : " styleClass="grey" />  </td>
+				<td> <h:inputText value="#{ institutionService.intitutionEncours.telSociete}" class="form-control" /> </td>
+			</tr>
+			
+			<tr>  
+			   	<td> <h:outputText value="#{msgBundle['gestock.emailSociete']} : " styleClass="grey" />  </td>
+				<td> <h:inputText value="#{institutionService.intitutionEncours.emailSociete}" class="form-control" /> </td>
+				<td> <h:outputText value="#{msgBundle['gestock.bpSociete']} : " styleClass="grey" />  </td>
+				<td> <h:inputText value="#{institutionService.intitutionEncours.bpSociete}" class="form-control" /> </td>
+				<td> <h:outputText value="#{msgBundle['gestock.faxeSociete']}: " styleClass="grey" />  </td>
+				<td> <h:inputText value="#{institutionService.intitutionEncours.faxeSociete}" class="form-control" /> </td>
+				
+				
+			</tr>
+		     <tr>
+				<td > <h:outputText value="#{msgBundle['gestock.sloganSociete']} : " styleClass="grey" />  </td>
+				<td colspan="1"> <h:inputTextarea  value="#{ institutionService.intitutionEncours.sloganSociete}" class="form-control" rows="2" cols="30" /> </td>
+			
+				<td colspan="1">   <h:outputText value="Nbrs jours congé " styleClass="grey" />  </td>
+				<td colspan="1"> <h:inputText value="#{institutionService.intitutionEncours.nbrConge}" size="2" maxlength="2" class="form-control" /> </td>
+		   </tr>
+		   <tr>  
+			   	<td > <h:outputText value="#{msgBundle['gestock.adresseSociete']} : " styleClass="grey" />  </td>
+				<td colspan="2"> <h:inputTextarea  value="#{institutionService.intitutionEncours.adresseSociete}" class="form-control" rows="2" cols="40"  /> </td>
+			</tr>
+			</table>
+			
+			
+			</fieldset>
+			
+		<fieldset>
+			<legend>#{msgBundle['gestock.infoMenu']}</legend>
+			<table class="table">
+				<tr>  
+				<td > <h:selectBooleanCheckbox value="#{institutionService.intitutionEncours.recreatMenu}" class="form-control" />  <h:outputText value="#{msgBundle['gestock.recreateMenu']} : " styleClass="grey" />  </td>
+				
+				<td > <h:selectBooleanCheckbox value="#{institutionService.intitutionEncours.cacherMenuON}" class="form-control" />  <h:outputText value="#{msgBundle['gestock.cacherMenu']} : " styleClass="grey" />  </td>
+			</tr>
+			</table>
+		</fieldset>
+		
+		
+		
+		<div style="height: 12px;" />
+		<table width="100%" >
+				<tr>
+					<td width="1175px;"  align="right" >
+						<div id="trd_submenu" class="trd_kb">
+							<ul>
+								<li>
+									<a:commandLink  action="#{institutionService.ajouterInstitution}" status="waitStatus" reRender="note"  value="">
+										<s:graphicImage fileName="accept.png" style="border:0px;" value="/picto/accept.png" width="16" height="16" alt="" />
+										#{msgBundle['btn.valider']}
+									</a:commandLink>
+								</li>
+								<li>
+									<a:commandLink  action="#" status="waitStatus" reRender="note"  value="">
+										<s:graphicImage fileName="cross.png" style="border:0px;" value="/picto/cross.png" width="16" height="16" alt="" />
+										Annuler
+									</a:commandLink>
+								</li>
+							
+							</ul>
+						</div>
+					</td>
+					<td>
+						&#160;
+					</td>
+				</tr>
+			</table>
+		
+				
+				
+			<rich:spacer height="20px;"></rich:spacer>
+		
+			
+			
+			</rich:panel>
+			</div>
+		</div>
+		</div>
+		</div>
+		</div>
+  </div>
+			</h:form>
+		
+			
+	</ui:define>
+</ui:composition>

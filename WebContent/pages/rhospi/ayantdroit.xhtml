@@ -1,0 +1,385 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//FR" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!--  V 0.1 : Maj : 09/11/2007 -->
+
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:rich="http://richfaces.ajax4jsf.org/rich"
+	xmlns:a="https://ajax4jsf.dev.java.net/ajax"
+	xmlns:t="http://myfaces.apache.org/tomahawk"
+	xmlns:s="http://jboss.com/products/seam/taglib"
+	xmlns:c="http://java.sun.com/jstl/core"
+	template="/template/template.xhtml">
+	<!-- Page d'accueil -->
+
+	<ui:define name="title">RHOSPI</ui:define>
+	<ui:define name="body">
+		<rich:spacer height="20px;"></rich:spacer>
+		<h:form id="ayantdroit">
+
+			<div class="container" style="margin-left: 5%;">
+
+				<div class="row">
+					<div class="col-md-12">
+						<div class="panel panel-success">
+							<div class="panel-heading">
+								<h3 class="panel-title" style="text-align: center;"> GESTION FAMILIALE
+						<TABLE class="table">
+						<tr>  
+				         
+				         
+							<td align="left" > <h:outputLabel styleClass="grey"  value="Prénom / Nom : " />	&#160;
+							     <h:outputLabel value="#{ ayantDroitService.personnel.prenom} #{ayantDroitService.personnel.nom}" /> 
+							</td>
+							<td align="left"  styleClass="grey">   <h:outputLabel  styleClass="grey"  value="Date de Naissance : " />  
+							     	&#160;  <h:outputLabel  value="#{ayantDroitService.personnel.dateNaissance}" /> 
+							</td>
+							<td align="left"  styleClass="grey"> <h:outputLabel  styleClass="grey" value="Lieu de Naissance : " />
+							    	&#160; <h:outputLabel value="#{ayantDroitService.personnel.lieuNaissance} " /> 
+							</td>
+						</tr>
+							<tr>  
+				         
+				         
+							<td align="left"> <h:outputLabel styleClass="grey"  value="Services : " />
+							    	&#160; <h:outputLabel value="#{ayantDroitService.personnel.service.libelle}" /> 
+							</td>
+							<td align="left">   <h:outputLabel styleClass="grey" value="Date Naissance : " />  
+							     	&#160;  <h:outputLabel  value="#{ayantDroitService.personnel.dateNaissance}" /> 
+							</td>
+							<td align="left"> <h:outputLabel styleClass="grey" value="Catégorie professionnel : " />
+							    	&#160; <h:outputLabel value="#{ayantDroitService.personnel.categoriProg.libelle} " /> 
+							</td>
+						</tr>
+					  </TABLE>
+									</h3>
+							</div>
+							  <a:outputPanel id="ayd">
+				
+					  </a:outputPanel>
+					     <rich:spacer height="20px"></rich:spacer>
+							<p align="left">
+
+									<a:commandLink styleClass="btn btn-success" value="" 
+									action="#{ayantDroitService.prepareCreatAyantDroit}" 
+												  oncomplete="javascript:Richfaces.showModalPanel('sim',{width:1300, height:500})"
+										reRender="form" status="waitStatus" >
+																		
+																		AJOUTER AYANT DROIT			
+																				</a:commandLink>
+
+
+
+								</p>
+								
+					
+					  
+						<div class="form-group has-success">
+								<rich:dataTable value="#{ayantDroitService.listeFamille}"
+									var="o" id="liste" style="width:100%;" rows="10"
+									rowClasses="row1,row2">
+									<f:facet name="header">
+										<rich:columnGroup>
+
+											<rich:column>
+												<h:outputLabel value="Nom"
+													style="color:white;font-size:12px;font-family: Arial;text-align:center;" />
+											</rich:column>
+
+											<rich:column>
+												<h:outputLabel value="Personne"
+													style="color:white;font-size:12px;font-family: Arial;text-align:center;" />
+											</rich:column>
+											<rich:column>
+												<h:outputLabel value="Date Naissance"
+													style="color:white;font-size:12px;font-family: Arial;text-align:center;" />
+											</rich:column>
+
+											<rich:column>
+												<h:outputLabel value="Lien Naissance"
+													style="color:white;font-size:12px;font-family: Arial;text-align:center;" />
+											</rich:column>
+
+											<rich:column>
+												<h:outputLabel value="Lien Parenté"
+													style="color:white;font-size:12px;font-family: Arial;text-align:center;" />
+											</rich:column>
+
+											<rich:column>
+												<h:outputLabel value="Sexe"
+													style="color:white;font-size:12px;font-family: Arial;text-align:center;" />
+											</rich:column>
+
+
+											<rich:column>
+												<h:outputLabel value="Action"
+													style="color:white;font-size:12px;font-family: Arial;text-align:center;" />
+											</rich:column>
+
+
+										</rich:columnGroup>
+									</f:facet>
+
+									<rich:column>
+										<h:outputText value="#{o.nom}" styleClass="grey" />
+									</rich:column>
+									<rich:column>
+										<h:outputText value="#{o.prenom}" styleClass="grey" />
+									</rich:column>
+									<rich:column >
+										<h:outputText value="#{o.dateNaissance}"
+											styleClass="grey" />
+									</rich:column>
+
+
+									<rich:column filterBy="#{o.lieuNaissance}"
+										filterEvent="onkeyup">
+										<h:outputText value="#{o.lieuNaissance}"
+											styleClass="grey" />
+									</rich:column>
+									
+								    <rich:column filterBy="#{o.lienParente.libelle}"
+										filterEvent="onkeyup">
+										<h:outputText value="#{o.lienParente.libelle}" styleClass="grey" />
+									</rich:column>
+
+									<rich:column filterBy="#{o.sexe.libelle}"
+										filterEvent="onkeyup">
+										<h:outputText value="#{o.sexe.libelle}"
+											styleClass="grey" />
+									</rich:column>
+
+
+									<rich:column>
+									  <table width="100px"> <tr> 
+  											<td>	<a:commandLink value="" status="waitStatus" 
+													action="#{ayantDroitService.preparModification(o)}"
+												     oncomplete="javascript:Richfaces.showModalPanel('sim',{width:1300, height:500})"
+													reRender="form" title="Modifier">
+													<s:graphicImage fileName="edit.png" style="border:0px;"
+														value="/picto/edit.png" width="16" height="16" alt="" />
+
+												</a:commandLink>
+										</td>
+										<td>
+													<a:commandLink value="" status="waitStatus" 
+													action="#{ayantDroitService.supprimer(o)}"
+													onclick="if (!confirm(' Voulez-vous vraiment supprimer ce ayant droit ?')) return false"
+													reRender="form" title="Modifier">
+													<s:graphicImage fileName="cross.png" style="border:0px;"
+														value="/picto/cross.png" width="16" height="16" alt="" />
+
+												</a:commandLink>
+										  </td>
+										  </tr>
+										  </table>
+									</rich:column>
+
+								</rich:dataTable>
+								<rich:datascroller status="waitStatus" stepControls="auto"
+									style="width:100%" for="liste"
+									rendered="#{not empty ayantDroitService.listeFamille}" />
+
+
+
+
+
+
+
+							</div>
+					  
+							
+								<div class="panel-body">
+									<div class="form-group has-success">
+										
+									</div>
+
+								</div>
+							
+						</div>
+					</div>
+				</div>
+
+
+			</div>
+
+
+		</h:form>
+
+
+
+<rich:modalPanel id="sim"
+			style="background:url('../img2/fond.jpg') repeat-x scroll 0 0 #FFF;height:300; width:900"
+			moveable="true" styleClass="popupAttente">
+			<f:facet name="controls">
+
+			
+			</f:facet>
+			<f:facet name="header">
+			 AJOUTER AYANT DROIT
+			</f:facet>
+			<rich:spacer height="10px" />
+			<h:form class="note-form" id="form">
+
+
+
+				<div class="row">
+					<div class="col-md-12">
+						<div class="panel panel-success">
+							<div class="panel-heading">
+								<h3 class="panel-title" style="text-align: center;">Ajouter
+									Ayant Droit </h3>
+							</div>
+							
+								<div class="panel-body">
+									<div class="form-group has-success">
+										
+										<TABLE class="table">
+											<tr>
+												<td><h:outputLabel styleClass="grey" value="Nom : " /></td>
+												<td><h:inputText
+														value="#{ayantDroitService.ayantDroit.nom}" required="true"
+														class="form-control" /></td>
+
+
+												<td><h:outputLabel styleClass="grey" value="Prénom : " /></td>
+												<td><h:inputText
+														value="#{ayantDroitService.ayantDroit.prenom}"
+														required="true" class="form-control" /></td>
+											</tr>
+
+											<tr>
+												<td><h:outputLabel value="Lieu de Naissance : "
+														styleClass="grey" /></td>
+												<td><h:inputText
+														value="#{ayantDroitService.ayantDroit.lieuNaissance}"
+														required="false" class="form-control" /></td>
+												<td><h:outputLabel styleClass="grey" value=" Sexe : " /></td>
+												<td> 
+												 <h:selectOneMenu
+														class="form-control"
+														value="#{ayantDroitService.ayantDroit.sexe}"
+														converter="#{sexeConverter}" id="parent2">
+														
+														<s:selectItems value="#{listeParamStock.listeLst_Sexe}"
+															var="sexe" label="#{sexe.libelle}" />
+
+
+													</h:selectOneMenu>
+													
+												</td>
+
+											</tr>
+
+											<tr>
+												<td><h:outputLabel styleClass="grey"
+														value="Lien Parenté : " /></td>
+												<td>
+												  <h:selectOneMenu
+														class="form-control" valueChangeListener="#{ayantDroitService.rechercheConjointe}"
+														value="#{ayantDroitService.ayantDroit.lienParente}"
+														converter="#{typeAyantDroitConverter}" >
+														
+														<s:selectItems value="#{listeParamStock.listeLst_TypeAyantDroit}"
+															var="cat" label="#{cat.libelle}" />
+														 <a:support  event="onchange"  ajaxSingle="true" reRender="pr2" />	
+
+													</h:selectOneMenu> 
+												</td>
+
+
+												
+												
+												
+												<td><h:outputLabel styleClass="grey"
+														value=" Date de Naissance : " /></td>
+												<td><rich:calendar enableManualInput="true"
+														validatorMessage="X" maxlength="10"
+														value="#{ayantDroitService.ayantDroit.dateNaissance}"
+														locale="fr" popup="#{true}" style="width:100px"
+														datePattern="dd/MM/yyyy" required="false"
+														requiredMessage="" cellWidth="1px" /></td>
+											</tr>
+											
+											
+											
+																						<tr>
+												<td><h:outputLabel styleClass="grey"
+														value="2éme parent : " /></td>
+												<td>
+
+														<h:selectOneMenu 
+															class="form-control"
+															value="#{ayantDroitService.ayantDroit.parent2}"
+															converter="#{ayantDroitConverter}" id="pr2">
+															
+															<s:selectItems value="#{ayantDroitService.listeConjoint}" noSelectionLabel="Selectionnez......"
+																var="conj" label="#{conj.prenom} #{conj.nom}" />
+													    </h:selectOneMenu>
+											   </td>
+											   
+
+
+												<td><h:outputLabel styleClass="grey" value="Date Mariage : " /></td>
+												<td>
+													   <rich:calendar enableManualInput="true"
+														validatorMessage="X" maxlength="10"
+														value="#{ayantDroitService.ayantDroit.dateMariage}"
+														locale="fr" popup="#{true}" style="width:100px"
+														datePattern="dd/MM/yyyy" required="false"
+														requiredMessage="" cellWidth="1px" /></td>
+													
+											</tr>
+											
+																						
+											
+											
+																					
+											
+
+
+										</TABLE>
+										
+										<p align="center">
+										
+										 <a:commandLink styleClass="btn btn-success"
+																		 onclick="Richfaces.hideModalPanel('sim');"
+																		value=""
+																		action="#{ayantDroitService.ajouter()}"
+																		reRender="ayantdroit" status="waitStatus" >
+																		
+																		Valider			
+																				</a:commandLink>
+																					<rich:spacer width="100px"></rich:spacer>
+									   <a:commandLink styleClass="btn btn-danger"
+																		 onclick="Richfaces.hideModalPanel('sim');"
+																		value=""
+																		action="#{ayantDroitService.annuler()}"
+																		reRender="ayantdroit" status="waitStatus" >
+																		
+																		Annuler			
+																				</a:commandLink>
+										
+										
+									
+										</p>
+									
+									</div>
+
+								</div>
+							
+						</div>
+					</div>
+				</div>
+
+
+			</h:form>
+		</rich:modalPanel>
+
+
+
+
+
+	</ui:define>
+</ui:composition>

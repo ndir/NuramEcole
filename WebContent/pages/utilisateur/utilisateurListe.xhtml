@@ -1,0 +1,183 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!--  V 0.1 : Maj : 09/11/2007 -->
+<ui:composition
+	 xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:rich="http://richfaces.ajax4jsf.org/rich"
+	xmlns:a="https://ajax4jsf.dev.java.net/ajax"
+	xmlns:s="http://jboss.com/products/seam/taglib"
+	xmlns:t="http://myfaces.apache.org/tomahawk"
+	template="/template/template.xhtml">
+	<!-- Page de listing de Vehicule -->
+	<ui:define name="title">Application Ch@k@</ui:define>
+	<ui:define name="body">
+	
+	<a:outputPanel id="msg">
+		<h:message  infoClass="confirmationerror" errorClass="confirmationerror" warnClass="confirmationerror" for="intervenantErreur"    />
+		<h:message  infoClass="confirmationwarning" errorClass="confirmationwarning" warnClass="confirmationwarning" for="intervenantMsgWarning" />
+		<h:inputHidden id="intervenantMsgWarning" value="" />
+		<h:inputHidden id="intervenantErreur" value="" />
+	</a:outputPanel>
+	<f:loadBundle basename="messages" var="msgBundle" />
+		<a:form >
+		
+			<!-- Fieldset de recherche -->
+			
+    <a:outputPanel id="searchIntervenantCriteria">
+		 <div class="zoneResultat2">
+			<h1> #{msgBundle['gestock.titre.gestionRechUtilisateur']}  </h1>
+			
+			<rich:panel header="#{msgBundle['gestock.titre.gestionRechUtilisateur']}  ">
+			
+			<fieldset>
+			<legend>#{msgBundle['label.criteresutilisateurs']} </legend>
+			
+				
+				<table>
+					<tr>
+						<td>
+							<h:outputLabel styleClass="grey" value="#{msgBundle['label.nom']}" for="nameSearchString" />
+						</td>
+						<td>
+							<h:inputText id="nameSearchString" styleClass="text firstFocus" value="#{utilisateurService.nomSearchString}" style="width: 165px;">
+				    			<a:support event="onchange" actionListener="#{utilisateurService.find}" limitToList="true"  ignoreDupResponses="true"  status="waitStatus" 
+				    				eventsQueue="rechercheUtilisateurServiceQueue"  requestDelay="0"  reRender="searchResultsIntervenants" />
+							</h:inputText>
+						</td>
+						<td width="10px" />
+						<td>
+							<h:outputLabel styleClass="grey" value="#{msgBundle['label.prenom']}" for="firstnameSearchString" />
+						</td>
+						<td>
+							<h:inputText styleClass="text"  id="firstnameSearchString" value="#{utilisateurService.prenomSearchString}" style="width: 165px;">
+				    			<a:support event="onchange" actionListener="#{utilisateurService.find}"  limitToList="true" ignoreDupResponses="true"  status="waitStatus" 
+				    				eventsQueue="rechercheUtilisateurServiceQueue"  requestDelay="0"  reRender="searchResultsIntervenants" />
+							</h:inputText>
+						</td>
+						<td width="10px" />
+						<td>
+							<h:outputLabel styleClass="grey" value="#{msgBundle['label.profile']}" for="selectProfile" />
+						</td>
+						<td>
+							<h:selectOneMenu id="selectProfile" style="width: 250px;" converter="#{profileConverter}"
+								value="#{utilisateurService.profileSearch}" styleClass="textOrange" >
+								<a:support action="#{utilisateurService.find}" status="waitStatus" event="onchange" reRender="searchResultsIntervenants" />
+								<s:selectItems noSelectionLabel="Indifférent" var="varProfile" label="#{msgBundle[varProfile.libelle]}" value="#{profilesList.lstProfiles}"  />
+							</h:selectOneMenu>								
+						</td>
+					</tr>
+				</table>
+				
+		</fieldset>
+		
+   
+	
+		<div style="height: 7px;" />
+		<table width="100%" >
+				<tr>
+					<td width="1075px;" >
+						<div id="trd_submenu" class="trd_kb">
+							<ul>
+								<li>
+									<a:commandLink  value="" action="#{utilisateurService.find}" status="waitStatus" ignoreDupResponses="true" 
+										eventsQueue="rechercheUtilisateurServiceQueue"  
+										requestDelay="0"  reRender="searchResultsIntervenants" >
+										<s:graphicImage fileName="find.png" style="border:0px;" value="/picto/find.png" width="16" height="16" alt="" />
+										#{msgBundle['btn.rechercher']}
+									</a:commandLink>
+								</li>
+								<li>
+									<h:commandLink value="" action="#{utilisateurService.versCreationUtilisateurAgence}" onclick="afficherAttente();"  >
+										<s:graphicImage fileName="user_suit.png" style="border:0px;" value="/picto/user_suit.png" width="16" height="16" alt="" />
+										#{msgBundle['btn.ajouterunutilisateur']}
+									</h:commandLink>
+								</li>
+							</ul>
+						</div>
+					</td>
+					<td>
+						&#160;
+					</td>
+				</tr>
+			</table>
+		
+		<a:outputPanel id="searchResultsIntervenants">
+	
+			
+					<h:outputText value="#{msgBundle['label.aucunutilisateur']}" rendered="#{utilisateurService.listeUtilisateurs.size()==0}"/>
+					<rich:dataTable id="intervenants" rows="0" value="#{utilisateurService.listeUtilisateurs}" var="hotUtilisateur" 
+						rendered="#{utilisateurService.listeUtilisateurs.size()>0}" width="100%"  rowClasses="row1, row2"  >
+						<rich:column >
+							<f:facet name="header">
+								#{msgBundle['col.nom']}
+							</f:facet>
+							<h:commandLink  styleClass="#{hotUtilisateur.actif ? 'lienSansSoulignementVert' : 'lienSansSoulignementRouge'  }" onclick="afficherAttente();" action="#{utilisateurService.consulterUtilisateur(hotUtilisateur)}" ><h:outputText value="#{hotUtilisateur.nom}" /></h:commandLink>
+						</rich:column>
+						<rich:column>
+							<f:facet name="header">
+								#{msgBundle['col.prenom']}
+							</f:facet>
+							<h:commandLink  styleClass="#{hotUtilisateur.actif ? 'lienSansSoulignementVert' : 'lienSansSoulignementRouge'  }" onclick="afficherAttente();" action="#{utilisateurService.consulterUtilisateur(hotUtilisateur)}" ><h:outputText value="#{hotUtilisateur.prenom}" /></h:commandLink>
+						</rich:column>
+						<rich:column>
+							<f:facet name="header">
+								#{msgBundle['col.email']}
+							</f:facet>
+							<h:outputText styleClass="#{hotUtilisateur.actif ? 'lienSansSoulignementVert' : 'lienSansSoulignementRouge'  }" value="#{hotUtilisateur.email}" ></h:outputText>
+						</rich:column>
+						<rich:column>
+							<f:facet name="header">
+								#{msgBundle['col.login']}
+							</f:facet>
+							<h:outputText styleClass="#{hotUtilisateur.actif ? 'lienSansSoulignementVert' : 'lienSansSoulignementRouge'  }" value="#{hotUtilisateur.login}" ></h:outputText>
+						</rich:column>
+						<rich:column>
+							<f:facet name="header">
+								#{msgBundle['col.profil']}
+							</f:facet>
+							<h:outputText styleClass="#{hotUtilisateur.actif ? 'lienSansSoulignementVert' : 'lienSansSoulignementRouge'  }" value="#{msgBundle[hotUtilisateur.profile.libelle]}" ></h:outputText>
+						</rich:column>
+						
+						<rich:column >
+							<f:facet name="header">
+								#{msgBundle['col.action']}
+							</f:facet>
+							<table align="center" >
+								<tr>
+									<td align="center">
+										<a:commandLink styleClass="#{hotUtilisateur.actif ? 'lienSansSoulignementVert' : 'lienSansSoulignementRouge'  }" value="#{msgBundle['btn.activer']}"
+											requestDelay="0" reRender="searchResultsIntervenants" 
+											action="#{utilisateurService.activer(hotUtilisateur)}" status="waitStatus" 
+											ignoreDupResponses="true" rendered="#{not hotUtilisateur.actif}"  />
+										
+										<a:commandLink styleClass="#{hotUtilisateur.actif ? 'lienSansSoulignementVert' : 'lienSansSoulignementRouge'  }"
+											value="#{msgBundle['btn.desactiver']}" requestDelay="0"  reRender="searchResultsIntervenants" 
+											action="#{utilisateurService.desactiver(hotUtilisateur)}" status="waitStatus" 
+											ignoreDupResponses="true" rendered="#{hotUtilisateur.actif}"  />
+									</td>
+								</tr>
+							</table>
+						</rich:column>
+					</rich:dataTable>
+			</a:outputPanel>
+			</rich:panel>
+			
+		</div>
+		</a:outputPanel>
+		</a:form>
+	
+			
+      
+      
+    
+      
+      
+	
+	
+	
+	
+	
+</ui:define>
+</ui:composition>

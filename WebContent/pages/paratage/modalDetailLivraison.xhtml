@@ -1,0 +1,177 @@
+<div style="width: 100%;" xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:a4j="https://ajax4jsf.dev.java.net/ajax"
+	xmlns:a="https://ajax4jsf.dev.java.net/ajax"
+	xmlns:s="http://jboss.com/products/seam/taglib"
+	xmlns:rich="http://richfaces.ajax4jsf.org/rich">
+
+<rich:modalPanel id="panelDetails" style="background:url('../img2/fond.jpg') repeat-x scroll 0 0 #FFF;height:590; " >
+			<div class="cadreBordOrange margTop30px padLeft30px padRight30px"  >
+			<div class="zoneTitreOrange margTop10px padLeft10px">
+			  Details livraison 
+			</div>
+			<br />
+			<div class="margtop30px">
+			<f:facet name="controls">
+				<a onclick="Richfaces.hideModalPanel('panelDetails');" style="cursor:pointer" href="#">#{msgBundle['label.fermer']}</a>
+			</f:facet>
+
+
+			<div ><!-- Holds the form -->
+			
+			<h:form class="note-form" id="idDetailt">
+				<a:outputPanel ajaxRendered="true">
+					<h:message id="erreur" infoClass="confirmationerror" errorClass="confirmationerror" warnClass="confirmationerror" for="passwordErreur"    />
+        			<h:inputHidden id="passwordErreur" value="" />
+        			<div style="visibility: hidden;display: none;" >
+						<h:messages id="error2"></h:messages>
+					</div>
+				</a:outputPanel>
+			<script>
+				jQuery(document).ready(function()
+				{
+					dateEtHeureInputs();
+				});
+
+				function ajaxRequestContainsErrors() {
+					var retour = jQuery("#idDetailt\\:erreur").text();
+					var retour2 = jQuery("#idDetailt\\:error2").text();
+					var resultat =  retour != '' || retour2 != "";
+					return resultat;
+				}
+
+				function fermerSiOk()
+				{
+					if (!ajaxRequestContainsErrors()) Richfaces.hideModalPanel('panelDetails');
+				}
+				
+			</script>
+			   	<table width="100%">
+			   	     <tr>
+							    <td ><h:outputText value="Montant Total :" styleClass="grey"   /> </td>
+							    <td> <h:outputText  value="#{validationCommandeService.livraisonEnCours.getMontantAPaye()}" style="color:blue ;font-size: large;font-weight: bold;"   >
+							     			 <f:convertNumber pattern="#,###" /> 
+										</h:outputText>
+										#{msgBundle['monnaie.unite']}
+								 </td>
+							 	<td ><h:outputText value="Ristourn :" styleClass="grey" style="min-width:150px;"   /> </td>
+							    <td> <h:outputText  value="#{validationCommandeService.livraisonEnCours.getRistourne()}" style="color:blue ;font-size: large;font-weight: bold;"   > 
+							    			<f:convertNumber pattern="#,###" />
+										</h:outputText>
+										#{msgBundle['monnaie.unite']}
+								 </td>
+							  </tr>
+					<tr>  
+					    <td> <h:outputText value="Numéro Facture" styleClass="grey" />  </td>
+						<td> <h:inputText value="#{validationCommandeService.livraisonEnCours.numFacture}" styleClass="textBleu2"/> </td>
+						<td> <h:outputText value="Date Livraison" styleClass="grey" />  </td>
+						<td> <rich:calendar
+										value="#{validationCommandeService.livraisonEnCours.dateLivraison}" rendered="true"
+										buttonIcon="/img2/calendrier.png" cellWidth="0px"
+										cellHeight="20px"
+										style="width:200px;border: 3px solid #006a39;"
+										styleClass="textBleu2" datePattern="dd/MM/yyyy">
+						     </rich:calendar>
+						</td>
+						
+					</tr>
+					 <tr>  
+					    <td> <h:outputText value="Caisse " styleClass="grey" />  </td>
+						<td> 
+						    <h:selectOneMenu   value="#{validationCommandeService.caisse}"   styleClass="textBleu2"  id="caiss" requiredMessage="Selectionnez...." converter="#{caisseConverter}"  >
+							     <s:selectItems  value="#{listeParamStock.listeCaisse}" noSelectionLabel="Selectionnez...."  var="it" label="#{it.libelle}" />
+							</h:selectOneMenu> 
+						 </td>
+					  </tr>
+				</table>  
+			<div  style="height:200px;overflow: auto">
+							
+				<rich:dataTable value="#{validationCommandeService.livraisonEnCours.getListeDetailLivraison()}" var="it"
+								id="comm" style="width:100%;" rowClasses="row1,row2">
+								<f:facet name="header">
+									<rich:columnGroup>
+									    <rich:column>
+											<h:outputLabel value="Operateur " style="color:white;font-size:12px;font-family: Arial;text-align:center;" />
+										</rich:column>
+										<rich:column>
+											<h:outputLabel value="Libelle produit " style="color:white;font-size:12px;font-family: Arial;text-align:center;" />
+										</rich:column>
+										<rich:column>
+											<h:outputLabel value="Quantite " style="color:white;font-size:12px;font-family: Arial;text-align:center;" />
+										</rich:column>
+										<rich:column>
+											<h:outputLabel value="Prix U " style="color:white;font-size:12px;font-family: Arial;text-align:center;" />
+										</rich:column>
+										<rich:column>
+											<h:outputLabel value="Montant Total" style="color:white;font-size:12px;font-family: Arial;text-align:center;" />
+										</rich:column>
+										<rich:column>
+											<h:outputLabel value="Supp" style="color:white;font-size:12px;font-family: Arial;text-align:center;" />
+										</rich:column>
+									</rich:columnGroup>
+								</f:facet>
+								    <rich:column >
+										<h:outputText value="#{it.operateur.intitule}" styleClass="grey" />
+								    </rich:column>
+								    <rich:column >
+										<h:outputText value="#{it.produit.libelle}" styleClass="grey" />
+								    </rich:column>
+								    <rich:column >
+										<h:outputText value="#{it.quantite}" styleClass="grey" />
+								    </rich:column>
+								     <rich:column >
+								        <TABLE align="right" >  <tr >  <td align="right" >
+										<h:outputText value="#{it.prixUnitaire}" styleClass="grey" >
+										   <f:convertNumber pattern="#,###" />
+										</h:outputText>
+										#{msgBundle['monnaie.unite']}
+									    </td> </tr> </TABLE>
+								    </rich:column>
+								    <rich:column >
+								       <TABLE align="right" >  <tr >  <td align="right" >
+										<h:outputText value="#{it.montantTotal}" styleClass="grey" >
+										  <f:convertNumber pattern="#,###" />
+										</h:outputText>
+										#{msgBundle['monnaie.unite']}
+									  </td> </tr> </TABLE>
+								    </rich:column>
+								    
+								    <rich:column >
+								        <TABLE align="right" >  <tr >  <td align="right" >
+									    <a:commandLink reRender="tab2,comm,montant" status="waitStatus"  title="Sélectionner"
+									                action="#{validationCommandeService.supprimerProduit(it)}" value=""
+									                   >
+									                   <s:graphicImage fileName="cross.png" style="border:0px;" value="/picto/cross.png" width="20" height="20" alt="Peupler" />
+									 
+									     </a:commandLink>
+									     </td>
+									     </tr>
+									     </TABLE>
+								     </rich:column>
+								    
+							</rich:dataTable>
+						</div>
+							
+						 <TABLE align="center" >	
+						 	<tr>
+								<td colspan="2" align="center">
+									<br />
+									<hr class="orange"/>
+									<a:commandButton value="Valider" onclick="Richfaces.hideModalPanel('panelDetails');" style="text-align:right;"  status="waitStatus" 
+										action="#{validationCommandeService.validerLivraison}" reRender="listLiv" image="/img2/bouton_valider.jpg"/> 
+								</td>
+							</tr>
+						 </TABLE>
+						
+							
+			</h:form>
+			</div>
+		</div>
+		<div class="clear"></div>
+		</div>
+		</rich:modalPanel>
+	
+
+</div>

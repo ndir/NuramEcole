@@ -1,0 +1,154 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//FR" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!--  V 0.1 : Maj : 09/11/2007 -->
+
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:rich="http://richfaces.ajax4jsf.org/rich"
+	xmlns:a="https://ajax4jsf.dev.java.net/ajax"
+	xmlns:t="http://myfaces.apache.org/tomahawk"
+	xmlns:s="http://jboss.com/products/seam/taglib"
+	xmlns:c="http://java.sun.com/jstl/core"
+	template="/template/template.xhtml">
+	<!-- Page d'accueil -->
+
+
+
+
+
+	<ui:define name="title">#{msgBundle['gestock.titre.creationMenu']}</ui:define>
+	<ui:define name="body">
+	<rich:tabPanel switchType="ajax" styleClass="gras" style="border:none;background: transparent;"  id="idTabPanel" >
+		  
+	<rich:tab label="#{msgBundle['gestock.onglet.creationMenu']}" id="idProfile"  style="border:none;background: transparent;" switchType="server" status="waitStatus">
+		<h:form id="note">
+
+			
+	<div class="zoneResultat2">
+		
+		<!--  	<table> <tr> 
+			      <td> <s:graphicImage fileName="candidat_64.png" style="border:0px;" value="/picto/candidat_64.png" width="40" height="40" alt="Peupler" /> </td> 
+			        <td> <h1>#{msgBundle['gestock.titre.creationMenu']}  </h1>  </td> 
+			      </tr>    
+			</table> -->
+			
+			<rich:panel header="#{msgBundle['gestock.titre.creationMenu']}">
+			
+			<fieldset>
+			<legend>#{msgBundle['gestock.titre.creationMenu']} </legend>
+			
+			<table width="100%">
+			<tr>  
+				<td> <h:outputText value="#{msgBundle['gestock.ligFonction']} : " styleClass="grey" />  </td>
+				<td> <h:inputText value="#{gestionMenuService.fonctionCreation.ligFonction}" styleClass="textBleu2" /> </td>
+			   	<td> <h:outputText value="#{msgBundle['gestock.nomFonction']} : " styleClass="grey" />  </td>
+				<td> <h:inputText value="#{gestionMenuService.fonctionCreation.nomFonction}" styleClass="textBleu2" /> </td>
+				<td> <h:outputText value="#{msgBundle['gestock.actif']} : " styleClass="grey" />  </td>
+				<td> <h:selectBooleanCheckbox value="#{gestionMenuService.fonctionCreation.actif}" /> </td>
+			    
+				<td><a:commandLink value="" status="waitStatus"
+									title="Ajouter"   reRender="note"
+									action="#{gestionMenuService.ajouterFonction}" >
+									<s:graphicImage fileName="accept.png" style="border:0px;"
+										value="/picto/accept.png" alt="" styleClass="buton" />
+					</a:commandLink></td>
+			</tr>
+			
+			</table>
+			
+			</fieldset>
+			
+		
+				
+				
+			<rich:spacer height="20px;"></rich:spacer>
+		
+			<fieldset>
+			<legend> Liste Menu </legend>
+			
+			<rich:dataTable value="#{listeParamStock.listeFonction}" var="it"
+							id="cc" style="width:100%;" rowClasses="row1,row2">
+							<f:facet name="header">
+								<rich:columnGroup>
+									<rich:column>
+										<h:outputLabel value="Libelle  "
+											style="color:white;font-size:12px;font-family: Arial;text-align:center;" />
+									</rich:column>
+									<rich:column>
+										<h:outputLabel value="Code  "
+											style="color:white;font-size:12px;font-family: Arial;text-align:center;" />
+									</rich:column>
+									
+										<rich:column>
+										<h:outputLabel value="Actif   "
+											style="color:white;font-size:12px;font-family: Arial;text-align:center;" />
+									</rich:column>
+									
+									
+									<rich:column>
+										<h:outputLabel value="Actions"
+											style="color:white;font-size:12px;font-family: Arial;text-align:center;" />
+									</rich:column>
+								</rich:columnGroup>
+							</f:facet>
+
+							
+							<rich:column >
+								<h:outputText value="#{it.nomFonction}" styleClass="grey" />
+							</rich:column>
+							<rich:column >
+								<h:outputText value="#{it.ligFonction}" styleClass="grey" />
+							</rich:column>
+							<rich:column >
+							      <TABLE align="center" >  <tr >  <td align="center" >
+								<h:outputText value="Oui" rendered="#{it.actif}" styleClass="grey" />
+								<h:outputText value="Non" rendered="#{not it.actif}" styleClass="grey" />
+								</td> </tr></TABLE>
+							</rich:column>
+							 
+							<rich:column width="100px">
+
+								<table width="100%">
+									<tr>
+									    <td width="20px;" align="center">
+									         <a:commandLink value=""  status="waitStatus" reRender="note" title="Modifier" action="#{gestionMenuService.deactiverActiver(it)}">
+												  <s:graphicImage rendered="#{ it.actif}" title="Ouvrir"  fileName="cadenas_ferme.png" style="border:0px;" value="/picto/cadenas_ferme.png" width="16" height="16" alt="Peupler" />
+											      <s:graphicImage  rendered="#{not it.actif}" title="Fermer"  fileName="cadenas_ouvert.png" style="border:0px;" value="/picto/cadenas_ouvert.png" width="16" height="16" alt="Peupler" />
+											</a:commandLink>
+									    </td>
+										<td width="20px;" align="center">
+											
+											<a:commandLink value="" status="waitStatus" reRender="note" title="Modifier" action="#{gestionMenuService.initmodifier(it)}">
+												<s:graphicImage fileName="edit.png" style="border:0px;" value="/picto/edit.png" width="16" height="16" alt="" />
+											</a:commandLink></td>
+
+										
+										<td width="20px;" align="center"><a:commandLink value="" status="waitStatus" action="#{gestionMenuService.supprimer(it)}"
+												 reRender="note" title="Supprimer (Fonction: #{it.nomFonction})">
+												<s:graphicImage fileName="cross.png" style="border:0px;" value="/picto/cross.png" width="16" height="16" alt="" />
+											</a:commandLink></td>
+
+									</tr>
+								</table>
+
+							</rich:column>
+
+						</rich:dataTable>
+			</fieldset>
+			
+			
+			
+			</rich:panel>
+			</div>
+			</h:form>
+		
+		 </rich:tab>
+		 <rich:tab label="#{msgBundle['gestock.onglet.attrDroit']}" id="idDroit"   style="border:none;background: transparent;" switchType="server" status="waitStatus">
+		       <ui:include src="attributionDroits.xhtml" />
+        </rich:tab>
+        
+        </rich:tabPanel>
+			
+	</ui:define>
+</ui:composition>

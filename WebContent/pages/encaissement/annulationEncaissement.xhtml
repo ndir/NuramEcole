@@ -1,0 +1,218 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//FR" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!--  V 0.1 : Maj : 09/11/2007 -->
+
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:rich="http://richfaces.ajax4jsf.org/rich"
+	xmlns:a="https://ajax4jsf.dev.java.net/ajax"
+	xmlns:t="http://myfaces.apache.org/tomahawk"
+	xmlns:s="http://jboss.com/products/seam/taglib"
+	xmlns:c="http://java.sun.com/jstl/core"
+	template="/template/template.xhtml">
+	<!-- Page d'accueil -->
+
+
+
+
+
+	<ui:define name="title">GESTION  #{msgBundle['gestock.titre.annulationEncaissement']} </ui:define>
+	<ui:define name="body">
+		<h:form id="note">
+
+			
+			<div class="zoneResultat2" style="height:600px;overflow: auto"  >
+			
+		<!--  	<table> <tr> 
+			      <td> <s:graphicImage fileName="candidat_64.png" style="border:0px;" value="/picto/candidat_64.png" width="5" height="5" alt="Peupler" /> </td> 
+			        <td> <h1>  #{msgBundle['gestock.titre.retoureProduit']}    </h1>  </td> 
+			      </tr>    
+			</table>	-->				 
+			
+			
+			
+			<rich:panel header="  #{msgBundle['gestock.titre.annulationEncaissement']} ">
+		   <fieldset>
+			<legend>  #{msgBundle['gestock.recherche']} </legend>
+			
+				      <table border="0" width="100%" cellpadding="7">
+									<tr>
+									
+							<td><h:outputText value="Date debut :" style="font-size:11px;" styleClass="grey" /></td>
+								<td><rich:calendar
+										value="#{encaissementService.dateDebut}" rendered="true"
+										buttonIcon="/img2/calendrier.png" cellWidth="0px"
+										cellHeight="20px"
+										style="width:200px;border: 3px solid #006a39;"
+										styleClass="textBleu2" datePattern="dd/MM/yyyy">
+									</rich:calendar></td>
+									
+									<td><h:outputText value="Date fin :" style="font-size:11px;" 
+										styleClass="grey" /></td>
+								<td><rich:calendar rendered="true"
+										value="#{encaissementService.dateFin}"
+										buttonIcon="/img2/calendrier.png" cellWidth="0px"
+										cellHeight="20px"
+										style="width:200px;border: 3px solid #006a39;"
+										styleClass="textBleu2" datePattern="dd/MM/yyyy">
+									</rich:calendar></td>
+							   <td ><h:outputText value="#{msgBundle['gestock.caissier']}  :" styleClass="grey"   /> </td>
+							   <td>
+							      <h:selectOneMenu  value="#{encaissementService.caissier}" disabled="false" styleClass="textBleu2"  id="dis" requiredMessage="Selectionnez...." converter="#{utilisateurConverter}"  >
+								     <s:selectItems  value="#{encaissementService.listeCaissier}" noSelectionLabel="Selectionnez...."  var="it" label="#{it}" />
+								</h:selectOneMenu> 
+						       </td>
+					 </tr>
+						
+									  
+				  </table>
+			  
+			  </fieldset>
+			    <rich:spacer height="10px;"></rich:spacer>
+			  	<table width="100%" >
+				<tr>
+					<td width="1175px;"  align="right" >
+						<div id="trd_submenu" class="trd_kb">
+							<ul>
+								<li>
+									<a:commandLink  action="#{encaissementService.rechercheEncaissement}" status="waitStatus" reRender="note"  value="">
+										<s:graphicImage fileName="accept.png" style="border:0px;" value="/picto/accept.png" width="16" height="16" alt="" />
+										#{msgBundle['action.recherche']}
+									</a:commandLink>
+								</li>
+								<li>
+									<a:commandLink  action="#{encaissementService.imprimer}" status="waitStatus" reRender="note"  value="" 
+									     oncomplete="javascript:Richfaces.showModalPanel('modalPdf')">
+										<s:graphicImage fileName="printer.png" style="border:0px;" value="/picto/printer.png" width="16" height="16" alt="" />
+										#{msgBundle['action.imprimer']}
+									</a:commandLink>
+								</li>
+							
+							</ul>
+						</div>
+					</td>
+					<td>
+						&#160;
+					</td>
+				</tr>
+			</table>
+			
+			
+			
+			<table width="100%" >
+			  <tr>  
+			    <td valign="top" width="45%">
+			       <fieldset>
+			       
+						<legend>  #{msgBundle['gestock.resultat']}    </legend>
+						
+						
+						  <div style="height:300px;overflow: auto">
+						 	<rich:dataTable value="#{encaissementService.listeEncaissement}" var="it"
+								id="listeHisto" style="width:100%;" rowClasses="row1,row2">
+								<f:facet name="header">
+									<rich:columnGroup>
+									   	<rich:column>
+											<h:outputLabel value="#{msgBundle['gestock.utilisateur']} " style="color:white;font-size:12px;font-family: Arial;text-align:center;" />
+										</rich:column>
+										 	<rich:column>
+											<h:outputLabel value="#{msgBundle['gestock.numClient']} " style="color:white;font-size:12px;font-family: Arial;text-align:center;" />
+										</rich:column>
+										<rich:column>
+											<h:outputLabel value="#{msgBundle['gestock.prenomnomclient']} " style="color:white;font-size:12px;font-family: Arial;text-align:center;" />
+										</rich:column>
+										<rich:column>
+											<h:outputLabel value="#{msgBundle['gestock.typeEncaissement']} " style="color:white;font-size:12px;font-family: Arial;text-align:center;" />
+										</rich:column>
+										<rich:column>
+											<h:outputLabel value="#{msgBundle['gestock.dateEncaissement']}" style="color:white;font-size:12px;font-family: Arial;text-align:center;" />
+										</rich:column>
+										<rich:column>
+											<h:outputLabel value="#{msgBundle['gestock.montant']} " style="color:white;font-size:12px;font-family: Arial;text-align:center;" />
+										</rich:column>
+										<rich:column>
+											<h:outputLabel value="#{msgBundle['gestock.valider']} " style="color:white;font-size:12px;font-family: Arial;text-align:center;" />
+										</rich:column>
+										<rich:column>
+											<h:outputLabel value="#{msgBundle['gestock.action']} " style="color:white;font-size:12px;font-family: Arial;text-align:center;" />
+										</rich:column>
+									</rich:columnGroup>
+								</f:facet>
+								
+									<rich:column filterEvent="onkeyup" filterBy="#{it.utilisateur}" >
+										<h:outputText value="#{it.utilisateur}" styleClass="grey" />
+								    </rich:column>
+								    <rich:column filterEvent="onkeyup" filterBy="#{it.numeroClient}" >
+										<h:outputText value="#{it.numeroClient}" styleClass="grey" />
+								    </rich:column>
+								    <rich:column filterEvent="onkeyup" filterBy="#{it.intituleClient}" >
+										<h:outputText value="#{it.intituleClient}" styleClass="grey" />
+								    </rich:column>
+								     <rich:column filterEvent="onkeyup" filterBy="#{it.typeEncaissement}" >
+										<h:outputText value="#{it.typeEncaissement.libelle}" styleClass="grey" />
+								    </rich:column>
+								      <rich:column  >
+								           <TABLE align="center" >  <tr >  <td align="center" >
+										           <h:outputText value="#{it.dateEncaissement}" />
+										   </td>  </tr> </TABLE>
+								    </rich:column>
+								    <rich:column   >
+									       <TABLE align="right" >  <tr >  <td align="right" >
+										           <h:outputText value="#{it.montant}" styleClass="grey" >
+										            <f:convertNumber pattern="###,###" />
+				                                  </h:outputText>
+				                                  	#{msgBundle['monnaie.unite']}
+										   </td>  </tr> </TABLE>
+								     </rich:column>
+								     
+								      <rich:column>
+								        <TABLE align="center" width="100%" >  <tr >   <td align="center">
+								          <h:outputText value="Validé" rendered="#{it.vaiderON  }" styleClass="grey" />
+								           <h:outputText value="Annulé " rendered="#{not it.vaiderON}" styleClass="grey" />
+								          </td>  </tr> </TABLE>
+									
+								         
+								      </rich:column>
+								     
+								     
+								     <rich:column> 
+								           <TABLE align="center" width="100%" >  <tr >  
+									 
+									  <td align="center"   width="20px">
+								      <a:commandLink immediate="true" status="waitStatus"  
+										action="#{encaissementService.annulerEncaissement(it)}" value="" title="Annuler Commande" rendered="#{not validerON}"
+										reRender="note" styleClass="lienSansSoulignement" 
+										onclick="if (!confirm('Voulez vous annuler l encaissement ')) return false">
+										<s:graphicImage fileName="cross.png" style="border:0px;" value="/picto/cross.png" width="16" height="16" alt="" />
+										  
+									 </a:commandLink>
+									 </td>
+									 </tr> </TABLE>
+									</rich:column>
+								       
+							</rich:dataTable>
+						</div>		
+				   </fieldset>
+				</td>
+			
+			    </tr>
+			    
+		    </table>
+			    
+			    
+		  
+	 
+		
+		 
+		</rich:panel>
+		</div>
+		</h:form>
+		
+		
+		
+			
+			
+			
+	</ui:define>
+</ui:composition>

@@ -1,0 +1,237 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="accuse_subreport1" language="groovy" pageWidth="555" pageHeight="802" columnWidth="555" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0" uuid="d557e428-c37b-40ed-bcf4-5b06dae94144">
+	<property name="ireport.zoom" value="1.0"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<queryString language="hql">
+		<![CDATA[from Stock]]>
+	</queryString>
+	<field name="caisse" class="com.chaka.parametrage.entity.gestionStock.Caisse"/>
+	<field name="idStock" class="java.lang.Long"/>
+	<field name="montantTotal" class="java.lang.Double"/>
+	<field name="nature" class="com.chaka.parametrage.entity.gestionStock.NatureProduit"/>
+	<field name="operateur" class="com.chaka.parametrage.entity.gestionStock.Operateur"/>
+	<field name="prixUnitaire" class="java.lang.Double"/>
+	<field name="produit" class="com.chaka.parametrage.entity.gestionStock.Produit"/>
+	<field name="quantite" class="java.lang.Integer"/>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="117">
+			<staticText>
+				<reportElement uuid="92f415bf-8168-47f9-bea8-922e3cb46ff6" x="1" y="53" width="555" height="20"/>
+				<textElement textAlignment="Center">
+					<font size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Charbonnage Nouvelle Galerie]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="a4cd66a7-4577-46bf-b98f-18ac4f3d02a3" x="1" y="91" width="554" height="22"/>
+				<textElement textAlignment="Center">
+					<font size="14" isBold="true"/>
+				</textElement>
+				<text><![CDATA[STOCK]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="6103dd88-3b7c-4ed7-a014-2c3214df4d7c" x="1" y="74" width="555" height="20"/>
+				<textElement textAlignment="Center"/>
+				<text><![CDATA[ =======BP 3205 LIBREVILLE   TEL 06 88 88 88======   ]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="dc0d74d8-1851-4944-95cb-8f805418fc82" x="438" y="10" width="18" height="20"/>
+				<textElement/>
+				<text><![CDATA[Le]]></text>
+			</staticText>
+			<textField pattern="dd/MM/yyyy">
+				<reportElement uuid="cb9fd093-b1f6-43c7-bb57-bf4ec36be9c3" x="456" y="10" width="100" height="20"/>
+				<textElement textAlignment="Right">
+					<font isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[new java.util.Date()]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement uuid="a39d9f65-bd62-45a9-b82c-5473c4f674e5" x="370" y="10" width="54" height="20"/>
+				<textElement/>
+				<text><![CDATA[Edité par:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="db97b43c-00bf-4166-bf14-01d72ff56f72" x="108" y="28" width="316" height="22"/>
+				<textElement textAlignment="Center">
+					<font size="14" isBold="true"/>
+				</textElement>
+				<text><![CDATA[C . D . PIKINE]]></text>
+			</staticText>
+		</band>
+	</title>
+	<columnHeader>
+		<band height="63">
+			<staticText>
+				<reportElement uuid="bb15cd4d-c0c2-4fc2-b6ab-05a9bbce2c0e" mode="Opaque" x="0" y="42" width="133" height="20" backcolor="#C0C0C0"/>
+				<box>
+					<pen lineWidth="1.0"/>
+					<topPen lineWidth="1.0"/>
+					<leftPen lineWidth="1.0"/>
+					<bottomPen lineWidth="1.0"/>
+					<rightPen lineWidth="1.0"/>
+				</box>
+				<textElement textAlignment="Center">
+					<font size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Caisse]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="f9568fc1-6751-4065-a1fe-7b77ca9f9169" mode="Opaque" x="310" y="42" width="63" height="20" backcolor="#C0C0C0"/>
+				<box>
+					<pen lineWidth="1.0"/>
+					<topPen lineWidth="1.0"/>
+					<leftPen lineWidth="1.0"/>
+					<bottomPen lineWidth="1.0"/>
+					<rightPen lineWidth="1.0"/>
+				</box>
+				<textElement textAlignment="Center">
+					<font size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[QTé]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="dafa2737-0e70-400c-ac45-e34bf616246f" mode="Opaque" x="133" y="42" width="99" height="20" backcolor="#C0C0C0"/>
+				<box>
+					<pen lineWidth="1.0"/>
+					<topPen lineWidth="1.0"/>
+					<leftPen lineWidth="1.0"/>
+					<bottomPen lineWidth="1.0"/>
+					<rightPen lineWidth="1.0"/>
+				</box>
+				<textElement textAlignment="Center">
+					<font size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Opérateur]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="44184bec-bf2d-4b89-b571-47e564c3c673" mode="Opaque" x="232" y="42" width="78" height="20" backcolor="#C0C0C0"/>
+				<box>
+					<pen lineWidth="1.0"/>
+					<topPen lineWidth="1.0"/>
+					<leftPen lineWidth="1.0"/>
+					<bottomPen lineWidth="1.0"/>
+					<rightPen lineWidth="1.0"/>
+				</box>
+				<textElement textAlignment="Center">
+					<font size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Produit]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="b4f93a3f-4fc3-41a5-a6e8-e15fc24b9a51" mode="Opaque" x="373" y="42" width="63" height="20" backcolor="#C0C0C0"/>
+				<box>
+					<pen lineWidth="1.0"/>
+					<topPen lineWidth="1.0"/>
+					<leftPen lineWidth="1.0"/>
+					<bottomPen lineWidth="1.0"/>
+					<rightPen lineWidth="1.0"/>
+				</box>
+				<textElement textAlignment="Center">
+					<font size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[P.U TTC]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="093dd527-007a-4aa3-b0ae-ab3dcaa38a1c" mode="Opaque" x="436" y="42" width="119" height="20" backcolor="#C0C0C0"/>
+				<box>
+					<pen lineWidth="1.0"/>
+					<topPen lineWidth="1.0"/>
+					<leftPen lineWidth="1.0"/>
+					<bottomPen lineWidth="1.0"/>
+					<rightPen lineWidth="1.0"/>
+				</box>
+				<textElement textAlignment="Center">
+					<font size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[MT TTC]]></text>
+			</staticText>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="20" splitType="Stretch">
+			<textField>
+				<reportElement uuid="40124698-fce0-48d4-b88f-41569f579301" x="133" y="0" width="99" height="20"/>
+				<box>
+					<pen lineWidth="1.0"/>
+					<topPen lineWidth="1.0"/>
+					<leftPen lineWidth="1.0"/>
+					<bottomPen lineWidth="1.0"/>
+					<rightPen lineWidth="1.0"/>
+				</box>
+				<textElement/>
+				<textFieldExpression><![CDATA[" "+$F{operateur}.getIntitule()]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="92d14827-ac57-43dc-871f-5bc39726ec19" x="232" y="0" width="78" height="20"/>
+				<box>
+					<pen lineWidth="1.0"/>
+					<topPen lineWidth="1.0"/>
+					<leftPen lineWidth="1.0"/>
+					<bottomPen lineWidth="1.0"/>
+					<rightPen lineWidth="1.0"/>
+				</box>
+				<textElement/>
+				<textFieldExpression><![CDATA[" "+$F{produit}.getLibelle()]]></textFieldExpression>
+			</textField>
+			<textField pattern=" #,###">
+				<reportElement uuid="82d133a1-be67-4597-9a5c-c2195c222436" x="310" y="0" width="63" height="20"/>
+				<box>
+					<pen lineWidth="1.0"/>
+					<topPen lineWidth="1.0"/>
+					<leftPen lineWidth="1.0"/>
+					<bottomPen lineWidth="1.0"/>
+					<rightPen lineWidth="1.0"/>
+				</box>
+				<textElement textAlignment="Center"/>
+				<textFieldExpression><![CDATA[$F{quantite}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,###">
+				<reportElement uuid="e9efa43f-b276-43f1-b752-8da7eace84c1" x="373" y="0" width="63" height="20"/>
+				<box>
+					<pen lineWidth="1.0"/>
+					<topPen lineWidth="1.0"/>
+					<leftPen lineWidth="1.0"/>
+					<bottomPen lineWidth="1.0"/>
+					<rightPen lineWidth="1.0"/>
+				</box>
+				<textElement textAlignment="Right"/>
+				<textFieldExpression><![CDATA[$F{prixUnitaire}]]></textFieldExpression>
+			</textField>
+			<textField pattern=" #,###">
+				<reportElement uuid="1c16900e-d7b4-44f1-9f36-56a193cb2478" x="436" y="0" width="119" height="20"/>
+				<box>
+					<pen lineWidth="1.0"/>
+					<topPen lineWidth="1.0"/>
+					<leftPen lineWidth="1.0"/>
+					<bottomPen lineWidth="1.0"/>
+					<rightPen lineWidth="1.0"/>
+				</box>
+				<textElement textAlignment="Right"/>
+				<textFieldExpression><![CDATA[$F{montantTotal}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="42342d64-0a3a-4bf4-b9fa-89f7577a7524" x="0" y="0" width="133" height="20"/>
+				<box>
+					<pen lineWidth="1.0"/>
+					<topPen lineWidth="1.0"/>
+					<leftPen lineWidth="1.0"/>
+					<bottomPen lineWidth="1.0"/>
+					<rightPen lineWidth="1.0"/>
+				</box>
+				<textElement/>
+				<textFieldExpression><![CDATA[" "+$F{caisse}.getLibelle()]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<columnFooter>
+		<band/>
+	</columnFooter>
+	<pageFooter>
+		<band height="77"/>
+	</pageFooter>
+</jasperReport>

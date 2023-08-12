@@ -1,0 +1,101 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//FR" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!--  V 0.1 : Maj : 09/11/2007 -->
+
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:rich="http://richfaces.ajax4jsf.org/rich"
+	xmlns:a="https://ajax4jsf.dev.java.net/ajax"
+	xmlns:t="http://myfaces.apache.org/tomahawk"
+	xmlns:s="http://jboss.com/products/seam/taglib"
+	xmlns:c="http://java.sun.com/jstl/core"
+	template="/template/template.xhtml">
+	<!-- Page d'accueil -->
+
+
+
+
+
+	<ui:define name="title">WISEL</ui:define>
+	<ui:define name="body">
+
+		<div id="zoneResultat" class="zoneResultat2">
+			<h:form id="liste">
+				<div class="row">
+					<div class="col-md-12">
+						<div class="col-md-8">
+							<rich:panel header="BILAN DU JOUR #{homes.dateDuJour} "
+								style="width:100%;">
+								<h4>
+									SOLDE CAISSE GLOBAL:
+									<h:outputText value="#{homes.getSoldeTotal()}">
+										<f:convertNumber pattern="#,##0" />
+									</h:outputText>
+								</h4>
+								<rich:dataGrid value="#{homes.listePointVente}" var="car"
+									columns="3" elements="9">
+									<rich:panel header="#{car.libelle}">
+
+										<h:panelGrid columns="3">
+											<h:outputText value="Vente:" styleClass="label" />
+											<h:outputText value="#{homes.getEntrer(car)}">
+												<f:convertNumber pattern="#,##0" />
+											</h:outputText>
+											<a:commandLink value="" action="#" status="waitStatus"
+												oncomplete="#" reRender="liste" title="Détails des ventes">
+												<s:graphicImage fileName="info.png" style="border:0px;"
+													value="/picto/info.png" />
+
+											</a:commandLink>
+
+											<h:outputText value="Dépenses:" styleClass="label"
+												style="color:red;" />
+											<h:outputText value="#{homes.getEntrer(car)}">
+												<f:convertNumber pattern="#,##0" />
+											</h:outputText>
+
+											<a:commandLink value="" action="#" status="waitStatus"
+												oncomplete="#" reRender="liste" title="Détails des dépenses">
+												<s:graphicImage fileName="info.png" style="border:0px;"
+													value="/picto/info.png" />
+
+											</a:commandLink>
+											<h:outputText value="Vente à Crédits:" styleClass="label" />
+											<h:outputText value="#{homes.getEntrer(car)}">
+												<f:convertNumber pattern="#,##0" />
+											</h:outputText>
+											<a:commandLink value="" action="#" status="waitStatus"
+												oncomplete="#" reRender="liste"
+												title="Détails des ventes à crédits">
+												<s:graphicImage fileName="info.png" style="border:0px;"
+													value="/picto/info.png" alt="" />
+
+											</a:commandLink>
+											<h:outputText value="Solde Caisse:" styleClass="label" />
+											<h:outputText value="#{homes.getEntrer(car)}">
+												<f:convertNumber pattern="#,##0" />
+											</h:outputText>
+
+
+										</h:panelGrid>
+									</rich:panel>
+
+								</rich:dataGrid>
+							</rich:panel>
+						</div>
+						<div class="col-md-4">
+							<rich:panel header="ALERTE SEUIL PRODUITS" style="width:100%;">
+
+							</rich:panel>
+						</div>
+					</div>
+				</div>
+			</h:form>
+
+		</div>
+
+
+
+	</ui:define>
+</ui:composition>

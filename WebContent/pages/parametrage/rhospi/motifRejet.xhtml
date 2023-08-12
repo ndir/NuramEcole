@@ -1,0 +1,156 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//FR" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!--  V 0.1 : Maj : 09/11/2007 -->
+
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:rich="http://richfaces.ajax4jsf.org/rich"
+	xmlns:a="https://ajax4jsf.dev.java.net/ajax"
+	xmlns:t="http://myfaces.apache.org/tomahawk"
+	xmlns:s="http://jboss.com/products/seam/taglib"
+	xmlns:c="http://java.sun.com/jstl/core"
+	template="/template/template.xhtml">
+	<!-- Page d'accueil -->
+
+	<ui:define name="title">RHOSPI</ui:define>
+	<ui:define name="body">
+		<rich:spacer height="20px;"></rich:spacer>
+		
+
+			<div class="container" style="margin-left: 5%;">
+
+				<div class="row">
+					<div class="col-md-12">
+						<div class="panel panel-success">
+							<div class="panel-heading">
+								<h3 class="panel-title" style="text-align: center;">Création / Modification MotifRejet
+									</h3>
+							</div>
+							
+								<div class="panel-body">
+									<div class="form-group has-success">
+									<h:form id="idForm">
+									<a:outputPanel id="idParam">  
+										<TABLE class="table">
+											<tr>
+												<td><h:outputLabel styleClass="grey" value="Libelle"/></td>
+												<td><h:inputText 
+												       required="true"
+														value="#{motifRejetService.motifRejet.libelle}" 
+														class="form-control" /></td>
+
+
+												<td><h:outputLabel styleClass="grey" value="Libelle Court" /></td>
+												<td><h:inputText
+														required="true"
+														value="#{motifRejetService.motifRejet.libelle_court}"
+														 class="form-control" /></td>
+												
+												<td>  <a:commandLink styleClass="btn btn-success"
+																		
+																		value=""
+																		action="#{motifRejetService.ajouterParam}"
+																		reRender="idForm, idForm1" status="waitStatus" >
+																		
+																		Valider			
+																				</a:commandLink> </td>
+											</tr>
+
+											
+
+
+										</TABLE>
+										</a:outputPanel>
+										</h:form>
+										
+										<rich:spacer height="20px;"></rich:spacer>
+		
+			<fieldset>
+			<legend> Liste  </legend>
+		<h:form id="idForm1">
+		<div  style="height:300px;overflow: auto">
+			<rich:dataTable value="#{listeParamStock.listeLst_MotifRejet}" var="it"
+							id="liste" style="width:100%;" rowClasses="row1,row2">
+							<f:facet name="header">
+								<rich:columnGroup>
+									<rich:column>
+										<h:outputLabel value="Libelle"
+											style="color:white;font-size:12px;font-family: Arial;text-align:center;" />
+									</rich:column>
+									<rich:column>
+										<h:outputLabel value="Libelle Court"
+											style="color:white;font-size:12px;font-family: Arial;text-align:center;" />
+									</rich:column>
+									
+									<rich:column>
+										<h:outputLabel value="Actions"
+											style="color:white;font-size:12px;font-family: Arial;text-align:center;" />
+									</rich:column>
+								</rich:columnGroup>
+							</f:facet>
+
+							
+							<rich:column >
+								<h:outputText value="#{it.libelle}" styleClass="grey" />
+							</rich:column>
+
+							<rich:column>
+								<h:outputText value="#{it.libelle_court}" styleClass="grey" />
+								
+							</rich:column>
+
+							
+							<rich:column width="60px">
+
+								<table width="100%">
+									<tr>
+										<td width="20px;" align="center">
+											
+											<a:commandLink value="" status="waitStatus" title="Modifier" action="#{motifRejetService.modifierParam(it)}"  reRender="idForm, idForm1">
+												<s:graphicImage fileName="edit.png" style="border:0px;" value="/picto/edit.png" width="16" height="16" alt="" />
+											</a:commandLink></td>
+
+										
+										<td width="20px;" align="center"><a:commandLink value="" status="waitStatus" action="#{motifRejetService.supprimerParam(it)}"
+												 reRender="idForm, idForm1" title="Supprimer (Sens: #{it.libelle})">
+												<s:graphicImage fileName="cross.png" style="border:0px;" value="/picto/cross.png" width="16" height="16" alt="" />
+											</a:commandLink></td>
+
+									</tr>
+								</table>
+
+							</rich:column>
+
+						</rich:dataTable>
+				</div>
+				</h:form>
+			</fieldset>
+			
+			
+			
+			
+			
+										
+									</div>
+
+								</div>
+							
+						</div>
+					</div>
+				</div>
+
+
+			</div>
+
+
+		
+
+
+
+
+
+
+
+	</ui:define>
+</ui:composition>

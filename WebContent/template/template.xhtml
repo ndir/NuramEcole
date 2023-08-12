@@ -1,0 +1,583 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//FR" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets" xml:lang="fr" lang="fr"
+	xmlns:bp="http://primefaces.prime.com.tr/ui"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:s="http://jboss.com/products/seam/taglib"
+	xmlns:a="https://ajax4jsf.dev.java.net/ajax"
+	xmlns:t="http://myfaces.apache.org/tomahawk"
+	xmlns:c="http://java.sun.com/jstl/core"
+	xmlns:rich="http://richfaces.ajax4jsf.org/rich">
+<head>
+<bp:resources />
+<meta http-equiv="Content-Type" content="text/xhtml; charset=UTF-8" />
+<title><ui:insert name="title" /></title>
+
+<link rel="shortcut icon" href="/GSS/css2/favicon3.ico" />
+<link rel="STYLESHEET" type="text/css"
+	href="/GSS/css2/styleChaka_1.00.css" />
+<link rel="stylesheet" type="text/css"
+	href="/GSS/bootstrap/css/bootstrap.min.css" />
+<link rel="STYLESHEET" type="text/css" href="/GSS/css2/popbox.css" />
+
+<script type="text/javascript" src="/GSS/blue-orange-menu/dmenu.js"></script>
+
+<script type="text/javascript" src="/GSS/js/jQuery.js"></script>
+<script type="text/javascript" src="/GSS/js/popbox.js"></script>
+
+<script type="text/javascript" src="/GSS/js/scrolltopcontrol_1.1.js"></script>
+<script type="text/javascript" src="/GSS/js/jquery.bgiframe.min.js"></script>
+<script type="text/javascript"
+	src="/GSS/js/superfish/superfishGfs.js"></script>
+<script type="text/javascript" src="/GSS/js/superfish/supersubs.js"></script>
+<link type="text/css" href="/GSS/js/superfish/superfish.css"
+	rel="stylesheet" />
+
+
+<link type="text/css" href="/GSS/js/jx/default/jx.stylesheet.css"
+	rel="stylesheet" />
+<script type="text/javascript" src="/GSS/js/jx/jquery.jixedbar.js"></script>
+
+<script type="text/javascript" src="/GSS/js/jquery.toast.js"></script>
+<script type="text/javascript"
+	src="/GSS/js/jquery.maskedinput-1.2.4.js"></script>
+<script type="text/javascript" src="/GSS/js/jquery.alphanumeric.js"></script>
+<script type="text/javascript"
+	src="/GSS/js/SpryAssets/SpryCollapsiblePanel_1.1.js"></script>
+<script type="text/javascript"
+	src="/GSS/js/DD_roundies_0.0.2a-min.js"></script>
+<script type="text/javascript"
+	src="/GSS/js/jquery.multiselect_1.1.js" charset="utf-8"></script>
+<script type="text/javascript" src="/GSS/js/jquery.vticker_1.1.js"
+	charset="utf-8"></script>
+<script type="text/javascript" src="/GSS/js/jquery.easynews.js"></script>
+<link type="text/css" href="/GSS/js/jquery.multiselect.css"
+	rel="stylesheet" />
+<link rel="stylesheet" href="/GSS/js/jquery-ui.css" type="text/css"
+	media="screen" charset="utf-8" />
+<link type="text/css"
+	href="/GSS/js/SpryAssets/SpryCollapsiblePanel.css" rel="stylesheet" />
+
+
+
+
+
+
+
+<script type="text/javascript">
+	jQuery.noConflict();
+
+	domTT_oneOnly = true;
+
+	function verifierCibleOriginale(evenement) {
+		try {
+			domTT_deactivate(domTT_lastOpened);
+		} catch (e) {
+		}
+
+		if (jQuery(evenement.target).hasClass('classique') == true) {
+			return false;
+		}
+
+		if (jQuery(evenement.target).hasClass('rich-menu-item-enabled') == true) {
+			return false;
+		}
+
+		if (jQuery(evenement.target).hasClass('rich-menu-item') == true) {
+			return false;
+		}
+
+		if (jQuery(evenement.target).hasClass('rich-menu-item-label') == true) {
+			return false;
+		}
+
+		if (jQuery(evenement.target).parent().hasClass('rich-menu-item-icon') == true) {
+			return false;
+		}
+
+		return true;
+	}
+
+	function contextMenuExpand() {
+		try {
+			domTT_deactivate(domTT_lastOpened);
+		} catch (e) {
+		}
+	}
+
+	function dateEtHeureInputs() {
+
+		jQuery(".dateHeure").unmask();
+		jQuery(".duree").unmask();
+		jQuery(".dureeBig").unmask();
+		jQuery(".dureeVeryBig").unmask();
+		jQuery(".heurePlanning").unmask();
+		jQuery(".dureeVeryBig3").unmask();
+
+		jQuery(".telCss").unmask();
+
+		jQuery(".dateHeure").mask("29:59");
+
+		jQuery(".duree").mask("9h59");
+		jQuery(".dureeBig").mask("19h59");
+		jQuery(".dureeVeryBig").mask("99h59");
+		jQuery(".dureeVeryBig3").mask("999h59");
+		jQuery(".heurePlanning").mask("29");
+		jQuery(".telCss").mask("99.99.99.99.99");
+
+		jQuery(".rich-calendar-input").not(".moisUniquement").not(
+				"#myForm\\:dateMoisDebutInputDate").not(
+				"#myForm\\:dateMoisFinInputDate").not(
+				"#main\\:dateMoisSeulNoMaskInputDate").not(
+				"#main\\:dateMoisSeulInputDate").unmask("");
+		jQuery(".rich-calendar-input").not(".moisUniquement").not(
+				"#myForm\\:dateMoisDebutInputDate").not(
+				"#myForm\\:dateMoisFinInputDate").not(
+				"#main\\:dateMoisSeulNoMaskInputDate").not(
+				"#main\\:dateMoisSeulInputDate").mask("39/19/9999");
+
+		jQuery("#main\\:dateMoisSeulInputDate").unmask("");
+		jQuery("#main\\:dateMoisSeulInputDate").mask("19/9999");
+
+		jQuery("#myForm\\:dateMoisDebutInputDate").unmask("");
+		jQuery("#myForm\\:dateMoisDebutInputDate").mask("19/9999");
+
+		jQuery("#myForm\\:dateMoisFinInputDate").unmask("");
+		jQuery("#myForm\\:dateMoisFinInputDate").mask("19/9999");
+
+		jQuery(".moisUniquement").unmask("");
+		jQuery(".moisUniquement").mask("19/9999");
+
+		jQuery(".montantFloat").unmask("");
+		jQuery(".montantFloat").mask("99.99");
+
+		jQuery(".montant").numeric({
+			allow : "."
+		});
+		jQuery(".montantNegatif").numeric({
+			allow : ".-"
+		});
+
+		jQuery(".nbOnly").numeric();
+
+		try {
+			jQuery(".multicoches").multiselect();
+		} catch (e) {
+
+		}
+
+		jQuery(".firstFocus").focus();
+
+		try {
+			var CollapsiblePanel1Ouvert = new Spry.Widget.CollapsiblePanel(
+					"CollapsiblePanel1Ouvert", {
+						contentIsOpen : true
+					});
+		} catch (e) {
+		}
+
+		try {
+			var CollapsiblePanel2Ouvert = new Spry.Widget.CollapsiblePanel(
+					"CollapsiblePanel2Ouvert", {
+						contentIsOpen : true
+					});
+		} catch (e) {
+		}
+
+		try {
+			var CollapsiblePanel3Ouvert = new Spry.Widget.CollapsiblePanel(
+					"CollapsiblePanel3Ouvert", {
+						contentIsOpen : true
+					});
+		} catch (e) {
+		}
+
+		try {
+			var CollapsiblePanel3Ouvert = new Spry.Widget.CollapsiblePanel(
+					"CollapsiblePanel4Ouvert", {
+						contentIsOpen : true
+					});
+		} catch (e) {
+		}
+
+		try {
+			var CollapsiblePanel3Ouvert = new Spry.Widget.CollapsiblePanel(
+					"CollapsiblePanel5Ouvert", {
+						contentIsOpen : true
+					});
+		} catch (e) {
+		}
+
+		try {
+			var CollapsiblePanel1Ferme = new Spry.Widget.CollapsiblePanel(
+					"CollapsiblePanel1Ferme", {
+						contentIsOpen : false
+					});
+		} catch (e) {
+		}
+
+		try {
+			var CollapsiblePanel2Ferme = new Spry.Widget.CollapsiblePanel(
+					"CollapsiblePanel2Ferme", {
+						contentIsOpen : false
+					});
+		} catch (e) {
+		}
+
+		try {
+			var CollapsiblePanel3Ferme = new Spry.Widget.CollapsiblePanel(
+					"CollapsiblePanel3Ferme", {
+						contentIsOpen : false
+					});
+		} catch (e) {
+		}
+
+		try {
+			var CollapsiblePanel2Ferme = new Spry.Widget.CollapsiblePanel(
+					"CollapsiblePanel4Ferme", {
+						contentIsOpen : false
+					});
+		} catch (e) {
+		}
+
+		try {
+			var CollapsiblePanel3Ferme = new Spry.Widget.CollapsiblePanel(
+					"CollapsiblePanel5Ferme", {
+						contentIsOpen : false
+					});
+		} catch (e) {
+		}
+	}
+
+	function dateEtHeureInputsSansFocus() {
+
+		jQuery(".dateHeure").unmask();
+		jQuery(".duree").unmask();
+		jQuery(".dureeBig").unmask();
+		jQuery(".dureeVeryBig").unmask();
+		jQuery(".heurePlanning").unmask();
+
+		jQuery(".telCss").unmask();
+
+		jQuery(".dateHeure").mask("29:59");
+
+		jQuery(".duree").mask("9h59");
+		jQuery(".dureeBig").mask("19h59");
+		jQuery(".dureeVeryBig").mask("99h59");
+		jQuery(".heurePlanning").mask("29");
+		jQuery(".telCss").mask("99.99.99.99.99");
+
+		jQuery(".rich-calendar-input").not(".moisUniquement").not(
+				"#myForm\\:dateMoisDebutInputDate").not(
+				"#myForm\\:dateMoisFinInputDate").not(
+				"#main\\:dateMoisSeulNoMaskInputDate").not(
+				"#main\\:dateMoisSeulInputDate").unmask("");
+		jQuery(".rich-calendar-input").not(".moisUniquement").not(
+				"#myForm\\:dateMoisDebutInputDate").not(
+				"#myForm\\:dateMoisFinInputDate").not(
+				"#main\\:dateMoisSeulNoMaskInputDate").not(
+				"#main\\:dateMoisSeulInputDate").mask("39/19/9999");
+
+		jQuery("#main\\:dateMoisSeulInputDate").unmask("");
+		jQuery("#main\\:dateMoisSeulInputDate").mask("19/9999");
+
+		jQuery("#myForm\\:dateMoisDebutInputDate").unmask("");
+		jQuery("#myForm\\:dateMoisDebutInputDate").mask("19/9999");
+
+		jQuery("#myForm\\:dateMoisFinInputDate").unmask("");
+		jQuery("#myForm\\:dateMoisFinInputDate").mask("19/9999");
+
+		jQuery(".moisUniquement").unmask("");
+		jQuery(".moisUniquement").mask("19/9999");
+
+		jQuery(".montant").numeric({
+			allow : "."
+		});
+		jQuery(".montantNegatif").numeric({
+			allow : ".-"
+		});
+
+		jQuery(".nbOnly").numeric();
+
+		try {
+			jQuery(".multicoches").multiselect();
+		} catch (e) {
+
+		}
+
+		try {
+			var CollapsiblePanel1Ouvert = new Spry.Widget.CollapsiblePanel(
+					"CollapsiblePanel1Ouvert", {
+						contentIsOpen : true
+					});
+		} catch (e) {
+		}
+
+		try {
+			var CollapsiblePanel2Ouvert = new Spry.Widget.CollapsiblePanel(
+					"CollapsiblePanel2Ouvert", {
+						contentIsOpen : true
+					});
+		} catch (e) {
+		}
+
+		try {
+			var CollapsiblePanel3Ouvert = new Spry.Widget.CollapsiblePanel(
+					"CollapsiblePanel3Ouvert", {
+						contentIsOpen : true
+					});
+		} catch (e) {
+		}
+
+		try {
+			var CollapsiblePanel1Ferme = new Spry.Widget.CollapsiblePanel(
+					"CollapsiblePanel1Ferme", {
+						contentIsOpen : false
+					});
+		} catch (e) {
+		}
+
+		try {
+			var CollapsiblePanel2Ferme = new Spry.Widget.CollapsiblePanel(
+					"CollapsiblePanel2Ferme", {
+						contentIsOpen : false
+					});
+		} catch (e) {
+		}
+
+		try {
+			var CollapsiblePanel3Ferme = new Spry.Widget.CollapsiblePanel(
+					"CollapsiblePanel3Ferme", {
+						contentIsOpen : false
+					});
+		} catch (e) {
+		}
+	}
+
+	jQuery(document).ready(
+			function() {
+
+				jQuery(".popbox").popbox();
+
+				jQuery("#floatingbar2").removeClass("floatingBarHidden");
+
+				jQuery("#floatingbar2").jixedbar();
+
+				// Superfish
+				var supersubs_opt = {
+					minWidth : 12,
+					maxWidth : 27,
+					extraWidth : 1
+				};
+				var superfish_opt = {
+					delay : 500,
+					speed : 'fast',
+					animation : {
+						height : 'show'
+					},
+					disableHI : true
+				};
+
+				jQuery('.rd_jsuperfish ul').addClass('sf-menu').supersubs(
+						supersubs_opt).superfish(superfish_opt).superfish({
+					/*pathClass:     'current',*/
+					onBeforeShow : function() {
+
+						if (jQuery(this).hasClass("show_left")) {
+							jQuery(this).css("left", "-190px");
+						}
+						if (jQuery(this).hasClass("show_left2")) {
+							jQuery(this).css("left", "-127px");
+						}
+						if (jQuery(this).hasClass("show_left_ref")) {
+							jQuery(this).css("left", "-295px");
+						}
+
+					}
+				});
+
+				jQuery('.rd_jsuperfish ul').find('ul').bgIframe({
+					opacity : false
+				});
+
+				DD_roundies.addRule('.zoneRecherche', '10px');
+				DD_roundies.addRule('.zoneRecherche .panel', '10px');
+				DD_roundies.addRule('.zoneResultat', '10px');
+				DD_roundies.addRule('.zoneResultat .panel', '10px');
+				DD_roundies.addRule('.zoneResultat  .label', '10px');
+				DD_roundies.addRule('.zoneNote', '10px');
+				DD_roundies.addRule('.zoneAlerte', '10px');
+				DD_roundies.addRule('.zoneTdb', '10px');
+				DD_roundies.addRule('.label', '10px');
+				DD_roundies.addRule('.label1', '10px');
+				DD_roundies.addRule('.label1b', '10px');
+				DD_roundies.addRule('.label2', '10px');
+
+				dateEtHeureInputs();
+
+			});
+
+	function afficherAttente() {
+		Richfaces.showModalPanel('waitModalPanel');
+	}
+</script>
+
+
+</head>
+<body>
+
+	<f:loadBundle basename="messages" var="msgBundle" />
+
+	<!-- Fin barre d'outils -->
+
+
+	<a:status id="waitStatusHaut" forceId="true"
+		onstart="javascript:Richfaces.showModalPanel('waitModalPanelHaut',{top:120});"
+		onstop="javascript:Richfaces.hideModalPanel('waitModalPanelHaut');" />
+	<rich:modalPanel id="waitModalPanelHaut" autosized="false" width="500"
+		height="100" styleClass="popupAttente" moveable="false"
+		resizeable="false">
+		<div style="text-align: center; height: 40px;">
+			<img src="/GSS/picto/loading.gif" alt="" width="32" height="32" />
+		</div>
+		<span> <h:outputText
+				value="#{msgBundle['label.traitementencours']}" />
+		</span>
+	</rich:modalPanel>
+	<a:status id="waitStatus" forceId="true"
+		onstart="javascript:Richfaces.showModalPanel('waitModalPanel');"
+		onstop="javascript:Richfaces.hideModalPanel('waitModalPanel');" />
+	<rich:modalPanel id="waitModalPanel" autosized="false" width="500"
+		height="100" styleClass="popupAttente" moveable="false"
+		resizeable="false">
+		<div style="text-align: center; height: 40px;">
+			<img src="/GSS/picto/loading.gif" alt="" width="32" height="32" />
+		</div>
+		<span> <h:outputText
+				value="#{msgBundle['label.traitementencours']}" />
+		</span>
+	</rich:modalPanel>
+
+	<rich:modalPanel id="modalDocument" autosized="false" width="700"
+		height="620" moveable="false" resizeable="true">
+
+		<f:facet name="controls">
+			<a onclick="Richfaces.hideModalPanel('modalDocument');"
+				style="cursor: pointer" href="#">Fermer</a>
+		</f:facet>
+		<h:form>
+			<h:panelGroup>
+				<a:outputPanel id="regionUpload">
+					<s:fragment>#{msgBundle['label.fileUpload.tailleMax']} : </s:fragment>
+					<table>
+						<tr>
+							<td><h:outputText styleClass="grey"
+									value="#{fileUploadService.nomFichier}" /></td>
+						</tr>
+						<tr>
+							<td><rich:fileUpload id="uploadBox2"
+									addControlLabel="#{msgBundle['label.fileUpload.ajouterRemplacer']}"
+									styleClass="attachDocsEnabled"
+									stopEntryControlLabel="Stop upload"
+									uploadControlLabel="Upload file" immediate="true"
+									listWidth="450px"
+									fileUploadListener="#{fileUploadService.fileUploadListenerDoc}"
+									acceptedTypes="jpg,bmp,png,gif" maxFilesQuantity="1"
+									listHeight="0" immediateUpload="true"
+									ontyperejected="alert('format du fichier non accepte');">
+									<a:support event="onuploadcomplete" reRender="regionUpload,img"
+										status="waitStatus" />
+								</rich:fileUpload></td>
+						</tr>
+					</table>
+				</a:outputPanel>
+
+				<div style="width: 550px; height: 500px; overflow: auto">
+					<a:mediaOutput element="img" id="img" cacheable="false"
+						session="true" createContent="#{fileUploadService.paint}"
+						mimeType="image/jpeg" value="#{fileUploadService.id}" />
+				</div>
+			</h:panelGroup>
+
+			<ui:insert name="buttonImg">
+
+			</ui:insert>
+		</h:form>
+	</rich:modalPanel>
+
+
+
+	<ui:insert name="impression">
+		<rich:modalPanel id="modalPdf" autosized="false" width="1200"
+			height="620" moveable="false" resizeable="true">
+
+			<f:facet name="controls">
+				<a onclick="Richfaces.hideModalPanel('modalPdf');"
+					style="cursor: pointer" href="#">Fermer</a>
+			</f:facet>
+			<h:form id="frmPdf">
+				<a:mediaOutput element="object" id="id" cacheable="false"
+					session="true" createContent="#{fileUploadService.paintPdf}"
+					type="application/pdf" mimeType="application/pdf"
+					style="width:90%; height:600px;" value="#{filePrintService.id}" />
+
+			</h:form>
+		</rich:modalPanel>
+	</ui:insert>
+
+
+
+
+
+	<table border="0" id="mainTable" style="vertical-align: top;"
+		cellspacing="0" height="100%" width="100%">
+		<tr style="vertical-align: top;">
+			<td>
+
+				<table>
+					<tr>
+					
+						<td width="100%" colspan="2">
+						
+						<ui:include
+								src="/template/include/header2.xhtml" /></td>
+
+					</tr>
+					<tr>
+						<td colspan="2">
+							<table cellpadding="0" cellspacing="0" border="0"
+								class="content_container" width="100%">
+								<tr>
+									<td><h:form id="errorForm">
+											<a:outputPanel id="erreurStd" ajaxRendered="true">
+												<h:message infoClass="informationGenerique"
+													errorClass="informationGenerique"
+													warnClass="informationGenerique" for="infoGenerique" />
+												<h:inputHidden id="infoGenerique" />
+												<h:message infoClass="confirmationerrorGenerique"
+													errorClass="confirmationerrorGenerique"
+													warnClass="confirmationerrorGenerique"
+													for="erreurGenerique" />
+												<h:inputHidden id="erreurGenerique" />
+											</a:outputPanel>
+										</h:form></td>
+								</tr>
+								<tr>
+									<td colspan="2" width="100%" class="" height="100%"><ui:insert
+											name="body">Body</ui:insert></td>
+								</tr>
+							</table>
+						</td>
+
+					</tr>
+				</table>
+			</td>
+			<td height="100%" width="100%"></td>
+
+		</tr>
+	</table>
+
+</body>
+</html>

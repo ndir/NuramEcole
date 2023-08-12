@@ -1,0 +1,112 @@
+<div style="width: 100%;" xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:a4j="https://ajax4jsf.dev.java.net/ajax"
+	xmlns:a="https://ajax4jsf.dev.java.net/ajax"
+	xmlns:s="http://jboss.com/products/seam/taglib"
+	xmlns:rich="http://richfaces.ajax4jsf.org/rich">
+
+<div class="zoneResultat2">
+		<h:form id="note">
+			<table> <tr> 
+			      <td> <s:graphicImage fileName="candidat_64.png" style="border:0px;" value="/picto/candidat_64.png" width="40" height="40" alt="Peupler" /> </td> 
+			        <td> <h1>PARAMETRAGE TYPE PRODUIT  </h1>  </td> 
+			      </tr>    
+			</table>
+			
+			<rich:panel header="GESTION Produit">
+			
+			<fieldset>
+			<legend>Formulaire Ajout Type Produit </legend>
+			
+			<table width="100%">
+			<tr>  
+				<td> <h:outputText value="Libelle : " styleClass="grey" />  </td>
+				<td> <h:inputText value="#{produitService.natureCreation.libelle}" styleClass="textBleu2" /> </td>
+			   	<td> <h:outputText value="Code : " styleClass="grey" />  </td>
+				<td> <h:inputText value="#{produitService.natureCreation.libelle_court}" styleClass="textBleu2" /> </td>
+			    
+				<td><a:commandLink value="" status="waitStatus"
+									title="Ajouter"   reRender="note"
+									action="#{produitService.ajouterNatureProduit}" >
+									<s:graphicImage fileName="accept.png" style="border:0px;"
+										value="/picto/accept.png" alt="" styleClass="buton" />
+								</a:commandLink></td>
+			</tr>
+			
+			</table>
+			
+			</fieldset>
+			
+		
+				
+				
+			<rich:spacer height="20px;"></rich:spacer>
+		
+			<fieldset>
+			<legend> Liste des types Produits </legend>
+			
+			<rich:dataTable value="#{listeParamStock.listeNatureProduit}" var="it"
+							id="cc" style="width:100%;" rowClasses="row1,row2">
+							<f:facet name="header">
+								<rich:columnGroup>
+									<rich:column>
+										<h:outputLabel value="Libelle  "
+											style="color:white;font-size:12px;font-family: Arial;text-align:center;" />
+									</rich:column>
+									<rich:column>
+										<h:outputLabel value="Code  "
+											style="color:white;font-size:12px;font-family: Arial;text-align:center;" />
+									</rich:column>
+								
+									
+									
+									<rich:column>
+										<h:outputLabel value="Actions"
+											style="color:white;font-size:12px;font-family: Arial;text-align:center;" />
+									</rich:column>
+								</rich:columnGroup>
+							</f:facet>
+
+							
+							<rich:column >
+								<h:outputText value="#{it.libelle}" styleClass="grey" />
+							</rich:column>
+							<rich:column >
+								<h:outputText value="#{it.libelle_court}" styleClass="grey" />
+							</rich:column>
+							
+							 
+							<rich:column width="100px">
+
+								<table width="100%">
+									<tr>
+									  
+										<td width="20px;" align="center">
+											
+											<a:commandLink value="" status="waitStatus" reRender="note" title="Modifier" action="#{produitService.initmodifierNature(it)}">
+												<s:graphicImage fileName="edit.png" style="border:0px;" value="/picto/edit.png" width="16" height="16" alt="" />
+											</a:commandLink></td>
+
+										
+										<td width="20px;" align="center"><a:commandLink value="" status="waitStatus" action="#{produitService.supprimerNature(it)}"
+												 reRender="note" title="Supprimer (Produit: #{it.libelle})">
+												<s:graphicImage fileName="cross.png" style="border:0px;" value="/picto/cross.png" width="16" height="16" alt="" />
+											</a:commandLink></td>
+
+									</tr>
+								</table>
+
+							</rich:column>
+
+						</rich:dataTable>
+			</fieldset>
+			
+			
+			
+			</rich:panel>
+		</h:form>
+	</div>
+	</div>
+	

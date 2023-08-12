@@ -1,0 +1,13 @@
+eclipse.preferences.version=1
+encoding//WebContent/index.html=UTF-8
+encoding//WebContent/log.xhtml=UTF-8
+encoding//WebContent/login.xhtml=UTF-8
+encoding//WebContent/loginImpossible.xhtml=UTF-8
+encoding//WebContent/pages/accueil.xhtml=UTF-8
+encoding//WebContent/pages/beneficiaire/beneficiaireCreationModification.xhtml=UTF-8
+encoding//WebContent/pages/beneficiaire/planAideCreationModification.xhtml=UTF-8
+encoding//WebContent/pages/devis/gestionDevis.xhtml=UTF-8
+encoding//WebContent/pages/facturation/facturationPartenaireListe.xhtml=UTF-8
+encoding//WebContent/pages/ged/beneficiaire/facture.xhtml=UTF-8
+encoding//WebContent/pages/intervenant/intervenantCreationModication.xhtml=UTF-8
+encoding//WebContent/template/include/header2.xhtml=UTF-8

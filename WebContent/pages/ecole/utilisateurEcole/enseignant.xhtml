@@ -1,0 +1,78 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//FR" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!--  V 0.1 : Maj : 09/11/2007 -->
+
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:rich="http://richfaces.ajax4jsf.org/rich"
+	xmlns:a="https://ajax4jsf.dev.java.net/ajax"
+	xmlns:t="http://myfaces.apache.org/tomahawk"
+	xmlns:s="http://jboss.com/products/seam/taglib"
+	xmlns:c="http://java.sun.com/jstl/core"
+	template="/template/template.xhtml">
+	<!-- Page d'accueil -->
+
+
+
+
+
+	<ui:define name="title">GESTION SCOLAIRE</ui:define>
+	<ui:define name="body">
+		<h:form id="note">
+
+			<script>
+				jQuery.noConflict();
+			</script>
+
+			<div class="divtest" style="height: 100%;">
+				<div class="container" style="margin-left: 5%;">
+					<div class="row">
+						<div class="col-xs-12 col-md-4">
+							<div class="panel panel-success">
+								<div class="panel-heading" style="text-align: center;">
+									<h3 class="panel-title">NOTES D'INFORMATION </h3>
+								</div>
+								<div class="panel-body" style="height:480px;overflow: auto">  
+								  
+								</div>
+								
+							</div>
+						</div>
+						<div class="col-xs-6 col-md-8">
+							<div class="panel panel-success">
+								<div class="panel-heading" style="text-align: center;">
+									<h3 class="panel-title">GESTION SCOLAIRE</h3>
+								</div>
+								
+								
+								 <rich:panel header="">
+						        <div style="height:450px;overflow: auto">
+					  			 <table width="100%">
+					  			     <tr>
+						                  <td width="40%" valign="top" align="center"> 
+						                    <s:graphicImage style="border:0px;" value="/images/home3.jpg" alt="" >
+											      <s:transformImageSize  width="400" height="400" maintainRatio="false"/>
+											</s:graphicImage>	
+						                    </td>
+						             </tr>
+						          </table>
+						         </div>
+						       </rich:panel>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+
+
+		</h:form>
+
+
+
+
+
+
+
+	</ui:define>
+</ui:composition>

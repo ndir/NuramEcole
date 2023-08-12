@@ -1,0 +1,174 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//FR" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!--  V 0.1 : Maj : 09/11/2007 -->
+
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:rich="http://richfaces.ajax4jsf.org/rich"
+	xmlns:a="https://ajax4jsf.dev.java.net/ajax"
+	xmlns:t="http://myfaces.apache.org/tomahawk"
+	xmlns:s="http://jboss.com/products/seam/taglib"
+	xmlns:c="http://java.sun.com/jstl/core"
+	template="/template/template.xhtml">
+	<!-- Page d'accueil -->
+
+<link href="css/style.css" rel="stylesheet" type="text/css" />
+<style type="text/css">
+	  		.zoneResultat .panel .content table thead th {
+				border: 0px;
+				border-bottom: 1px solid white;				
+				color: white;				
+				
+			}
+			
+		
+		</style>
+		
+
+
+
+	<ui:define name="title">Application GSTTOCK</ui:define>
+	<ui:define name="body" >
+	
+	
+	<a:region>
+		<h:form>
+			<a:poll id="poll" interval="10000" action="#{messageService.actualiserDiscution}" reRender="listUser,listMessage"></a:poll>
+		</h:form>
+	</a:region>
+	
+	 <table> <tr> 
+			      <td> <s:graphicImage fileName="sms.png" style="border:0px;" value="/picto/sms.png" width="40" height="20" alt="Peupler" /> </td> 
+			        <td> <h2> Messagerie </h2>  </td> 
+			      </tr>    
+	 </table>
+		<h:form id="note">
+
+			
+			<div class="zoneResultat2" style="height: 100%;"  >
+			
+			
+										
+			
+			  <a:outputPanel > 
+				  <table width="100%">
+					  <tr>
+						 <td width="20%" valign="top"> 
+						       <rich:panel header="#{msgBundle['gestock.titre.utilisateur']}" >
+						        <div style="height:450px;overflow: auto">
+										<rich:dataTable value="#{messageService.listeUtilisateur}" var="it"
+													id="listUser" style="width:100%;" >
+														
+											   	      	 <f:facet name="caption">
+																<rich:columnGroup>
+																	
+																	
+																		
+																	 <rich:column colspan="2" style="float:left;border:0" styleClass="labelNonAtt" >
+											   	      	    
+														              </rich:column>
+																	
+																</rich:columnGroup>
+														</f:facet>
+											   	      	 
+														  <rich:column style="float:left;border:0" >
+													           <s:graphicImage value="picto/default_photo.jpg" height="30"
+																		width="30"></s:graphicImage>
+															     
+														  </rich:column>
+														  <rich:column rowspan="1" style="float:left;border:0" styleClass="labelNonAtt" >
+														     <TABLE align="center" >  <tr >  <td align="center" >
+												   	      	     <a:commandLink value="" action="#{messageService.rechercherDiscuionWithUtilisateur(it)}"
+																 		status="waitStatus" reRender="idDiscution" title="Sélectionner utilisateur">
+																 		#{it}		
+																 			
+																 		 <h:outputText value="(#{messageService.nbrSMSUtilisateurNotVue(it)})"  style="color:red" styleClass="grey"/>					 	  						
+																</a:commandLink>
+															  </td>  </tr> </TABLE>
+														 </rich:column>
+										</rich:dataTable>
+						          </div>
+						       </rich:panel>
+						   </td>
+						   
+						   <td width="80%" valign="top"> 
+						       <rich:panel header="">
+						        <div style="height:470px;overflow: auto">
+						         <a:outputPanel id="idDiscution">
+						           <TABLE align="right" >  <tr >  <td align="right" >
+						              
+						                 <h:outputText value="#{messageService.userEnCours}" />
+						           
+						           </td>  </tr> </TABLE>
+						           
+						            <TABLE align="center" width="100%" >  
+						              
+						            <tr > <td align="left" >   <h:outputText value="#{msgBundle['message.objet']} : "  styleClass="grey"/>  </td> <td align="left" >     <h:inputText value="#{messageService.messageEnCours.objet}" styleClass="textBleu2" /> </td>  </tr>
+						            <tr > <td align="left"  >   <h:outputText value="#{msgBundle['message.text']} : " styleClass="grey" />  </td> <td align="left" colspan="6" >    <h:inputTextarea value="#{messageService.messageEnCours.text}" cols="80" styleClass="textBleu2"/> </td>  </tr>
+						            <tr > <td align="right" colspan="7" > 
+						              <div id="trd_submenu" class="trd_kb">
+										<ul>
+											<li>
+						                       <a:commandLink value="" action="#{messageService.saveMessage}"
+																 		status="waitStatus" reRender="idDiscution" title="Sélectionner utilisateur">							 	  						
+													                   					<s:graphicImage style="border:0px;" value="/picto/accept.png" alt="" height="15" width="15"/>																			                         																						
+																    Envoyer
+																</a:commandLink>
+										</li>
+										</ul>
+										</div>
+						            </td> </tr>
+						            </TABLE>
+						        
+					  			<rich:dataTable value="#{messageService.listeDiscution}" var="it" 
+													id="listMessage" style="width:100%;" >
+														
+											   	      	 <f:facet name="caption">
+																<rich:columnGroup>
+																	
+																	<rich:column style="border:0;width:100%;" >
+																	</rich:column>
+																	
+																</rich:columnGroup>
+														</f:facet>
+											   	      	  <rich:column rowspan="1" style="float:#{messageService.getPosition(it)};border:0;width:90%;" styleClass="labelNonAtt"     >
+											   	      	     <TABLE width="100%"  >  <tr>  
+											   	      	         <td   style="#{messageService.getColor(it)}" width="75%" height="100%" >  
+											   	      	           <s:graphicImage style="border:0px;" value="/picto/default_photo.jpg" alt="" >
+																	      <s:transformImageSize  width="20" height="20" maintainRatio="false"/>
+																	</s:graphicImage>
+											   	      	             <h:outputText value="#{it.text}" /> 
+											   	      	       </td>
+											   	      	       <td width="25%">
+											   	      	          
+											   	      	           <h:outputText value="#{it.dateEnvoie}" style="color:#A0E6F8" >
+																			              <f:convertDateTime pattern="dd.MM.yyyy HH:mm" />
+																	</h:outputText>  </td>
+																														   	      	       </tr>
+											   	      	     </TABLE>
+											   	      	     <div style="height: 7px;" />
+														 </rich:column>
+														 
+										</rich:dataTable>
+									</a:outputPanel>
+						         </div>
+						       </rich:panel>
+						   </td>
+					     </tr>
+					    </table>
+			</a:outputPanel>
+					  		
+			</div>
+
+
+		</h:form>
+
+
+
+
+
+
+
+	</ui:define>
+</ui:composition>

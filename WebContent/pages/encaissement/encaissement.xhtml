@@ -1,0 +1,390 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//FR" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!--  V 0.1 : Maj : 09/11/2007 -->
+
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:rich="http://richfaces.ajax4jsf.org/rich"
+	xmlns:a="https://ajax4jsf.dev.java.net/ajax"
+	xmlns:t="http://myfaces.apache.org/tomahawk"
+	xmlns:s="http://jboss.com/products/seam/taglib"
+	xmlns:c="http://java.sun.com/jstl/core"
+	template="/template/template.xhtml">
+	<!-- Page d'alistLivueil -->
+
+
+
+
+
+	<ui:define name="title"> #{msgBundle['gestock.titre.encaissement']} </ui:define>
+	<ui:define name="body">
+		<h:form id="note">
+
+			
+			<div class="zoneResultat2" style="height: 100%;"  >
+				
+		  <table> <tr> 
+			      <td> <s:graphicImage fileName="candidat_64.png" style="border:0px;" value="/picto/candidat_64.png" width="4" height="4" alt="Peupler" /> </td> 
+			        <td> <h1> #{msgBundle['gestock.titre.encaissement']}  </h1>  </td> 
+			      </tr>    
+			</table>
+		
+				
+		
+			<fieldset>
+			   <table width="100%">
+					  <tr>
+					    <td> <h:outputText value="#{msgBundle['gestock.caisse']}   : " styleClass="grey" /> 
+					        <rich:spacer  height="20px" width="4px;" />  <h:outputText value="#{encaissementService.caisseEnCours.libelle}" styleClass="grey" style="color:blue ;font-size: large;font-weight: bold;"/> 
+					    </td>
+					    <td> <h:outputText value="#{msgBundle['gestock.caissier']} : " styleClass="grey" /> 
+					        <rich:spacer  height="20px" width="4px;" />  <h:outputText value="#{encaissementService.caisseEnCours.userCaissier}" styleClass="grey" style="color:blue ;font-size: large;font-weight: bold;"/> 
+					    </td>
+					    <td> <h:outputText value="#{msgBundle['gestock.solde']} : " styleClass="grey" />  <rich:spacer  height="20px" width="4px;" /> 
+					                <h:outputText value="#{encaissementService.caisseEnCours.soldeCaisse}" styleClass="grey" style="color:blue ;font-size: large;font-weight: bold;" >  
+					                           <f:convertNumber pattern="#,###" />
+									</h:outputText>
+										#{msgBundle['monnaie.unite']}
+					    </td>
+					     <td width="20px;" align="center">
+										 <s:graphicImage rendered="#{not encaissementService.caisseEnCours.ouvertON}" title=" #{encaissementService.caisseEnCours.libelle} est fermée "  fileName="cadenas_ferme.png" style="border:0px;" value="/picto/cadenas_ferme.png" width="16" height="16" alt="Peupler" />
+									<s:graphicImage  rendered="#{encaissementService.caisseEnCours.ouvertON}" title=" #{encaissementService.caisseEnCours.libelle} est ouverte "  fileName="cadenas_ouvert.png" style="border:0px;" value="/picto/cadenas_ouvert.png" width="16" height="16" alt="Peupler" />
+						</td>
+					  </tr>
+				</table>
+			</fieldset>
+		 
+	  <a:outputPanel rendered="#{not (empty encaissementService.caisseEnCours) and (encaissementService.caisseEnCours.ouvertON) }"> 
+		  <table width="100%">
+			  <tr>
+				 <td width="40%" valign="top"> 
+				       <rich:panel header="#{msgBundle['gestock.titre.infoClient']}">
+				        <div style="height:150px;overflow: auto">
+			  			 <table width="100%">
+			  				 <tr>  
+			  				  <td height="20px"> <h:selectBooleanCheckbox value="#{encaissementService.distributeurON}" valueChangeListener="#{encaissementService.changerClient}"> 
+			  				        	<a:support event="onchange" bypassUpdates="true"
+															ajaxSingle="true" status="waitStatus"
+															reRender="note"
+															oncomplete="dateEtHeureInputs();" >
+													 	</a:support>
+									     </h:selectBooleanCheckbox>
+			  				  <h:outputText value=" #{msgBundle['gestock.estClient']} :  " styleClass="grey" />  </td>
+								
+								<td > 
+								    <h:outputText value=" #{msgBundle['gestock.numClient']} :  " styleClass="grey" /> <rich:spacer  height="20px" width="4px;" /> 
+			  				        <h:inputText value="#{encaissementService.filtreNumClient}"   styleClass="textBleu2" />
+				                    <a:commandLink status="waitStatus"  title="Recherche"
+														action="#{encaissementService.rechercheConcerne}" reRender="note">
+														<s:graphicImage fileName="loupe.png" style="border:0px;"
+															value="/img2/loupe.png" width="20" height="20" alt="" />
+						     	   </a:commandLink> 
+						     	 </td>
+						   
+								
+							</tr>
+							<tr>  	  
+								<td> <h:outputText value="#{msgBundle['gestock.intitule']} :  " styleClass="grey" />  <rich:spacer  height="20px" width="4px;" /> 
+								      <h:outputText value="#{encaissementService.client.prenom} #{encaissementService.client.nom}  " rendered="#{encaissementService.distributeurON}" styleClass="grey" style="color:blue" /> 
+								       <h:outputText value="#{encaissementService.distributeur.intitule}  " rendered="#{not encaissementService.distributeurON}" styleClass="grey" style="color:blue" /> </td>
+							     
+							      <td height="20px"> <h:outputText value=" #{msgBundle['gestock.numClient']} :  " styleClass="grey" /> <rich:spacer  height="20px" width="4px;" /> 
+								 <h:outputText value="#{encaissementService.client.numeroClient}  " styleClass="grey" style="color:blue" />
+								  <h:outputText value="#{encaissementService.distributeur.numeroDistributeur}  " rendered="#{not encaissementService.distributeurON}" styleClass="grey" style="color:blue" /> 
+								</td>
+							</tr>
+							
+							<tr>  
+							   <td> <h:outputText value="#{msgBundle['gestock.tel']}:  " styleClass="grey" />  <rich:spacer  height="20px" width="4px;" /> 
+								      <h:outputText value="#{encaissementService.client.tel1}  " rendered="#{encaissementService.distributeurON}" styleClass="grey" style="color:blue" />
+								      <h:outputText value="#{encaissementService.distributeur.tel1}  " rendered="#{not encaissementService.distributeurON}" styleClass="grey" style="color:blue" /> </td>
+								 
+												
+							    <td>   <h:outputText value="Email :  " styleClass="grey" />  <rich:spacer  height="20px" width="4px;" /> 
+								      <h:outputText value="#{encaissementService.client.email1}" rendered="#{encaissementService.distributeurON}"  styleClass="grey" style="color:blue" />
+								       <h:outputText value="#{encaissementService.distributeur.email1}" rendered="#{not encaissementService.distributeurON}"  styleClass="grey" style="color:blue" /> </td>
+								
+								
+						   </tr>
+							<tr>  
+								<td> <h:outputText value="#{msgBundle['gestock.detteFR']} :" styleClass="grey" />  <rich:spacer  height="20px" width="4px;" /> 
+										<h:outputText rendered="#{encaissementService.distributeurON}"  value="#{encaissementService.client.montantDetteFR}" styleClass="grey" style="color:blue" >
+									        	<f:convertNumber pattern="#,###" />
+										</h:outputText>
+										<h:outputText rendered="#{not encaissementService.distributeurON}"  value="#{encaissementService.distributeur.montantDetteFR}" styleClass="grey" style="color:blue" >
+									        	<f:convertNumber pattern="#,###" />
+										</h:outputText>
+										#{msgBundle['monnaie.unite']}
+								 </td>
+								 
+								 <td> <h:outputText value="#{msgBundle['gestock.dette']} :" styleClass="grey" />  <rich:spacer  height="20px" width="4px;" /> 
+										<h:outputText rendered="#{encaissementService.distributeurON}"  value="#{encaissementService.client.montantDette}" styleClass="grey" style="color:blue" >
+									        	<f:convertNumber pattern="#,###" />
+										</h:outputText>
+										<h:outputText rendered="#{not encaissementService.distributeurON}"  value="#{encaissementService.distributeur.montantDette}" styleClass="grey" style="color:blue" >
+									        	<f:convertNumber pattern="#,###" />
+										</h:outputText>
+										#{msgBundle['monnaie.unite']}
+								 </td>
+							</tr>
+							<tr>  
+								<td> <h:outputText value="#{msgBundle['gestock.detteTotal']} :" styleClass="grey" />  <rich:spacer  height="20px" width="4px;" /> 
+										<h:outputText rendered="#{encaissementService.distributeurON}"  value="#{encaissementService.client.montantDetteTotal}" styleClass="grey" style="color:blue;font-size: large;font-weight: bold;" >
+									        	<f:convertNumber pattern="#,###" />
+										</h:outputText>
+										<h:outputText rendered="#{not encaissementService.distributeurON}"  value="#{encaissementService.distributeur.montantDetteTotal}" styleClass="grey" style="color:blue;font-size: large;font-weight: bold;" >
+									        	<f:convertNumber pattern="#,###" />
+										</h:outputText>
+										#{msgBundle['monnaie.unite']}
+								 </td>
+					       </tr>
+							<tr>
+							
+							<td> <h:outputText value="#{msgBundle['gestock.ristoure']} :" styleClass="grey" />  <rich:spacer  height="20px" width="4px;" /> 
+										<h:outputText rendered="#{encaissementService.distributeurON}"  value="#{encaissementService.client.montantRistourne}" styleClass="grey" style="color:blue" >
+									        	<f:convertNumber pattern="#,###" />
+										</h:outputText>
+										<h:outputText rendered="#{not encaissementService.distributeurON}"  value="#{encaissementService.distributeur.montantRistourne}" styleClass="grey" style="color:blue" >
+									        	<f:convertNumber pattern="#,###" />
+										</h:outputText>
+										#{msgBundle['monnaie.unite']}
+								 </td>
+							<td> 
+								       <h:outputText value="#{msgBundle['gestock.montantAvoir']} : " styleClass="grey" /> <rich:spacer  height="20px" width="4px;" /> 
+								        <h:outputText rendered="#{encaissementService.distributeurON}"   value="#{encaissementService.client.montantAvoir}" style="color:blue ;font-size: large;font-weight: bold;"   > 
+							    			<f:convertNumber pattern="#,###" />
+										</h:outputText>
+								        <h:outputText rendered="#{not encaissementService.distributeurON}"   value="#{encaissementService.distributeur.montantAvoir}" style="color:blue ;font-size: large;font-weight: bold;"   > 
+							    			<f:convertNumber pattern="#,###" />
+										</h:outputText>
+										#{msgBundle['monnaie.unite']}
+						   </td>
+							</tr>
+						</table>
+					</div>
+		 				</rich:panel>
+		 	     </td>
+		 	      <td width="70%" valign="top" rowspan="2"> 
+				       <rich:panel header="#{msgBundle['gestock.titre.listeDette']}">
+				           <div style="height:350px;overflow: auto">
+			  				 
+			  				 <rich:dataTable value="#{encaissementService.listeVente}" var="it" rendered="#{encaissementService.encaissementEncours.montant != 0  and (encaissementService.encaissementEncours.getTypeEncaissement().getLibelle_court() eq 'C' )}"
+							id="listLiv" style="width:100%;" rowClasses="row1,row2">
+							<f:facet name="header">
+								<rich:columnGroup>
+									<rich:column>
+										<h:outputLabel value="Réf " style="color:white;font-size:12px;font-family: Arial;text-align:center;" />
+									</rich:column>
+									<rich:column>
+										<h:outputLabel value="#{msgBundle['gestock.numFacture']} " style="color:white;font-size:12px;font-family: Arial;text-align:center;" />
+									</rich:column>
+									<rich:column>
+										<h:outputLabel value="#{msgBundle['gestock.dateVente']} " style="color:white;font-size:12px;font-family: Arial;text-align:center;" />
+									</rich:column>
+									
+									<rich:column>
+										<h:outputLabel value="#{msgBundle['gestock.montant.total']} " style="color:white;font-size:12px;font-family: Arial;text-align:center;" />
+									</rich:column>
+									<rich:column>
+										<h:outputLabel value="#{msgBundle['gestock.montantRegle']} " style="color:white;font-size:12px;font-family: Arial;text-align:center;" />
+									</rich:column>
+									<rich:column>
+										<h:outputLabel value="#{msgBundle['gestock.montantReste']} " style="color:white;font-size:12px;font-family: Arial;text-align:center;" />
+									</rich:column>
+									<rich:column>
+										<h:outputLabel value=" #{msgBundle['gestock.ristourne']} " style="color:white;font-size:12px;font-family: Arial;text-align:center;" />
+									</rich:column>
+									<rich:column>
+										<h:outputLabel value=" #{msgBundle['gestock.action']}" style="color:white;font-size:12px;font-family: Arial;text-align:center;" />
+									</rich:column>
+								</rich:columnGroup>
+							</f:facet>
+							     <rich:column>
+								     <h:outputText value="#{it.reference}" />
+								 </rich:column>
+								  <rich:column>
+								     <h:outputText value="#{it.numFacture}" />
+								 </rich:column>
+								  <rich:column>
+								     <h:outputText value="#{it.dateVente}" />
+								 </rich:column>
+								
+								 <rich:column>
+								      <TABLE align="right" >  <tr >  <td align="right" >
+								           <h:outputText value="#{it.montantAPaye}" >    <f:convertNumber pattern="#,###" /> </h:outputText> #{msgBundle['monnaie.unite']}
+								     </td>  </tr> </TABLE>
+								 </rich:column>
+								  <rich:column>
+								      <TABLE align="right" >  <tr >  <td align="right" >
+								           <h:outputText value="#{it.montantRegle}" >    <f:convertNumber pattern="#,###" /> </h:outputText> #{msgBundle['monnaie.unite']}
+								     </td>  </tr> </TABLE>
+								 </rich:column>
+								  <rich:column>
+								      <TABLE align="right" >  <tr >  <td align="right" >
+								           <h:outputText value="#{it.montantRestant}" >    <f:convertNumber pattern="#,###" /> </h:outputText> #{msgBundle['monnaie.unite']}
+								     </td>  </tr> </TABLE>
+								 </rich:column>
+								 <rich:column>
+								       <TABLE align="right" >  <tr >  <td align="right" >
+								           <h:outputText value="#{it.ristourne}" >    <f:convertNumber pattern="#,###" /> </h:outputText> #{msgBundle['monnaie.unite']}
+								        </td> </tr> </TABLE>
+								 </rich:column>
+								 
+								  <rich:column>
+								       <TABLE align="center" width="100%" >  <tr >  <td align="center" >
+								      <a:commandLink immediate="true" status="waitStatus"  
+										action="#" value="" title="Voir Details "
+										reRender="idDetailt,modale" styleClass="lienSansSoulignement"
+										oncomplete="javascript:Richfaces.showModalPanel('panelDetails',{width:700, top:5, height:500});jQuery('#ModificationPassword\\:prenomEnfant').focus();">
+										<s:graphicImage fileName="info.png" style="border:0px;" value="/picto/info.png" width="16" height="16" alt="" />
+									 </a:commandLink>
+									 </td> 
+									 <td align="center" >
+								       <h:selectBooleanCheckbox value="#{it.selected}" disabled="true" />
+									 </td>
+									 </tr> </TABLE>
+								 </rich:column>
+				    </rich:dataTable>
+				    
+				    
+				     <rich:dataTable value="#{encaissementService.listeFondRoulement}" var="it" rendered="#{encaissementService.encaissementEncours.montant != 0 and (encaissementService.encaissementEncours.getTypeEncaissement().getLibelle_court() eq 'F' )}"
+							id="listFond" style="width:100%;" rowClasses="row1,row2">
+							<f:facet name="header">
+								<rich:columnGroup>
+									<rich:column>
+										<h:outputLabel value="Réf " style="color:white;font-size:12px;font-family: Arial;text-align:center;" />
+									</rich:column>
+									
+									<rich:column>
+										<h:outputLabel value="#{msgBundle['gestock.dateSaisi']} " style="color:white;font-size:12px;font-family: Arial;text-align:center;" />
+									</rich:column>
+									
+									<rich:column>
+										<h:outputLabel value="#{msgBundle['gestock.montant.total']} " style="color:white;font-size:12px;font-family: Arial;text-align:center;" />
+									</rich:column>
+									<rich:column>
+										<h:outputLabel value="#{msgBundle['gestock.montantRegle']} " style="color:white;font-size:12px;font-family: Arial;text-align:center;" />
+									</rich:column>
+									<rich:column>
+										<h:outputLabel value="#{msgBundle['gestock.montantReste']} " style="color:white;font-size:12px;font-family: Arial;text-align:center;" />
+									</rich:column>
+									
+									<rich:column>
+										<h:outputLabel value=" #{msgBundle['gestock.action']}" style="color:white;font-size:12px;font-family: Arial;text-align:center;" />
+									</rich:column>
+								</rich:columnGroup>
+							</f:facet>
+							     <rich:column>
+								     <h:outputText value="#{it.reference}" />
+								 </rich:column>
+								 
+								  <rich:column>
+								     <h:outputText value="#{it.dateSaisi}" />
+								 </rich:column>
+								
+								 <rich:column>
+								      <TABLE align="right" >  <tr >  <td align="right" >
+								           <h:outputText value="#{it.montant}" >    <f:convertNumber pattern="#,###" /> </h:outputText> #{msgBundle['monnaie.unite']}
+								     </td>  </tr> </TABLE>
+								 </rich:column>
+								  <rich:column>
+								      <TABLE align="right" >  <tr >  <td align="right" >
+								           <h:outputText value="#{it.montantRegle}" >    <f:convertNumber pattern="#,###" /> </h:outputText> #{msgBundle['monnaie.unite']}
+								     </td>  </tr> </TABLE>
+								 </rich:column>
+								  <rich:column>
+								      <TABLE align="right" >  <tr >  <td align="right" >
+								           <h:outputText value="#{it.montantRestant}" >    <f:convertNumber pattern="#,###" /> </h:outputText> #{msgBundle['monnaie.unite']}
+								     </td>  </tr> </TABLE>
+								 </rich:column>
+								
+								 
+								  <rich:column>
+								       <TABLE align="center" width="100%" >  <tr > 
+								        <td align="center" >
+								    
+									    </td> 
+									 <td align="center" >
+								       <h:selectBooleanCheckbox value="#{it.selected}" disabled="true" />
+									 </td>
+									 </tr> </TABLE>
+								 </rich:column>
+				    </rich:dataTable>
+		 					  
+		 					  
+		 				 </div>
+		 				</rich:panel>
+		 	     </td>
+		 	  </tr>
+		 	  <tr>
+		 	    <td width="40%" valign="top"> 
+				       <rich:panel header="#{msgBundle['gestock.titre.saisiEncaissement']}">
+				           <div style="height:150px;overflow: auto">
+			  				  <table width="100%">
+					               <tr>
+		 						      <td>   <h:outputText value=" #{msgBundle['gestock.typeEncaissement']}:  " styleClass="grey" />  </td>
+		 						      <td>  
+		 						           <h:selectOneMenu value="#{encaissementService.encaissementEncours.typeEncaissement}" valueChangeListener="#{encaissementService.recupererTypeEncaissement}"   styleClass="textBleu2"  id="dis" requiredMessage="Selectionnez...." converter="#{typeEncaissementConverter}">
+											     <s:selectItems  value="#{listeParamStock.listeTypeEncaissement}" noSelectionLabel="Selectionnez...."  var="it" label="#{it.libelle}" />
+												 <a:support  event="onchange"  ajaxSingle="true" reRender="zone2,infoFourni,lab,creation" />	
+											</h:selectOneMenu> 
+									  </td>
+		 						     </tr> 
+		 						      <tr>
+		 						        <td>   <h:outputText value=" #{msgBundle['gestock.montant']}:  " styleClass="grey" />  </td>
+		 						       <td>  <h:inputText value="#{encaissementService.monatant}"    styleClass="textBleu2 nbOnly" id="montantVerse" converter="#{doubleFormatConverter}"/>
+																	  </td>
+		 						     </tr> 
+		 						      <tr>
+		 						            <td>   <h:outputText value=" #{msgBundle['gestock.confmontant']}:  " styleClass="grey" />  </td>
+		 						            <td>  <h:inputSecret  value="#{encaissementService.montantConfirme}"   styleClass="textBleu2" />   <rich:spacer width="10px;"></rich:spacer>
+						 						   <a:commandLink status="waitStatus"  title="Valider le montant "
+																		action="#{encaissementService.validerMontant}" reRender="note">
+																		<s:graphicImage fileName="refresh.png" style="border:0px;"
+																			value="/picto/refresh.png" width="20" height="20" alt="" />
+										     	   </a:commandLink> 
+		 						            
+		 						             </td>
+		 						   </tr>
+		 						    <tr>
+		 						       <rich:spacer height="30px;"></rich:spacer>
+		 						        <td>    <h:outputText value=" #{msgBundle['gestock.montantEncaisse']}:  " styleClass="grey" />  </td>
+		 						       <td>  <h:outputText value="#{encaissementService.encaissementEncours.montant}" styleClass="grey" style="color:blue ;font-size: large;font-weight: bold;"    > 
+		 						       			 <f:convertNumber pattern="#,###" />
+									         </h:outputText>
+										#{msgBundle['monnaie.unite']} 
+																	  </td> 
+		 						    </tr> 
+		 					  </table>
+		 					 
+		 				 </div>
+		 				</rich:panel>
+		 	     </td>
+		 	      </tr>
+		 </table>
+		 
+		  <rich:spacer height="10px;"></rich:spacer>
+		 					    <table width="100%">				
+									<tr>				
+										<td align="right">
+											<a:commandButton value="Valider les mises à jour" style="text-align:right;" status="waitStatus" 
+												action="#{encaissementService.validerEncaissement}" ajaxSingle="true"	image="/picto/valide.jpg"						
+												reRender="note">
+												
+										     </a:commandButton>
+								   			
+										</td>					
+									</tr>
+								</table>
+		</a:outputPanel>
+	
+		</div>
+		
+					  
+				
+			        
+	</h:form>
+	
+	</ui:define>
+</ui:composition>

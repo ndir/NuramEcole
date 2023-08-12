@@ -1,0 +1,474 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//FR" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!--  V 0.1 : Maj : 09/11/2007 -->
+
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:rich="http://richfaces.ajax4jsf.org/rich"
+	xmlns:a="https://ajax4jsf.dev.java.net/ajax"
+	xmlns:t="http://myfaces.apache.org/tomahawk"
+	xmlns:s="http://jboss.com/products/seam/taglib"
+	xmlns:c="http://java.sun.com/jstl/core"
+	template="/template/template.xhtml">
+	<!-- Page d'alistLivueil -->
+
+
+
+
+
+	<ui:define name="title">GESTION LIVRAISON</ui:define>
+	<ui:define name="body">
+		<h:form id="note">
+
+			
+			<div class="zoneResultat2" style="height: 100%;"  >
+				
+			<table> <tr> 
+			      <td> <s:graphicImage fileName="candidat_64.png" style="border:0px;" value="/picto/candidat_64.png" width="40" height="40" alt="Peupler" /> </td> 
+			        <td> <h1> VALIDATION LIVRAISON  </h1>  </td> 
+			      </tr>    
+			</table>		
+			<rich:panel header="RECHERCHE PREPARATION COMMANDE">
+			<fieldset>
+			   <table width="100%">
+					  <tr>
+					    <td> Operateur : </td>
+					    <td>
+					        <h:selectOneMenu   value="#{validationCommandeService.operateur}"   styleClass="textBleu2"  id="op" requiredMessage="Selectionnez...." converter="#{operateurConverter}"  >
+							     <s:selectItems  value="#{listeParamStock.listeOperateur}" noSelectionLabel="Selectionnez...."  var="it" label="#{it.intitule}" />
+								 <a:support  event="onchange"  ajaxSingle="true" reRender="zone2,infoFourni,lab" />	
+							</h:selectOneMenu>  
+					     </td>
+					     <td> Distibuteur : </td>
+					    <td> 
+								 <h:selectOneMenu  valueChangeListener="#{validationCommandeService.recupereDistributeur}" disabled="false" styleClass="textBleu2"  id="dis" requiredMessage="Selectionnez...." converter="#{distributeurConverter}"  >
+								     <s:selectItems  value="#{listeParamStock.listeDistributeur}" noSelectionLabel="Selectionnez...."  var="it" label="#{it.intitule}" />
+									 <a:support  event="onchange"  ajaxSingle="true" reRender="zone2,infoFourni,lab" />	
+								</h:selectOneMenu> 
+					 </td>
+					     <td> Numéro Facture : </td>
+					    <td> <h:inputText value="#{validationCommandeService.numFacture}" styleClass="textBleu2" /> </td>
+					  </tr>
+					   <tr>
+					    <td> Date Debut : </td>
+					    <td>
+					    	<rich:calendar
+										value="#{validationCommandeService.dateDebut}" rendered="true"
+										buttonIcon="/img2/calendrier.png" cellWidth="0px"
+										cellHeight="20px"
+										style="width:200px;border: 3px solid #006a39;"
+										styleClass="textBleu2" datePattern="dd/MM/yyyy">
+						     </rich:calendar>
+					     </td>
+					     <td> Date Fin : </td>
+					    <td> 
+					   		 <rich:calendar
+										value="#{validationCommandeService.dateFin}" rendered="true"
+										buttonIcon="/img2/calendrier.png" cellWidth="0px"
+										cellHeight="20px"
+										style="width:200px;border: 3px solid #006a39;"
+										styleClass="textBleu2" datePattern="dd/MM/yyyy">
+						     </rich:calendar>
+					     </td>
+					    
+					  </tr>
+					</table>
+
+			</fieldset>			 
+			<div style="height: 7px;" />
+				<table width="100%" >
+				<tr>
+					<td width="1175px;"  align="right" >
+						<div id="trd_submenu" class="trd_kb">
+							<ul>
+								<li>
+									<a:commandLink  action="#{validationCommandeService.recherchePreparationLivraison}" status="waitStatus"  reRender="listLiv" value="">
+										<s:graphicImage fileName="find.png" style="border:0px;" value="/picto/find.png" width="16" height="16" alt="" />
+										Rechercher
+									</a:commandLink>
+								</li>
+								<li>
+									 <a:commandLink  action="#" status="waitStatus"  value="" 	oncomplete="javascript:Richfaces.showModalPanel('modalPdf')">
+										<s:graphicImage fileName="printer.png" style="border:0px;" value="/picto/printer.png" width="16" height="16" alt="" />
+										Immprimer 
+									</a:commandLink>
+								</li>
+							
+							</ul>
+						</div>
+					</td>
+					<td>
+						&#160;
+					</td>
+				</tr>
+			</table>
+			
+			<fieldset>
+				<rich:dataTable value="#{validationCommandeService.listLivraison}" var="it"
+							id="listLiv" style="width:100%;" rowClasses="row1,row2">
+							<f:facet name="header">
+								<rich:columnGroup>
+									<rich:column>
+										<h:outputLabel value="Réf " style="color:white;font-size:12px;font-family: Arial;text-align:center;" />
+									</rich:column>
+									<rich:column>
+										<h:outputLabel value="Numéro Fac " style="color:white;font-size:12px;font-family: Arial;text-align:center;" />
+									</rich:column>
+									<rich:column>
+										<h:outputLabel value="Date Validation " style="color:white;font-size:12px;font-family: Arial;text-align:center;" />
+									</rich:column>
+									<rich:column>
+										<h:outputLabel value=" Date Saisi  " style="color:white;font-size:12px;font-family: Arial;text-align:center;" />
+									</rich:column>
+									<rich:column>
+										<h:outputLabel value=" Opérateur  " style="color:white;font-size:12px;font-family: Arial;text-align:center;" />
+									</rich:column>
+									<rich:column>
+										<h:outputLabel value=" Distributeur  " style="color:white;font-size:12px;font-family: Arial;text-align:center;" />
+									</rich:column>
+									<rich:column>
+										<h:outputLabel value="Montant Total" style="color:white;font-size:12px;font-family: Arial;text-align:center;" />
+									</rich:column>
+									
+									<rich:column>
+										<h:outputLabel value=" Ristourne" style="color:white;font-size:12px;font-family: Arial;text-align:center;" />
+									</rich:column>
+									<rich:column>
+										<h:outputLabel value="Statut" style="color:white;font-size:12px;font-family: Arial;text-align:center;" />
+									</rich:column>
+									<rich:column>
+										<h:outputLabel value=" Action" style="color:white;font-size:12px;font-family: Arial;text-align:center;" />
+									</rich:column>
+								</rich:columnGroup>
+							</f:facet>
+							     <rich:column>
+								     <h:outputText value="#{it.reference}" />
+								 </rich:column>
+								  <rich:column>
+								     <h:outputText value="#{it.numFacture}" />
+								 </rich:column>
+								  <rich:column>
+								     <h:outputText value="#{it.dateLivraison}" />
+								 </rich:column>
+								 <rich:column>
+								     <h:outputText value="#{it.dateSaisi}" />
+								 </rich:column>
+								 <rich:column>
+								     <h:outputText rendered="#{it.operateur!=null}" value="#{it.operateur.intitule}" />
+								 </rich:column>
+								 
+								  <rich:column>
+								     <h:outputText rendered="#{it.distributeur!=null}" value="#{it.distributeur.intitule}" />
+								 </rich:column>
+								
+								 <rich:column>
+								      <TABLE align="right" >  <tr >  <td align="right" >
+								           <h:outputText value="#{it.montantAPaye}" >    <f:convertNumber pattern="#,###" /> </h:outputText> #{msgBundle['monnaie.unite']}
+								     </td>  </tr> </TABLE>
+								 </rich:column>
+								 <rich:column>
+								       <TABLE align="right" >  <tr >  <td align="right" >
+								           <h:outputText value="#{it.ristourne}" >    <f:convertNumber pattern="#,###" /> </h:outputText> #{msgBundle['monnaie.unite']}
+								        </td> </tr> </TABLE>
+								 </rich:column>
+								  <rich:column >  <TABLE align="center" >  <tr >  <td align="center" >
+								        <h:outputText value="Oui" rendered="#{it.validerON}" /> 
+								        <h:outputText value="Non" rendered="#{not it.validerON}" />    </td> </tr> </TABLE>
+								 </rich:column>
+								  <rich:column>
+								       <TABLE align="center" width="100%" >  <tr >  <td align="center" >
+								      <a:commandLink immediate="true" status="waitStatus"  
+										action="#{validationCommandeService.voidDetailsLivraison(it)}" value="" title="Voir Details "
+										reRender="idDetailt,modale" styleClass="lienSansSoulignement"
+										oncomplete="javascript:Richfaces.showModalPanel('panelDetails',{width:700, top:5, height:500});jQuery('#ModificationPassword\\:prenomEnfant').focus();">
+										<s:graphicImage fileName="info.png" style="border:0px;" value="/picto/info.png" width="16" height="16" alt="" />
+									 </a:commandLink>
+									 </td> 
+									 <td align="center" >
+								      <a:commandLink immediate="true" status="waitStatus" 
+										action="#{validationCommandeService.imprimer(it)}" value="" title="Imprimer "
+										reRender="idDetailt" styleClass="lienSansSoulignement"
+										oncomplete="javascript:Richfaces.showModalPanel('modalPdf')">
+										<s:graphicImage fileName="printer.png" style="border:0px;" value="/picto/printer.png" width="16" height="16" alt="" />
+									 </a:commandLink>
+									 </td>
+									 </tr> </TABLE>
+								 </rich:column>
+				</rich:dataTable>
+			
+			</fieldset>
+			
+		</rich:panel>
+		</div>
+	</h:form>
+ <a:outputPanel id="modale"> 
+ <a:outputPanel rendered="#{validationCommandeService.livraisonEnCours.idLivraison!=null}" > 
+	
+	<rich:modalPanel id="panelDetails" style="background:url('../img2/fond.jpg') repeat-x scroll 0 0 #FFF;height:590; " >
+			<div class="cadreBordOrange margTop30px padLeft30px padRight30px"  >
+			<div class="zoneTitreOrange margTop10px padLeft10px">
+			  Details livraison 
+			</div>
+			<br />
+			<div class="margtop30px">
+			<f:facet name="controls">
+				<a onclick="Richfaces.hideModalPanel('panelDetails');" style="cursor:pointer" href="#">#{msgBundle['label.fermer']}</a>
+			</f:facet>
+
+
+			<div ><!-- Holds the form -->
+			
+			<h:form class="note-form" id="idDetailt">
+				<a:outputPanel ajaxRendered="true">
+					<h:message id="erreur" infoClass="confirmationerror" errorClass="confirmationerror" warnClass="confirmationerror" for="passwordErreur"    />
+        			<h:inputHidden id="passwordErreur" value="" />
+        			<div style="visibility: hidden;display: none;" >
+						<h:messages id="error2"></h:messages>
+					</div>
+				</a:outputPanel>
+			<script>
+				jQuery(document).ready(function()
+				{
+					dateEtHeureInputs();
+				});
+
+				function ajaxRequestContainsErrors() {
+					var retour = jQuery("#idDetailt\\:erreur").text();
+					var retour2 = jQuery("#idDetailt\\:error2").text();
+					var resultat =  retour != '' || retour2 != "";
+					return resultat;
+				}
+
+				function fermerSiOk()
+				{
+					if (!ajaxRequestContainsErrors()) Richfaces.hideModalPanel('panelDetails');
+				}
+				
+			</script>
+			   	<table width="100%">
+			   	     <tr>
+							    <td ><h:outputText value="Montant Total :" styleClass="grey"   /> </td>
+							    <td> <h:outputText id="idMontant"  value="#{validationCommandeService.livraisonEnCours.getMontantAPaye()}" style="color:blue ;font-size: large;font-weight: bold;"   >
+							     			 <f:convertNumber pattern="#,###" /> 
+										</h:outputText>
+										#{msgBundle['monnaie.unite']}
+								 </td>
+							 	<td ><h:outputText value="Ristourn :" styleClass="grey" style="min-width:150px;"   /> </td>
+							    <td> <h:outputText  value="#{validationCommandeService.livraisonEnCours.getRistourne()}" style="color:blue ;font-size: large;font-weight: bold;"   > 
+							    			<f:convertNumber pattern="#,###" />
+										</h:outputText>
+										#{msgBundle['monnaie.unite']}
+								 </td>
+							  </tr>
+					<tr>  
+					    <td> <h:outputText value="Numéro Facture" styleClass="grey" />  </td>
+						<td> <h:inputText value="#{validationCommandeService.livraisonEnCours.numFacture}" styleClass="textBleu2"/> </td>
+						<td> <h:outputText value="Date Livraison" styleClass="grey" />  </td>
+						<td> <rich:calendar
+										value="#{validationCommandeService.livraisonEnCours.dateLivraison}" rendered="true"
+										buttonIcon="/img2/calendrier.png" cellWidth="0px"
+										cellHeight="20px"
+										style="width:200px;border: 3px solid #006a39;"
+										styleClass="textBleu2" datePattern="dd/MM/yyyy">
+						     </rich:calendar>
+						</td>
+						
+					</tr>
+				</table> 
+				
+				 
+			<div  style="height:200px;overflow: auto">
+			   <table align="right">  <tr>  <td >
+			          <a:commandLink immediate="true" status="waitStatus"  
+										action="#{validationCommandeService.initNewDetailLiv}" value="" title="NOUVELLE LIGNE  "
+										reRender="idFormSaisi" styleClass="lienSansSoulignement"
+										oncomplete="javascript:Richfaces.showModalPanel('panelSaisi',{width:300, top:5, height:300});jQuery('#ModificationPassword\\:prenomEnfant').focus();">
+										<s:graphicImage fileName="nouveau.jpg" style="border:0px;" value="/picto/nouveau.jpg" width="32" height="32" alt="" />
+						 </a:commandLink>
+			    </td> </tr> </table>
+							
+				<rich:dataTable value="#{validationCommandeService.livraisonEnCours.getListeDetailLivraison()}" var="it"
+								id="comm" style="width:100%;" rowClasses="row1,row2">
+								<f:facet name="header">
+									<rich:columnGroup>
+									    <rich:column>
+											<h:outputLabel value="Operateur " style="color:white;font-size:12px;font-family: Arial;text-align:center;" />
+										</rich:column>
+										<rich:column>
+											<h:outputLabel value="Libelle produit " style="color:white;font-size:12px;font-family: Arial;text-align:center;" />
+										</rich:column>
+										<rich:column>
+											<h:outputLabel value="Quantite " style="color:white;font-size:12px;font-family: Arial;text-align:center;" />
+										</rich:column>
+										<rich:column>
+											<h:outputLabel value="Prix U " style="color:white;font-size:12px;font-family: Arial;text-align:center;" />
+										</rich:column>
+										<rich:column>
+											<h:outputLabel value="Montant Total" style="color:white;font-size:12px;font-family: Arial;text-align:center;" />
+										</rich:column>
+										<rich:column>
+											<h:outputLabel value="Modification" style="color:white;font-size:12px;font-family: Arial;text-align:center;" />
+										</rich:column>
+									</rich:columnGroup>
+								</f:facet>
+								    <rich:column >
+										<h:outputText value="#{it.operateur.intitule}" styleClass="grey" />
+								    </rich:column>
+								    <rich:column >
+										<h:outputText value="#{it.produit.libelle}" styleClass="grey" />
+								    </rich:column>
+								    <rich:column >
+										<h:outputText value="#{it.quantite}" styleClass="grey" />
+								    </rich:column>
+								     <rich:column >
+								        <TABLE align="right" >  <tr >  <td align="right" >
+										<h:outputText value="#{it.prixUnitaire}" styleClass="grey" >
+										   <f:convertNumber pattern="#,###" />
+										</h:outputText>
+										#{msgBundle['monnaie.unite']}
+									    </td> </tr> </TABLE>
+								    </rich:column>
+								    <rich:column >
+								       <TABLE align="right" >  <tr >  <td align="right" >
+										<h:outputText value="#{it.montantTotal}" styleClass="grey" >
+										  <f:convertNumber pattern="#,###" />
+										</h:outputText>
+										#{msgBundle['monnaie.unite']}
+									  </td> </tr> </TABLE>
+								    </rich:column>
+								    
+								    <rich:column >
+								        <TABLE align="center" width="100%" >  <tr >  <td align="center" >
+									   
+									     
+									   <a:commandLink immediate="true" status="waitStatus"  
+										action="#{validationCommandeService.initModifDetailLiv(it)}" value="" title="Voir Details "
+										reRender="idFormSaisi" styleClass="lienSansSoulignement"
+										oncomplete="javascript:Richfaces.showModalPanel('panelSaisi',{width:400, top:5, height:400});jQuery('#ModificationPassword\\:prenomEnfant').focus();">
+										<s:graphicImage fileName="info.png" style="border:0px;" value="/picto/info.png" width="16" height="16" alt="" />
+									 </a:commandLink>
+									 </td>
+									  <td align="center" >
+									   <a:commandLink immediate="true" status="waitStatus"  
+										action="#{validationCommandeService.removeDetailLiv(it)}" value="" title="Voir Details "
+										reRender="comm" styleClass="lienSansSoulignement">
+										<s:graphicImage fileName="cross.png" style="border:0px;" value="/picto/cross.png" width="16" height="16" alt="" />
+									 </a:commandLink>
+									     </td>
+									     </tr>
+									     </TABLE>
+								     </rich:column>
+								    
+							</rich:dataTable>
+						</div>
+							
+						 <TABLE align="center" >	
+						 	<tr>
+								<td colspan="2" align="center">
+									<br />
+									<hr class="orange"/>
+									<a:commandButton value="Valider" onclick="Richfaces.hideModalPanel('panelDetails');" style="text-align:right;"  status="waitStatus" 
+										action="#{validationCommandeService.validerLivraison}" reRender="listLiv" image="/img2/bouton_valider.jpg"/> 
+								</td>
+							</tr>
+						 </TABLE>
+						
+							
+			</h:form>
+			</div>
+		</div>
+		<div class="clear"></div>
+		</div>
+		</rich:modalPanel>
+		
+		
+		<rich:modalPanel id="panelSaisi" style="background:url('../img2/fond.jpg') repeat-x scroll 0 0 #FFF;height:590; " >
+			<div class="cadreBordOrange margTop30px padLeft30px padRight30px"  >
+			<div class="zoneTitreOrange margTop10px padLeft10px">
+			      #{msgBundle['gestock.titre.ajoutProduit']}
+			
+			</div>
+			<br />
+			<div class="margtop30px">
+			<f:facet name="controls">
+				<a onclick="Richfaces.hideModalPanel('panelSaisi');" style="cursor:pointer" href="#">#{msgBundle['label.fermer']}</a>
+			</f:facet>
+
+
+			<div ><!-- Holds the form -->
+			
+			<h:form class="note-form" id="idFormSaisi">
+				<a:outputPanel ajaxRendered="true">
+					<h:message id="erreur" infoClass="confirmationerror" errorClass="confirmationerror" warnClass="confirmationerror" for="passwordErreur"    />
+        			<h:inputHidden id="passwordErreur" value="" />
+        			<div style="visibility: hidden;display: none;" >
+						<h:messages id="error2"></h:messages>
+					</div>
+				</a:outputPanel>
+			<script>
+				jQuery(document).ready(function()
+				{
+					dateEtHeureInputs();
+				});
+
+				function ajaxRequestContainsErrors() {
+					var retour = jQuery("#idDetailt\\:erreur").text();
+					var retour2 = jQuery("#idDetailt\\:error2").text();
+					var resultat =  retour != '' || retour2 != "";
+					return resultat;
+				}
+
+				function fermerSiOk()
+				{
+					if (!ajaxRequestContainsErrors()) Richfaces.hideModalPanel('panelSaisi');
+				}
+				
+			</script>
+			    <table width="100%">
+								 
+							    <tr>  
+								    <td > <h:outputText  value="Opérateur  :  " styleClass="grey" /> </td>
+								    <td> 
+								       <h:selectOneMenu   value="#{validationCommandeService.detailMofication.operateur}"   styleClass="textBleu2"  id="op" requiredMessage="Selectionnez...." converter="#{operateurConverter}"  >
+										     <s:selectItems  value="#{listeParamStock.listeOperateur}" noSelectionLabel="Selectionnez...."  var="it" label="#{it.intitule}" />
+											 <a:support  event="onchange"  ajaxSingle="true" reRender="zone2,infoFourni,lab" />	
+									   </h:selectOneMenu> 
+								    </td>
+							    </tr>  
+								 <tr>  
+								     <td > <rich:spacer  height="20px" width="4px;" />   <h:outputText  value="Produit  :  " styleClass="grey" /> </td>
+								      <td > <rich:spacer  height="20px" width="4px;" /> 
+										        <h:selectOneMenu   value="#{validationCommandeService.detailMofication.produit}"   styleClass="textBleu2"  id="pro" requiredMessage="Selectionnez...." converter="#{produitConverter}"  >
+												     <s:selectItems  value="#{listeParamStock.listeProduit}" noSelectionLabel="Selectionnez...."  var="it" label="#{it.libelle}" />
+													 <a:support  event="onchange"  ajaxSingle="true" reRender="zone2,infoFourni,lab" />	
+												</h:selectOneMenu>  
+								       </td>
+								</tr> 
+								 <tr>  
+								     <td > <rich:spacer  height="20px" width="4px;" />   <h:outputText  value="Quantité   :  " styleClass="grey" /> </td>
+								      <td > <rich:spacer  height="20px" width="4px;" />  <h:inputText  value="#{validationCommandeService.detailMofication.quantite}"  styleClass="textBleu2  margBot10px nbOnly" />  </td>
+								</tr> 
+								
+								
+								<tr>
+								<td colspan="2" align="center">
+									<br />
+									<hr class="orange"/>
+									<a:commandButton value="Valider" onclick="Richfaces.hideModalPanel('panelSaisi');" style="text-align:right;"  status="waitStatus" 
+										action="#{validationCommandeService.modifDetailLiv}" reRender="idDetailt" image="/img2/bouton_valider.jpg"/> 
+								</td>
+							    </tr>
+								
+								
+							</table>
+					</h:form>
+				</div>
+			</div>
+			</div>
+			</rich:modalPanel>
+	</a:outputPanel>
+ </a:outputPanel>
+		
+	</ui:define>
+</ui:composition>

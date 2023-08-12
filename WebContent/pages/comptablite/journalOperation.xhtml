@@ -1,0 +1,203 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//FR" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!--  V 0.1 : Maj : 09/11/2007 -->
+
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:rich="http://richfaces.ajax4jsf.org/rich"
+	xmlns:a="https://ajax4jsf.dev.java.net/ajax"
+	xmlns:t="http://myfaces.apache.org/tomahawk"
+	xmlns:s="http://jboss.com/products/seam/taglib"
+	xmlns:c="http://java.sun.com/jstl/core"
+	template="/template/template.xhtml">
+	<!-- Page d'accueil -->
+
+
+
+
+
+	<ui:define name="title">GESTION  #{msgBundle['gestock.titre.journalOperation']} </ui:define>
+	<ui:define name="body">
+		<h:form id="note">
+
+			
+			<div class="zoneResultat2" style="height:600px;overflow: auto"  >
+			
+		<!--  	<table> <tr> 
+			      <td> <s:graphicImage fileName="candidat_64.png" style="border:0px;" value="/picto/candidat_64.png" width="5" height="5" alt="Peupler" /> </td> 
+			        <td> <h1>  #{msgBundle['gestock.titre.retoureProduit']}    </h1>  </td> 
+			      </tr>    
+			</table>	-->				 
+			
+			
+			
+			<rich:panel header="  #{msgBundle['gestock.titre.journalOperation']} ">
+		   <fieldset>
+			<legend>  #{msgBundle['gestock.recherche']} </legend>
+			
+				      <table border="0" width="100%" cellpadding="7">
+									<tr>
+									
+							<td><h:outputText value="Date debut :" style="font-size:11px;" styleClass="grey" /></td>
+								<td><rich:calendar
+										value="#{comptabliteService.dateDebut}" rendered="true"
+										buttonIcon="/img2/calendrier.png" cellWidth="0px"
+										cellHeight="20px"
+										style="width:200px;border: 3px solid #006a39;"
+										styleClass="textBleu2" datePattern="dd/MM/yyyy">
+									</rich:calendar></td>
+									
+									<td><h:outputText value="Date fin :" style="font-size:11px;" 
+										styleClass="grey" /></td>
+								<td><rich:calendar rendered="true"
+										value="#{comptabliteService.dateFin}"
+										buttonIcon="/img2/calendrier.png" cellWidth="0px"
+										cellHeight="20px"
+										style="width:200px;border: 3px solid #006a39;"
+										styleClass="textBleu2" datePattern="dd/MM/yyyy">
+									</rich:calendar></td>
+									
+									  
+						              </tr>
+				  </table>
+			  </fieldset>
+				    <rich:spacer height="10px;"></rich:spacer>
+			  	<table width="100%" >
+				<tr>
+					<td width="1175px;"  align="right" >
+						<div id="trd_submenu" class="trd_kb">
+							<ul>
+								<li>
+									<a:commandLink  action="#{comptabliteService.rechercherCompteRenduOperation}" status="waitStatus" reRender="note"  value="">
+										<s:graphicImage fileName="accept.png" style="border:0px;" value="/picto/accept.png" width="16" height="16" alt="" />
+										#{msgBundle['action.recherche']}
+									</a:commandLink>
+								</li>
+								<li>
+									<a:commandLink  action="#{comptabliteService.imprimer}" status="waitStatus" reRender="note"  value="" 
+									     oncomplete="javascript:Richfaces.showModalPanel('modalPdf')">
+										<s:graphicImage fileName="printer.png" style="border:0px;" value="/picto/printer.png" width="16" height="16" alt="" />
+										#{msgBundle['action.imprimer']}
+									</a:commandLink>
+								</li>
+							
+							</ul>
+						</div>
+					</td>
+					<td>
+						&#160;
+					</td>
+				</tr>
+			</table>
+			
+			
+			
+			
+			<table width="100%" >
+			  <tr>  
+			    <td valign="top" width="45%">
+			       <fieldset>
+			       
+						<legend>  #{msgBundle['gestock.resultat']}    </legend>
+						
+						
+						  <div style="height:400px;overflow: auto">
+						 	
+						 	
+						 		<a:outputPanel id="listecro">
+			<rich:dataTable id="listdesEcritures"  value="#{comptabliteService.listeCompteRendu}" rows="10" var="varCro" width="100%"  height="100%" >
+					   
+					       <f:facet name="header">
+					          <rich:columnGroup>
+					          
+					          <rich:column>
+				                <h:outputText value="#{msgBundle['gestock.transaction']}" style="color:white;font-size:12px;font-family: Arial;text-align:center;"/>				                
+				             </rich:column>
+					       
+
+				             <rich:column>
+				                 <h:outputText value="#{msgBundle['label.intitule']}" style="color:white;font-size:12px;font-family: Arial;text-align:center;" />				               
+				             </rich:column>
+				              <rich:column>
+				                 <h:outputText value="#{msgBundle['libell.pecp.debit']}" style="color:white;font-size:12px;font-family: Arial;text-align:center;"/>				               
+				             </rich:column>
+				              <rich:column>
+				                 <h:outputText value="#{msgBundle['libell.pecp.credit']}" style="color:white;font-size:12px;font-family: Arial;text-align:center;"/>				               
+				             </rich:column>
+				            
+				             </rich:columnGroup>
+					       
+					       </f:facet>
+					          <rich:column colspan="6" style="background-color: ;">
+				                  <div align="center">
+				                  <table width="100%">
+						               <tr><td  styleClass="grey" align="left">
+						                  <h:outputText value="  #{varCro.libelle}  " styleClass="grey" style=" font-family: Arial; color:blue; font-weight: bold;" />
+						                  </td>
+						               </tr>
+				                  </table>
+				                  </div> 				               
+				             </rich:column> 
+					        
+					        <rich:subTable value="#{varCro.listEcritureComptable}" var="varEcriture" rowClasses="row1,row2">
+				             <rich:column>	
+				             
+				             </rich:column>				             				             				            
+				            
+				             <rich:column>	
+				              <div align="center">			               
+				               <h:outputText value="#{varEcriture.libelle}" />
+				               </div>
+				             </rich:column>
+				            
+				            
+				              <rich:column>	
+				              <div align="right" rendered="#{not (varEcriture.sensMouvement.libelle_court eq 'D')}" >			               
+				               <h:outputText value="#{varEcriture.montant}" styleClass="grey">
+				               <f:convertNumber pattern="###,###" />
+				               </h:outputText>
+				                	#{msgBundle['monnaie.unite']}
+				                </div>
+				             </rich:column>
+				             
+				             <rich:column>	
+				              <div align="right" rendered="#{varEcriture.sensMouvement.libelle_court eq 'C'}">			               
+				               <h:outputText  value="#{varEcriture.montant}" styleClass="grey">
+				               <f:convertNumber pattern="###,###" />
+				               </h:outputText>
+				               	#{msgBundle['monnaie.unite']}
+				               </div>
+				             </rich:column>
+				             
+				           </rich:subTable>
+				       
+				    </rich:dataTable>
+					<rich:datascroller status="waitStatus" stepControls="auto"  styleClass="progipaging" 
+							 style="width:100%" for="listdesEcritures"  rendered="#{not empty comptabliteService.listeCompteRendu}"/>
+				</a:outputPanel>
+						 	
+						</div>		
+				   </fieldset>
+				</td>
+			
+			    </tr>
+			    
+		    </table>
+			    
+			    
+		  
+	 
+		
+		 
+		</rich:panel>
+		</div>
+		</h:form>
+		
+		
+		
+			
+			
+			
+	</ui:define>
+</ui:composition>

@@ -1,0 +1,290 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//FR" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!--  V 0.1 : Maj : 09/11/2007 -->
+
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:rich="http://richfaces.ajax4jsf.org/rich"
+	xmlns:a="https://ajax4jsf.dev.java.net/ajax"
+	xmlns:t="http://myfaces.apache.org/tomahawk"
+	xmlns:s="http://jboss.com/products/seam/taglib"
+	xmlns:c="http://java.sun.com/jstl/core"
+	template="/template/template1.xhtml">
+	<!-- Page d'accueil -->
+
+
+
+
+
+	<ui:define name="title">WISEL</ui:define>
+	<ui:define name="body">
+
+		<div id="zoneResultat" class="zoneResultat2">
+
+			<h:form id="vente">
+				<div class="row">
+					<div class="col-md-12">
+						<div class="col-md-6">
+							<FIELDSET>
+								<LEGEND>Catalogue</LEGEND>
+								<rich:dataTable value="#{vente.listeProduit}" var="scat"
+									id="lstdemande" style="width:100%;" rows="3">
+									<f:facet name="header">
+										<rich:columnGroup>
+
+											<rich:column>
+												<h:outputLabel value="Produit"
+													style="color:white;font-size:12px;font-family: Arial;text-align:center;" />
+											</rich:column>
+
+											<rich:column>
+												<h:outputLabel value="Désignation"
+													style="color:white;font-size:12px;font-family: Arial;text-align:center;" />
+											</rich:column>
+
+											<rich:column>
+												<h:outputLabel value="Prix"
+													style="color:white;font-size:12px;font-family: Arial;text-align:center;" />
+											</rich:column>
+
+											<rich:column style="width:5%;">
+												<h:outputLabel value="Quantité"
+													style="color:white;font-size:12px;font-family: Arial;text-align:center;" />
+											</rich:column>
+
+
+											<rich:column>
+												<h:outputLabel value="Panier"
+													style="color:white;font-size:12px;font-family: Arial;text-align:center;" />
+											</rich:column>
+
+										</rich:columnGroup>
+									</f:facet>
+
+
+									<rich:column>
+										<a:mediaOutput element="img" mimeType="image/jpeg"
+											session="true" createContent="#{produitService.paint}"
+											value="#{scat.id}" style="width:80px; height:80px;"
+											cacheable="false" rendered="#{scat.image!=null}">
+
+										</a:mediaOutput>
+										<s:graphicImage fileName="page_excel.png" style="border:0px;"
+											rendered="#{scat.image == null}" value="/images/download.png"
+											width="80px" height="80px" alt="" />
+									</rich:column>
+
+
+									<rich:column filterBy="#{scat.libelle}" filterEvent="onkeyup">
+										<h:outputText value="#{scat.libelle}" styleClass="grey">
+
+										</h:outputText>
+									</rich:column>
+
+
+									<rich:column>
+										<h:inputText value="#{scat.prixVente1}" styleClass="grey">
+
+										</h:inputText>
+									</rich:column>
+									<rich:column style="width:5%;">
+										<h:inputText value="#{scat.quantite}" styleClass="grey"
+											style="width:50%;">
+
+										</h:inputText>
+									</rich:column>
+
+
+
+
+									<rich:column style="width:5%;">
+
+										<a:commandLink value="" status="waitStatus"
+											action="#{vente.ajouterAuPanier(scat)}" reRender="vente"
+											title="Ajouter au Panier">
+											<s:graphicImage fileName="add.png" style="border:0px;"
+												value="/picto/add.png" width="16" height="16" alt="" />
+
+										</a:commandLink>
+
+									</rich:column>
+
+								</rich:dataTable>
+								<rich:datascroller status="waitStatus" stepControls="auto"
+									style="width:100%" for="lstdemande"
+									rendered="#{not empty vente.listeProduit}" />
+							</FIELDSET>
+						</div>
+						<div class="col-md-6">
+							<p align="right">
+
+								<a:commandLink styleClass="btn btn-success" value=""
+									action="#{vente.ajouterVente()}" reRender="vente"
+									status="waitStatus">
+																		VALIDER			
+																				</a:commandLink>
+
+							</p>
+							<TABLE class="table">
+
+								<tr>
+									<td><h:outputLabel styleClass="grey" value="Client" /></td>
+									<td><h:selectOneMenu value="#{vente.vente.client}"
+											converter="#{clientConverter}" styleClass="form-control">
+											<s:selectItems value="#{vente.listeClient}" var="scat"
+												label="#{scat.nom} #{scat.prenom}"
+												noSelectionLabel="-Client-">
+											</s:selectItems>
+
+										</h:selectOneMenu></td>
+									<td><h:outputLabel styleClass="grey" value="Réduction" /></td>
+									<td><h:inputText value="#{vente.reduction}"
+											class="form-control">
+											<a:support event="onblur"
+												actionListener="#{vente.sommeReduction()}" reRender="vente" />
+
+										</h:inputText></td>
+								</tr>
+								<tr>
+									<td><h:outputLabel styleClass="grey" value="Mode Paiement" /></td>
+									<td><h:selectOneMenu value="#{vente.mode}"
+											converter="#{modePaieConverter}" styleClass="form-control">
+											<s:selectItems value="#{vente.listeMode}" var="scat"
+												label="#{scat.libelle}" noSelectionLabel="-Paiement-">
+											</s:selectItems>
+										</h:selectOneMenu></td>
+								</tr>
+								<tr>
+									<td><h:outputLabel styleClass="grey" value="Total TTC" /></td>
+									<td><h:inputText value="#{vente.ttc}" class="form-control"
+											disabled="true">
+											<f:convertNumber pattern="#,##0" />
+										</h:inputText></td>
+									<td><h:outputLabel styleClass="grey" value="RECU" /></td>
+									<td><h:inputText value="#{vente.recu}"
+											class="form-control">
+
+											<a:support event="onblur"
+												actionListener="#{vente.sommeArendre()}" reRender="vente" />
+										</h:inputText></td>
+									<td><h:outputLabel styleClass="grey" value="RENDU" /></td>
+									<td><h:inputText value="#{vente.rendu}"
+											class="form-control" disabled="true">
+											<f:convertNumber pattern="#,##0" />
+										</h:inputText></td>
+								</tr>
+							</TABLE>
+							<TABLE class="table">
+								<tr>
+								<tr>
+									<td>
+										<FIELDSET>
+											<LEGEND>Panier</LEGEND>
+
+											<rich:dataTable value="#{vente.listeProduitPanier}"
+												var="scat" style="width:100%;" rows="6" id="lstdemande1">
+												<f:facet name="header">
+													<rich:columnGroup>
+
+														<rich:column>
+															<h:outputLabel value="Produit"
+																style="color:white;font-size:12px;font-family: Arial;text-align:center;" />
+														</rich:column>
+
+
+
+														<rich:column style="width:5%;">
+															<h:outputLabel value="Quantité"
+																style="color:white;font-size:12px;font-family: Arial;text-align:center;" />
+														</rich:column>
+														<rich:column>
+															<h:outputLabel value="P.U"
+																style="color:white;font-size:12px;font-family: Arial;text-align:center;" />
+														</rich:column>
+
+														<rich:column>
+															<h:outputLabel value="Montant"
+																style="color:white;font-size:12px;font-family: Arial;text-align:center;" />
+														</rich:column>
+
+
+														<rich:column>
+															<h:outputLabel value="Modifier Qte"
+																style="color:white;font-size:12px;font-family: Arial;text-align:center;" />
+														</rich:column>
+
+
+														<rich:column>
+															<h:outputLabel value="Supprimer"
+																style="color:white;font-size:12px;font-family: Arial;text-align:center;" />
+														</rich:column>
+
+													</rich:columnGroup>
+												</f:facet>
+												<rich:column>
+													<h:outputText value="#{scat.libelle}" styleClass="grey">
+													</h:outputText>
+												</rich:column>
+
+												<rich:column style="width:5%;">
+													<h:outputText value="#{scat.quantite}" styleClass="grey"
+														style="width:50%;">
+													</h:outputText>
+												</rich:column>
+
+												<rich:column>
+													<h:outputText value="#{scat.prixVente1}" styleClass="grey">
+
+													</h:outputText>
+												</rich:column>
+
+												<rich:column>
+													<h:outputText value="#{scat.montant}" styleClass="grey">
+														<f:convertNumber pattern="#,##0" />
+													</h:outputText>
+												</rich:column>
+
+												<rich:column>
+													<a:commandLink value="" status="waitStatus" action="#"
+														onclick="if (!confirm('Voulez-vous vraiment modifier la ligne  ?')) return false"
+														title="Modifer">
+														<s:graphicImage fileName="edit.png" style="border:0px;"
+															value="/picto/edit.png" width="16" height="16" alt="" />
+
+													</a:commandLink>
+
+												</rich:column>
+
+												<rich:column>
+													<a:commandLink value="" status="waitStatus" action="#"
+														title="Supprimer">
+														<s:graphicImage fileName="cross.png" style="border:0px;"
+															value="/picto/cross.png" width="16" height="16" alt="" />
+
+													</a:commandLink>
+
+												</rich:column>
+
+
+											</rich:dataTable>
+											<rich:datascroller status="waitStatus" stepControls="auto"
+												style="width:100%" for="lstdemande1"
+												rendered="#{not empty vente.listeProduitPanier}" />
+										</FIELDSET>
+									</td>
+								</tr>
+								</tr>
+
+
+							</TABLE>
+						</div>
+					</div>
+				</div>
+
+
+
+			</h:form>
+		</div>
+	</ui:define>
+</ui:composition>

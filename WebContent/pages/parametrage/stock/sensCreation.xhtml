@@ -1,0 +1,122 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//FR" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!--  V 0.1 : Maj : 09/11/2007 -->
+
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:rich="http://richfaces.ajax4jsf.org/rich"
+	xmlns:a="https://ajax4jsf.dev.java.net/ajax"
+	xmlns:t="http://myfaces.apache.org/tomahawk"
+	xmlns:s="http://jboss.com/products/seam/taglib"
+	xmlns:c="http://java.sun.com/jstl/core"
+	template="/template/template.xhtml">
+	<!-- Page d'accueil -->
+
+
+
+
+
+	<ui:define name="title">Application Ch@k@</ui:define>
+	<ui:define name="body">
+		<h:form id="note">
+
+			
+			<div class="zoneResultat2">
+			<h1> PARAMETRAGE SENS  </h1>
+			
+			<rich:panel header="GESTION SENS">
+			
+			<fieldset>
+			<legend>Formulaire Ajout Sens</legend>
+			
+			<table width="100%">
+			<tr> 
+			<td> <h:outputText value="Libelle" styleClass="grey" />  </td>
+			<td> <h:inputText value="#{sensService.sensEnCreation.libelle}" /> </td>
+			<td> <h:outputText value="Libelle Court" styleClass="grey" />  </td>
+			<td> <h:inputText value="#{sensService.sensEnCreation.libelle_court}" /> </td>
+			
+			<td> 	<td><a:commandLink value="" status="waitStatus"
+									title="Ajouter"   reRender="note"
+									action="#{sensService.ajouterSens}" >
+									<s:graphicImage fileName="edit.png" style="border:0px;"
+										value="/picto/edit.png" alt="" styleClass="buton" />
+								</a:commandLink></td>
+			 </td>
+			</tr>
+			
+			</table>
+			
+			</fieldset>
+			
+				
+				
+			<rich:spacer height="20px;"></rich:spacer>
+		
+			<fieldset>
+			<legend> Liste des Sens </legend>
+			
+			<rich:dataTable value="#{sensService.listeSens}" var="it"
+							id="cc" style="width:100%;" rowClasses="row1,row2">
+							<f:facet name="header">
+								<rich:columnGroup>
+									<rich:column>
+										<h:outputLabel value="Libelle"
+											style="color:white;font-size:12px;font-family: Arial;text-align:center;" />
+									</rich:column>
+									<rich:column>
+										<h:outputLabel value="Libelle Court"
+											style="color:white;font-size:12px;font-family: Arial;text-align:center;" />
+									</rich:column>
+									
+									<rich:column>
+										<h:outputLabel value="Actions"
+											style="color:white;font-size:12px;font-family: Arial;text-align:center;" />
+									</rich:column>
+								</rich:columnGroup>
+							</f:facet>
+
+							
+							<rich:column >
+								<h:outputText value="#{it.libelle}" styleClass="grey" />
+							</rich:column>
+
+							<rich:column>
+								<h:outputText value="#{it.libelle_court}" styleClass="grey" />
+							</rich:column>
+
+							
+							<rich:column width="60px">
+
+								<table width="100%">
+									<tr>
+										<td width="20px;" align="center">
+											
+											<a:commandLink value="" status="waitStatus" reRender="note" title="Modifier" action="#{sensService.modifierSens(it)}">
+												<s:graphicImage fileName="edit.png" style="border:0px;" value="/picto/edit.png" width="16" height="16" alt="" />
+											</a:commandLink></td>
+
+										
+										<td width="20px;" align="center"><a:commandLink value="" status="waitStatus" action="#{sensService.supprimerSens(it)}"
+												 reRender="note" title="Supprimer (Sens: #{it.libelle})">
+												<s:graphicImage fileName="cross.png" style="border:0px;" value="/picto/cross.png" width="16" height="16" alt="" />
+											</a:commandLink></td>
+
+									</tr>
+								</table>
+
+							</rich:column>
+
+						</rich:dataTable>
+			</fieldset>
+			
+			
+			
+			</rich:panel>
+			</div>
+			</h:form>
+		
+			
+	</ui:define>
+</ui:composition>

@@ -1,0 +1,813 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//FR" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!--  V 0.1 : Maj : 09/11/2007 -->
+
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:rich="http://richfaces.ajax4jsf.org/rich"
+	xmlns:a="https://ajax4jsf.dev.java.net/ajax"
+	xmlns:t="http://myfaces.apache.org/tomahawk"
+	xmlns:s="http://jboss.com/products/seam/taglib"
+	xmlns:c="http://java.sun.com/jstl/core"
+	template="/template/template.xhtml">
+	<!-- Page d'accueil -->
+
+	<ui:define name="title">RHOSPI</ui:define>
+	<ui:define name="body">
+		<rich:spacer height="20px;"></rich:spacer>
+		<div class="divtest">
+
+
+			<div class="container" style="margin-left: 5%;">
+				<h:form id="personnel">
+					<div class="row">
+						<div class="col-md-12">
+							<div class="panel panel-success">
+
+
+								<div id="CollapsiblePanel2Ferme" class="CollapsiblePanel">
+									<div class="CollapsiblePanelTab" tabindex="0"
+										style="background-color: #27AE60;">
+										<table width="100%" style="margin-top: -5px;">
+											<tr>
+												<td>
+													<h3 class="panel-title"
+														style="text-align: center; color: white;">OPTION DE
+														RECHERCHE.</h3>
+												</td>
+												<td>&#160;</td>
+												<td width="10px"><s:graphicImage fileName="add.png"
+														style="border:0px;margin-top: 2px;" value="/picto/add.png"
+														alt="" /></td>
+											</tr>
+										</table>
+									</div>
+									<div class="CollapsiblePanelContent">
+										<div class="panel-body">
+											<div class="form-group has-success">
+												<TABLE class="table">
+													<tr>
+														<td><h:outputLabel styleClass="grey" value="Nom" /></td>
+														<td><h:inputText
+																value="#{personnelService.personnel.nom}"
+																class="form-control" /></td>
+
+
+
+														<td><h:outputLabel styleClass="grey" value="Prénom" /></td>
+														<td><h:inputText
+																value="#{personnelService.personnel.prenom}"
+																class="form-control" /></td>
+														<td><h:outputLabel styleClass="grey"
+																value="Catégorie Prof" /></td>
+														<td><h:selectOneMenu class="form-control"
+																value="#{personnelService.personnel.categoriProg}"
+																converter="#{categoriProfConverter}">
+
+																<s:selectItems
+																	value="#{personnelService.listeParamStock.listeLst_CategoriProf}"
+																	var="cat" label="#{cat.libelle}" />
+
+
+															</h:selectOneMenu></td>
+
+
+													</tr>
+
+													<tr>
+
+
+
+
+														<td><h:outputLabel styleClass="grey" value="Statut" /></td>
+														<td><h:selectOneMenu class="form-control"
+																value="#{personnelService.personnel.statut}"
+																converter="#{statutConverter}">
+
+																<s:selectItems
+																	value="#{personnelService.listeParamStock.listeLst_Statut}"
+																	var="cat" label="#{cat.libelle}" />
+
+
+															</h:selectOneMenu></td>
+
+
+														<td><h:outputLabel styleClass="grey" value="Sexe" /></td>
+														<td><h:selectOneMenu class="form-control"
+																value="#{personnelService.personnel.sexe}"
+																converter="#{sexeConverter}" id="sx">
+
+																<s:selectItems
+																	value="#{personnelService.listeParamStock.listeLst_Sexe}"
+																	var="sexe" label="#{sexe.libelle}" />
+
+
+															</h:selectOneMenu></td>
+														<td><h:outputLabel styleClass="grey"
+																value="Situation Matrimoniale" /></td>
+														<td><h:selectOneMenu class="form-control"
+																value="#{personnelService.personnel.situationMatri}"
+																converter="#{situationMatriConverter}">
+
+																<s:selectItems
+																	value="#{personnelService.listeParamStock.listeLst_SituationMatri}"
+																	var="sit" label="#{sit.libelle}" />
+
+
+															</h:selectOneMenu></td>
+													</tr>
+
+													<tr>
+
+
+
+														<td><h:outputLabel styleClass="grey" value="Service" /></td>
+														<td><h:selectOneMenu class="form-control"
+																value="#{personnelService.personnel.service}"
+																converter="#{serviceConverter}">
+
+																<s:selectItems
+																	value="#{personnelService.listeParamStock.listeLst_Service}"
+																	var="service" label="#{service.libelle}" />
+
+
+															</h:selectOneMenu></td>
+
+														<td><h:outputLabel styleClass="grey"
+																value="Niveau d'Etude" /></td>
+														<td><h:selectOneMenu class="form-control"
+																value="#{personnelService.personnel.nivEtude}"
+																converter="#{nivEtudeConverter}">
+
+																<s:selectItems
+																	value="#{personnelService.listeParamStock.listeLst_NivEtude}"
+																	var="sit" label="#{sit.libelle}" />
+
+
+															</h:selectOneMenu></td>
+
+														<td><h:outputLabel styleClass="grey" value="Contrat" /></td>
+														<td><h:selectOneMenu class="form-control"
+																value="#{personnelService.personnel.contrant}"
+																converter="#{typeContratConverter}" id="cont">
+
+																<s:selectItems
+																	value="#{personnelService.listeParamStock.listeLst_TypeContrat}"
+																	var="type" label="#{type.libelle}" />
+
+
+															</h:selectOneMenu></td>
+
+
+
+													</tr>
+
+
+
+												</TABLE>
+												<p align="center">
+
+													<a:commandLink styleClass="btn btn-success" value=""
+														action="#{personnelService.rechercherPersonnel()}"
+														reRender="liste" status="waitStatus">
+																		
+																		RECHERCHER			
+																				</a:commandLink>
+
+
+
+												</p>
+
+
+											</div>
+
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</h:form>
+				<h:form id="liste">
+					<div class="row">
+						<div class="col-md-12">
+							<div class="panel panel-success">
+								<div class="panel-heading">
+									<h3 class="panel-title" style="text-align: center;">LISTE
+										PERSONNEL</h3>
+								</div>
+
+								<div class="panel-body">
+									<p align="left">
+
+										<a:commandLink styleClass="btn btn-success" value=""  rendered="#{ (personnelService.param eq 'pr')}"
+											action="#{personnelService.prepareajouterPersonnel}"
+											oncomplete="javascript:Richfaces.showModalPanel('sim',{width:1300, height:500})"
+											reRender="form" status="waitStatus">
+																		
+																		AJOUTER PERSONNEL			
+																				</a:commandLink>
+
+
+
+									</p>
+
+
+
+									<table cellpadding="5" cellspacing="5">
+										<tr>
+											<td><h:outputLabel styleClass="grey"
+													value="Zoom sur un  Personnel" /></td>
+											<td><rich:spacer width="5px;"></rich:spacer></td>
+											<td><s:graphicImage fileName="info.png"
+													style="border:0px;" value="/picto/info.png" width="16"
+													height="16" alt="" /></td>
+											<td><rich:spacer width="10px;"></rich:spacer></td>
+											<td><h:outputLabel styleClass="grey" rendered="#{ (personnelService.param eq 'pr')}"
+													value="Supprimer Personnel" /></td>
+											<td><rich:spacer width="5px;"></rich:spacer></td>
+											<td><s:graphicImage fileName="cross.png" rendered="#{ (personnelService.param eq 'pr')}"
+													style="border:0px;" value="/picto/cross.png" width="16"
+													height="16" alt="" /></td>
+											<td><rich:spacer width="10px;"></rich:spacer></td>
+
+											<td><h:outputLabel styleClass="grey" rendered="#{ (personnelService.param eq 'pr')}"
+													value="Modifier  Personnel" /></td>
+											<td><rich:spacer width="5px;"></rich:spacer></td>
+											<td><s:graphicImage fileName="edit.png" rendered="#{ (personnelService.param eq 'pr')}"
+													style="border:0px;" value="/picto/edit.png" width="16"
+													height="16" alt="" /></td>
+											<td><rich:spacer width="10px;"></rich:spacer></td>
+											<td><h:outputLabel styleClass="grey" rendered="#{personnelService.param eq 'ay'}"
+													value="Ajoute Membre familliale" /></td>
+											<td><rich:spacer width="5px;"></rich:spacer></td>
+											<td><s:graphicImage fileName="member32_on.png"  rendered="#{personnelService.param eq 'ay'}"
+													style="border:0px;" value="/picto/member32_on.png"
+													width="16" height="16" alt="" /></td>
+													
+											<td><h:outputLabel styleClass="grey" rendered="#{personnelService.param eq 'cg'}"
+													value="Demande Congé" /></td>
+											<td><rich:spacer width="5px;"></rich:spacer></td>
+											<td><s:graphicImage fileName="conge.png"  rendered="#{personnelService.param eq 'cg'}"
+													style="border:0px;" value="/picto/conge.png"
+													width="16" height="16" alt="" /></td>
+											
+										</tr>
+									</table>
+
+
+
+
+									<div class="form-group has-success"></div>
+									<rich:dataTable value="#{personnelService.listePersonnels}"
+										var="pers" id="lstdemande" style="width:100%;" rows="10"
+										rowClasses="row1,row2">
+										<f:facet name="header">
+											<rich:columnGroup>
+
+												<rich:column>
+													<h:outputLabel value="Nom:"
+														style="color:white;font-size:12px;font-family: Arial;text-align:center;" />
+												</rich:column>
+
+												<rich:column>
+													<h:outputLabel value="Personne:"
+														style="color:white;font-size:12px;font-family: Arial;text-align:center;" />
+												</rich:column>
+												<rich:column>
+													<h:outputLabel value="Catégorie Prof"
+														style="color:white;font-size:12px;font-family: Arial;text-align:center;" />
+												</rich:column>
+
+												<rich:column>
+													<h:outputLabel value="Statut"
+														style="color:white;font-size:12px;font-family: Arial;text-align:center;" />
+												</rich:column>
+
+												<rich:column>
+													<h:outputLabel value="Sit Matrimoniale"
+														style="color:white;font-size:12px;font-family: Arial;text-align:center;" />
+												</rich:column>
+
+												<rich:column>
+													<h:outputLabel value="Service"
+														style="color:white;font-size:12px;font-family: Arial;text-align:center;" />
+												</rich:column>
+
+
+												<rich:column>
+													<h:outputLabel value="Action"
+														style="color:white;font-size:12px;font-family: Arial;text-align:center;" />
+												</rich:column>
+
+
+											</rich:columnGroup>
+										</f:facet>
+
+										<rich:column filterBy="#{pers.nom}" filterEvent="onkeyup">
+											<h:outputText value="#{pers.nom}" styleClass="grey" />
+										</rich:column>
+										<rich:column filterBy="#{pers.prenom}" filterEvent="onkeyup">
+											<h:outputText value="#{pers.prenom}" styleClass="grey" />
+										</rich:column>
+										<rich:column filterBy="#{pers.categoriProg.libelle}"
+											filterEvent="onkeyup">
+											<h:outputText value="#{pers.categoriProg.libelle}"
+												styleClass="grey" />
+										</rich:column>
+
+										<rich:column 	>
+											<h:outputText value="#{pers.statut.libelle}"
+												styleClass="grey" />
+										</rich:column>
+
+
+										<rich:column >
+											<h:outputText value="#{pers.situationMatri.libelle}"
+												styleClass="grey" />
+										</rich:column>
+
+										<rich:column filterBy="#{pers.service.libelle}"
+											filterEvent="onkeyup">
+											<h:outputText value="#{pers.service.libelle}"
+												styleClass="grey" />
+										</rich:column>
+
+
+										<rich:column>
+
+											<a:commandLink value="" status="waitStatus"
+												action="#{personnelService.zoomPersonnel(pers)}"
+												oncomplete="javascript:Richfaces.showModalPanel('zoom',{width:1300, height:500})"
+												reRender="formz" title="Modifier">
+												<s:graphicImage fileName="info.png" style="border:0px;"
+													value="/picto/info.png" width="16" height="16" alt="" />
+
+											</a:commandLink>
+											<rich:spacer width="10px;"></rich:spacer>
+											<a:commandLink value="" status="waitStatus"  rendered="#{ (personnelService.param eq 'pr')}"
+												action="#{personnelService.supprimerPersonnel(pers)}"
+												onclick="if (!confirm(' Voulez-vous vraiment supprimer ce personnel ?')) return false"
+												reRender="form" title="Modifier">
+												<s:graphicImage fileName="cross.png" style="border:0px;"
+													value="/picto/cross.png" width="16" height="16" alt="" />
+
+											</a:commandLink>
+											<rich:spacer width="10px;"></rich:spacer>
+
+											<a:commandLink value="" status="waitStatus"
+												action="#{personnelService.modifierPersonnel(pers)}" rendered="#{ (personnelService.param eq 'pr')}"
+												onclick="if (!confirm('Voulez-vous vraiment modifier ce personnel  ?')) return false"
+												oncomplete="javascript:Richfaces.showModalPanel('sim',{width:1300, height:500})"
+												reRender="form" title="Modifier">
+												<s:graphicImage fileName="edit.png" style="border:0px;"
+													value="/picto/edit.png" width="16" height="16" alt="" />
+
+											</a:commandLink>
+											<rich:spacer width="10px;"></rich:spacer>
+											<a:commandLink value="" status="waitStatus" rendered="#{personnelService.param eq 'ay'}"
+												action="#{ayantDroitService.versGestionGrappePersonnel(pers)}"
+												immediate="true" title="Ajouter Grappe Familliale">
+												<s:graphicImage fileName="member32_on.png"
+													style="border:0px;" value="/picto/member32_on.png"
+													width="16" height="16" alt="" />
+
+											</a:commandLink>
+											
+											<a:commandLink value="" status="waitStatus" rendered="#{personnelService.param eq 'cg'}"
+												action="#{congeService.versGestionConge(pers)}"
+												immediate="true" title="Demande Congé">
+												<s:graphicImage fileName="conge.png"
+													style="border:0px;" value="/picto/conge.png"
+													width="16" height="16" alt="" />
+
+											</a:commandLink>
+											
+											
+										</rich:column>
+
+									</rich:dataTable>
+									<rich:datascroller status="waitStatus" stepControls="auto"
+										style="width:100%" for="lstdemande"
+										rendered="#{not empty personnelService.listePersonnels}" />
+
+
+
+
+
+
+
+								</div>
+
+							</div>
+						</div>
+					</div>
+				</h:form>
+			</div>
+
+
+
+		</div>
+
+		<rich:modalPanel id="sim"
+			style="background:url('../img2/fond.jpg') repeat-x scroll 0 0 #FFF;height:300; width:900"
+			moveable="true" styleClass="popupAttente">
+			<f:facet name="controls">
+
+
+			</f:facet>
+			<f:facet name="header">
+			 AJOUTER PERSONNEL
+			</f:facet>
+			<rich:spacer height="10px" />
+			<h:form class="note-form" id="form">
+
+
+
+				<div class="row">
+					<div class="col-md-12">
+						<div class="panel panel-success">
+							<div class="panel-heading">
+								<h3 class="panel-title" style="text-align: center;">Ajouter
+									Personnel</h3>
+							</div>
+
+							<div class="panel-body">
+								<div class="form-group has-success">
+									<TABLE class="table">
+										<tr>
+											<td><h:outputLabel styleClass="grey" value="Nom" /></td>
+											<td><h:inputText
+													value="#{personnelService.personnel.nom}" required="true"
+													class="form-control" /></td>
+
+
+											<td><h:outputLabel styleClass="grey" value="Prénom" /></td>
+											<td><h:inputText
+													value="#{personnelService.personnel.prenom}"
+													required="true" class="form-control" /></td>
+										</tr>
+
+										<tr>
+											<td><h:outputLabel value="Lieu de Naissance"
+													styleClass="grey" /></td>
+											<td><h:inputText
+													value="#{personnelService.personnel.lieuNaissance}"
+													required="false" class="form-control" /></td>
+
+
+											<td><h:outputLabel styleClass="grey"
+													value="Date de Naissance" /></td>
+											<td><rich:calendar enableManualInput="true"
+													validatorMessage="X" maxlength="10"
+													value="#{personnelService.personnel.dateNaissance}"
+													locale="fr" popup="#{true}" style="width:100px"
+													datePattern="dd/MM/yyyy" required="false"
+													requiredMessage="" cellWidth="1px" /></td>
+										</tr>
+
+										<tr>
+											<td><h:outputLabel styleClass="grey" value="Contrat" /></td>
+											<td><h:selectOneMenu class="form-control"
+													value="#{personnelService.personnel.contrant}"
+													converter="#{typeContratConverter}" id="cont"
+													noSelectionLabel="--- Selectionnez ---">
+
+													<s:selectItems
+														value="#{listeParamStock.listeLst_TypeContrat}" var="type"
+														label="#{type.libelle}" />
+
+
+												</h:selectOneMenu></td>
+
+											<td><h:outputLabel styleClass="grey"
+													value="Date début Contrat" /></td>
+											<td><rich:calendar enableManualInput="true"
+													validatorMessage="X" maxlength="10"
+													value="#{personnelService.datedebutContrat}" locale="fr"
+													popup="#{true}" style="width:100px"
+													datePattern="dd/MM/yyyy" required="false"
+													requiredMessage="" cellWidth="1px" /></td>
+										</tr>
+
+
+
+										<tr>
+											<td><h:outputLabel styleClass="grey" value="Statut" /></td>
+											<td><h:selectOneMenu class="form-control"
+													value="#{personnelService.personnel.statut}"
+													converter="#{statutConverter}"
+													noSelectionLabel="--- Selectionnez ---">
+
+													<s:selectItems value="#{listeParamStock.listeLst_Statut}"
+														var="cat" label="#{cat.libelle}" />
+
+
+												</h:selectOneMenu></td>
+
+
+											<td><h:outputLabel styleClass="grey" value="Sexe" /></td>
+											<td><h:selectOneMenu class="form-control"
+													value="#{personnelService.personnel.sexe}"
+													converter="#{sexeConverter}" id="sx"
+													noSelectionLabel="--- Selectionnez ---">
+
+													<s:selectItems value="#{listeParamStock.listeLst_Sexe}"
+														var="sexe" label="#{sexe.libelle}" />
+
+
+												</h:selectOneMenu></td>
+										</tr>
+
+										<tr>
+											<td><h:outputLabel styleClass="grey"
+													value="Situation Matrimoniale" /></td>
+											<td><h:selectOneMenu class="form-control"
+													value="#{personnelService.personnel.situationMatri}"
+													converter="#{situationMatriConverter}"
+													noSelectionLabel="--- Selectionnez ---">
+
+													<s:selectItems
+														value="#{personnelService.listeParamStock.listeLst_SituationMatri}"
+														var="sit" label="#{sit.libelle}" />
+
+
+												</h:selectOneMenu></td>
+
+
+											<td><h:outputLabel styleClass="grey" value="Service" /></td>
+											<td><h:selectOneMenu class="form-control"
+													value="#{personnelService.personnel.service}"
+													converter="#{serviceConverter}"
+													noSelectionLabel="--- Selectionnez ---" required="true">
+
+													<s:selectItems
+														value="#{personnelService.listeParamStock.listeLst_Service}"
+														var="service" label="#{service.libelle}" />
+
+
+												</h:selectOneMenu></td>
+										</tr>
+
+
+										<tr>
+											<td><h:outputLabel styleClass="grey"
+													value="Niveau d'Etude" /></td>
+											<td><h:selectOneMenu class="form-control"
+													value="#{personnelService.personnel.nivEtude}"
+													converter="#{nivEtudeConverter}"
+													noSelectionLabel="--- Selectionnez ---" required="true">  
+
+													<s:selectItems
+														value="#{personnelService.listeParamStock.listeLst_NivEtude}"
+														var="sit" label="#{sit.libelle}" />
+
+
+												</h:selectOneMenu></td>
+
+											<td><h:outputLabel styleClass="grey"
+													value="Catégorie Prof" /></td>
+											<td><h:selectOneMenu class="form-control"
+													value="#{personnelService.personnel.categoriProg}"
+													converter="#{categoriProfConverter}"
+													noSelectionLabel="--- Selectionnez ---" required="true">
+
+													<s:selectItems
+														value="#{listeParamStock.listeLst_CategoriProf}" var="cat"
+														label="#{cat.libelle}" />
+
+
+												</h:selectOneMenu></td>
+
+										</tr>
+
+
+
+									</TABLE>
+
+									<p align="center">
+
+										<a:commandLink styleClass="btn btn-success" value=""
+											oncomplete="javascript:Richfaces.hideModalPanel('sim',{width:1300, height:500})"
+											action="#{personnelService.ajouterPersonnel()}"
+											reRender="form,liste" status="waitStatus">
+																		
+																		Valider			
+																				</a:commandLink>
+										<rich:spacer width="10px;"></rich:spacer>
+
+										<a:commandLink styleClass="btn btn-success" value=""
+											oncomplete="javascript:Richfaces.hideModalPanel('sim',{width:1300, height:500})"
+											action="#{personnelService.annulerAjoutPersonnel()}"
+											reRender="form,liste" status="waitStatus">
+																		
+																		Annuler			
+																				</a:commandLink>
+									</p>
+								</div>
+
+							</div>
+
+						</div>
+					</div>
+				</div>
+
+
+			</h:form>
+		</rich:modalPanel>
+
+
+
+
+
+		<rich:modalPanel id="zoom"
+			style="background:url('../img2/fond.jpg') repeat-x scroll 0 0 #FFF;height:300; width:900"
+			moveable="true" styleClass="popupAttente">
+			<f:facet name="controls">
+
+				<a:commandLink value="" status="waitStatus" title="Fermer "
+					onclick="javascript:Richfaces.hideModalPanel('zoom')">
+					<s:graphicImage fileName="cross.png" style="border:0px;"
+						value="/picto/cross.png" width="16" height="16" alt="" />
+				</a:commandLink>
+			</f:facet>
+			<f:facet name="header">
+			 ZOOM SUR LE PERSONNEL #{personnelService.personnel.nom.toUpperCase()} #{personnelService.personnel.prenom.toUpperCase()}
+			</f:facet>
+			<rich:spacer height="10px" />
+			<h:form class="note-form" id="formz">
+
+
+
+				<div class="row">
+					<div class="col-md-12">
+						<div class="panel panel-success">
+							<div class="panel-heading">
+								<h3 class="panel-title" style="text-align: center;">ZOOM
+									SUR LE PERSONNEL</h3>
+							</div>
+
+							<div class="panel-body">
+								<div class="form-group has-success">
+									<TABLE class="table">
+										<tr>
+											<td><h:outputLabel styleClass="grey" value="Nom" /></td>
+											<td><h:inputText
+													value="#{personnelService.personnel.nom}" required="true"
+													class="form-control" disabled="true" /></td>
+
+
+											<td><h:outputLabel styleClass="grey" value="Prénom" /></td>
+											<td><h:inputText
+													value="#{personnelService.personnel.prenom}"
+													required="true" class="form-control" disabled="true" /></td>
+										</tr>
+
+										<tr>
+											<td><h:outputLabel value="Lieu de Naissance"
+													styleClass="grey" /></td>
+											<td><h:inputText
+													value="#{personnelService.personnel.lieuNaissance}"
+													required="false" class="form-control" disabled="true" /></td>
+
+
+											<td><h:outputLabel styleClass="grey"
+													value="Date de Naissance" /></td>
+											<td><rich:calendar enableManualInput="true"
+													validatorMessage="X" maxlength="10"
+													value="#{personnelService.personnel.dateNaissance}"
+													locale="fr" popup="#{true}" style="width:100px"
+													datePattern="dd/MM/yyyy" required="false"
+													requiredMessage="" cellWidth="1px" disabled="true" /></td>
+										</tr>
+
+										<tr>
+											<td><h:outputLabel styleClass="grey"
+													value="Catégorie Prof" /></td>
+											<td><h:selectOneMenu class="form-control"
+													value="#{personnelService.personnel.categoriProg}"
+													converter="#{categoriProfConverter}"
+													noSelectionLabel="--- Selectionnez ---" disabled="true">
+
+													<s:selectItems
+														value="#{listeParamStock.listeLst_CategoriProf}" var="cat"
+														label="#{cat.libelle}" />
+
+
+												</h:selectOneMenu></td>
+
+
+											<td><h:outputLabel styleClass="grey" value="Contrat" /></td>
+											<td><h:selectOneMenu class="form-control"
+													value="#{personnelService.personnel.contrant}"
+													converter="#{typeContratConverter}" id="cont"
+													noSelectionLabel="--- Selectionnez ---" disabled="true">
+
+													<s:selectItems
+														value="#{listeParamStock.listeLst_TypeContrat}" var="type"
+														label="#{type.libelle}" />
+
+
+												</h:selectOneMenu></td>
+										</tr>
+
+
+
+										<tr>
+											<td><h:outputLabel styleClass="grey" value="Statut" /></td>
+											<td><h:selectOneMenu class="form-control"
+													value="#{personnelService.personnel.statut}"
+													converter="#{statutConverter}"
+													noSelectionLabel="--- Selectionnez ---" disabled="true">
+
+													<s:selectItems value="#{listeParamStock.listeLst_Statut}"
+														var="cat" label="#{cat.libelle}" />
+
+
+												</h:selectOneMenu></td>
+
+
+											<td><h:outputLabel styleClass="grey" value="Sexe" /></td>
+											<td><h:selectOneMenu class="form-control"
+													value="#{personnelService.personnel.sexe}"
+													converter="#{sexeConverter}" id="sx"
+													noSelectionLabel="--- Selectionnez ---" disabled="true">
+
+													<s:selectItems value="#{listeParamStock.listeLst_Sexe}"
+														var="sexe" label="#{sexe.libelle}" />
+
+
+												</h:selectOneMenu></td>
+										</tr>
+
+										<tr>
+											<td><h:outputLabel styleClass="grey"
+													value="Situation Matrimoniale" /></td>
+											<td><h:selectOneMenu class="form-control"
+													value="#{personnelService.personnel.situationMatri}"
+													converter="#{situationMatriConverter}"
+													noSelectionLabel="--- Selectionnez ---" disabled="true">
+
+													<s:selectItems
+														value="#{personnelService.listeParamStock.listeLst_SituationMatri}"
+														var="sit" label="#{sit.libelle}" />
+
+
+												</h:selectOneMenu></td>
+
+
+											<td><h:outputLabel styleClass="grey" value="Service" /></td>
+											<td><h:selectOneMenu class="form-control"
+													value="#{personnelService.personnel.service}"
+													converter="#{serviceConverter}"
+													noSelectionLabel="--- Selectionnez ---" disabled="true">
+
+													<s:selectItems
+														value="#{personnelService.listeParamStock.listeLst_Service}"
+														var="service" label="#{service.libelle}" />
+
+
+												</h:selectOneMenu></td>
+										</tr>
+
+
+										<tr>
+											<td><h:outputLabel styleClass="grey"
+													value="Niveau d'Etude" /></td>
+											<td><h:selectOneMenu class="form-control"
+													value="#{personnelService.personnel.nivEtude}"
+													converter="#{nivEtudeConverter}"
+													noSelectionLabel="--- Selectionnez ---" disabled="true">
+
+													<s:selectItems
+														value="#{personnelService.listeParamStock.listeLst_NivEtude}"
+														var="sit" label="#{sit.libelle}" />
+
+
+												</h:selectOneMenu></td>
+
+
+
+										</tr>
+
+
+
+									</TABLE>
+
+
+								</div>
+
+							</div>
+
+						</div>
+					</div>
+				</div>
+
+
+			</h:form>
+		</rich:modalPanel>
+
+
+	</ui:define>
+</ui:composition>

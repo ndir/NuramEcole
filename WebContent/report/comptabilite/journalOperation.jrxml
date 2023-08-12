@@ -1,0 +1,180 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="commandeLiv" language="groovy" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="1797a3ae-112f-4155-b1d7-3cec4ffc6756">
+	<property name="ireport.zoom" value="1.2100000000000002"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<parameter name="adresse" class="java.lang.String"/>
+	<parameter name="tel" class="java.lang.String"/>
+	<parameter name="email" class="java.lang.String"/>
+	<parameter name="bp" class="java.lang.String"/>
+	<parameter name="nom" class="java.lang.String"/>
+	<parameter name="monnaie" class="java.lang.String"/>
+	<parameter name="utilisateur" class="java.lang.String"/>
+	<parameter name="logo" class="java.io.InputStream"/>
+	<parameter name="periode" class="java.lang.String"/>
+	<parameter name="footer" class="java.lang.String"/>
+	<queryString language="hql">
+		<![CDATA[from CompteRenduOperation]]>
+	</queryString>
+	<field name="caisse" class="com.chaka.parametrage.entity.gestionStock.Caisse"/>
+	<field name="client" class="com.chaka.parametrage.entity.gestionStock.Client"/>
+	<field name="codeTransaction" class="java.lang.String"/>
+	<field name="dateMouvement" class="java.util.Date"/>
+	<field name="dateValidation" class="java.util.Date"/>
+	<field name="distributeur" class="com.chaka.parametrage.entity.gestionStock.Distributeur"/>
+	<field name="idCompteRenduOperation" class="java.lang.Long"/>
+	<field name="libelle" class="java.lang.String"/>
+	<field name="libelleSup" class="java.lang.String"/>
+	<field name="listEcritureComptable" class="java.util.List"/>
+	<field name="montant" class="java.lang.Double"/>
+	<field name="natureOperation" class="com.chaka.parametrage.entity.gestionStock.NatureOperation"/>
+	<field name="operateur" class="com.chaka.parametrage.entity.gestionStock.Operateur"/>
+	<field name="refOperation" class="java.lang.String"/>
+	<field name="sensMouvement" class="com.chaka.parametrage.entity.gestionStock.Sens"/>
+	<field name="userValidation" class="com.chaka.projet.entity.Utilisateur"/>
+	<field name="utilisateurCree" class="com.chaka.projet.entity.Utilisateur"/>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="198" splitType="Stretch">
+			<staticText>
+				<reportElement uuid="56a4c980-ee79-483d-882f-9ec079e20f50" x="0" y="86" width="555" height="22"/>
+				<textElement textAlignment="Center">
+					<font size="14" isBold="true"/>
+				</textElement>
+				<text><![CDATA[JOURNAL OPERATION]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="0471dfa2-ab3c-4042-88dd-9ed57b1a0321" mode="Transparent" x="2" y="178" width="226" height="20" backcolor="#C8C8C8"/>
+				<box>
+					<pen lineWidth="1.0"/>
+					<topPen lineWidth="1.0"/>
+					<leftPen lineWidth="1.0"/>
+					<bottomPen lineWidth="1.0"/>
+					<rightPen lineWidth="1.0"/>
+				</box>
+				<textElement textAlignment="Center">
+					<font size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[TRANSATION]]></text>
+			</staticText>
+			<textField>
+				<reportElement uuid="04b5c28e-5801-4198-96ea-17007c0c0c1d" x="2" y="60" width="272" height="20"/>
+				<textElement textAlignment="Right"/>
+				<textFieldExpression><![CDATA["Edité par : "+$P{utilisateur}+"  Le :"]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="b59584b8-9c86-439a-8edf-b04c83213af5" x="1" y="0" width="554" height="20"/>
+				<textElement textAlignment="Center">
+					<font size="14" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{nom}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="f559ea13-ab2c-4498-956e-12646a539ee5" x="1" y="21" width="554" height="20"/>
+				<textElement textAlignment="Center">
+					<font size="12" isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{adresse}]]></textFieldExpression>
+			</textField>
+			<textField pattern="EEEEE dd MMMMM yyyy">
+				<reportElement uuid="ba8aa8fe-f499-493e-b93e-34f967da3c2f" x="284" y="60" width="271" height="20"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[new java.util.Date()]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement uuid="a2ec0c7e-eef5-4cd4-ace4-87da361a918d" x="0" y="40" width="555" height="20"/>
+				<textElement textAlignment="Center"/>
+				<textFieldExpression><![CDATA["====================== TEL : "+$P{tel}+" ===== BP : "+$P{bp}+" ======================"]]></textFieldExpression>
+			</textField>
+			<image>
+				<reportElement uuid="b56fb085-a6d6-49b0-af70-b7cef9336fbb" x="2" y="0" width="76" height="60"/>
+				<imageExpression><![CDATA[$P{logo}]]></imageExpression>
+			</image>
+			<textField>
+				<reportElement uuid="46c29685-50f7-42da-9f93-6bfeb0c7c52a" x="254" y="142" width="301" height="20"/>
+				<textElement textAlignment="Right"/>
+				<textFieldExpression><![CDATA[$P{periode}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement uuid="557ed9c8-0b60-40be-b7e8-23fa9a1bad5b" mode="Transparent" x="467" y="178" width="88" height="20" backcolor="#C8C8C8"/>
+				<box>
+					<pen lineWidth="1.0"/>
+					<topPen lineWidth="1.0"/>
+					<leftPen lineWidth="1.0"/>
+					<bottomPen lineWidth="1.0"/>
+					<rightPen lineWidth="1.0"/>
+				</box>
+				<textElement textAlignment="Center">
+					<font size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[DEBITE]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="84e7f8dd-d4fb-4a4b-a39f-dc1d6bfe9ae4" mode="Transparent" x="379" y="178" width="88" height="20" backcolor="#C8C8C8"/>
+				<box>
+					<pen lineWidth="1.0"/>
+					<topPen lineWidth="1.0"/>
+					<leftPen lineWidth="1.0"/>
+					<bottomPen lineWidth="1.0"/>
+					<rightPen lineWidth="1.0"/>
+				</box>
+				<textElement textAlignment="Center">
+					<font size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[CREDITE]]></text>
+			</staticText>
+			<staticText>
+				<reportElement uuid="8b7f9d3f-0d5f-4168-9b07-e3e8c6b2acbd" mode="Transparent" x="228" y="178" width="151" height="20" backcolor="#C8C8C8"/>
+				<box>
+					<pen lineWidth="1.0"/>
+					<topPen lineWidth="1.0"/>
+					<leftPen lineWidth="1.0"/>
+					<bottomPen lineWidth="1.0"/>
+					<rightPen lineWidth="1.0"/>
+				</box>
+				<textElement textAlignment="Center">
+					<font size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[COMPTE]]></text>
+			</staticText>
+		</band>
+	</title>
+	<pageHeader>
+		<band splitType="Stretch"/>
+	</pageHeader>
+	<columnHeader>
+		<band splitType="Stretch"/>
+	</columnHeader>
+	<detail>
+		<band height="40" splitType="Stretch">
+			<textField pattern="EEEEE dd MMMMM yyyy">
+				<reportElement uuid="ee3666e6-dd45-4d40-8d15-02fcddf76f46" mode="Transparent" x="2" y="0" width="553" height="20" backcolor="#C8C8C8"/>
+				<box>
+					<pen lineWidth="1.0"/>
+					<topPen lineWidth="1.0"/>
+					<leftPen lineWidth="1.0"/>
+					<bottomPen lineWidth="1.0"/>
+					<rightPen lineWidth="1.0"/>
+				</box>
+				<textElement/>
+				<textFieldExpression><![CDATA[$F{libelle}]]></textFieldExpression>
+			</textField>
+			<subreport>
+				<reportElement uuid="2a697823-26fd-4fae-90bf-efc3aa6fc002" x="228" y="19" width="327" height="21"/>
+				<dataSourceExpression><![CDATA[new net.sf.jasperreports.engine.data.JRBeanCollectionDataSource($F{listEcritureComptable})]]></dataSourceExpression>
+				<subreportExpression><![CDATA[$P{SUBREPORT_DIR} + "ecritureComptable.jasper"]]></subreportExpression>
+			</subreport>
+		</band>
+	</detail>
+	<columnFooter>
+		<band splitType="Stretch"/>
+	</columnFooter>
+	<pageFooter>
+		<band splitType="Stretch"/>
+	</pageFooter>
+	<summary>
+		<band height="69" splitType="Stretch"/>
+	</summary>
+</jasperReport>
