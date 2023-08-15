@@ -22,7 +22,7 @@ import javax.persistence.Table;
 public class Inscription  implements Serializable {
 
 	/**
-	 * 
+	 * inscription
 	 */
 	private static final long serialVersionUID = 1L;
 	
