@@ -31,6 +31,8 @@
 		<mapping class="com.ecole.entity.Retard" />
 		<mapping class="com.ecole.entity.Note" />
 		<mapping class="com.ecole.entity.Institution" />
+		<mapping class="com.ecole.entity.Inscription" />
+		<mapping class="com.ecole.entity.ParamInscription" />
 		<!-- <property name="show_sql">false</property> <property name="use_sql_comments">false</property> 
 			<property name="order_updates">true</property> <property name="transaction.flush_before_completion">true</property> 
 			<property name="transaction.factory_class">org.hibernate.transaction.JDBCTransactionFactory</property> 
