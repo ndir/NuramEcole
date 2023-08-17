@@ -26,7 +26,7 @@
 						style="width:30px ; heigth:10px" /></td>
 			</tr>
 		</TABLE>
-		<br />
+		<br /><br />
 		<div id="rd_brand_01">
 			<a:outputPanel id="idContentMenu">
 				<div id="rd_brand_01_l1" class="rd_jsuperfish">
@@ -86,6 +86,11 @@
 													<s:conversationPropagation propagation="none" />
 												</a:commandLink></li>
 
+											<li><a:commandLink  value="Inscription nouvel Elève"
+													status="waitStatus" action="#{eleveService.versEleve}">
+													<s:conversationPropagation propagation="none" />
+												</a:commandLink></li>
+
 											<li><a:commandLink id="m_1_13" value="Evaluations"
 													status="waitStatus"
 													action="#{evaluationService.versEvaluation}">
@@ -95,13 +100,10 @@
 
 
 									<li><a:commandLink id="m_1_12" value="Inscription"
-											status="waitStatus" action="#{eleveService.versEleve}">
+											status="waitStatus" action="#{piService.versCreer}">
 											<s:conversationPropagation propagation="none" />
 										</a:commandLink></li>
-									<li><a:commandLink id="m_1_11" value="Liste éleve"
-											status="waitStatus" action="#{eleveService.versListeEleve}">
-											<s:conversationPropagation propagation="none" />
-										</a:commandLink></li>
+
 								</ul></li>
 						</f:subview>
 

@@ -37,9 +37,9 @@ public class Eleve implements Serializable {
 
 	private String telephone;
 
-	private Classe classe;
+	
 
-	private String annee_ins;
+	
 
 	private String adresse;
 
@@ -49,7 +49,7 @@ public class Eleve implements Serializable {
 	
 	private String nationalite;
 	
-	private Double reduction;
+	
 	
 	private String autre_info;
 	
@@ -99,23 +99,7 @@ public class Eleve implements Serializable {
 		this.telephone = telephone;
 	}
 
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "idclasse")
-	public Classe getClasse() {
-		return classe;
-	}
-
-	public void setClasse(Classe classe) {
-		this.classe = classe;
-	}
-
-	public String getAnnee_ins() {
-		return annee_ins;
-	}
-
-	public void setAnnee_ins(String annee_ins) {
-		this.annee_ins = annee_ins;
-	}
+	
 
 	public String getAdresse() {
 		return adresse;
@@ -174,13 +158,7 @@ public class Eleve implements Serializable {
 		this.nationalite = nationalite;
 	}
 
-	public Double getReduction() {
-		return reduction;
-	}
-
-	public void setReduction(Double reduction) {
-		this.reduction = reduction;
-	}
+	
 
 	public String getAutre_info() {
 		return autre_info;

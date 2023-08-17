@@ -49,7 +49,7 @@ public class MatiereService implements Serializable {
 	public String versMatieres() {
 		this.setMatiere(new Matiere());
 		chargerListeMat();
-		return "/pages/ecole/creermatiere.xhtml";
+		return "/pages/nuramecole/creermatiere.xhtml";
 	}
 
 	public void annulerAjout() {

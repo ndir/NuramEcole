@@ -11,6 +11,7 @@ import org.jboss.seam.annotations.Name;
 
 
 import com.chaka.parametrage.entity.Lst_Annee;
+import com.ecole.entity.AnneeScolaire;
 
 
 
@@ -44,7 +45,7 @@ public class AnneeConverter implements Converter {
 	 * 
 	 */
 	public Object getAsObject(FacesContext myContextFaces, UIComponent pComponent, String pValeur) {
-		Lst_Annee annee = (Lst_Annee)this.dataSource.get(Lst_Annee.class, 
+		AnneeScolaire annee = (AnneeScolaire)this.dataSource.get(AnneeScolaire.class, 
 				new Long(pValeur));
 		return annee;
 	}
@@ -61,10 +62,10 @@ public class AnneeConverter implements Converter {
 	 * 
 	 */
 	public String getAsString(FacesContext myContextFaces, UIComponent uiComponent, Object objet) {
-		Lst_Annee annee = (Lst_Annee)objet;
+		AnneeScolaire annee = (AnneeScolaire)objet;
 		String resultat = "";
 		if (annee != null) {
-			resultat = annee.getIdAnnee().toString();
+			resultat = annee.getIdannee().toString();
 		}
 		return resultat;
 	}

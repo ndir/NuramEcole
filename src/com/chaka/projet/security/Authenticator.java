@@ -2,7 +2,9 @@ package com.chaka.projet.security;
 
 import java.security.NoSuchAlgorithmException;
 import java.security.spec.InvalidKeySpecException;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 import org.hibernate.Session;
 import org.jboss.seam.Component;
@@ -17,6 +19,7 @@ import com.chaka.projet.entity.Profile;
 import com.chaka.projet.entity.Utilisateur;
 import com.chaka.projet.entity.UtilisateurSecurise;
 import com.chaka.projet.service.utils.ServiceCryptage;
+import com.ecole.entity.AnneeScolaire;
 import com.rhospi.commons.ChakaUtils;
 
 /**
@@ -57,12 +60,24 @@ public class Authenticator {
 	 * Boolean indiquant si l'utilisateur est deja loggué.
 	 */
 	private boolean loggedIn;
+	
+	
+	private List<AnneeScolaire> listeAnnee = new ArrayList<AnneeScolaire>();
+	
+	/**
+	 * Utilisateur loggué
+	 */
+	@In(required = false)
+	@Out(required = false)
+	private AnneeScolaire annee ;
 
 	/**
 	 * Constructeur de la classe agent.
 	 */
+	@SuppressWarnings("unchecked")
 	public Authenticator() {
 		super();
+		
 	}
 
 	/**
@@ -89,7 +104,7 @@ public class Authenticator {
 
 		loggedIn = Identity.instance().isLoggedIn();
 
-		// FacesMessages.instance().add("Login de l'utilisateur #0", niGend);
+		
 
 	}
 
@@ -106,7 +121,7 @@ public class Authenticator {
 					|| utilisateur.getProfile().getLibelle_court()
 							.equalsIgnoreCase("se"))
 
-				return "/pages/accueil.xhtml";
+				return "/pages/nuramecole/template/index.xhtml";
 			if (utilisateur.getProfile().getLibelle_court()
 					.equalsIgnoreCase("el"))
 				return "/pages/ecole/utilisateurEcole/eleve.xhtml";
@@ -238,6 +253,23 @@ public class Authenticator {
 
 	public void setUtilisateur(Utilisateur utilisateur) {
 		this.utilisateur = utilisateur;
+	}
+
+	public List<AnneeScolaire> getListeAnnee() {
+		listeAnnee = dataSource.createQuery("From AnneeScolaire order by idannee desc").list();
+		return listeAnnee;
+	}
+
+	public void setListeAnnee(List<AnneeScolaire> listeAnnee) {
+		this.listeAnnee = listeAnnee;
+	}
+
+	public AnneeScolaire getAnnee() {
+		return annee;
+	}
+
+	public void setAnnee(AnneeScolaire annee) {
+		this.annee = annee;
 	}
 
 }

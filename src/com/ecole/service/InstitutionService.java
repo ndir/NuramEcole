@@ -64,7 +64,7 @@ public class InstitutionService implements Serializable {
 	@SuppressWarnings("unchecked")
 	public String versInstitution() {
 		chargerListeInst();
-		return "/pages/administration/institution.xhtml";
+		return "/pages/nuramecole/institution.xhtml";
 	}
 
 	public void annulerajoutAdmin() {
@@ -211,7 +211,7 @@ public class InstitutionService implements Serializable {
 		String password = this.user.getPassword();
 		if (this.user.getIdUtilisateur() == null) {
 			this.user.setActif(true);
-			user.setInstitution(institution);
+			//user.setInstitution(institution);
 			user.setProfile(getProfileAdmin());
 			dataSource.save(this.user);
 			dataSource.flush();

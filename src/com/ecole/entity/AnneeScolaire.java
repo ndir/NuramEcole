@@ -10,12 +10,20 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
+import org.jboss.seam.ScopeType;
+import org.jboss.seam.annotations.Name;
+import org.jboss.seam.annotations.Role;
+import org.jboss.seam.annotations.Scope;
+
 /**
  * @author a626257
  *
  */
 @Entity
 @Table(name="annee")
+@Name("annee")
+@Scope(ScopeType.SESSION)
+@Role(name = "rannee", scope = ScopeType.CONVERSATION)
 public class AnneeScolaire implements Serializable {
 
 	/**

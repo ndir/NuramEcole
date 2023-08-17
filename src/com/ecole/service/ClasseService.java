@@ -14,6 +14,7 @@ import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
 import org.jboss.seam.faces.FacesMessages;
 
+import com.ecole.entity.AnneeScolaire;
 import com.ecole.entity.Classe;
 import com.ecole.entity.MatiereClasse;
 import com.ecole.entity.Niveau;
@@ -39,6 +40,10 @@ public class ClasseService implements Serializable {
 
 	@In
 	private Session dataSource;
+	
+	
+	@In
+	private AnneeScolaire annee;
 
 	@SuppressWarnings("unchecked")
 	public void chargerListeClasse() {
@@ -49,7 +54,8 @@ public class ClasseService implements Serializable {
 	public String versClasse() {
 		this.setClasse(new Classe());
 		chargerListeClasse();
-		return "/pages/ecole/creerclasse.xhtml";
+		System.out.println("Annee "+annee.getAnneeScolaire());
+		return "/pages/nuramecole/creerclasse.xhtml";
 	}
 
 	@SuppressWarnings("unchecked")

@@ -35,6 +35,9 @@ public class Inscription  implements Serializable {
 	private Double reduction;
 	
 	private String commentaire;
+	
+	
+	
 
 	@Id
 	@GeneratedValue

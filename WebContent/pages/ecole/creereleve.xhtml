@@ -19,111 +19,126 @@
 		<div class="divtest">
 
 
-			<div class="container" style="margin-left: 5%;">
+			<div class="container" style="margin: 0, auto;">
 
 				<h:form id="liste">
 					<div class="row">
 						<div class="col-md-12">
 							<div class="panel panel-success">
-
-								<div class="panel-heading"></div>
+								<div class="panel-heading">
+									<h3 class="panel-title" style="text-align: center;">INSCRIPTION
+										ELEVE</h3>
+								</div>
 
 								<div class="panel-body">
 
 
 									<div class="form-group has-success"></div>
-									<FIELDSET>
-										<LEGEND> INSCRIPTION ELEVE </LEGEND>
-										<TABLE class="table">
-											<tr>
-												<td><h:outputLabel styleClass="grey" value="Niveau" /></td>
-												<td><h:selectOneMenu class="form-control"
-														value="#{eleveService.niveau}"
-														converter="#{niveauConverter}" id="cont"
-														noSelectionLabel="--- Selectionnez ---">
+									<table class="table">
+										<tr>
+											<td><h:outputLabel styleClass="grey" value="Niveau" /></td>
+											<td><h:selectOneMenu class="form-control"
+													value="#{eleveService.niveau}"
+													converter="#{niveauConverter}" id="cont"
+													noSelectionLabel="--- Selectionnez ---">
 
-														<s:selectItems value="#{eleveService.listeNiveau}"
-															var="type" label="#{type.libelle}"
-															noSelectionLabel="--- Selectionnez ---" />
+													<s:selectItems value="#{eleveService.listeNiveau}"
+														var="type" label="#{type.libelle}"
+														noSelectionLabel="--- Selectionnez ---" />
 
-														<a:support event="onchange"
-															action="#{eleveService.chargerListeClasse()}"
-															ajaxSingle="true" reRender="classe" status="waitStatus"></a:support>
-													</h:selectOneMenu></td>
+													<a:support event="onchange"
+														action="#{eleveService.chargerListeClasse()}"
+														ajaxSingle="true" reRender="classe" status="waitStatus"></a:support>
+												</h:selectOneMenu></td>
 
-												<td><h:outputLabel styleClass="grey" value="Classe" /></td>
-												<td><h:selectOneMenu class="form-control"
-														value="#{eleveService.eleve.classe}"
-														converter="#{classeConverter}" id="classe"
-														noSelectionLabel="--- Selectionnez ---">
+											<td><h:outputLabel styleClass="grey" value="Classe" /></td>
+											<td><h:selectOneMenu class="form-control"
+													value="#{eleveService.classe}"
+													converter="#{classeConverter}" id="classe"
+													noSelectionLabel="--- Selectionnez ---">
 
-														<s:selectItems value="#{eleveService.listeClasse}"
-															var="type" label="#{type.libelle}" />
+													<s:selectItems value="#{eleveService.listeClasse}"
+														var="type" label="#{type.libelle}" />
 
-													</h:selectOneMenu></td>
+												</h:selectOneMenu></td>
+
+										</tr>
+										<tr>
+											<td><h:outputLabel styleClass="grey"
+													value="Année Scolaire" /></td>
+											<td><h:inputText
+													value="#{eleveService.annee.anneeScolaire}"
+													class="form-control" disabled="true" /></td>
 
 
-												<td><h:outputLabel styleClass="grey"
-														value="Année Scolaire" /></td>
-												<td><h:inputText
-														value="#{eleveService.anneeScolaire.anneeScolaire}"
-														class="form-control" disabled="true" /></td>
+											<td><h:outputLabel styleClass="grey" value="Prénom" /></td>
+											<td><h:inputText value="#{eleveService.eleve.prenom}"
+													styleClass="form-control" /></td>
 
-												<td><h:outputLabel styleClass="grey" value="Prénom" /></td>
-												<td><h:inputText value="#{eleveService.eleve.prenom}"
-														class="form-control" /></td>
-
-												<td><h:outputLabel styleClass="grey" value="Nom" /></td>
-												<td><h:inputText value="#{eleveService.eleve.nom}"
-														class="form-control" /></td>
-
+											
+										</tr>
+										<tr>
+										<td><h:outputLabel styleClass="grey" value="Nom" /></td>
+											<td><h:inputText value="#{eleveService.eleve.nom}"
+													styleClass="form-control" /></td>
+											
+											
+											<td><h:outputLabel styleClass="grey" value="Nationalité" /></td>
+											<td><h:inputText
+													value="#{eleveService.eleve.nationalite}"
+													class="form-control" /></td>
 											</tr>
-											<tr>
-												<td><h:outputLabel styleClass="grey"
-														value="Date de naissance" /></td>
-												<td><rich:calendar
-														value="#{eleveService.eleve.dateNaissance}"
-														cellWidth="0px" cellHeight="20px" datePattern="dd/MM/yyyy"
-														styleClass="form-control"
-														buttonIcon="/img2/calendrier.png"></rich:calendar></td>
-												<td><h:outputLabel styleClass="grey"
-														value="Nationalité" /></td>
-												<td><h:inputText
-														value="#{eleveService.eleve.nationalite}"
-														class="form-control" /></td>
+										<tr>
+										
+										<td><h:outputLabel styleClass="grey"
+													value="Date de naissance" /></td>
+											<td><rich:calendar
+													value="#{eleveService.eleve.dateNaissance}" cellWidth="0px"
+													cellHeight="20px" datePattern="dd/MM/yyyy"
+													 buttonIcon="/img2/calendrier.png" ></rich:calendar></td>
+										
 
-												<td><h:outputLabel styleClass="grey" value="Titeur" /></td>
-												<td><h:inputText value="#{eleveService.eleve.titeur}"
-														styleClass="form-control" /></td>
-												<td><h:outputLabel styleClass="grey" value="Contact" /></td>
-												<td><h:inputText
-														value="#{eleveService.eleve.telephone}"
-														styleClass="form-control" /></td>
-												<td><h:outputLabel styleClass="grey" value="Réduction" /></td>
-												<td><h:inputText
-														value="#{eleveService.eleve.reduction}"
-														class="form-control" /></td>
-											</tr>
-											<tr>
-												<td><h:outputLabel styleClass="grey" value="Sexe" /></td>
-												<td><h:selectOneMenu value="#{eleveService.eleve.sexe}" styleClass="form-control">
-														<f:selectItem itemValue="M" itemLabel="Masculin"  />
-														<f:selectItem itemValue="F" itemLabel="Féminin"/>
-													</h:selectOneMenu></td>
-												<td><h:outputLabel styleClass="grey" value="Adresse" /></td>
-												<td><h:inputTextarea
-														value="#{eleveService.eleve.adresse}"
-														styleClass="form-control" cols="40" rows="5" /></td>
+											<td><h:outputLabel styleClass="grey" value="Titeur" /></td>
+											<td><h:inputText value="#{eleveService.eleve.titeur}"
+													styleClass="form-control" /></td>
+													</tr>
+										<tr>
+											<td><h:outputLabel styleClass="grey" value="Contact" /></td>
+											<td><h:inputText value="#{eleveService.eleve.telephone}"
+													styleClass="form-control" /></td>
+											<td><h:outputLabel styleClass="grey" value="Réduction" /></td>
+											<td><h:inputText
+													value="#{eleveService.inscription.reduction}"
+													class="form-control" /></td>
+											
+												</tr>
+										<tr>
+											<td><h:outputLabel styleClass="grey"
+													value="Commentaire réduction" /></td>
+											<td><h:inputTextarea
+													value="#{eleveService.inscription.commentaire}"
+													styleClass="form-control" cols="40" rows="5" /></td>
+										
+										
+											<td><h:outputLabel styleClass="grey" value="Sexe" /></td>
+											<td><h:selectOneMenu value="#{eleveService.eleve.sexe}"
+													styleClass="form-control">
+													<f:selectItem itemValue="M" itemLabel="Masculin" />
+													<f:selectItem itemValue="F" itemLabel="Féminin" />
+												</h:selectOneMenu></td>
+									</tr><tr>
+											<td><h:outputLabel styleClass="grey" value="Adresse" /></td>
+											<td><h:inputTextarea
+													value="#{eleveService.eleve.adresse}"
+													styleClass="form-control" cols="40" rows="4" /></td>
 
 
-												<td><h:outputLabel styleClass="grey"
-														value="Autres Info" /></td>
-												<td><h:inputTextarea
-														value="#{eleveService.eleve.autre_info}"
-														styleClass="form-control" cols="40" rows="5" /></td>
-											</tr>
-										</TABLE>
-									</FIELDSET>
+											<td><h:outputLabel styleClass="grey" value="Autres Info" /></td>
+											<td><h:inputTextarea
+													value="#{eleveService.eleve.autre_info}"
+													styleClass="form-control" cols="40" rows="4" /></td>
+										</tr>
+									</table>
 									<p align="center">
 
 
@@ -136,12 +151,13 @@
 										<rich:spacer width="10px;"></rich:spacer>
 
 										<a:commandLink styleClass="btn btn-success" value=""
-											action="#{eleveService.ajouterEleve()}" reRender="liste"
-											status="waitStatus">
+											action="#{eleveService.ajouterInscription()}"
+											reRender="liste" status="waitStatus">
 																		
 																		Valider			
 																				</a:commandLink>
 									</p>
+
 								</div>
 
 							</div>
@@ -153,7 +169,5 @@
 
 
 		</div>
-
-
 	</ui:define>
 </ui:composition>

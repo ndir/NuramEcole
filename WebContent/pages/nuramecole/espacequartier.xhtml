@@ -1,0 +1,719 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:a="https://ajax4jsf.dev.java.net/ajax"
+	xmlns:rich="http://richfaces.ajax4jsf.org/rich"
+	xmlns:s="http://jboss.com/products/seam/taglib"
+	xmlns:t="http://myfaces.apache.org/tomahawk">
+<head>
+<!-- Global site tag (gtag.js) - Google Analytics -->
+
+<script>
+	window.dataLayer = window.dataLayer || [];
+	function gtag() {
+		dataLayer.push(arguments);
+	}
+	gtag('js', new Date());
+
+	gtag('config', 'UA-90680653-2');
+</script>
+
+<!-- Required meta tags -->
+<meta charset="utf-8"></meta>
+<meta name="viewport"
+	content="width=device-width, initial-scale=1, shrink-to-fit=no"></meta>
+
+
+<!-- Meta -->
+<meta name="description"
+	content="Responsive Bootstrap 4 Dashboard Template"></meta>
+<meta name="author" content="BootstrapDash"></meta>
+
+<title>GEDE</title>
+
+<!-- vendor css -->
+<link href="lib/fontawesome-free/css/all.min.css" rel="stylesheet"></link>
+<link href="lib/ionicons/css/ionicons.min.css" rel="stylesheet"></link>
+<link href="lib/typicons.font/typicons.css" rel="stylesheet"></link>
+<link href="lib/flag-icon-css/css/flag-icon.min.css" rel="stylesheet"></link>
+
+<!-- azia CSS -->
+<link rel="stylesheet" href="css/azia.css"></link>
+
+</head>
+<body>
+
+	<div class="az-header">
+		<div class="container">
+
+			<div class="az-header-center"></div>
+
+			<ui:include src="/template/include/header2.xhtml" />
+			<ui:insert name="impression">
+				<rich:modalPanel id="modalPdf" autosized="false" width="980"
+					height="620" moveable="true" resizeable="true">
+
+					<f:facet name="controls">
+						<a onclick="Richfaces.hideModalPanel('modalPdf');"
+							style="cursor: pointer" href="#">Fermer</a>
+					</f:facet>
+					<h:form id="frmPdf">
+						<a:mediaOutput element="object" id="id" cacheable="false"
+							session="true" createContent="#{fileUploadService.paintPdf}"
+							type="application/pdf" mimeType="application/pdf"
+							style="width:90%; height:600px;" value="#{filePrintService.id}" />
+
+					</h:form>
+				</rich:modalPanel>
+			</ui:insert>
+			<a:status id="waitStatusHaut" forceId="true"
+				onstart="javascript:Richfaces.showModalPanel('waitModalPanelHaut');"
+				onstop="javascript:Richfaces.hideModalPanel('waitModalPanelHaut');" />
+			<a:status id="waitStatus" forceId="true"
+				onstart="javascript:Richfaces.showModalPanel('waitModalPanel');"
+				onstop="javascript:Richfaces.hideModalPanel('waitModalPanel');" />
+			<rich:modalPanel id="waitModalPanel" autosized="false" width="500"
+				height="100" styleClass="popupAttente" moveable="false"
+				resizeable="false">
+				<div style="text-align: center; height: 40px;">
+					<img src="../../picto/loading.gif" alt="" width="32" height="32" />
+				</div>
+				<span> <h:outputText
+						value="#{msgBundle['label.traitementencours']}" />
+				</span>
+			</rich:modalPanel>
+
+		</div>
+	</div>
+	<div class="az-content az-content-dashboard">
+		<div class="container">
+			<div class="az-content-body">
+				<div class="row row-sm mg-b-20">
+					<div class="col-lg-12"></div>
+				</div>
+				<h:form id="liste">
+					<rich:panel
+						header="ESPACE QUARTIER => #{quartierService.quartier.nom}"
+						styleclass="panel panel-success">
+						<div class="row row-sm mg-b-20">
+							<div class="col-lg-12">
+
+								<a:commandLink value="" status="waitStatus"
+									action="#{quartierService.versCreerquartier()}"
+									reRender="formmat" title="Retour accueil">
+									<s:graphicImage fileName="precedent.png" style="border:0px;"
+										value="/picto/precedent.png" width="25" height="16" alt="" />
+
+								</a:commandLink>
+								<table class="table mg-b-0">
+									<tbody>
+										<tr>
+											<td>Mois</td>
+											<td><h:selectOneMenu
+													value="#{quartierService.moisSelect}" class="form-control">
+													<f:selectItem itemLabel="Janvier" itemValue="1" />
+													<f:selectItem itemLabel="Février" itemValue="2" />
+													<f:selectItem itemLabel="Mars" itemValue="3" />
+													<f:selectItem itemLabel="Avril" itemValue="4" />
+													<f:selectItem itemLabel="Mai" itemValue="5" />
+													<f:selectItem itemLabel="Juin" itemValue="6" />
+													<f:selectItem itemLabel="Juillet" itemValue="7" />
+													<f:selectItem itemLabel="Août" itemValue="8" />
+													<f:selectItem itemLabel="Septembre" itemValue="9" />
+													<f:selectItem itemLabel="Octobre" itemValue="10" />
+													<f:selectItem itemLabel="Novembre" itemValue="11" />
+													<f:selectItem itemLabel="Décembre" itemValue="12" />
+												</h:selectOneMenu></td>
+											<td>Anneé</td>
+											<td><h:inputText value="#{quartierService.annee}"
+													class="form-control" /></td>
+
+										</tr>
+
+									</tbody>
+
+								</table>
+
+								<a:commandLink styleClass="btn btn-success" value=""
+									action="#{quartierService.rechercherClientFromDate()}"
+									reRender="lstCli" status="waitStatus">RECHERCHER			
+													</a:commandLink>
+								<rich:spacer width="2%;"></rich:spacer>
+								<a:commandLink styleClass="btn btn-danger" value=""
+									action="#{quartierService.rechercherClientNonFactureFromDate()}"
+									status="waitStatus">CLIENTS NON FACTURES			
+													</a:commandLink>
+
+
+								<h:panelGrid
+									rendered="#{quartierService.nbrClientNonFatures gt 0 }">
+									<a:commandLink styleClass="btn btn-danger" value=""
+										action="#{quartierService.imprimerListeClientNonFactue()}"
+										oncomplete="#{quartierService.showModal}" status="waitStatus">Il y'a #{quartierService.nbrClientNonFatures} clients non facturés			
+													</a:commandLink>
+								</h:panelGrid>
+
+							</div>
+						</div>
+
+						<div class="row row-sm mg-b-20">
+							<div class="col-lg-6">
+								<div class="card card-dashboard-pageviews">
+									<div class="card-header"></div>
+									<div class="card-body">
+										<h4>Relevés des clients du quartier mois
+											#{quartierService.moisEncours}</h4>
+
+										<rich:dataTable value="#{quartierService.getListeReleves()}"
+											var="index" id="lstdemande" style="width:100%;" rows="10"
+											rowClasses="row1,row2">
+											<f:facet name="header">
+												<rich:columnGroup>
+
+
+													<rich:column>
+														<h:outputLabel value="N°"
+															style="color:white;font-size:12px;fontWeight:bold;font-family: Arial;text-align:center;" />
+													</rich:column>
+
+													<rich:column>
+														<h:outputLabel value="Client"
+															style="color:white;font-size:12px;fontWeight:bold;font-family: Arial;text-align:center;" />
+													</rich:column>
+
+													<rich:column>
+														<h:outputLabel value="Ancien Index"
+															style="color:white;font-size:12px;fontWeight:bold;font-family: Arial;text-align:center;" />
+													</rich:column>
+
+													<rich:column>
+														<h:outputLabel value="Nouvel index"
+															style="color:white;font-size:12px;fontWeight:bold;font-family: Arial;text-align:center;" />
+													</rich:column>
+													<rich:column>
+														<h:outputLabel value="Date index"
+															style="color:white;font-size:12px;fontWeight:bold;font-family: Arial;text-align:center;" />
+													</rich:column>
+
+													<rich:column>
+														<h:outputLabel value="Cons. m³"
+															style="color:white;font-size:12px;fontWeight:bold;font-family: Arial;text-align:center;" />
+													</rich:column>
+
+
+												</rich:columnGroup>
+											</f:facet>
+
+
+											<rich:column>
+												<h:outputText value="#{index.client.numClient}"
+													styleClass="grey" />
+											</rich:column>
+
+											<rich:column>
+												<h:outputText
+													value="#{index.client.nom} #{index.client.prenom}"
+													styleClass="grey" title="#{index.client.adresse}" />
+											</rich:column>
+
+											<rich:column>
+												<h:outputText value="#{index.ancienIndex}" styleClass="grey"
+													disabled="true" />
+											</rich:column>
+
+											<rich:column>
+												<h:inputText value="#{index.nouvelIndex}" styleClass="grey"
+													class="form-control" style="width:60px;" />
+											</rich:column>
+											<rich:column>
+												<rich:calendar enableManualInput="true" validatorMessage="X"
+													value="#{index.dateIndex}" locale="fr"
+													datePattern="dd/MM/yyyy" Class="form-control"
+													inputStyle="width:68px;" />
+											</rich:column>
+											<rich:column
+												rendered="#{(index.nouvelIndex - index.ancienIndex) gt 0}">
+												<h:outputText
+													value="#{index.nouvelIndex - index.ancienIndex} "
+													styleClass="grey" Class="form-control" />
+											</rich:column>
+											<rich:column
+												rendered="#{index.nouvelIndex - index.ancienIndex lt 0} ">
+												<h:outputText value="0" styleClass="grey"
+													Class="form-control" />
+											</rich:column>
+
+
+
+
+										</rich:dataTable>
+										<rich:datascroller status="waitStatus" stepControls="auto"
+											style="width:100%" for="lstdemande"
+											rendered="#{not empty quartierService.listeReleves}" />
+
+
+
+
+										<a:commandLink styleClass="btn btn-success" value=""
+											action="#{clientService.versSaveEnMasse()}"
+											oncomplete="javascript:Richfaces.showModalPanel('mpAddIndex',{width:400, height:350})"
+											reRender="liste,formAddIndex" status="waitStatus">
+																		
+																		Enregistrer		
+																				</a:commandLink>
+
+										<rich:spacer width="3%" />
+
+
+										<a:commandLink styleClass="btn btn-success" value=""
+											action="#{quartierService.versImpressionMasse()}"
+											oncomplete="javascript:Richfaces.showModalPanel('impmasse',{width:800, height:800})"
+											reRender="formmasse" status="waitStatus">
+																		
+																		Imprimer facture en masse	
+																				</a:commandLink>
+
+										<rich:spacer width="10%" />
+
+										<a:commandLink value="" status="waitStatus" action="#"
+											reRender="formmat" title="Imprimer Liste clients(PDF) ">
+											<s:graphicImage fileName="pdf.png" style="border:0px;"
+												value="/images/pdf.png" width="25" height="25" alt="" />
+
+										</a:commandLink>
+										<rich:spacer width="5%" />
+										<a:commandLink value="" status="waitStatus" action="#"
+											oncomplete="javascript:Richfaces.showModalPanel('mpUpload',{width:500, height:450})"
+											reRender="formUpload"
+											title="Charger les relevés clients(EXCEL) ">
+											<s:graphicImage fileName="excel.png" style="border:0px;"
+												value="/images/excel.png" width="25" height="25" alt="" />
+
+										</a:commandLink>
+
+										<rich:spacer width="5%" />
+
+										<a:commandLink value="" status="waitStatus"
+											action="#{quartierService.versOrdonnerClient()}"
+											title="Ordonner liste lient ">
+
+											<s:graphicImage fileName="liste_1.png" style="border:0px;"
+												value="/picto/liste_1.png" width="30" height="30" alt="" />
+
+										</a:commandLink>
+
+
+
+									</div>
+
+								</div>
+
+							</div>
+
+							<div class="col-lg-6">
+								<div class="card card-dashboard-pageviews">
+									<div class="card-header"></div>
+									<div class="card-body">
+
+										<h4>Historiques des factures du quartier</h4>
+										<rich:dataTable value="#{quartierService.listeFactures}"
+											var="fact" id="lstFactures" style="width:100%;" rows="10"
+											rowClasses="row1,row2">
+											<f:facet name="header">
+												<rich:columnGroup>
+													<rich:column>
+														<h:outputLabel value="N°"
+															style="color:white;font-size:12px;fontWeight:bold;font-family: Arial;text-align:center;" />
+													</rich:column>
+
+													<rich:column>
+														<h:outputLabel value="Client"
+															style="color:white;font-size:12px;fontWeight:bold;font-family: Arial;text-align:center;" />
+													</rich:column>
+													<rich:column>
+														<h:outputLabel value="Date"
+															style="color:white;font-size:12px;fontWeight:bold;font-family: Arial;text-align:center;" />
+													</rich:column>
+													<rich:column>
+														<h:outputLabel value="Index"
+															style="color:white;font-size:12px;fontWeight:bold;font-family: Arial;text-align:center;" />
+													</rich:column>
+													<rich:column>
+														<h:outputLabel value="N° Facture"
+															style="color:white;font-size:12px;fontWeight:bold;font-family: Arial;text-align:center;" />
+													</rich:column>
+
+													<rich:column>
+														<h:outputLabel value="Montant"
+															style="color:white;font-size:12px;fontWeight:bold;font-family: Arial;text-align:center;" />
+													</rich:column>
+
+
+
+
+												</rich:columnGroup>
+											</f:facet>
+											<rich:column>
+												<h:outputText value="#{fact.client.numClient}"
+													styleClass="grey" style="width:20%" />
+											</rich:column>
+
+											<rich:column>
+												<h:outputText
+													value="#{fact.client.nom} #{fact.client.prenom}"
+													styleClass="grey" />
+											</rich:column>
+											<rich:column>
+
+												<rich:calendar enableManualInput="true" validatorMessage="X"
+													value="#{fact.dateFacture}" locale="fr"
+													datePattern="dd/MM/yyyy" inputStyle="width:68px;"
+													disablead="true" />
+											</rich:column>
+
+											<rich:column>
+												<h:outputText value="#{fact.releveCurren}" styleClass="grey" />
+											</rich:column>
+											<rich:column>
+												<h:outputText value="#{fact.numeroFacture}"
+													styleClass="grey" />
+											</rich:column>
+
+											<rich:column>
+												<h:outputText value="#{fact.netApayer} " styleClass="grey"
+													disabled="true" />
+												<a:commandLink value="" status="waitStatus"
+													action="#{quartierService.imprimerFacture(fact)}"
+													oncomplete="#{quartierService.showModal}"
+													reRender="formmat" title="Imprimer la facture(PDF) ">
+													<s:graphicImage fileName="pdf.png" style="border:0px;"
+														value="/images/pdf.png" width="16" height="16" alt="" />
+
+												</a:commandLink>
+											</rich:column>
+										</rich:dataTable>
+										<rich:datascroller status="waitStatus" stepControls="auto"
+											style="width:100%" for="lstFactures"
+											rendered="#{not empty quartierService.listeFactures}" />
+									</div>
+
+								</div>
+
+							</div>
+
+						</div>
+
+
+					</rich:panel>
+				</h:form>
+				<!-- row -->
+				<rich:modalPanel id="mpUpload"
+					style="background:url('../img2/fond.jpg') repeat-x scroll 0 0 #FFF;height:210; width:400"
+					moveable="true" styleClass="popupAttente">
+					<f:facet name="controls">
+
+						<a:commandLink value="" status="waitStatus" title="Fermer "
+							onclick="javascript:Richfaces.hideModalPanel('mpUpload')">
+							<s:graphicImage fileName="cross.png" style="border:0px;"
+								value="/picto/cross.png" width="16" height="16" alt="" />
+						</a:commandLink>
+					</f:facet>
+					<f:facet name="header">
+			CHARGEMENT EN MASSE D'INDEX
+			</f:facet>
+					<rich:spacer height="10px" />
+					<h:form class="note-form" id="formUpload">
+
+
+
+						<div class="row">
+							<div class="col-md-12">
+								<div class="panel panel-primary">
+
+
+									<div class="panel-body">
+										<div class="form-group has-success">
+											<TABLE class="table">
+												<tr>
+													<td><rich:fileUpload
+															fileUploadListener="#{quartierService.fileUploaded}"
+															immediateUpload="true" autoclear="false"
+															acceptedTypes="csv" noDuplicate="true" reRender="it1" /></td>
+												</tr>
+											</TABLE>
+
+											<p align="center">
+												<a:commandLink styleClass="btn btn-success" value=""
+													oncomplete="javascript:Richfaces.hideModalPanel('mpUpload',{width:400, height:300})"
+													action="#{quartierService.reopenEspaceQuartier()}"
+													reRender="formUpload,regionIndex,liste" status="waitStatus">
+										Ok			
+									</a:commandLink>
+
+											</p>
+										</div>
+
+									</div>
+
+								</div>
+							</div>
+						</div>
+
+
+					</h:form>
+				</rich:modalPanel>
+				<rich:modalPanel id="impmasse"
+					style="background:url('../img2/fond.jpg') repeat-x scroll 0 0 #FFF;height:800; width:800"
+					moveable="true" styleClass="popupAttente">
+					<f:facet name="controls">
+
+						<a:commandLink value="" status="waitStatus" title="Fermer "
+							onclick="javascript:Richfaces.hideModalPanel('impmasse')">
+							<s:graphicImage fileName="cross.png" style="border:0px;"
+								value="/picto/cross.png" width="16" height="16" alt="" />
+						</a:commandLink>
+					</f:facet>
+					<f:facet name="header">
+			IMPRIMER PLUSIEURS FACTURES
+			</f:facet>
+					<rich:spacer height="10px" />
+					<h:form class="note-form" id="formmasse">
+						<div class="row" style="overflow-y: scroll;">
+							<div class="col-md-12">
+								<div class="panel panel-primary">
+
+
+									<div class="panel-body">
+										<div class="form-group has-success"></div>
+
+										<TABLE class="table">
+											<tr>
+
+
+												<td><h:outputLabel styleClass="grey"
+														value="Montant inférieur ou égal" /></td>
+												<td><h:inputText value="#{quartierService.mntinf}"
+														class="form-control" /></td>
+											</tr>
+											<tr>
+
+												<td><h:outputLabel styleClass="grey"
+														value="Montant supérieur ou égal" /></td>
+												<td><h:inputText value="#{quartierService.mntsup}"
+														class="form-control" /></td>
+											</tr>
+											<tr>
+												<td><h:outputLabel styleClass="grey" value="DU" /></td>
+												<td><rich:calendar enableManualInput="true"
+														validatorMessage="X" maxlength="10"
+														value="#{quartierService.dateDeb}" locale="fr"
+														popup="#{true}" style="width:100px;height:300px"
+														datePattern="dd/MM/yyyy" required="false"
+														requiredMessage="" cellWidth="1px" /></td>
+
+											</tr>
+											<tr>
+												<td><h:outputLabel styleClass="grey" value="AU" /></td>
+												<td><rich:calendar enableManualInput="true"
+														validatorMessage="X" maxlength="10"
+														value="#{quartierService.dateFin}" locale="fr"
+														popup="#{true}" style="width:100px;height:300px"
+														datePattern="dd/MM/yyyy" required="false"
+														requiredMessage="" cellWidth="1px" /></td>
+
+
+
+												<td><a:commandLink styleClass="btn btn-success"
+														value="" action="#{quartierService.searchFactures()}"
+														reRender="formmasse" status="waitStatus">RECHERCHER			
+													</a:commandLink></td>
+											</tr>
+
+										</TABLE>
+										<p align="center">
+											<a:commandLink styleClass="btn btn-success" value=""
+												action="#{quartierService.imprimerPlusieurFacture()}"
+												rendered="#{quartierService.listeFacturesSearch.size > 0}"
+												onclick="javascript:Richfaces.hideModalPanel('impmasse')"
+												oncomplete="#{quartierService.showModal}"
+												reRender="formasse" status="waitStatus">
+											  IMPRIMER			
+													</a:commandLink>
+										</p>
+
+
+										<rich:dataTable value="#{quartierService.listeFacturesSearch}"
+											var="quartier" id="lstdemandese" style="width:100%;"
+											rows="10" rowClasses="row1,row2"
+											rendered="#{quartierService.listeFacturesSearch.size > 0}">
+											<f:facet name="header">
+												<rich:columnGroup>
+													<rich:column>
+														<h:outputLabel value="Quartier"
+															style="color:white;font-size:12px;fontWeight:bold;font-family: Arial;text-align:center;" />
+													</rich:column>
+
+
+													<rich:column>
+														<h:outputLabel value="Client"
+															style="color:white;font-size:12px;fontWeight:bold;font-family: Arial;text-align:center;" />
+													</rich:column>
+													<rich:column>
+														<h:outputLabel value="Date Facture"
+															style="color:white;font-size:12px;fontWeight:bold;font-family: Arial;text-align:center;" />
+													</rich:column>
+													<rich:column>
+														<h:outputLabel value="Date Echéance"
+															style="color:white;font-size:12px;fontWeight:bold;font-family: Arial;text-align:center;" />
+													</rich:column>
+													<rich:column>
+														<h:outputLabel value="Cons(m3)"
+															style="color:white;font-size:12px;fontWeight:bold;font-family: Arial;text-align:center;" />
+													</rich:column>
+													<rich:column>
+														<h:outputLabel value="Net A payer"
+															style="color:white;font-size:12px;fontWeight:bold;font-family: Arial;text-align:center;" />
+													</rich:column>
+													<rich:column>
+														<h:outputLabel value="Payée"
+															style="color:white;font-size:12px;fontWeight:bold;font-family: Arial;text-align:center;" />
+													</rich:column>
+													<rich:column>
+														<h:selectBooleanCheckbox value="#{quartierService.impFac}">
+															<a:support event="onchange" ajaxSingle="true"
+																action="#{quartierService.cocherAllFacture()}"
+																reRender="formmasse"></a:support>
+														</h:selectBooleanCheckbox>
+													</rich:column>
+												</rich:columnGroup>
+											</f:facet>
+
+											<rich:column>
+												<h:outputText value="#{quartier.client.quartier.nom}"
+													styleClass="grey" />
+											</rich:column>
+
+											<rich:column>
+												<h:outputText
+													value="#{quartier.client.numClient} - #{quartier.client.nom} #{quartier.client.prenom}"
+													styleClass="grey" />
+											</rich:column>
+
+											<rich:column>
+												<h:outputText value="#{quartier.dateEcheance}"
+													styleClass="grey">
+													<f:convertDateTime pattern="dd/MM/yyyy" />
+												</h:outputText>
+											</rich:column>
+											<rich:column>
+												<h:outputText
+													value="#{quartier.releve.nouvelIndex - quartier.releve.ancienIndex}"
+													styleClass="grey" />
+											</rich:column>
+											<rich:column>
+												<h:outputText value="#{quartier.netApayer}"
+													styleClass="grey">
+												</h:outputText>
+											</rich:column>
+											<rich:column>
+												<h:outputText value="#{quartier.payer}" styleClass="grey">
+												</h:outputText>
+											</rich:column>
+											<rich:column style="width:5%;">
+
+												<h:selectBooleanCheckbox value="#{quartier.choix}" />
+
+											</rich:column>
+										</rich:dataTable>
+										<rich:datascroller status="waitStatus" stepControls="auto"
+											style="width:100%" for="lstdemandese"
+											rendered="#{not empty quartierService.listeFacturesSearch}" />
+									</div>
+
+								</div>
+							</div>
+						</div>
+
+
+					</h:form>
+				</rich:modalPanel>
+				<rich:modalPanel id="mpAddIndex"
+					style="background:url('../img2/fond.jpg') repeat-x scroll 0 0 #FFF;height:500; width:400"
+					moveable="true" styleClass="popupAttente">
+					<f:facet name="controls">
+
+						<a:commandLink value="" status="waitStatus" title="Fermer "
+							onclick="javascript:Richfaces.hideModalPanel('mpAddIndex')">
+							<s:graphicImage fileName="cross.png" style="border:0px;"
+								value="/picto/cross.png" width="16" height="16" alt="" />
+						</a:commandLink>
+					</f:facet>
+					<f:facet name="header">
+			AJOUTER INDEX EN MASSE
+			</f:facet>
+					<rich:spacer height="10px" />
+					<h:form class="note-form" id="formAddIndex">
+						<div>
+
+
+							<table class="table mg-b-0">
+								<tbody>
+
+									<tr>
+
+										<td><strong style="color: red">Date Limite
+												paiement</strong></td>
+										<td><rich:calendar value="#{clientService.dateLimtePaie}"
+												required="true" buttonIcon="/img2/calendrier.png"
+												cellWidth="0px" cellHeight="20px" datePattern="dd/MM/yyyy">
+											</rich:calendar></td>
+									</tr>
+								</tbody>
+							</table>
+
+							<p align="center">
+								<a:commandLink styleClass="btn btn-success" value=""
+									oncomplete="javascript:Richfaces.hideModalPanel('mpAddIndex',{width:1300, height:500})"
+									action="#{quartierService.saveIndexEnMasse()}"
+									reRender="formAddIndex,liste" status="waitStatus">
+																		
+																		Valider			
+																				</a:commandLink>
+
+							</p>
+
+						</div>
+
+
+
+
+					</h:form>
+				</rich:modalPanel>
+
+			</div>
+			<!-- az-content-body -->
+		</div>
+	</div>
+	<!-- az-content -->
+
+	<div class="az-footer ht-20">
+		<div class="container ht-100p pd-t-0-f">
+			<span
+				class="text-muted d-block text-center text-sm-left d-sm-inline-block">Copyright
+				© GEDE 2020</span> <span
+				class="float-none float-sm-right d-block mt-1 mt-sm-0 text-center">
+				<a href="https://www.bootstrapdash.com/bootstrap-admin-template/"
+				target="_blank">Une gestion transparente et sûre de l'eau</a>
+			</span>
+		</div>
+		<!-- container -->
+	</div>
+	<!-- az-footer -->
+
+
+
+
+</body>
+</html>

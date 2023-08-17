@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:a="https://ajax4jsf.dev.java.net/ajax"
+	xmlns:rich="http://richfaces.ajax4jsf.org/rich"
+	xmlns:s="http://jboss.com/products/seam/taglib"
+	xmlns:t="http://myfaces.apache.org/tomahawk">
+<head>
+<!-- Global site tag (gtag.js) - Google Analytics -->
+
+<script>
+	window.dataLayer = window.dataLayer || [];
+	function gtag() {
+		dataLayer.push(arguments);
+	}
+	gtag('js', new Date());
+
+	gtag('config', 'UA-90680653-2');
+</script>
+
+<!-- Required meta tags -->
+<meta charset="utf-8"></meta>
+<meta name="viewport"
+	content="width=device-width, initial-scale=1, shrink-to-fit=no"></meta>
+
+
+<!-- Meta -->
+<meta name="description"
+	content="Responsive Bootstrap 4 Dashboard Template"></meta>
+<meta name="author" content="BootstrapDash"></meta>
+
+<title>GEDE</title>
+
+<!-- vendor css -->
+<link href="lib/fontawesome-free/css/all.min.css" rel="stylesheet"></link>
+<link href="lib/ionicons/css/ionicons.min.css" rel="stylesheet"></link>
+<link href="lib/typicons.font/typicons.css" rel="stylesheet"></link>
+<link href="lib/flag-icon-css/css/flag-icon.min.css" rel="stylesheet"></link>
+
+<!-- azia CSS -->
+<link rel="stylesheet" href="css/azia.css"></link>
+
+</head>
+<body>
+
+	<div class="az-header">
+		<div class="container">
+
+			<div class="az-header-center"></div>
+
+			<ui:include src="/template/include/header2.xhtml" />
+
+			
+		</div>
+	</div>
+	<a:status id="waitStatusHaut" forceId="true"
+				onstart="javascript:Richfaces.showModalPanel('waitModalPanelHaut');"
+				onstop="javascript:Richfaces.hideModalPanel('waitModalPanelHaut');" />
+			<a:status id="waitStatus" forceId="true"
+				onstart="javascript:Richfaces.showModalPanel('waitModalPanel');"
+				onstop="javascript:Richfaces.hideModalPanel('waitModalPanel');" />
+			<rich:modalPanel id="waitModalPanel" autosized="false" width="500"
+				height="100" styleClass="popupAttente" moveable="false"
+				resizeable="false">
+				<div style="text-align: center; height: 40px;">
+					<img src="../../picto/loading.gif" alt="" width="32" height="32" />
+				</div>
+				<span> <h:outputText
+						value="#{msgBundle['label.traitementencours']}" />
+				</span>
+			</rich:modalPanel>
+			<a:outputPanel id="erreurStd" ajaxRendered="true">
+					<h:message infoClass="informationGenerique"
+						errorClass="informationGenerique" warnClass="informationGenerique"
+						for="infoGenerique" />
+					<h:inputHidden id="infoGenerique" />
+					<h:message infoClass="confirmationerrorGenerique"
+						errorClass="confirmationerrorGenerique"
+						warnClass="confirmationerrorGenerique" for="erreurGenerique" />
+					<h:inputHidden id="erreurGenerique" style="font-size:12px;" />
+				</a:outputPanel>
+	
+	<div class="az-content az-content-dashboard">
+		<div class="container">
+			<div class="az-content-body">
+				<div class="row row-sm mg-b-20">
+					<div class="col-lg-12"></div>
+				</div>
+				<h:form id="liste">
+					<rich:panel header="CREATION APPORT CLIENT"
+						styleclass="panel panel-success">
+						<div class="row row-sm mg-b-20">
+							<div class="col-lg-12">
+								<div class="row row-sm">
+									<p align="center">
+									<a:commandLink styleClass="btn btn-success" value=""
+										action="#{apportService.versListeApport()}" reRender="form"
+										status="waitStatus">
+																		LISTE DES APPORTS			
+																				</a:commandLink>
+									</p>
+
+									<div class="table-responsive">
+
+										<table class="table mg-b-0">
+
+											<tbody>
+												<tr>
+													<td>Client</td>
+													<td><h:inputText
+															value=" #{apportService.apport.client.numClient} #{apportService.apport.client.nom} #{apportService.apport.client.prenom}"
+															class="form-control" disabled="true" /> <a:commandLink
+															value="" action="#{apportService.initListeClient()}"
+															status="waitStatus"
+															oncomplete="javascript:Richfaces.showModalPanel('client',{width:500, height:500})"
+															reRender="form" title="Rechercher Client">
+															<s:graphicImage fileName="user_green.png"
+																style="border:0px;" value="/picto/user_green.png"
+																width="25" height="25" alt="" />
+
+														</a:commandLink></td>
+
+												</tr>
+												<tr>
+													<td>Date Apport</td>
+													<td><rich:calendar enableManualInput="true"
+															validatorMessage="X" maxlength="10"
+															value="#{apportService.apport.dateApport}" locale="fr"
+															popup="#{true}" style="width:300px;height:300px"
+															datePattern="dd/MM/yyyy" required="false"
+															requiredMessage="" cellWidth="1px" /></td>
+												</tr>
+												<tr>
+													<td>Commentaire</td>
+													<td><h:inputTextarea row="10" col="4"
+															value="#{apportService.apport.commentaire}"
+															class="form-control" /></td>
+												</tr>
+
+												<tr>
+													<td>Montant</td>
+													<td><h:inputText
+															value="#{apportService.apport.montant}"
+															class="form-control" /></td>
+												</tr>
+
+											</tbody>
+
+										</table>
+
+
+
+										<a:commandLink styleClass="btn btn-danger" value=""
+											action="#{apportService.annulerAjout()}"
+											reRender="form,liste" status="waitStatus">
+																		
+																		Annuler			
+																				</a:commandLink>
+										<rich:spacer width="10px;"></rich:spacer>
+
+										<a:commandLink styleClass="btn btn-success" value=""
+											action="#{apportService.ajouterApport()}" status="waitStatus"
+											reRender="liste">
+																		
+																		Valider			
+																				</a:commandLink>
+
+
+
+									</div>
+								</div>
+
+
+
+
+
+
+
+							</div>
+						</div>
+
+					</rich:panel>
+
+				</h:form>
+
+				<rich:modalPanel id="client"
+					style="background:url('../img2/fond.jpg') repeat-x scroll 0 0 #FFF;height:210; width:400"
+					moveable="true" styleClass="popupAttente">
+					<f:facet name="controls">
+
+						<a:commandLink value="" status="waitStatus" title="Fermer "
+							onclick="javascript:Richfaces.hideModalPanel('client')">
+							<s:graphicImage fileName="cross.png" style="border:0px;"
+								value="/picto/cross.png" width="16" height="16" alt="" />
+						</a:commandLink>
+					</f:facet>
+					<f:facet name="header">
+			 RECHERCHER CLIENT
+			</f:facet>
+					<h:form class="note-form" id="form">
+						<rich:panel header="FORMULAIRE DE RECHERCHE DE CLIENT">
+							<div class="row row-sm mg-b-20">
+								<div class="col-lg-12">
+									<div class="row row-sm">
+										<div class="table-responsive">
+
+											<table class="table mg-b-0">
+												<tbody>
+													<tr>
+														<td>N°</td>
+														<td><h:inputText value="#{apportService.numClient}"
+																class="form-control" /></td>
+														<td>Nom</td>
+														<td><h:inputText value="#{apportService.nom}"
+																class="form-control" /></td>
+													</tr>
+													<tr>
+														<td>Prénom</td>
+														<td><h:inputText value="#{apportService.prenom}"
+																class="form-control" /></td>
+														<td>Quartier</td>
+														<td><h:selectOneMenu
+																value="#{apportService.quartier}"
+																converter="#{quartierConverter}"
+																styleClass="form-control">
+																<s:selectItems value="#{apportService.listeQuartier}"
+																	var="station" label="#{station.nom}"
+																	noSelectionLabel="--- Selectionnez ---">
+																</s:selectItems>
+
+															</h:selectOneMenu></td>
+													</tr>
+												</tbody>
+											</table>
+											<p align="center">
+
+												<a:commandLink styleClass="btn btn-success" value=""
+													action="#{apportService.chargerListeClient()}"
+													reRender="form" status="waitStatus">RECHERCHER			
+													</a:commandLink>
+											</p>
+										</div>
+										<rich:dataTable value="#{apportService.clientLists}" var="cli"
+											id="lstCli" style="width:100%;" rows="10"
+											rowClasses="row1,row2">
+											<f:facet name="header">
+												<rich:columnGroup>
+
+													<rich:column>
+														<h:outputLabel value="N°:"
+															style="color:white;font-size:12px;font-family: Arial;text-align:center;" />
+													</rich:column>
+
+													<rich:column>
+														<h:outputLabel value="Nom:"
+															style="color:white;font-size:12px;font-family: Arial;text-align:center;" />
+													</rich:column>
+
+													<rich:column>
+														<h:outputLabel value="Prenom:"
+															style="color:white;font-size:12px;font-family: Arial;text-align:center;" />
+													</rich:column>
+													<rich:column style="width:5%;">
+														<h:outputLabel value="Choisir"
+															style="color:white;font-size:12px;font-family: Arial;text-align:center;" />
+													</rich:column>
+
+
+												</rich:columnGroup>
+											</f:facet>
+
+											<rich:column filterBy="#{cli.numClient}"
+												filterEvent="onkeyup">
+												<h:outputText value="#{cli.numClient}" styleClass="grey" />
+											</rich:column>
+											<rich:column >
+												<h:outputText value="#{cli.nom}" styleClass="grey" />
+											</rich:column>
+											<rich:column >
+												<h:outputText value="#{cli.prenom}" styleClass="grey" />
+											</rich:column>
+											<rich:column style="width:5%;">
+
+												<a:commandLink value="" status="waitStatus"
+													action="#{apportService.versChoixClient(cli)}"
+													oncomplete="javascript:Richfaces.hideModalPanel('client',{width:1000, height:500})"
+													title="Choisir" reRender="form,liste">
+													<s:graphicImage fileName="accept.png" style="border:0px;"
+														value="/picto/accept.png" width="16" height="16" alt="" />
+
+												</a:commandLink>
+
+											</rich:column>
+
+										</rich:dataTable>
+										<rich:datascroller status="waitStatus" stepControls="auto"
+											style="width:100%" for="lstCli"
+											rendered="#{not empty apportService.clientLists}" />
+									</div>
+								</div>
+							</div>
+
+						</rich:panel>
+					</h:form>
+				</rich:modalPanel>
+
+			</div>
+
+
+		</div>
+	</div>
+	<!-- az-content -->
+
+	<div class="az-footer ht-20">
+		<div class="container ht-100p pd-t-0-f">
+			<span
+				class="text-muted d-block text-center text-sm-left d-sm-inline-block">Copyright
+				© GEDE 2020</span> <span
+				class="float-none float-sm-right d-block mt-1 mt-sm-0 text-center">
+				<a href="#" target="_blank">Une gestion transparente et sûre de
+					l'eau</a>
+			</span>
+		</div>
+		<!-- container -->
+	</div>
+	<!-- az-footer -->
+
+
+
+
+</body>
+</html>

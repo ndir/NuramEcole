@@ -1,0 +1,245 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//FR" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!--  V 0.1 : Maj : 09/11/2007 -->
+
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:rich="http://richfaces.ajax4jsf.org/rich"
+	xmlns:a="https://ajax4jsf.dev.java.net/ajax"
+	xmlns:t="http://myfaces.apache.org/tomahawk"
+	xmlns:s="http://jboss.com/products/seam/taglib"
+	xmlns:c="http://java.sun.com/jstl/core"
+	template="/template/template.xhtml">
+	<!-- Page d'accueil -->
+
+	<ui:define name="title">GSS</ui:define>
+	<ui:define name="body">
+		<rich:spacer height="20px;"></rich:spacer>
+		<div class="divtest">
+
+
+			<div class="container" style="margin-left: 5%;">
+
+				<h:form id="liste">
+					<div class="row">
+						<div class="col-md-12">
+							<div class="panel panel-success">
+								<div class="panel-heading">
+									<h3 class="panel-title" style="text-align: center;">PARAMETRAGE
+										INSCRIPTION</h3>
+								</div>
+
+								<div class="panel-body">
+									<p align="left">
+
+										<a:commandLink styleClass="btn btn-success" value=""
+											oncomplete="javascript:Richfaces.showModalPanel('sim',{width:700, height:300})"
+											reRender="form" status="waitStatus">
+																		
+																		AJOUTER 		
+																				</a:commandLink>
+
+									</p>
+
+
+
+									<div class="form-group has-success"></div>
+									<rich:dataTable value="#{piService.liste}" var="classe"
+										id="lstdemande" style="width:100%;" rows="8"
+										rowClasses="row1,row2">
+										<f:facet name="header">
+											<rich:columnGroup>
+
+												<rich:column>
+													<h:outputLabel value="Annee"
+														style="color:white;font-size:12px;font-family: Arial;text-align:center;" />
+												</rich:column>
+
+												<rich:column>
+													<h:outputLabel value="Classe"
+														style="color:white;font-size:12px;font-family: Arial;text-align:center;" />
+												</rich:column>
+
+												<rich:column>
+													<h:outputLabel value="Montant Inscription"
+														style="color:white;font-size:12px;font-family: Arial;text-align:center;" />
+												</rich:column>
+
+												<rich:column>
+													<h:outputLabel value="Montant Mensualité"
+														style="color:white;font-size:12px;font-family: Arial;text-align:center;" />
+												</rich:column>
+
+
+												<rich:column>
+													<h:outputLabel value="Action"
+														style="color:white;font-size:12px;font-family: Arial;text-align:center;" />
+												</rich:column>
+
+
+											</rich:columnGroup>
+										</f:facet>
+
+
+										<rich:column>
+											<h:outputText value="#{classe.annee.anneeScolaire}"
+												styleClass="grey" />
+										</rich:column>
+
+										<rich:column filterBy="#{classe.classe.libelle}"
+											filterEvent="onkeyup">
+											<h:outputText value="#{classe.classe.libelle}"
+												styleClass="grey" />
+										</rich:column>
+
+
+										<rich:column>
+											<h:outputText value="#{classe.droit_ins}" styleClass="grey">
+												<f:convertNumber pattern="#,##0" />
+											</h:outputText>
+										</rich:column>
+
+
+										<rich:column>
+											<h:outputText value="#{classe.mensualite}" styleClass="grey">
+
+												<f:convertNumber pattern="#,##0" />
+											</h:outputText>
+										</rich:column>
+
+
+										<rich:column>
+
+
+											<a:commandLink value="" status="waitStatus"
+												action="#{piService.versModifierInscription(classe)}"
+												oncomplete="javascript:Richfaces.showModalPanel('sim',{width:700, height:300})"
+												reRender="form" title="Modifier">
+												<s:graphicImage fileName="edit.png" style="border:0px;"
+													value="/picto/edit.png" width="16" height="16" alt="" />
+
+											</a:commandLink>
+
+										</rich:column>
+
+									</rich:dataTable>
+									<rich:datascroller status="waitStatus" stepControls="auto"
+										style="width:100%" for="lstdemande"
+										rendered="#{not empty piService.liste}" />
+
+								</div>
+
+							</div>
+						</div>
+					</div>
+				</h:form>
+			</div>
+
+
+
+		</div>
+
+		<rich:modalPanel id="sim"
+			style="background:url('../img2/fond.jpg') repeat-x scroll 0 0 #FFF;height:210; width:400"
+			moveable="true" styleClass="popupAttente">
+			<f:facet name="controls">
+
+				<a:commandLink value="" status="waitStatus" title="Fermer "
+					onclick="javascript:Richfaces.hideModalPanel('sim')">
+					<s:graphicImage fileName="cross.png" style="border:0px;"
+						value="/picto/cross.png" width="16" height="16" alt="" />
+				</a:commandLink>
+			</f:facet>
+			<f:facet name="header">
+			 AJOUTER MATIERE
+			</f:facet>
+			<rich:spacer height="10px" />
+			<h:form class="note-form" id="form">
+
+
+
+				<div class="row">
+					<div class="col-md-12">
+						<div class="panel panel-success">
+							<div class="panel-heading">
+								<h3 class="panel-title" style="text-align: center;">INSCRIPTION</h3>
+							</div>
+
+							<div class="panel-body">
+								<div class="form-group has-success">
+									<TABLE class="table">
+										<tr>
+
+
+											<td><h:outputLabel styleClass="grey" value="Année" /></td>
+											<td><h:inputText
+													value="#{piService.param.annee.anneeScolaire}"
+													required="true" class="form-control" disabled="true" /></td>
+
+											<td><h:outputLabel styleClass="grey" value="Niveau" /></td>
+											<td><h:selectOneMenu class="form-control"
+													value="#{piService.niveau}" converter="#{niveauConverter}"
+													id="cont" noSelectionLabel="--- Selectionnez ---">
+													<s:selectItems value="#{piService.listeNiveau}" var="type"
+														label="#{type.libelle}"
+														noSelectionLabel="--- Selectionnez ---" />
+													<a:support event="onchange"
+														action="#{piService.chargerListeClasse()}"
+														ajaxSingle="true" reRender="classe" status="waitStatus"></a:support>
+												</h:selectOneMenu></td>
+											<td><h:outputLabel styleClass="grey" value="Classe" /></td>
+											<td><h:selectOneMenu class="form-control"
+													value="#{piService.param.classe}" converter="#{classeConverter}"
+													id="classe" noSelectionLabel="--- Selectionnez ---">
+													<s:selectItems value="#{piService.listeClasse}" var="type"
+														label="#{type.libelle}"
+														noSelectionLabel="--- Selectionnez ---" />
+												</h:selectOneMenu></td>
+										</tr>
+										<tr>
+											<td><h:outputLabel styleClass="grey"
+													value="Montant Inscription" /></td>
+											<td><h:inputText value="#{piService.param.droit_ins}"
+													required="true" class="form-control" /></td>
+													<td><h:outputLabel styleClass="grey"
+													value="Montant Mensualité" /></td>
+											<td><h:inputText value="#{piService.param.mensualite}"
+													required="true" class="form-control" /></td>
+										</tr>
+									</TABLE>
+									<p align="center">
+
+
+										<a:commandLink styleClass="btn btn-danger" value=""
+											oncomplete="javascript:Richfaces.hideModalPanel('sim',{width:1300, height:500})"
+											action="#{piService.annulerAjout()}" reRender="form,liste"
+											status="waitStatus">
+																		
+																		Annuler			
+																				</a:commandLink>
+										<rich:spacer width="10px;"></rich:spacer>
+
+										<a:commandLink styleClass="btn btn-success" value=""
+											oncomplete="javascript:Richfaces.hideModalPanel('sim',{width:1300, height:500})"
+											action="#{piService.ajouterInscription()}" reRender="form,liste"
+											status="waitStatus">
+																		
+																		Valider			
+																				</a:commandLink>
+
+									</p>
+								</div>
+
+							</div>
+
+						</div>
+					</div>
+				</div>
+
+
+			</h:form>
+		</rich:modalPanel>
+
+	</ui:define>
+</ui:composition>

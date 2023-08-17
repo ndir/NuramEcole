@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:a="https://ajax4jsf.dev.java.net/ajax"
+	xmlns:rich="http://richfaces.ajax4jsf.org/rich"
+	xmlns:s="http://jboss.com/products/seam/taglib"
+	xmlns:t="http://myfaces.apache.org/tomahawk">
+<head>
+<!-- Global site tag (gtag.js) - Google Analytics -->
+
+<script>
+	window.dataLayer = window.dataLayer || [];
+	function gtag() {
+		dataLayer.push(arguments);
+	}
+	gtag('js', new Date());
+
+	gtag('config', 'UA-90680653-2');
+</script>
+
+<!-- Required meta tags -->
+<meta charset="utf-8"></meta>
+<meta name="viewport"
+	content="width=device-width, initial-scale=1, shrink-to-fit=no"></meta>
+
+
+<!-- Meta -->
+<meta name="description"
+	content="Responsive Bootstrap 4 Dashboard Template"></meta>
+<meta name="author" content="BootstrapDash"></meta>
+
+<title>GEDE</title>
+
+<!-- vendor css -->
+<link href="lib/fontawesome-free/css/all.min.css" rel="stylesheet"></link>
+<link href="lib/ionicons/css/ionicons.min.css" rel="stylesheet"></link>
+<link href="lib/typicons.font/typicons.css" rel="stylesheet"></link>
+<link href="lib/flag-icon-css/css/flag-icon.min.css" rel="stylesheet"></link>
+
+<!-- azia CSS -->
+<link rel="stylesheet" href="css/azia.css"></link>
+
+</head>
+<body>
+
+	<div class="az-header">
+		<div class="container">
+
+			<div class="az-header-center"></div>
+
+			<ui:include src="/template/include/header2.xhtml" />
+
+
+		</div>
+	</div>
+	
+			<a:status id="waitStatusHaut" forceId="true"
+				onstart="javascript:Richfaces.showModalPanel('waitModalPanelHaut');"
+				onstop="javascript:Richfaces.hideModalPanel('waitModalPanelHaut');" />
+			<a:status id="waitStatus" forceId="true"
+				onstart="javascript:Richfaces.showModalPanel('waitModalPanel');"
+				onstop="javascript:Richfaces.hideModalPanel('waitModalPanel');" />
+			<rich:modalPanel id="waitModalPanel" autosized="false" width="500"
+				height="100" styleClass="popupAttente" moveable="false"
+				resizeable="false">
+				<div style="text-align: center; height: 40px;">
+					<img src="../../picto/loading.gif" alt="" width="32" height="32" />
+				</div>
+				<span> <h:outputText
+						value="#{msgBundle['label.traitementencours']}" />
+				</span>
+			</rich:modalPanel>
+	<div class="az-content az-content-dashboard">
+		<div class="container">
+			<div class="az-content-body">
+				<div class="row row-sm mg-b-20">
+					<div class="col-lg-12"></div>
+				</div>
+				<h:form id="liste">
+					<rich:panel header="GESTION DES TYDE DE DEMANDE DE SERVICE"
+						styleclass="panel panel-success">
+						<div class="row row-sm mg-b-20">
+							<div class="col-lg-12">
+								<div class="row row-sm">
+
+									<div class="table-responsive">
+
+										<table class="table mg-b-0">
+
+											<tbody>
+												<tr>
+													<td>Libelle</td>
+													<td><h:inputText
+															value="#{typeDemandeService.typeDemande.libelle}"
+															class="form-control" styleClass="grey" /></td>
+												</tr>
+
+											</tbody>
+
+										</table>
+
+										<a:commandLink styleClass="btn btn-danger" value=""
+											action="#{typeDemandeService.annulerAjout()}"
+											reRender="liste" status="waitStatus">
+																		
+																		ANNULER			
+																				</a:commandLink>
+										<rich:spacer width="10px;"></rich:spacer>
+
+										<a:commandLink styleClass="btn btn-success" value=""
+											action="#{typeDemandeService.ajouterTypeDemande()}"
+											reRender="liste" status="waitStatus">
+																		
+																		VALIDER			
+																				</a:commandLink>
+
+									</div>
+								</div>
+
+
+
+
+								<rich:dataTable value="#{typeDemandeService.listeTypeDemande}"
+									var="type" id="lstdemande" style="width:100%;" rows="10"
+									rowClasses="row1,row2">
+									<f:facet name="header">
+										<rich:columnGroup>
+
+											<rich:column>
+												<h:outputLabel value="Type Demande"
+													style="color:white;font-size:12px;font-family: Arial;text-align:center;" />
+											</rich:column>
+
+
+											<rich:column>
+												<h:outputLabel value="Action"
+													style="color:white;font-size:12px;font-family: Arial;text-align:center;" />
+											</rich:column>
+
+
+										</rich:columnGroup>
+									</f:facet>
+
+
+									<rich:column filterBy="#{type.libelle}" filterEvent="onkeyup">
+										<h:outputText value="#{type.libelle}" styleClass="grey" />
+									</rich:column>
+
+
+									<rich:column>
+
+										<a:commandLink value="" status="waitStatus"
+											action="#{typeDemandeService.versmodifierTypeDemande(type)}"
+											onclick="if (!confirm('Voulez-vous vraiment modifier cette ligne  ?')) return false"
+											reRender="liste" title="Modifier">
+											<s:graphicImage fileName="edit.png" style="border:0px;"
+												value="/picto/edit.png" width="16" height="16" alt="" />
+
+										</a:commandLink>
+										<rich:spacer widht="50px"></rich:spacer>
+
+									</rich:column>
+								</rich:dataTable>
+								<rich:datascroller status="waitStatus" stepControls="auto"
+									style="width:100%" for="lstdemande"
+									rendered="#{not empty typeDemandeService.listeTypeDemande}" />
+
+
+							</div>
+						</div>
+
+					</rich:panel>
+
+				</h:form>
+				<!-- row -->
+
+			</div>
+
+
+		</div>
+	</div>
+	<!-- az-content -->
+
+	<div class="az-footer ht-20">
+		<div class="container ht-100p pd-t-0-f">
+			<span
+				class="text-muted d-block text-center text-sm-left d-sm-inline-block">Copyright
+				© GEDE 2020</span> <span
+				class="float-none float-sm-right d-block mt-1 mt-sm-0 text-center">
+				<a href="#" target="_blank">Une gestion transparente et sûre de
+					l'eau</a>
+			</span>
+		</div>
+		<!-- container -->
+	</div>
+	<!-- az-footer -->
+
+
+
+
+</body>
+</html>

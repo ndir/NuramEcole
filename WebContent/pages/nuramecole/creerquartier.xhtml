@@ -1,0 +1,670 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:a="https://ajax4jsf.dev.java.net/ajax"
+	xmlns:rich="http://richfaces.ajax4jsf.org/rich"
+	xmlns:s="http://jboss.com/products/seam/taglib"
+	xmlns:t="http://myfaces.apache.org/tomahawk">
+<head>
+<!-- Global site tag (gtag.js) - Google Analytics -->
+
+<script>
+	window.dataLayer = window.dataLayer || [];
+	function gtag() {
+		dataLayer.push(arguments);
+	}
+	gtag('js', new Date());
+
+	gtag('config', 'UA-90680653-2');
+</script>
+
+<!-- Required meta tags -->
+<meta charset="utf-8"></meta>
+<meta name="viewport"
+	content="width=device-width, initial-scale=1, shrink-to-fit=no"></meta>
+
+
+<!-- Meta -->
+<meta name="description"
+	content="Responsive Bootstrap 4 Dashboard Template"></meta>
+<meta name="author" content="BootstrapDash"></meta>
+
+<title>GEDE</title>
+
+<!-- vendor css -->
+<link href="lib/fontawesome-free/css/all.min.css" rel="stylesheet"></link>
+<link href="lib/ionicons/css/ionicons.min.css" rel="stylesheet"></link>
+<link href="lib/typicons.font/typicons.css" rel="stylesheet"></link>
+<link href="lib/flag-icon-css/css/flag-icon.min.css" rel="stylesheet"></link>
+
+<!-- azia CSS -->
+<link rel="stylesheet" href="css/azia.css"></link>
+
+</head>
+<body>
+
+	<div class="az-header">
+		<div class="container">
+
+			<div class="az-header-center"></div>
+
+			<ui:include src="/template/include/header2.xhtml" />
+			<ui:insert name="impression">
+				<rich:modalPanel id="modalPdf" autosized="false" width="980"
+					height="620" moveable="true" resizeable="true">
+
+					<f:facet name="controls">
+						<a onclick="Richfaces.hideModalPanel('modalPdf');"
+							style="cursor: pointer" href="#">Fermer</a>
+					</f:facet>
+					<h:form id="frmPdf">
+						<a:mediaOutput element="object" id="id" cacheable="false"
+							session="true" createContent="#{fileUploadService.paintPdf}"
+							type="application/pdf" mimeType="application/pdf"
+							style="width:90%; height:600px;" value="#{filePrintService.id}" />
+
+					</h:form>
+				</rich:modalPanel>
+			</ui:insert>
+
+		</div>
+	</div>
+	<a:status id="waitStatusHaut" forceId="true"
+		onstart="javascript:Richfaces.showModalPanel('waitModalPanelHaut');"
+		onstop="javascript:Richfaces.hideModalPanel('waitModalPanelHaut');" />
+	<a:status id="waitStatus" forceId="true"
+		onstart="javascript:Richfaces.showModalPanel('waitModalPanel');"
+		onstop="javascript:Richfaces.hideModalPanel('waitModalPanel');" />
+	<rich:modalPanel id="waitModalPanel" autosized="false" width="500"
+		height="100" styleClass="popupAttente" moveable="false"
+		resizeable="false">
+		<div style="text-align: center; height: 40px;">
+			<img src="../../picto/loading.gif" alt="" width="32" height="32" />
+		</div>
+		<span> <h:outputText
+				value="#{msgBundle['label.traitementencours']}" />
+		</span>
+	</rich:modalPanel>
+
+	<div class="az-content az-content-dashboard">
+		<div class="container">
+			<div class="az-content-body">
+				<div class="row row-sm mg-b-20">
+					<div class="col-lg-12"></div>
+				</div>
+				<h:form id="liste">
+					<div class="row row-sm mg-b-20">
+
+						<div class="col-lg-12">
+							<a:commandLink value="" status="waitStatus"
+								action="#{quartierService.versQuartier}" reRender="formmat"
+								title="Retour accueil">
+								<s:graphicImage fileName="precedent.png" style="border:0px;"
+									value="/picto/precedent.png" width="25" height="16" alt="" />
+
+							</a:commandLink>
+							<rich:panel header="ESPACE QUARTIER"
+								styleclass="panel panel-success">
+
+
+
+
+								<a:commandLink styleClass="btn btn-success" value=""
+									oncomplete="javascript:Richfaces.showModalPanel('sim',{width:400, height:300})"
+									reRender="form" status="waitStatus"
+									action="#{quartierService.versintQuartier}"
+									rendered="#{droitsService.estAutorise('Quartier')}">
+																		
+																		AJOUTER QUATIER	
+																		
+									</a:commandLink>
+
+
+								<rich:spacer width="2%"></rich:spacer>
+								<h:outputText value="#{quartierService.nbClient}"
+									styleClass="grey1" style="color:red;" />
+								<rich:spacer width="1%"></rich:spacer>
+								<a:commandLink value="" status="waitStatus"
+									action="#{quartierService.infoClients()}"
+									oncomplete="javascript:Richfaces.showModalPanel('info',{width:700, height:350})"
+									reRender="info" title="Détails"
+									rendered="#{droitsService.estAutorise('Imprimer liste client')}">
+									<s:graphicImage fileName="info.png" style="border:0px;"
+										value="/picto/info.png" width="16" height="16" alt="" />
+
+								</a:commandLink>
+								<rich:spacer width="2%"></rich:spacer>
+								<a:commandLink styleClass="btn btn-success" value=""
+									action="#{quartierService.imprimerAllClient()}"
+									oncomplete="#{quartierService.showModal}" reRender="form"
+									status="waitStatus"
+									rendered="#{droitsService.estAutorise('Imprimer clients')}">
+																		
+																		IMPRIMER LISTE CLIENT		
+																				</a:commandLink>
+
+
+
+								<rich:dataTable value="#{quartierService.listeQuartier}"
+									var="quartier" id="lstdemande" style="width:100%;" rows="10"
+									rowClasses="row1,row2">
+									<f:facet name="header">
+										<rich:columnGroup>
+
+											<rich:column>
+												<h:outputLabel value="Quartier"
+													style="color:white;font-size:14px;fontWeight:bold;font-family: Arial;text-align:center;" />
+											</rich:column>
+
+											<rich:column style="width:5%;">
+												<h:outputLabel value="Nombre de client"
+													style="color:white;font-size:14px;fontWeight:bold;font-family: Arial;text-align:center;" />
+											</rich:column>
+
+											<rich:column style="width:10%;">
+												<h:outputLabel value="Action"
+													style="color:white;font-size:14px;fontWeight:bold;font-family: Arial;text-align:center;" />
+											</rich:column>
+
+
+											<rich:column style="width:5%;">
+												<h:outputLabel value="Fiche Relévé"
+													style="color:white;font-size:14px;fontWeight:bold;font-family: Arial;text-align:center;" />
+											</rich:column>
+
+
+											<rich:column style="width:5%;">
+												<h:outputLabel value="Impayé(s)"
+													style="color:white;font-size:14px;fontWeight:bold;font-family: Arial;text-align:center;" />
+											</rich:column>
+
+
+										</rich:columnGroup>
+									</f:facet>
+
+
+									<rich:column filterBy="#{quartier.nom}" filterEvent="onkeyup">
+										<h:outputText value="#{quartier.nom}" styleClass="grey1" />
+									</rich:column>
+
+									<rich:column>
+										<h:outputText
+											value="#{quartierService.nbClientQuartier(quartier)}"
+											styleClass="grey1" />
+									</rich:column>
+
+									<rich:column style="width:10%;">
+
+										<a:commandLink value="" status="waitStatus"
+											action="#{quartierService.versDetailQuartier(quartier)}"
+											title="Voir Détail"
+											rendered="#{droitsService.estAutorise('details quartier')}">
+											<s:graphicImage fileName="find.png" style="border:0px;"
+												value="/picto/find.png" width="20" height="20" alt="" />
+
+										</a:commandLink>
+
+										<a:commandLink value="" status="waitStatus"
+											rendered="#{droitsService.estAutorise('Modifier quartier')}"
+											action="#{quartierService.versModifierQuartier(quartier)}"
+											onclick="if (!confirm('Voulez-vous vraiment modifier le quartier  ?')) return false"
+											oncomplete="javascript:Richfaces.showModalPanel('sim',{width:400, height:300})"
+											reRender="form" title="Modifier">
+											<s:graphicImage fileName="edit.png" style="border:0px;"
+												value="/picto/edit.png" width="16" height="16" alt="" />
+
+										</a:commandLink>
+
+										<a:commandLink value="" status="waitStatus"
+											action="#{quartierService.imprimerListeClient(quartier,'L')}"
+											oncomplete="#{quartierService.showModal}" reRender="formmat"
+											title="Imprimer Liste clients "
+											rendered="#{droitsService.estAutorise('Imprimer liste client')}">
+											<s:graphicImage fileName="printer.png" style="border:0px;"
+												value="/picto/printer.png" width="16" height="16" alt="" />
+
+										</a:commandLink>
+
+
+
+
+										<a:commandLink value="" status="waitStatus"
+											action="#{quartierService.versCreerClient(quartier)}"
+											oncomplete="javascript:Richfaces.showModalPanel('createclient',{width:450, height:600})"
+											reRender="createclient,formcl" title="Créer Client"
+											rendered="#{droitsService.estAutorise('creer client')}">
+											<s:graphicImage fileName="user_green.png" style="border:0px;"
+												value="/picto/user_green.png" />
+
+										</a:commandLink>
+
+									</rich:column>
+
+
+
+									<rich:column style="width:5%;">
+
+
+
+										<a:commandLink value="" status="waitStatus"
+											action="#{quartierService.versImprimeListe(quartier)}"
+											oncomplete="javascript:Richfaces.showModalPanel('dateIndex',{width:300, height:300})"
+											reRender="formeleve,fdate"
+											title="Imprimer fiche relevé (EXCEL)"
+											rendered="#{droitsService.estAutorise('Imprimer fiche releve')}">
+											<s:graphicImage fileName="excel.png"
+												style="width:16px;height:16px;" value="/images/excel.png" />
+
+										</a:commandLink>
+
+										<rich:spacer width="10px;" />
+										<a:commandLink value="" status="waitStatus"
+											action="#{quartierService.imprimerListeClient(quartier,'P')}"
+											title="Imprimer fiche relevé (PDF)"
+											oncomplete="#{quartierService.showModal}"
+											rendered="#{droitsService.estAutorise('Imprimer fiche releve')}">
+											<s:graphicImage fileName="pdf.png"
+												style="width:16px;height:16px;" value="/images/pdf.png" />
+
+										</a:commandLink>
+
+									</rich:column>
+
+
+									<rich:column style="width:5%;">
+
+										<a:commandLink value="" status="waitStatus"
+											action="#{quartierService.versSuivieImpaye(quartier)}"
+											reRender="formcl" title="Suivi Impayé(s)"
+											rendered="#{droitsService.estAutorise('Impayé(s)')}">
+											<s:graphicImage fileName="imp.png"
+												style="width:16px;height:16px;" value="/images/imp.PNG" />
+
+										</a:commandLink>
+
+									</rich:column>
+
+								</rich:dataTable>
+								<rich:datascroller status="waitStatus" stepControls="auto"
+									style="width:100%" for="lstdemande"
+									rendered="#{not empty quartierService.listeQuartier}" />
+
+							</rich:panel>
+
+						</div>
+					</div>
+
+				</h:form>
+				<rich:modalPanel id="sim"
+					style="background:url('../img2/fond.jpg') repeat-x scroll 0 0 #FFF;height:210; width:400"
+					moveable="true" styleClass="popupAttente">
+					<f:facet name="controls">
+
+						<a:commandLink value="" status="waitStatus" title="Fermer "
+							onclick="javascript:Richfaces.hideModalPanel('sim')">
+							<s:graphicImage fileName="cross.png" style="border:0px;"
+								value="/picto/cross.png" width="16" height="16" alt="" />
+						</a:commandLink>
+					</f:facet>
+					<f:facet name="header">
+			AJOUTER / MODIFIER QUARTIER
+			</f:facet>
+					<rich:spacer height="10px" />
+					<h:form class="note-form" id="form">
+
+
+						<div class="row row-sm mg-b-20">
+							<div class="col-lg-12">
+								<div class="row row-sm">
+
+									<div class="table-responsive">
+
+										<table class="table mg-b-0">
+											<tbody>
+
+												<tr>
+													<td><strong><h:outputLabel value="Nom"
+																styleClass="grey1" /></strong></td>
+													<td><h:inputText
+															value="#{quartierService.quartier.nom}"
+															class="form-control" /></td>
+												</tr>
+
+											</tbody>
+										</table>
+
+
+										<p align="center">
+
+											<a:commandLink styleClass="btn btn-success" value=""
+												oncomplete="javascript:Richfaces.hideModalPanel('sim')"
+												action="#{quartierService.ajouterQuartier()}"
+												reRender="liste" status="waitStatus">
+										VALIDER		
+									</a:commandLink>
+
+										</p>
+
+									</div>
+								</div>
+							</div>
+						</div>
+
+
+
+					</h:form>
+				</rich:modalPanel>
+
+
+				<rich:modalPanel id="createclient"
+					style="background:url('../img2/fond.jpg') repeat-x scroll 0 0 #FFF;height:210; width:400"
+					moveable="true" styleClass="popupAttente">
+					<f:facet name="controls">
+
+						<a:commandLink value="" status="waitStatus" title="Fermer "
+							onclick="javascript:Richfaces.hideModalPanel('createclient')">
+							<s:graphicImage fileName="cross.png" style="border:0px;"
+								value="/picto/cross.png" width="16" height="16" alt="" />
+						</a:commandLink>
+					</f:facet>
+					<f:facet name="header">
+			 CREATION CLIENT DANS LE QUARTIER #{quartierService.quartier.nom}
+			</f:facet>
+					<rich:spacer height="10px" />
+					<h:form class="note-form" id="formcl">
+
+
+						<div class="row row-sm mg-b-20">
+							<div class="col-lg-12">
+								<div class="row row-sm">
+
+									<div class="table-responsive">
+
+										<table class="table mg-b-0">
+											<tbody>
+												<tr>
+													<td><h:outputLabel styleClass="grey1"
+															value="Type Usager" /> <h:outputText
+															style="color:red;font-size: large;font-weight: bold;"
+															value=" *" /></td>
+													<td><h:selectOneMenu id="idTypeUsage" required="true"
+															value="#{quartierService.client.typeUsage}"
+															converter="#{typeUsageConverter}"
+															styleClass="form-control">
+															<s:selectItems value="#{quartierService.listeTypeUsage}"
+																var="station" label="#{station.nom}"
+																noSelectionLabel="--- Selectionnez ---">
+															</s:selectItems>
+
+														</h:selectOneMenu></td>
+												</tr>
+												<tr>
+													<td><h:outputLabel styleClass="grey1" value="Taux" />
+														<h:outputText
+															style="color:red;font-size: large;font-weight: bold;"
+															value=" *" /></td>
+													<td><h:selectOneMenu styleClass="form-control"
+															value="#{quartierService.client.taux}" required="true">
+															<f:selectItem itemValue="0.0" itemLabel="0" />
+															<f:selectItem itemValue="2.5" itemLabel="2.5" />
+														</h:selectOneMenu></td>
+												</tr>
+
+												<tr>
+													<td><h:outputLabel styleClass="grey1" value="Numéro" />
+														<h:outputText
+															style="color:red;font-size: large;font-weight: bold;"
+															value=" *" /></td>
+													<td><h:inputText
+															value="#{quartierService.client.numClient}"
+															required="true" class="form-control" /></td>
+
+												</tr>
+												<tr>
+													<td><h:outputLabel styleClass="grey1" value="Nom" />
+														<h:outputText
+															style="color:red;font-size: large;font-weight: bold;"
+															value=" *" /></td>
+													<td><h:inputText value="#{quartierService.client.nom}"
+															required="true" class="form-control" /></td>
+												</tr>
+
+												<tr>
+													<td><h:outputLabel value="Prénom" styleClass="grey1" /></td>
+													<td><h:inputText
+															value="#{quartierService.client.prenom}" required="false"
+															class="form-control" /></td>
+												</tr>
+												<tr>
+													<td><h:outputLabel value="Numéro CNI"
+															styleClass="grey1" /></td>
+													<td><h:inputText
+															value="#{quartierService.client.numCi}"
+															class="form-control" /></td>
+
+												</tr>
+
+												<tr>
+
+													<td><h:outputLabel styleClass="grey1"
+															value="Téléphone" /></td>
+													<td><h:inputText
+															value="#{quartierService.client.telephone}"
+															class="form-control" /></td>
+
+												</tr>
+												<tr>
+
+													<td><h:outputLabel styleClass="grey1" value="Adresse" /></td>
+													<td><h:inputTextarea rows="2" cols="30"
+															value="#{quartierService.client.adresse}"
+															class="form-control" /></td>
+
+												</tr>
+
+
+
+												<tr>
+													<td><h:outputLabel styleClass="grey1"
+															value="Numéro Compteur" /></td>
+													<td><h:inputText
+															value="#{quartierService.client.numComp}"
+															class="form-control" /></td>
+												</tr>
+												<tr>
+
+													<td><h:outputLabel styleClass="grey1"
+															value="Date de création" /></td>
+													<td><rich:calendar enableManualInput="true"
+															validatorMessage="X" maxlength="10"
+															value="#{quartierService.client.date}" locale="fr"
+															popup="#{true}" style="width:100px"
+															datePattern="dd/MM/yyyy" required="false"
+															requiredMessage="" cellWidth="1px" /></td>
+												</tr>
+
+												<tr>
+													<td><h:outputLabel styleClass="grey1" value="Voisin" /></td>
+													<td><h:selectOneMenu id="idVoisin"
+															value="#{quartierService.client.voisin}"
+															converter="#{clientConverter}" styleClass="form-control">
+															<s:selectItems value="#{quartierService.listeClient}"
+																var="voisin"
+																label="#{voisin.numClient}  #{voisin.prenom} #{voisin.nom}"
+																noSelectionLabel="--- Selectionnez ---">
+															</s:selectItems>
+
+														</h:selectOneMenu></td>
+
+
+
+												</tr>
+
+											</tbody>
+										</table>
+
+
+										<p align="center">
+
+
+											<a:commandLink styleClass="btn btn-danger" value=""
+												onclik="javascript:Richfaces.hideModalPanel('createclient',{width:1300, height:500})"
+												action="#{quartierService.annulerAjoutClient()}"
+												reRender="form,liste" status="waitStatus">
+																		
+																		Annuler			
+																				</a:commandLink>
+											<rich:spacer width="10px;"></rich:spacer>
+
+											<a:commandLink styleClass="btn btn-success" value=""
+												action="#{quartierService.ajouterClient()}"
+												status="waitStatus" reRender="form,liste,formcl">
+																		
+																		Valider			
+																				</a:commandLink>
+
+										</p>
+
+									</div>
+								</div>
+							</div>
+						</div>
+
+
+
+					</h:form>
+				</rich:modalPanel>
+
+				<rich:modalPanel id="test"
+					style="background:url('../img2/fond.jpg') repeat-x scroll 0 0 #FFF;height:210; width:400"
+					moveable="true" styleClass="popupAttente">
+					<f:facet name="controls">
+
+						<a:commandLink value="" status="waitStatus" title="Fermer "
+							onclick="javascript:Richfaces.hideModalPanel('test')">
+							<s:graphicImage fileName="cross.png" style="border:0px;"
+								value="/picto/cross.png" width="16" height="16" alt="" />
+						</a:commandLink>
+					</f:facet>
+					<f:facet name="header">
+			TELECHARGER FICHE RELEVE
+			</f:facet>
+					<rich:spacer height="10px" />
+					<h:form class="note-form" id="formtest">
+
+
+						<div class="row row-sm mg-b-20">
+							<div class="col-lg-12">
+								<div class="row row-sm">
+
+									<div class="table-responsive">
+
+										<table class="table mg-b-0">
+											<tbody>
+
+												<tr>
+													<td><strong> <a href="releve"
+															download="releve">Télecharger le fichier</a>
+															<h5>( Une fois téléchager renommer le fichier releve
+																en releve.csv )</h5></strong></td>
+												</tr>
+
+											</tbody>
+										</table>
+
+
+
+
+									</div>
+								</div>
+							</div>
+						</div>
+
+
+
+					</h:form>
+				</rich:modalPanel>
+
+				<rich:modalPanel id="dateIndex"
+					style="background:url('../img2/fond.jpg') repeat-x scroll 0 0 #FFF;height:500; width:400"
+					moveable="true" styleClass="popupAttente">
+					<f:facet name="controls">
+
+						<a:commandLink value="" status="waitStatus" title="Fermer "
+							onclick="javascript:Richfaces.hideModalPanel('dateIndex')">
+							<s:graphicImage fileName="cross.png" style="border:0px;"
+								value="/picto/cross.png" width="16" height="16" alt="" />
+						</a:commandLink>
+					</f:facet>
+					<f:facet name="header">
+			DATE INDEX
+			</f:facet>
+					<rich:spacer height="10px" />
+					<h:form class="note-form" id="fdate">
+						<div>
+
+
+							<table class="table mg-b-0">
+								<tbody>
+
+									<tr>
+
+										<td><strong style="color: red">Date Facturation</strong></td>
+										<td><rich:calendar
+												value="#{quartierService.dateLimtePaie}" required="true"
+												buttonIcon="/img2/calendrier.png" cellWidth="0px"
+												cellHeight="20px" datePattern="dd/MM/yyyy">
+											</rich:calendar></td>
+									</tr>
+								</tbody>
+							</table>
+
+							<p align="center">
+								<a:commandLink styleClass="btn btn-success" value=""
+									onclick="javascript:Richfaces.hideModalPanel('dateIndex')"
+									oncomplete="javascript:Richfaces.showModalPanel('test',{width:300, height:300})"
+									action="#{quartierService.versImprimeListeQuartier()}"
+									reRender="fdate,formeleve,formtest" status="waitStatus">
+																		
+																		Valider			
+																				</a:commandLink>
+
+							</p>
+
+						</div>
+
+
+
+
+					</h:form>
+				</rich:modalPanel>
+
+				<!-- row -->
+
+			</div>
+			<!-- az-content-body -->
+		</div>
+	</div>
+	<!-- az-content -->
+
+	<div class="az-footer ht-20">
+		<div class="container ht-100p pd-t-0-f">
+			<span
+				class="text-muted d-block text-center text-sm-left d-sm-inline-block">Copyright
+				© GEDE 2020</span> <span
+				class="float-none float-sm-right d-block mt-1 mt-sm-0 text-center">
+				<a href="https://www.bootstrapdash.com/bootstrap-admin-template/"
+				target="_blank">Une gestion transparente et sûre de l'eau</a>
+			</span>
+		</div>
+		<!-- container -->
+	</div>
+	<!-- az-footer -->
+
+
+
+
+</body>
+</html>

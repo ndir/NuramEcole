@@ -1,98 +1,68 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//FR" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<!--  V 0.1 : Maj : 09/11/2007 -->
-
-<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
 	xmlns:ui="http://java.sun.com/jsf/facelets"
 	xmlns:h="http://java.sun.com/jsf/html"
 	xmlns:f="http://java.sun.com/jsf/core"
-	xmlns:rich="http://richfaces.ajax4jsf.org/rich"
 	xmlns:a="https://ajax4jsf.dev.java.net/ajax"
-	xmlns:t="http://myfaces.apache.org/tomahawk"
+	xmlns:rich="http://richfaces.ajax4jsf.org/rich"
 	xmlns:s="http://jboss.com/products/seam/taglib"
-	xmlns:c="http://java.sun.com/jstl/core"
-	template="/template/template.xhtml">
-	<!-- Page d'accueil -->
+	xmlns:t="http://myfaces.apache.org/tomahawk">
+<head>
+<meta name="description"
+	content="Vali is a responsive and free admin theme built with Bootstrap 5, SASS and PUG.js. It's fully customizable and modular."></meta>
+<!-- Twitter meta-->
+<meta property="twitter:card" content="summary_large_image"></meta>
+<meta property="twitter:site" content="@pratikborsadiya"></meta>
+<meta property="twitter:creator" content="@pratikborsadiya"></meta>
+<!-- Open Graph Meta-->
+<meta property="og:type" content="website"></meta>
+<meta property="og:site_name" content="Vali Admin"></meta>
+<meta property="og:title" content="Vali - Free Bootstrap 5 admin theme"></meta>
 
+<meta property="og:description"
+	content="Vali is a responsive and free admin theme built with Bootstrap 5, SASS and PUG.js. It's fully customizable and modular."></meta>
+<title>Blank Page - Vali Admin</title>
+<meta charset="utf-8"></meta>
+<meta http-equiv="X-UA-Compatible" content="IE=edge"></meta>
+<meta name="viewport" content="width=device-width, initial-scale=1"></meta>
+<!-- Main CSS-->
+<link rel="stylesheet" type="text/css" href="css/main.css"></link>
 
+<!-- Font-icon css-->
 
+</head>
+<body class="app sidebar-mini">
+	<!-- Navbar-->
+	<header class="app-header">
+		<a class="app-header__logo" href="index.html">Vali</a>
+		<!-- Sidebar toggle button-->
+		<a class="app-sidebar__toggle" href="#" data-toggle="sidebar"
+			aria-label="Hide Sidebar"></a>
+		<!-- Navbar Right Menu-->
 
-
-	<ui:define name="title">GESTION SCOLAIRE</ui:define>
-	<ui:define name="body">
-		<h:form id="note">
-
-			<script>
-				jQuery.noConflict();
-			</script>
-
-			<div class="divtest" style="height: 100%;">
-				<div class="container" style="margin-left: 5%;">
-					<div class="row">
-						<div class="col-xs-12 col-md-4">
-							<div class="panel panel-success">
-								<div class="panel-heading" style="text-align: center;">
-									<h3 class="panel-title">NOTES D'INFORMATION </h3>
-								</div>
-								<div class="panel-body" style="height:480px;overflow: auto">  
-								  
-								</div>
-								
-							</div>
-						</div>
-						<div class="col-xs-6 col-md-8">
-							<div class="panel panel-success">
-								<div class="panel-heading" style="text-align: center;">
-									<h3 class="panel-title">GESTION SCOLAIRE</h3>
-								</div>
-								
-								
-								 <rich:panel header="">
-						        <div style="height:450px;overflow: auto">
-					  			 <table width="100%">
-					  			     <tr>
-						                  <td width="40%" valign="top" align="center"> 
-						                  
-						                  
-						                  <h:commandButton action="#{classeService.versClasse}"
-						                    image="/images/classes.png" value="Ajouter classe" alt="Ajouter classe" 
-											      style="width:200px ;height:200px" />
-												
-						                    </td>
-						                    <td width="40%" valign="top" align="center"> 
-						                    <h:commandButton action="#"
-						                    image="/images/saisinote.png" value="" alt="Saisir notes" 
-											      style="width:200px ;height:200px" />
-						                    </td>
-						             </tr>
-						             <tr>
-						                  <td width="40%" valign="top" align="center"> 
-						                    <h:commandButton action="#"
-						                    image="/images/ABSENCE.png" value="" alt="Absences" 
-											      style="width:200px ;height:200px" />
-						                    </td>
-						                    <td width="40%" valign="top" align="center"> 
-						                    <h:commandButton action="#{eleveService.versEleve}"
-						                    image="/images/eleve.png" value="Ajouter éléves" alt="Ajouter éléves" 
-											      style="width:200px ;height:200px" />
-						                    </td>
-						             </tr>
-						          </table>
-						         </div>
-						       </rich:panel>
-							</div>
-						</div>
-					</div>
+	</header>
+	<!-- Sidebar menu-->
+	<div class="app-sidebar__overlay" data-toggle="sidebar"></div>
+	
+	<main class="app-content">
+		<div class="app-title">
+			<div><ui:include src="/template/include/header2.xhtml" /></div>
+			
+		</div>
+		<div class="row">
+			<div class="col-md-12">
+				<div class="tile">
+					<div class="tile-body">Create a beautiful dashboard</div>
 				</div>
 			</div>
+		</div>
+	</main>
+	<!-- Essential javascripts for application to work-->
+	<script src="js/jquery-3.7.0.min.js"></script>
+	<script src="js/bootstrap.min.js"></script>
+	<script src="js/main.js"></script>
+	<!-- Page specific javascripts-->
+	<!-- Google analytics script-->
 
-
-		</h:form>
-
-
-
-
-
-
-
-	</ui:define>
-</ui:composition>
+</body>
+</html>

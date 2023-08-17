@@ -19,6 +19,7 @@ import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Role;
 import org.jboss.seam.annotations.Scope;
 
+import com.ecole.entity.AnneeScolaire;
 import com.ecole.entity.Institution;
 
 
@@ -78,9 +79,11 @@ public class Utilisateur implements Serializable {
 	private boolean actif;
 	private boolean initPass;
 	
-	private Institution institution;
+
 	
 	private String telephone;
+	
+	
 	
 	/**
 	 *  insertion souané
@@ -177,11 +180,6 @@ public class Utilisateur implements Serializable {
 	}
 
 
-	
-	
-	
-
-	
 
 
 	/**
@@ -306,15 +304,7 @@ public class Utilisateur implements Serializable {
 		this.initPass = initPass;
 	}
 
-	@ManyToOne(fetch=FetchType.LAZY)
-	@JoinColumn(name="idecole")
-	public Institution getInstitution() {
-		return institution;
-	}
-
-	public void setInstitution(Institution institution) {
-		this.institution = institution;
-	}
+	
 
 	public String getTelephone() {
 		return telephone;
@@ -323,8 +313,6 @@ public class Utilisateur implements Serializable {
 	public void setTelephone(String telephone) {
 		this.telephone = telephone;
 	}
-
-	
 
 	
 }

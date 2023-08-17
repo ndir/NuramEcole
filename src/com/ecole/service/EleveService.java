@@ -19,7 +19,9 @@ import com.ecole.entity.Absence;
 import com.ecole.entity.AnneeScolaire;
 import com.ecole.entity.Classe;
 import com.ecole.entity.Eleve;
+import com.ecole.entity.Inscription;
 import com.ecole.entity.Niveau;
+import com.ecole.entity.ParamInscription;
 import com.rhospi.commons.ChakaUtils;
 
 /**
@@ -53,9 +55,14 @@ public class EleveService implements Serializable {
 	private List<Niveau> listeNiveau = new ArrayList<Niveau>();
 	private Absence absence = new Absence();
 
-	private List<Eleve> listeEleveById =new ArrayList<Eleve>() ;
+	private List<Eleve> listeEleveById = new ArrayList<Eleve>();
 
-	@SuppressWarnings("unchecked") 
+	private Inscription inscription = new Inscription();
+
+	@In
+	private AnneeScolaire annee;
+
+	@SuppressWarnings("unchecked")
 	public String versEleve() {
 		this.setEleve(new Eleve());
 		List<AnneeScolaire> listeAnnee = dataSource.createQuery("From AnneeScolaire order by idannee desc ").list();
@@ -64,6 +71,7 @@ public class EleveService implements Serializable {
 		}
 		listeNiveau = new ArrayList<Niveau>();
 		listeNiveau = dataSource.createQuery("From Niveau ").list();
+
 		return "/pages/ecole/creereleve.xhtml";
 	}
 
@@ -81,18 +89,18 @@ public class EleveService implements Serializable {
 	@SuppressWarnings("unchecked")
 	public void rechercherEleves() {
 
-		listeEleves = new ArrayList<Eleve>();
-		listeEleves = dataSource
-				.createQuery("From Eleve e inner join fetch e.classe c where c=:pc and e.annee_ins=:pan ")
-				.setParameter("pc", eleve.getClasse()).setParameter("pan", anneeScolaire.getAnneeScolaire()).list();
-		if (listeEleves.size() == 0) {
-			FacesMessages.instance().addToControlFromResourceBundle("infoGenerique", "Pas d'éléve pour la classe "
-					+ eleve.getClasse().getLibelle() + " pour l'année scolaire " + anneeScolaire.getAnneeScolaire());
-		} else {
-			FacesMessages.instance().addToControlFromResourceBundle("infoGenerique",
-					"Le nombre d'éleve de la classe " + eleve.getClasse().getLibelle() + " pour l'année scolaire "
-							+ anneeScolaire.getAnneeScolaire() + " est de " + listeEleves.size());
-		}
+//		listeEleves = new ArrayList<Eleve>();
+//		listeEleves = dataSource
+//				.createQuery("From Eleve e inner join fetch e.classe c where c=:pc and e.annee_ins=:pan ")
+//				.setParameter("pc", eleve.getClasse()).setParameter("pan", anneeScolaire.getAnneeScolaire()).list();
+//		if (listeEleves.size() == 0) {
+//			FacesMessages.instance().addToControlFromResourceBundle("infoGenerique", "Pas d'éléve pour la classe "
+//					+ eleve.getClasse().getLibelle() + " pour l'année scolaire " + anneeScolaire.getAnneeScolaire());
+//		} else {
+//			FacesMessages.instance().addToControlFromResourceBundle("infoGenerique",
+//					"Le nombre d'éleve de la classe " + eleve.getClasse().getLibelle() + " pour l'année scolaire "
+//							+ anneeScolaire.getAnneeScolaire() + " est de " + listeEleves.size());
+//		}
 	}
 
 	@SuppressWarnings("unchecked")
@@ -109,6 +117,22 @@ public class EleveService implements Serializable {
 	}
 
 	public void ajouterEleve() {
+
+		int year = ChakaUtils.getCurrentYear(ChakaUtils.sysDate());
+		int year1 = ChakaUtils.getCurrentYear(eleve.getDateNaissance());
+		eleve.setAge(year - year1);
+		// eleve.setAnnee_ins(anneeScolaire.getAnneeScolaire());
+		if (eleve.getIdeleve() == null) {
+			dataSource.save(eleve);
+		} else {
+			dataSource.update(eleve);
+		}
+
+		this.setEleve(new Eleve());
+		FacesMessages.instance().addToControlFromResourceBundle("infoGenerique", "Evaluation ajoutée avec succés");
+	}
+
+	public void ajouterInscription() {
 		if (this.eleve.getNom().isEmpty() || this.eleve.getPrenom().isEmpty()) {
 			FacesMessages.instance().addToControlFromResourceBundle("erreurGenerique",
 					"Veuillez renseigner le nom et le prénom de l'éléve");
@@ -120,33 +144,52 @@ public class EleveService implements Serializable {
 					"Veuillez renseigner la date de naissance");
 			return;
 		}
-		
 
-		int year  = ChakaUtils.getCurrentYear(ChakaUtils.sysDate());
-		int year1 = ChakaUtils.getCurrentYear(eleve.getDateNaissance());
-        eleve.setAge(year - year1 );
-		eleve.setAnnee_ins(anneeScolaire.getAnneeScolaire());
-		if (eleve.getIdeleve() == null) {
-			dataSource.save(eleve);
-		} else {
-			dataSource.update(eleve);
+		if (this.classe == null) {
+			FacesMessages.instance().addToControlFromResourceBundle("erreurGenerique", "Veuillez chosir une classe");
+			return;
 		}
 
-		this.setEleve(new Eleve());
-		FacesMessages.instance().addToControlFromResourceBundle("infoGenerique", "Evaluation ajoutée avec succés");
+		
+		//Classe cl = (Classe) dataSource.get(Classe.class, classe.getIdclasse());
+		
+		ParamInscription paramins = (ParamInscription) dataSource
+				.createQuery("From ParamInscription p inner join fetch p.annee inner join fetch p.classe"
+						+ " where p.annee =:pannee and p.classe =:pclasse")
+				.setParameter("pannee", annee).setParameter("pclasse", classe).uniqueResult();
+		if (paramins != null) {
+			int year = ChakaUtils.getCurrentYear(ChakaUtils.sysDate());
+			int year1 = ChakaUtils.getCurrentYear(eleve.getDateNaissance());
+			eleve.setAge(year - year1);
+			dataSource.save(eleve);
+			inscription.setParamins(paramins);
+			inscription.setEleve(eleve);
+			dataSource.save(inscription);
+			this.setEleve(new Eleve());
+			this.setInscription(new Inscription());
+			FacesMessages.instance().addToControlFromResourceBundle("infoGenerique", "Evaluation ajoutée avec succés");
+		}
+	}
+
+	public AnneeScolaire getAnnee() {
+		return annee;
+	}
+
+	public void setAnnee(AnneeScolaire annee) {
+		this.annee = annee;
 	}
 
 	@SuppressWarnings("unchecked")
 	public void listeEleves(Classe classe) {
-		this.eleve.setClasse(classe);
+		// this.eleve.setClasse(classe);
 		listeEleves = new ArrayList<Eleve>();
 		listeEleves = dataSource.createQuery("From Eleve e inner join fetch e.classe c where c=:pc")
 				.setParameter("pc", classe).list();
 	}
 
 	@SuppressWarnings("unchecked")
-	public void getEleveById(Long id,Classe classe) {
-		this.eleve.setClasse(classe);
+	public void getEleveById(Long id, Classe classe) {
+		// this.eleve.setClasse(classe);
 		listeEleveById = new ArrayList<Eleve>();
 		listeEleves = dataSource.createQuery("From Eleve e inner join fetch e.classe c where c=:pc and d:pd")
 				.setParameter("pc", classe).setParameter("pd", id).list();
@@ -157,7 +200,7 @@ public class EleveService implements Serializable {
 	}
 
 	public void versCreerEleve(Classe classe) {
-		this.eleve.setClasse(classe);
+		// this.eleve.setClasse(classe);
 	}
 
 	public Eleve getEleve() {
@@ -230,6 +273,14 @@ public class EleveService implements Serializable {
 
 	public void setListeEleveById(List<Eleve> listeEleveById) {
 		this.listeEleveById = listeEleveById;
+	}
+
+	public Inscription getInscription() {
+		return inscription;
+	}
+
+	public void setInscription(Inscription inscription) {
+		this.inscription = inscription;
 	}
 
 }

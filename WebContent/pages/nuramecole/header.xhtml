@@ -1,0 +1,39 @@
+<div style="width: 100%;" xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:a="https://ajax4jsf.dev.java.net/ajax"
+	xmlns:s="http://jboss.com/products/seam/taglib"
+	xmlns:rich="http://richfaces.ajax4jsf.org/rich">
+	<ui:composition>
+		<h:form id="frmMenuPrincipalHeader">
+			<ul id="nav">
+				<li class="current"><a href="https://www.script-tutorials.com/">Home</a></li>
+				<li><a:commandLink id="m_3" value="Paremétrage">
+						<s:conversationPropagation propagation="none" />
+					</a:commandLink>
+					<ul>
+						<li><a:commandLink value="Entreprise" status="waitStatus"
+								action="#{produitService.versEntreprise}"
+								rendered="#{utilisateur.profile.libelle=='Admin'}">
+								<s:conversationPropagation propagation="none" />
+							</a:commandLink></li>
+						<li><a:commandLink value="Gérant" status="waitStatus"
+								action="#{userService.versGerant}"
+								rendered="#{utilisateur.profile.libelle=='Admin'}">
+								<s:conversationPropagation propagation="none" />
+							</a:commandLink></li>
+						<li><a:commandLink id="m_3_1" value="Généraux"
+								rendered="#{utilisateur.profile.libelle=='Gerant'}"
+								status="waitStatus" action="#{parametrageService.versParam1}">
+								<s:conversationPropagation propagation="none" />
+							</a:commandLink></li>
+					</ul></li>
+
+			</ul>
+		</h:form>
+	</ui:composition>
+</div>
+
+
+

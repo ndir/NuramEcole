@@ -1,4 +1,4 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml"
 	xmlns:ui="http://java.sun.com/jsf/facelets"
 	xmlns:h="http://java.sun.com/jsf/html"
@@ -8,66 +8,88 @@
 	xmlns:s="http://jboss.com/products/seam/taglib"
 	xmlns:t="http://myfaces.apache.org/tomahawk">
 <head>
+<meta charset="utf-8"></meta>
+<meta http-equiv="X-UA-Compatible" content="IE=edge"></meta>
+<meta name="viewport" content="width=device-width, initial-scale=1"></meta>
+<!-- Main CSS-->
+<link rel="stylesheet" type="text/css" href="css/main.css"></link>
+<!-- Font-icon css-->
 
-<meta http-equiv="Content-Type" content="text/html; charset=utf-8"></meta>
-<title>GSS->CONNEXION</title>
-
-
-<link href="css/style.css" rel="stylesheet" type="text/css" />
-<link rel="stylesheet" href="css/stylelog.css" />
-
-
-<script type="text/javascript"
-	src="http://ajax.googleapis.com/ajax/libs/jquery/1.2.6/jquery.min.js"></script>
-<script src="css/js/js/index.js"></script>
-
-<script type="text/javascript">
-	$(document).ready(function() {
-		$(".username").focus(function() {
-			$(".user-icon").css("left", "-48px");
-		});
-		$(".username").blur(function() {
-			$(".user-icon").css("left", "0px");
-		});
-
-		$(".password").focus(function() {
-			$(".pass-icon").css("left", "-48px");
-		});
-		$(".password").blur(function() {
-			$(".pass-icon").css("left", "0px");
-		});
-	});
-</script>
-
-
+<title>Login - Vali Admin</title>
 </head>
 <body>
-
-	<div class="wrapper">
-		<div class="container">
-
-			<br /> <br />
-			<br /><br />
-			<h:form class="form">
-
-				<h:inputText id="username" required="true" requiredMessage="X"
-					class="input username" onfocus="this.value=''"
-					value="#{identity.username}" />
-				<h:message for="username" style="color:white;" />
-				<h:inputSecret id="password" value="#{identity.password}"
-					required="true" requiredMessage="X" class="input password"
-					onfocus="this.value=''" />
-				<h:message for="password" style="color:white;" />
-
-				<input type="submit" name="submit" value="Se Connecter"> <h:commandButton
-						action="#{authenticator.login}" alt="" value="" rendered="false" />
-				</input>
-
-
-			</h:form>
+	<section class="material-half-bg">
+		<div class="cover"></div>
+	</section>
+	<section class="login-content">
+		<div class="logo">
+			<h1>Vali</h1>
 		</div>
+		<div class="login-box">
+			<h:form class="login-form" action="index.html">
+				<h3 class="login-head">
+					<i class="bi bi-person me-2"></i>SIGN IN
+				</h3>
+				<div class="mb-3">
+					<label class="form-label">USERNAME</label>
+					<h:inputText class="form-control" type="text" placeholder="Login"
+						value="#{identity.username}"></h:inputText>
+				</div>
+				<div class="mb-3">
+					<label class="form-label">PASSWORD</label>
+					<h:inputSecret class="form-control" value="#{identity.password}"
+						placeholder="Password"></h:inputSecret>
+				</div>
 
-	</div>
+				<div class="mb-3">
+					<label class="form-label">ANNEE</label>
+					<h:selectOneMenu class="form-control" required="true"
+						requiredMessage="X" value="#{authenticator.annee}"
+						converter="#{anneeConverter}" id="classe"
+						noSelectionLabel="--- Selectionnez ---">
 
+						<s:selectItems value="#{authenticator.listeAnnee}" var="type"
+							label="#{type.anneeScolaire}"
+							noSelectionLabel="--- Selectionnez ---" />
+
+					</h:selectOneMenu>
+
+				</div>
+
+				<div class="mb-3">
+					<div class="utility">
+						<div class="form-check">
+							<label class="form-check-label"> <input
+								class="form-check-input" type="checkbox"></input><span
+								class="label-text">Stay Signed in</span>
+							</label>
+						</div>
+						<p class="semibold-text mb-2">
+							<a href="#" data-toggle="flip">Forgot Password ?</a>
+						</p>
+					</div>
+				</div>
+				<div class="mb-3 btn-container d-grid">
+					<button class="btn btn-primary btn-block">
+						<h:commandButton action="#{authenticator.login}" alt="" value=""
+							rendered="false" />
+						<i class="bi bi-box-arrow-in-right me-2 fs-5"></i>SIGN IN
+					</button>
+				</div>
+			</h:form>
+
+		</div>
+	</section>
+	<!-- Essential javascripts for application to work-->
+	<script src="js/jquery-3.7.0.min.js"></script>
+	<script src="js/bootstrap.min.js"></script>
+	<script src="js/main.js"></script>
+	<script type="text/javascript">
+		// Login Page Flipbox control
+		$('.login-content [data-toggle="flip"]').click(function() {
+			$('.login-box').toggleClass('flipped');
+			return false;
+		});
+	</script>
 </body>
 </html>
