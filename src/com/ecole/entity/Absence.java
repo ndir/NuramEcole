@@ -1,5 +1,5 @@
 /**
- * 
+ * @author A605177
  */
 package com.ecole.entity;
 
