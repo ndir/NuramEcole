@@ -1,0 +1,220 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//FR" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!--  V 0.1 : Maj : 09/11/2007 -->
+
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:rich="http://richfaces.ajax4jsf.org/rich"
+	xmlns:a="https://ajax4jsf.dev.java.net/ajax"
+	xmlns:t="http://myfaces.apache.org/tomahawk"
+	xmlns:s="http://jboss.com/products/seam/taglib"
+	xmlns:c="http://java.sun.com/jstl/core"
+	template="/template/template.xhtml">
+	<!-- Page d'accueil -->
+
+	<ui:define name="title">GSS</ui:define>
+	<ui:define name="body">
+		<rich:spacer height="20px;"></rich:spacer>
+		<div class="divtest">
+
+
+			<div class="container" style="margin-left: 5%;">
+
+				<h:form id="liste">
+					<div class="row">
+						<div class="col-md-12">
+							<div class="panel panel-success">
+
+								<div class="panel-heading"></div>
+
+								<div class="panel-body">
+
+
+									<div class="form-group has-success">
+										<LEGEND>PAIEMENT DE LA MENSUALITE </LEGEND>
+									</div>
+									<FIELDSET>
+
+										<TABLE class="table">
+											<tr>
+												<td><h:outputLabel styleClass="grey" value="Niveau" /></td>
+												<td><h:selectOneMenu class="form-control"
+														value="#{recetteService.niveau}"
+														converter="#{niveauConverter}" id="cont"
+														noSelectionLabel="--- Selectionnez ---">
+
+														<s:selectItems value="#{recetteService.listeNiveau}"
+															var="type" label="#{type.libelle}"
+															noSelectionLabel="--- Selectionnez ---" />
+
+														<a:support event="onchange"
+															action="#{recetteService.chargerListeClasse()}"
+															ajaxSingle="true" reRender="classe" status="waitStatus"></a:support>
+													</h:selectOneMenu></td>
+
+												<td><h:outputLabel styleClass="grey" value="Classe" /></td>
+												<td><h:selectOneMenu class="form-control"
+														value="#{recetteService.classe}"
+														converter="#{classeConverter}" id="classe"
+														noSelectionLabel="--- Selectionnez ---">
+
+														<s:selectItems value="#{recetteService.listeClasse}"
+															var="type" label="#{type.libelle}"
+															noSelectionLabel="--- Selectionnez ---" />
+														<a:support event="onchange"
+															action="#{recetteService.chargerListeEleveClasse(recetteService.classe)}"
+															ajaxSingle="true" reRender="eleve" status="waitStatus"></a:support>
+
+													</h:selectOneMenu></td>
+												<td><h:outputLabel styleClass="grey" value="Eleve" /></td>
+												<td><h:selectOneMenu class="form-control"
+														value="#{recetteService.eleve}"
+														converter="#{eleveConverter}" id="eleve"
+														noSelectionLabel="--- Selectionnez ---">
+														<s:selectItems value="#{recetteService.listeEleve}"
+															var="el" label="#{el.prenom} #{el.nom} / De #{el.titeur}"
+															noSelectionLabel="--- Selectionnez ---" />
+														<a:support event="onchange"
+															action="#{recetteService.retreiveInfoIncription}"
+															ajaxSingle="true" reRender="liste" status="waitStatus"></a:support>
+
+													</h:selectOneMenu></td>
+
+											</tr>
+										</TABLE>
+									</FIELDSET>
+									<DIV id="idDivMEns" rendered="false">
+										<TABLE class="table">
+											<tr>
+												<td width="500">
+													<div class="panel-body" id="tbEleve">
+
+
+														<div class="form-group has-success"></div>
+														<table class="table">
+															<tr>
+
+																<td><h:outputLabel styleClass="grey"
+																		id="infosEleve"
+																		value="L'ELEVE :  #{recetteService.eleve.prenom} #{recetteService.eleve.nom} / De #{recetteService.eleve.titeur} en classe de #{recetteService.classe.libelle}" /></td>
+															</tr>
+															<tr>
+																<td><h:outputLabel styleClass="grey"
+																		value="MENSUALITE CLASSE : ">
+																		<h:outputText styleClass="grey" id="idInfosValMens"
+																			value="#{recetteService.inscription.paramins.mensualite}">
+																			<f:convertNumber pattern="#,##0" />
+																		</h:outputText>
+
+																	</h:outputLabel> <h:outputLabel styleClass="grey" value="  F CFA " /></td>
+															</tr>
+															<tr>
+																<td><h:outputLabel styleClass="grey"
+																		value="BENEFICIE DE REDUCTION DE : ">
+																		<h:outputText styleClass="grey" id="infosReduction"
+																			value="#{recetteService.inscription.reduction}">
+																			<f:convertNumber pattern="#,##0" />
+																		</h:outputText>
+																	</h:outputLabel> <h:outputLabel styleClass="grey" value="  F CFA " /></td>
+															</tr>
+															<tr>
+																<td><h:outputLabel styleClass="grey"
+																		value="RELIQUAT : ">
+																		<h:outputText styleClass="grey" id="infosReliquat"
+																			value="#{recetteService.inscription.reliquat}">
+																			<f:convertNumber pattern="#,##0" />
+																		</h:outputText>
+																	</h:outputLabel> <h:outputLabel styleClass="grey" value="  F CFA " /></td>
+															</tr>
+															<tr>
+																<td><h:outputLabel styleClass="grey"
+																		value="A PAYER : ">
+																		<h:inputText styleClass="grey" id="infosAPayer"
+																			value="#{recetteService.recetteEnCreation.montantPaye}" />
+
+																	</h:outputLabel> <h:outputLabel styleClass="grey" value="  F CFA " /></td>
+															</tr>
+															<TR>
+																<td align="center"><a:commandLink
+																		styleClass="btn btn-danger" value=""
+																		action="#{recetteService.annulerAjout()}"
+																		reRender="liste" status="waitStatus">
+																		
+																		Annuler			
+																				</a:commandLink> <rich:spacer width="10px;"></rich:spacer> <a:commandLink
+																		styleClass="btn btn-success" value=""
+																		action="#{recetteService.ajouterRecette()}"
+																		reRender="liste" status="waitStatus">
+																		
+																		Valider			
+																				</a:commandLink></td>
+															</TR>
+
+														</table>
+
+
+											</div>
+											</td>
+
+
+
+											<td />
+											<td><rich:dataTable value="#{noteService.eleves}"
+													var="mat" id="idTablistMesualite" style="width:100%;" rows="8"
+													rowClasses="row1,row2">
+													<f:facet name="header">
+														<rich:columnGroup>
+
+															<rich:column>
+																<h:outputLabel value="Nom"
+																	style="color:white;font-size:12px;font-family: Arial;text-align:center;" />
+															</rich:column>
+
+															<rich:column>
+																<h:outputLabel value="Prénom"
+																	style="color:white;font-size:12px;font-family: Arial;text-align:center;" />
+															</rich:column>
+
+															<rich:column>
+																<h:outputLabel value="Note"
+																	style="color:white;font-size:12px;font-family: Arial;text-align:center;" />
+															</rich:column>
+
+														</rich:columnGroup>
+													</f:facet>
+
+													<rich:column filterBy="#{mat.nom}" filterEvent="onkeyup">
+														<h:outputLabel value="#{mat.nom}"></h:outputLabel>
+													</rich:column>
+													<rich:column filterBy="#{mat.prenom}" filterEvent="onkeyup">
+														<h:outputLabel value="#{mat.prenom}"></h:outputLabel>
+													</rich:column>
+													<rich:column>
+														<h:inputText value="#{noteService.note.note}"
+															class="form-control" width="5px"></h:inputText>
+													</rich:column>
+
+												</rich:dataTable> <rich:datascroller status="waitStatus" stepControls="auto"
+													style="width:100%" for="idTablistMesualite" ajaxSingle="false"
+													rendered="#{not empty noteService.listeEleves}" /></td>
+											</tr>
+										</TABLE>
+									</DIV>
+								</div>
+
+							</div>
+						</div>
+					</div>
+
+
+				</h:form>
+			</div>
+
+
+
+		</div>
+
+
+	</ui:define>
+</ui:composition>

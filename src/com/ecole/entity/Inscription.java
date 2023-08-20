@@ -5,6 +5,7 @@ package com.ecole.entity;
 
 import java.io.Serializable;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
@@ -35,7 +36,8 @@ public class Inscription  implements Serializable {
 	private Double reduction;
 	
 	private String commentaire;
-	
+
+	private Double reliquat;
 	
 	
 
@@ -82,7 +84,12 @@ public class Inscription  implements Serializable {
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
+		result = prime * result + ((commentaire == null) ? 0 : commentaire.hashCode());
+		result = prime * result + ((eleve == null) ? 0 : eleve.hashCode());
 		result = prime * result + ((id == null) ? 0 : id.hashCode());
+		result = prime * result + ((paramins == null) ? 0 : paramins.hashCode());
+		result = prime * result + ((reduction == null) ? 0 : reduction.hashCode());
+		result = prime * result + ((reliquat == null) ? 0 : reliquat.hashCode());
 		return result;
 	}
 
@@ -95,10 +102,35 @@ public class Inscription  implements Serializable {
 		if (getClass() != obj.getClass())
 			return false;
 		Inscription other = (Inscription) obj;
+		if (commentaire == null) {
+			if (other.commentaire != null)
+				return false;
+		} else if (!commentaire.equals(other.commentaire))
+			return false;
+		if (eleve == null) {
+			if (other.eleve != null)
+				return false;
+		} else if (!eleve.equals(other.eleve))
+			return false;
 		if (id == null) {
 			if (other.id != null)
 				return false;
 		} else if (!id.equals(other.id))
+			return false;
+		if (paramins == null) {
+			if (other.paramins != null)
+				return false;
+		} else if (!paramins.equals(other.paramins))
+			return false;
+		if (reduction == null) {
+			if (other.reduction != null)
+				return false;
+		} else if (!reduction.equals(other.reduction))
+			return false;
+		if (reliquat == null) {
+			if (other.reliquat != null)
+				return false;
+		} else if (!reliquat.equals(other.reliquat))
 			return false;
 		return true;
 	}
@@ -109,6 +141,14 @@ public class Inscription  implements Serializable {
 
 	public void setCommentaire(String commentaire) {
 		this.commentaire = commentaire;
+	}
+
+	public Double getReliquat() {
+		return reliquat;
+	}
+
+	public void setReliquat(Double reliquat) {
+		this.reliquat = reliquat;
 	}
 
 }

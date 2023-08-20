@@ -26,7 +26,8 @@
 						style="width:30px ; heigth:10px" /></td>
 			</tr>
 		</TABLE>
-		<br /><br />
+		<br />
+		<br />
 		<div id="rd_brand_01">
 			<a:outputPanel id="idContentMenu">
 				<div id="rd_brand_01_l1" class="rd_jsuperfish">
@@ -86,7 +87,7 @@
 													<s:conversationPropagation propagation="none" />
 												</a:commandLink></li>
 
-											<li><a:commandLink  value="Inscription nouvel Elève"
+											<li><a:commandLink value="Inscription nouvel Elève"
 													status="waitStatus" action="#{eleveService.versEleve}">
 													<s:conversationPropagation propagation="none" />
 												</a:commandLink></li>
@@ -98,7 +99,23 @@
 												</a:commandLink></li>
 										</ul></li>
 
+									<li><a:commandLink id="m_3_1" value="Comptabilité"></a:commandLink>
+										<ul>
 
+
+											<li><a:commandLink id="m_3_2" value="Type de Recette"
+													status="waitStatus"
+													action="#{typeRecetteService.versTypeRecette}">
+													<s:conversationPropagation propagation="none" />
+												</a:commandLink></li>
+											<li><a:commandLink id="m_3_3" value="Type de Depense"
+													status="waitStatus"
+													action="#{typeDepenseService.versTypeDepense}">
+													<s:conversationPropagation propagation="none" />
+												</a:commandLink></li>
+
+
+										</ul></li>
 									<li><a:commandLink id="m_1_12" value="Inscription"
 											status="waitStatus" action="#{piService.versCreer}">
 											<s:conversationPropagation propagation="none" />
@@ -147,7 +164,18 @@
 
 								</ul></li>
 						</f:subview>
-
+						<f:subview id="comptabilite">
+							<li><a:commandLink id="m_4" value="Comptabilité"
+									status="waitStatus" action="#">
+									<s:conversationPropagation propagation="none" />
+								</a:commandLink>
+								<ul>
+									<li><a:commandLink id="m_4_1" value="Mensualité"
+											status="waitStatus" action="#{recetteService.versMensualite}">
+											<s:conversationPropagation propagation="none" />
+										</a:commandLink></li>
+								</ul></li>
+						</f:subview>
 
 
 
