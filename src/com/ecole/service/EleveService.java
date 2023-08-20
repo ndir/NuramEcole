@@ -9,6 +9,7 @@ import java.util.Calendar;
 import java.util.List;
 
 import org.hibernate.Session;
+import org.hibernate.annotations.ForceDiscriminator;
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
@@ -59,6 +60,8 @@ public class EleveService implements Serializable {
 
 	private Inscription inscription = new Inscription();
 
+	ParamInscription p = new ParamInscription();
+
 	@In
 	private AnneeScolaire annee;
 
@@ -72,7 +75,7 @@ public class EleveService implements Serializable {
 		listeNiveau = new ArrayList<Niveau>();
 		listeNiveau = dataSource.createQuery("From Niveau ").list();
 
-		return "/pages/ecole/creereleve.xhtml";
+		return "/pages/nuramecole/creereleve.xhtml";
 	}
 
 	@SuppressWarnings("unchecked")
@@ -150,9 +153,8 @@ public class EleveService implements Serializable {
 			return;
 		}
 
-		
-		//Classe cl = (Classe) dataSource.get(Classe.class, classe.getIdclasse());
-		
+		// Classe cl = (Classe) dataSource.get(Classe.class, classe.getIdclasse());
+
 		ParamInscription paramins = (ParamInscription) dataSource
 				.createQuery("From ParamInscription p inner join fetch p.annee inner join fetch p.classe"
 						+ " where p.annee =:pannee and p.classe =:pclasse")
@@ -182,9 +184,33 @@ public class EleveService implements Serializable {
 	@SuppressWarnings("unchecked")
 	public void listeEleves(Classe classe) {
 		// this.eleve.setClasse(classe);
-		listeEleves = new ArrayList<Eleve>();
-		listeEleves = dataSource.createQuery("From Eleve e inner join fetch e.classe c where c=:pc")
-				.setParameter("pc", classe).list();
+		p = (ParamInscription) dataSource
+				.createQuery("From ParamInscription p inner join fetch p.classe c inner join fetch p.annee pa "
+						+ " where c =:pc and pa =:pa ")
+				.setParameter("pc", classe).setParameter("pa", annee).uniqueResult();
+		if (p != null) {
+
+			List<Inscription> liste = dataSource.createQuery(
+					"FRom Inscription i inner join fetch i.eleve" + "  inner join fetch i.paramins p where p =:pp")
+					.setParameter("pp", p).list();
+			listeEleves = new ArrayList<Eleve>();
+			for (Inscription in : liste) {
+				listeEleves.add(in.getEleve());
+
+			}
+		}
+	}
+
+	public Double versGetReduction(Eleve eleve) {
+		double resul = 0.0;
+		Inscription ins = (Inscription) dataSource
+				.createQuery("From Inscription i inner join fetch i.paramins p inner join fetch i.eleve e "
+						+ " where p =:pp and e =:pi")
+				.setParameter("pp", p).setParameter("pi", eleve).uniqueResult();
+		if (ins != null && ins.getReduction() != null) {
+			resul = ins.getReduction();
+		}
+		return resul;
 	}
 
 	@SuppressWarnings("unchecked")

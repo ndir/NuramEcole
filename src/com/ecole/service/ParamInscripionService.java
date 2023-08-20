@@ -55,8 +55,13 @@ public class ParamInscripionService implements Serializable {
 		param = new ParamInscription();
 		param.setAnnee(annee);
 		chargerliste();
-		listeNiveau = new ArrayList<Niveau>();
-		listeNiveau = dataSource.createQuery("From Niveau ").list();
+		//listeNiveau = new ArrayList<Niveau>();
+		//listeNiveau = dataSource.createQuery("From Niveau ").list();
+		//if(listeNiveau.size() > 0) {
+			setListeClasse(new ArrayList<Classe>());
+			setListeClasse(dataSource.createQuery(" From Classe c inner join fetch c.niveau ")
+					.list());
+		//}
 		return "/pages/nuramecole/creerparaminscription.xhtml";
 	}
 
@@ -67,10 +72,12 @@ public class ParamInscripionService implements Serializable {
 				.createQuery(
 						"From ParamInscription p inner join fetch p.classe inner join fetch p.annee where p.annee =:pa")
 				.setParameter("pa", annee).list();
+		
 	}
 
 	@SuppressWarnings("unchecked")
 	public void chargerListeClasse() {
+		
 		setListeClasse(new ArrayList<Classe>());
 		setListeClasse(dataSource.createQuery(" From Classe c inner join fetch c.niveau n where n=:pn")
 				.setParameter("pn", niveau).list());

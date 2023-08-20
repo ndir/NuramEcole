@@ -49,7 +49,7 @@ public class EvaluationService implements Serializable {
 	public String versEvaluation() {
 		this.setEval(new Evaluation());
 		chargerListeEval();
-		return "/pages/ecole/creereval.xhtml";
+		return "/pages/nuramecole/creereval.xhtml";
 	}
 	
 	public void annulerAjout(){

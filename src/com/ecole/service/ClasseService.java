@@ -18,6 +18,7 @@ import com.ecole.entity.AnneeScolaire;
 import com.ecole.entity.Classe;
 import com.ecole.entity.MatiereClasse;
 import com.ecole.entity.Niveau;
+import com.ecole.entity.ParamInscription;
 
 /**
  * @author a626257
@@ -40,8 +41,7 @@ public class ClasseService implements Serializable {
 
 	@In
 	private Session dataSource;
-	
-	
+
 	@In
 	private AnneeScolaire annee;
 
@@ -53,8 +53,8 @@ public class ClasseService implements Serializable {
 
 	public String versClasse() {
 		this.setClasse(new Classe());
-		chargerListeClasse(); 
-		System.out.println("Annee "+annee.getAnneeScolaire());
+		chargerListeClasse();
+		System.out.println("Annee " + annee.getAnneeScolaire());
 		return "/pages/nuramecole/creerclasse.xhtml";
 	}
 
@@ -69,13 +69,12 @@ public class ClasseService implements Serializable {
 
 	public void ajouterClasse() {
 		if (this.classe.getLibelle().isEmpty()) {
-			FacesMessages.instance().addToControlFromResourceBundle(
-					"erreurGenerique", "Veuillez renseigner le libellé");
+			FacesMessages.instance().addToControlFromResourceBundle("erreurGenerique",
+					"Veuillez renseigner le libellé");
 			return;
 		}
 		if (this.classe.getNiveau() == null) {
-			FacesMessages.instance().addToControlFromResourceBundle(
-					"erreurGenerique", "Veuillez chosir un niveau");
+			FacesMessages.instance().addToControlFromResourceBundle("erreurGenerique", "Veuillez chosir un niveau");
 			return;
 		}
 		if (classe.getIdclasse() == null) {
@@ -85,8 +84,31 @@ public class ClasseService implements Serializable {
 		}
 		chargerListeClasse();
 		this.setClasse(new Classe());
-		FacesMessages.instance().addToControlFromResourceBundle(
-				"infoGenerique", "Classe ajoutée avec succés");
+		FacesMessages.instance().addToControlFromResourceBundle("infoGenerique", "Classe ajoutée avec succés");
+	}
+
+	public Double getDroitInscription(Classe classe) {
+
+		double droit = 0.0;
+
+		ParamInscription p = (ParamInscription) dataSource
+				.createQuery("From ParamInscription m inner join fetch m.classe c  where c=:pc")
+				.setParameter("pc", classe).uniqueResult();
+		if (p != null && p.getDroit_ins() != null)
+			droit = p.getDroit_ins();
+		return droit;
+	}
+
+	public Double getMensualite(Classe classe) {
+
+		double droit = 0.0;
+
+		ParamInscription p = (ParamInscription) dataSource
+				.createQuery("From ParamInscription m inner join fetch m.classe c  where c=:pc")
+				.setParameter("pc", classe).uniqueResult();
+		if (p != null && p.getMensualite() != null)
+			droit = p.getMensualite();
+		return droit;
 	}
 
 	public void versModifierClasse(Classe classe) {
@@ -101,8 +123,8 @@ public class ClasseService implements Serializable {
 						" From MatiereClasse m inner join fetch m.classe c inner join fetch m.matiere where c=:pc ")
 				.setParameter("pc", classe).list();
 	}
-	
-	public void supprimerMatiere(MatiereClasse mat){
+
+	public void supprimerMatiere(MatiereClasse mat) {
 		dataSource.delete(mat);
 	}
 

@@ -81,8 +81,7 @@ public class InstitutionService implements Serializable {
 
 	public Boolean verifieLogin(String login) {
 		boolean exist = false;
-		Utilisateur u = (Utilisateur) dataSource
-				.createQuery("From Utilisateur u where login=:plogin")
+		Utilisateur u = (Utilisateur) dataSource.createQuery("From Utilisateur u where login=:plogin")
 				.setParameter("plogin", login).uniqueResult();
 		if (u != null)
 			exist = true;
@@ -99,8 +98,7 @@ public class InstitutionService implements Serializable {
 		}
 		chargerListeInst();
 		this.setInstitution(new Institution());
-		FacesMessages.instance().addToControlFromResourceBundle(
-				"infoGenerique", "Institution ajoutée avec succés");
+		FacesMessages.instance().addToControlFromResourceBundle("infoGenerique", "Institution ajoutée avec succés");
 	}
 
 	public String getAdmin(Institution inst) {
@@ -108,8 +106,7 @@ public class InstitutionService implements Serializable {
 				.createQuery(
 						"From Utilisateur u inner join fetch u.profile p inner join fetch u.institution i where i=:pi"
 								+ " and p.libelle_court=:plib ")
-				.setParameter("pi", inst).setParameter("plib", "ad")
-				.uniqueResult();
+				.setParameter("pi", inst).setParameter("plib", "ad").uniqueResult();
 		if (u != null) {
 			return u.getNomComplet();
 		} else {
@@ -118,36 +115,32 @@ public class InstitutionService implements Serializable {
 	}
 
 	public Profile getProfileAdmin() {
-		return (Profile) dataSource
-				.createQuery("From Profile p where libelle_court=:plib")
-				.setParameter("plib", "ad").uniqueResult();
+		return (Profile) dataSource.createQuery("From Profile p where libelle_court=:plib").setParameter("plib", "ad")
+				.uniqueResult();
 	}
 
 	public String modifierPwd() {
 		if (utilisateur.getPassword().isEmpty()) {
-			FacesMessages.instance().addToControlFromResourceBundle(
-					"erreurGenerique", "Veuillez renseigner le mot de passe");
+			FacesMessages.instance().addToControlFromResourceBundle("erreurGenerique",
+					"Veuillez renseigner le mot de passe");
 			return null;
 		} else {
 
-			Utilisateur user1 = (Utilisateur) dataSource.get(Utilisateur.class,
-					utilisateur.getIdUtilisateur());
+			Utilisateur user1 = (Utilisateur) dataSource.get(Utilisateur.class, utilisateur.getIdUtilisateur());
 			if (user1 == null) {
-				FacesMessages.instance().addToControlFromResourceBundle(
-						"erreurGenerique", "Utilisateur inexistant ");
+				FacesMessages.instance().addToControlFromResourceBundle("erreurGenerique", "Utilisateur inexistant ");
 			} else {
 				Calendar cal = Calendar.getInstance();
 				cal.setTime(new java.util.Date());
 				String password = utilisateur.getPassword();
 				user1.setActif(true);
-				user1.setInitPass(true);
+				user1.setInitPass(false);
 				dataSource.update(user1);
-				FacesMessages.instance().addToControlFromResourceBundle(
-						"infoGenerique", "Opération Effectué avec succès: ");
+				
 
 				// préparation du password :
-				UtilisateurSecurise us = (UtilisateurSecurise) dataSource.get(
-						UtilisateurSecurise.class, user1.getIdUtilisateur());
+				UtilisateurSecurise us = (UtilisateurSecurise) dataSource.get(UtilisateurSecurise.class,
+						user1.getIdUtilisateur());
 				ServiceCryptage sc = new ServiceCryptage();
 				try {
 					byte[] salt = sc.generateSalt();
@@ -163,26 +156,11 @@ public class InstitutionService implements Serializable {
 				}
 
 				this.setUser(new Utilisateur());
-
+				return "/pages/nuramecole/template/index.xhtml";
 			}
-			
-			if (utilisateur.getProfile().getLibelle_court()
-					.equalsIgnoreCase("ad")
-					|| utilisateur.getProfile().getLibelle_court()
-							.equalsIgnoreCase("adg")
-					|| utilisateur.getProfile().getLibelle_court()
-							.equalsIgnoreCase("pr")
-					|| utilisateur.getProfile().getLibelle_court()
-							.equalsIgnoreCase("se"))
-				
-				return "/pages/accueil.xhtml";
-			if (utilisateur.getProfile().getLibelle_court()
-					.equalsIgnoreCase("el"))
-				return "/pages/ecole/utilisateurEcole/eleve.xhtml";
-			if (utilisateur.getProfile().getLibelle_court()
-					.equalsIgnoreCase("Tu"))
-				return "/pages/ecole/utilisateurEcole/titeur.xhtml";
+
 			return "";
+
 		}
 	}
 
@@ -193,33 +171,30 @@ public class InstitutionService implements Serializable {
 			res = verifiePwd();
 		}
 		if (res == false) {
-			FacesMessages.instance().addToControlFromResourceBundle(
-					"erreurGenerique",
+			FacesMessages.instance().addToControlFromResourceBundle("erreurGenerique",
 					"Les deux mots de passe ne sont pas identiques");
 			return;
 		}
 		if (this.user.getEmail().isEmpty()) {
-			FacesMessages.instance().addToControlFromResourceBundle(
-					"erreurGenerique", "l'adresse mail est obligatoire");
+			FacesMessages.instance().addToControlFromResourceBundle("erreurGenerique",
+					"l'adresse mail est obligatoire");
 			return;
 		}
 		if (verifieLogin(user.getLogin())) {
-			FacesMessages.instance().addToControlFromResourceBundle(
-					"erreurGenerique", "Ce login exite déja");
+			FacesMessages.instance().addToControlFromResourceBundle("erreurGenerique", "Ce login exite déja");
 			return;
 		}
 		String password = this.user.getPassword();
 		if (this.user.getIdUtilisateur() == null) {
 			this.user.setActif(true);
-			//user.setInstitution(institution);
+			// user.setInstitution(institution);
 			user.setProfile(getProfileAdmin());
 			dataSource.save(this.user);
 			dataSource.flush();
-			FacesMessages.instance().addToControlFromResourceBundle(
-					"infoGenerique", "Opération Effectué avec succès");
+			FacesMessages.instance().addToControlFromResourceBundle("infoGenerique", "Opération Effectué avec succès");
 			// préparation du password :
-			UtilisateurSecurise us = (UtilisateurSecurise) dataSource.get(
-					UtilisateurSecurise.class, user.getIdUtilisateur());
+			UtilisateurSecurise us = (UtilisateurSecurise) dataSource.get(UtilisateurSecurise.class,
+					user.getIdUtilisateur());
 			ServiceCryptage sc = new ServiceCryptage();
 			try {
 				byte[] salt = sc.generateSalt();
@@ -234,28 +209,21 @@ public class InstitutionService implements Serializable {
 				e.printStackTrace();
 			}
 			SendMail sendM = new SendMail();
-			String mes = " Mme/Mr. "
-					+ user.getPrenom()
-					+ user.getNom()
-					+ " / "
-					+ " Votre compte est créé dans e-school. \n Votre  mot de passe est   "
-					+ user.getPassword()
+			String mes = " Mme/Mr. " + user.getPrenom() + user.getNom() + " / "
+					+ " Votre compte est créé dans e-school. \n Votre  mot de passe est   " + user.getPassword()
 					+ ". Vous devez le changer lors de votre premier connexion";
-			sendM.sendMail(user.getEmail(), mes,
-					" Notification de création de compte   ");
+			sendM.sendMail(user.getEmail(), mes, " Notification de création de compte   ");
 			this.setUser(new Utilisateur());
 		} else {
 			user.setInitPass(false);
 			dataSource.merge(this.user);
-			FacesMessages.instance().addToControlFromResourceBundle(
-					"infoGenerique", "Opération Effectué avec succès");
+			FacesMessages.instance().addToControlFromResourceBundle("infoGenerique", "Opération Effectué avec succès");
 			this.setUser(new Utilisateur());
 		}
 
 	}
 
-	public void paintLogo(OutputStream stream, Object object)
-			throws IOException {
+	public void paintLogo(OutputStream stream, Object object) throws IOException {
 		Institution inst = null;
 		if (stream == null || object == null) {
 			return;
@@ -301,8 +269,7 @@ public class InstitutionService implements Serializable {
 	}
 
 	/**
-	 * @param event
-	 *            .
+	 * @param event .
 	 */
 	public void fileUploadListener(UploadEvent event) {
 		if (event == null) {

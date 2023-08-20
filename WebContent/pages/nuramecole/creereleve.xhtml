@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:a="https://ajax4jsf.dev.java.net/ajax"
+	xmlns:rich="http://richfaces.ajax4jsf.org/rich"
+	xmlns:s="http://jboss.com/products/seam/taglib"
+	xmlns:t="http://myfaces.apache.org/tomahawk">
+<head>
+<!-- Global site tag (gtag.js) - Google Analytics -->
+
+<script>
+	window.dataLayer = window.dataLayer || [];
+	function gtag() {
+		dataLayer.push(arguments);
+	}
+	gtag('js', new Date());
+
+	gtag('config', 'UA-90680653-2');
+</script>
+
+<!-- Required meta tags -->
+<meta charset="utf-8"></meta>
+<meta name="viewport"
+	content="width=device-width, initial-scale=1, shrink-to-fit=no"></meta>
+
+
+<!-- Meta -->
+<meta name="description"
+	content="Responsive Bootstrap 4 Dashboard Template"></meta>
+<meta name="author" content="BootstrapDash"></meta>
+
+<title>E-SCHOOL</title>
+
+<!-- vendor css -->
+<link href="lib/fontawesome-free/css/all.min.css" rel="stylesheet"></link>
+<link href="lib/ionicons/css/ionicons.min.css" rel="stylesheet"></link>
+<link href="lib/typicons.font/typicons.css" rel="stylesheet"></link>
+<link href="lib/flag-icon-css/css/flag-icon.min.css" rel="stylesheet"></link>
+
+<!-- azia CSS -->
+<link rel="stylesheet" href="css/azia.css"></link>
+
+</head>
+<body>
+
+	<div class="az-header">
+		<div class="container">
+
+			<div class="az-header-center"></div>
+
+			<ui:include src="/template/include/header2.xhtml" />
+
+
+		</div>
+	</div>
+	<a:status id="waitStatusHaut" forceId="true"
+		onstart="javascript:Richfaces.showModalPanel('waitModalPanelHaut');"
+		onstop="javascript:Richfaces.hideModalPanel('waitModalPanelHaut');" />
+	<a:status id="waitStatus" forceId="true"
+		onstart="javascript:Richfaces.showModalPanel('waitModalPanel');"
+		onstop="javascript:Richfaces.hideModalPanel('waitModalPanel');" />
+	<rich:modalPanel id="waitModalPanel" autosized="false" width="500"
+		height="100" styleClass="popupAttente" moveable="false"
+		resizeable="false">
+		<div style="text-align: center; height: 40px;">
+			<img src="../../picto/loading.gif" alt="" width="32" height="32" />
+		</div>
+		<span> <h:outputText
+				value="#{msgBundle['label.traitementencours']}" />
+		</span>
+	</rich:modalPanel>
+	<a:outputPanel id="erreurStd" ajaxRendered="true">
+		<h:message infoClass="informationGenerique"
+			errorClass="informationGenerique" warnClass="informationGenerique"
+			for="infoGenerique" />
+		<h:inputHidden id="infoGenerique" />
+		<h:message infoClass="confirmationerrorGenerique"
+			errorClass="confirmationerrorGenerique"
+			warnClass="confirmationerrorGenerique" for="erreurGenerique" />
+		<h:inputHidden id="erreurGenerique" style="font-size:12px;" />
+	</a:outputPanel>
+
+	<div class="az-content az-content-dashboard">
+		<div class="container">
+			<div class="az-content-body">
+				<div class="row row-sm mg-b-20">
+					<div class="col-lg-12"></div>
+				</div>
+				<h:form id="liste">
+					<rich:panel header="NOUVELLE INSCRIPTION"
+						styleclass="panel panel-success">
+						<div class="row row-sm mg-b-20">
+							<div class="col-lg-12">
+								<div class="row row-sm">
+
+
+
+									<div class="table-responsive">
+										<table class="table">
+											<tr>
+												<td><h:outputLabel styleClass="grey" value="Niveau" /></td>
+												<td><h:selectOneMenu class="form-control"
+														value="#{eleveService.niveau}"
+														converter="#{niveauConverter}" id="cont"
+														noSelectionLabel="--- Selectionnez ---">
+
+														<s:selectItems value="#{eleveService.listeNiveau}"
+															var="type" label="#{type.libelle}"
+															noSelectionLabel="--- Selectionnez ---" />
+
+														<a:support event="onchange"
+															action="#{eleveService.chargerListeClasse()}"
+															ajaxSingle="true" reRender="classe" status="waitStatus"></a:support>
+													</h:selectOneMenu></td>
+
+												<td><h:outputLabel styleClass="grey" value="Classe" /></td>
+												<td><h:selectOneMenu class="form-control"
+														value="#{eleveService.classe}"
+														converter="#{classeConverter}" id="classe"
+														noSelectionLabel="--- Selectionnez ---">
+
+														<s:selectItems value="#{eleveService.listeClasse}"
+															var="type" label="#{type.libelle}" />
+
+													</h:selectOneMenu></td>
+
+											</tr>
+											<tr>
+												<td><h:outputLabel styleClass="grey"
+														value="Année Scolaire" /></td>
+												<td><h:inputText
+														value="#{eleveService.annee.anneeScolaire}"
+														class="form-control" disabled="true" /></td>
+
+
+												<td><h:outputLabel styleClass="grey" value="Prénom" /></td>
+												<td><h:inputText value="#{eleveService.eleve.prenom}"
+														styleClass="form-control" /></td>
+
+
+											</tr>
+											<tr>
+												<td><h:outputLabel styleClass="grey" value="Nom" /></td>
+												<td><h:inputText value="#{eleveService.eleve.nom}"
+														styleClass="form-control" /></td>
+
+
+												<td><h:outputLabel styleClass="grey"
+														value="Nationalité" /></td>
+												<td><h:inputText
+														value="#{eleveService.eleve.nationalite}"
+														class="form-control" /></td>
+											</tr>
+											<tr>
+
+												<td><h:outputLabel styleClass="grey"
+														value="Date de naissance" /></td>
+												<td><rich:calendar
+														value="#{eleveService.eleve.dateNaissance}"
+														cellWidth="0px" cellHeight="20px" datePattern="dd/MM/yyyy"
+														buttonIcon="/img2/calendrier.png"></rich:calendar></td>
+
+
+												<td><h:outputLabel styleClass="grey" value="Titeur" /></td>
+												<td><h:inputText value="#{eleveService.eleve.titeur}"
+														styleClass="form-control" /></td>
+											</tr>
+											<tr>
+												<td><h:outputLabel styleClass="grey" value="Contact" /></td>
+												<td><h:inputText
+														value="#{eleveService.eleve.telephone}"
+														styleClass="form-control" /></td>
+												<td><h:outputLabel styleClass="grey" value="Réduction" /></td>
+												<td><h:inputText
+														value="#{eleveService.inscription.reduction}"
+														class="form-control" /></td>
+
+											</tr>
+											<tr>
+												<td><h:outputLabel styleClass="grey"
+														value="Commentaire réduction" /></td>
+												<td><h:inputTextarea
+														value="#{eleveService.inscription.commentaire}"
+														styleClass="form-control" cols="40" rows="5" /></td>
+
+
+												<td><h:outputLabel styleClass="grey" value="Sexe" /></td>
+												<td><h:selectOneMenu value="#{eleveService.eleve.sexe}"
+														styleClass="form-control">
+														<f:selectItem itemValue="M" itemLabel="Masculin" />
+														<f:selectItem itemValue="F" itemLabel="Féminin" />
+													</h:selectOneMenu></td>
+											</tr>
+											<tr>
+												<td><h:outputLabel styleClass="grey" value="Adresse" /></td>
+												<td><h:inputTextarea
+														value="#{eleveService.eleve.adresse}"
+														styleClass="form-control" cols="40" rows="4" /></td>
+
+
+												<td><h:outputLabel styleClass="grey"
+														value="Autres Info" /></td>
+												<td><h:inputTextarea
+														value="#{eleveService.eleve.autre_info}"
+														styleClass="form-control" cols="40" rows="4" /></td>
+											</tr>
+										</table>
+										<p align="center">
+
+
+											<a:commandLink styleClass="btn btn-danger" value=""
+												action="#{eleveService.annulerAjout()}" reRender="liste"
+												status="waitStatus">
+																		
+																		Annuler			
+																				</a:commandLink>
+											<rich:spacer width="10px;"></rich:spacer>
+
+											<a:commandLink styleClass="btn btn-success" value=""
+												action="#{eleveService.ajouterInscription()}"
+												reRender="liste" status="waitStatus">
+																		
+																		Valider			
+																				</a:commandLink>
+										</p>
+
+
+									</div>
+								</div>
+							</div>
+						</div>
+
+					</rich:panel>
+
+				</h:form>
+
+
+
+			</div>
+
+
+		</div>
+	</div>
+	<!-- az-content -->
+
+	<div class="az-footer ht-20">
+		<div class="container ht-100p pd-t-0-f">
+			<span
+				class="text-muted d-block text-center text-sm-left d-sm-inline-block">Copyright
+				© NUMRAMTECH 2023</span> <span
+				class="float-none float-sm-right d-block mt-1 mt-sm-0 text-center">
+				<a href="#" target="_blank"></a>
+			</span>
+		</div>
+		<!-- container -->
+	</div>
+	<!-- az-footer -->
+
+</body>
+</html>

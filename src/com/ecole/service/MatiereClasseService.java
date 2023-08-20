@@ -48,7 +48,7 @@ public class MatiereClasseService implements Serializable {
 	private Niveau niveau = new Niveau();
 
 	private AnneeScolaire anneeScolaire = new AnneeScolaire();
-	
+
 	private List<Evaluation> listeEval = new ArrayList<Evaluation>();
 
 	public Niveau getNiveau() {
@@ -77,8 +77,6 @@ public class MatiereClasseService implements Serializable {
 	public void chargerMatieres() {
 		listeMatiere = new ArrayList<Matiere>();
 		listeMatiere = dataSource.createQuery(" From Matiere").list();
-		
-		
 
 	}
 
@@ -86,7 +84,7 @@ public class MatiereClasseService implements Serializable {
 		this.setMatClasse(new MatiereClasse());
 		chargerListe();
 		listeMatiere = new ArrayList<Matiere>();
-		return "/pages/ecole/matclasse.xhtml";
+		return "/pages/nuramecole/matclasse.xhtml";
 	}
 
 	@SuppressWarnings("unchecked")
@@ -94,27 +92,35 @@ public class MatiereClasseService implements Serializable {
 		listeClasse = new ArrayList<Classe>();
 		listeClasse = dataSource.createQuery(" From Classe c inner join fetch c.niveau n where n=:pn")
 				.setParameter("pn", niveau).list();
-		
-		
-		
+
 	}
 
 	public void ajouterClasseMatiere() {
 		for (Matiere mat : listeMatiere) {
 			if (mat.getCoef() > 0) {
-				MatiereClasse mc = new MatiereClasse();
-				mc.setAnnee_scol(anneeScolaire.getAnneeScolaire());
-				mc.setClasse(matClasse.getClasse());
-				mc.setCoef(mat.getCoef());
-				mc.setMatiere(mat);
-				mc.setEval(matClasse.getEval());
-				dataSource.save(mc);
+				MatiereClasse m = (MatiereClasse) dataSource
+						.createQuery("From MatiereClasse m inner join fetch m.matiere ma inner join fetch m.classe c"
+								+ " where ma =:pma and c =:pc and m.annee_scol =:pan ")
+						.setParameter("pma", mat).setParameter("pc", matClasse.getClasse())
+						.setParameter("pan", anneeScolaire.getAnneeScolaire()).uniqueResult();
+				if (m == null) {
+					MatiereClasse mc = new MatiereClasse();
+					mc.setAnnee_scol(anneeScolaire.getAnneeScolaire());
+					mc.setClasse(matClasse.getClasse());
+					mc.setCoef(mat.getCoef());
+					mc.setMatiere(mat);
+					mc.setEval(matClasse.getEval());
+					dataSource.save(mc);
+				} else {
+					m.setCoef(mat.getCoef());
+					dataSource.update(m);
+				}
 			}
 		}
 		this.setMatClasse(new MatiereClasse());
 		listeMatiere = new ArrayList<Matiere>();
 		listeClasse = new ArrayList<Classe>();
-		listeEval   = new ArrayList<Evaluation>();
+		listeEval = new ArrayList<Evaluation>();
 		FacesMessages.instance().addToControlFromResourceBundle("infoGenerique", "Opération effectuée avec succés");
 
 	}

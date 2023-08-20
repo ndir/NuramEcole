@@ -40,8 +40,7 @@ public class Authenticator {
 	FacesMessages facesMessages;
 
 	@Out(required = false)
-	private ListeParam listeParamStock = (ListeParam) Component
-			.getInstance("listeParamStock");
+	private ListeParam listeParamStock = (ListeParam) Component.getInstance("listeParamStock");
 
 	/**
 	 * Utilisateur loggué
@@ -60,16 +59,15 @@ public class Authenticator {
 	 * Boolean indiquant si l'utilisateur est deja loggué.
 	 */
 	private boolean loggedIn;
-	
-	
+
 	private List<AnneeScolaire> listeAnnee = new ArrayList<AnneeScolaire>();
-	
+
 	/**
 	 * Utilisateur loggué
 	 */
 	@In(required = false)
 	@Out(required = false)
-	private AnneeScolaire annee ;
+	private AnneeScolaire annee;
 
 	/**
 	 * Constructeur de la classe agent.
@@ -77,7 +75,7 @@ public class Authenticator {
 	@SuppressWarnings("unchecked")
 	public Authenticator() {
 		super();
-		
+
 	}
 
 	/**
@@ -85,8 +83,8 @@ public class Authenticator {
 	 */
 	public void login() {
 
-		if ((listeParamStock.getInstitution().getDateModification() != null && listeParamStock
-				.getInstitution().getDateMaj().before(new Date()))
+		if ((listeParamStock.getInstitution().getDateModification() != null
+				&& listeParamStock.getInstitution().getDateMaj().before(new Date()))
 				|| (listeParamStock.getInstitution().getDateModification() == null)) { // TODO
 																						// AUTENTIFICATION
 																						// DE
@@ -104,31 +102,18 @@ public class Authenticator {
 
 		loggedIn = Identity.instance().isLoggedIn();
 
-		
-
 	}
 
 	public String redirection() {
 		if (utilisateur.isActif()) {
 			if (utilisateur == null)
 				authenticate();
-			if (utilisateur.getProfile().getLibelle_court()
-					.equalsIgnoreCase("ad")
-					|| utilisateur.getProfile().getLibelle_court()
-							.equalsIgnoreCase("adg")
-					|| utilisateur.getProfile().getLibelle_court()
-							.equalsIgnoreCase("pr")
-					|| utilisateur.getProfile().getLibelle_court()
-							.equalsIgnoreCase("se"))
-
+			if (utilisateur.isInitPass()) {
+				return "/pages/home/initPass1.xhtml";
+			} else {
 				return "/pages/nuramecole/template/index.xhtml";
-			if (utilisateur.getProfile().getLibelle_court()
-					.equalsIgnoreCase("el"))
-				return "/pages/ecole/utilisateurEcole/eleve.xhtml";
-			if (utilisateur.getProfile().getLibelle_court()
-					.equalsIgnoreCase("Tu"))
-				return "/pages/ecole/utilisateurEcole/titeur.xhtml";
-			return "";
+			}
+
 		} else {
 			if (utilisateur.getNom().equalsIgnoreCase("Administrateur")) {
 				return "/pages/home/initPass.xhtml";
@@ -151,31 +136,24 @@ public class Authenticator {
 
 		String hqlSecure = "select us from UtilisateurSecurise us where us.login = :login ";
 
-		UtilisateurSecurise userSecured = (UtilisateurSecurise) dataSource
-				.createQuery(hqlSecure).setParameter("login", login)
-				.uniqueResult();
+		UtilisateurSecurise userSecured = (UtilisateurSecurise) dataSource.createQuery(hqlSecure)
+				.setParameter("login", login).uniqueResult();
 
 		if (userSecured != null) {
 			ServiceCryptage sc = new ServiceCryptage();
 
 			try {
 
-				if (userSecured.getSecurePassword() == null
-						|| userSecured.getSalt() == null) {
+				if (userSecured.getSecurePassword() == null || userSecured.getSalt() == null) {
 					loggedIn = false;
 				} else {
 
-					loggedIn = sc.authenticate(password,
-							userSecured.getSecurePassword(),
-							userSecured.getSalt());
+					loggedIn = sc.authenticate(password, userSecured.getSecurePassword(), userSecured.getSalt());
 
 					if (loggedIn) {
-						utilisateur = (Utilisateur) dataSource.get(
-								Utilisateur.class,
-								userSecured.getIdUtilisateur());
+						utilisateur = (Utilisateur) dataSource.get(Utilisateur.class, userSecured.getIdUtilisateur());
 
-						int profile = utilisateur.getProfile().getIdProfile()
-								.intValue();
+						int profile = utilisateur.getProfile().getIdProfile().intValue();
 
 						switch (profile) {
 						case Utilisateur.ADMIN:
@@ -224,8 +202,7 @@ public class Authenticator {
 		}
 
 		if (!loggedIn) {
-			facesMessages.addToControlFromResourceBundle("loginMsg",
-					"msg.login.ko");
+			facesMessages.addToControlFromResourceBundle("loginMsg", "msg.login.ko");
 		}
 
 		return loggedIn;

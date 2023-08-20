@@ -79,7 +79,7 @@
 		<h:message infoClass="confirmationerrorGenerique"
 			errorClass="confirmationerrorGenerique"
 			warnClass="confirmationerrorGenerique" for="erreurGenerique" />
-		<h:inputHidden id="erreurGenerique" style="font-size:12px;" />
+		<h:inputHidden id="erreurGenerique"  />
 	</a:outputPanel>
 
 	<div class="az-content az-content-dashboard">
@@ -88,75 +88,101 @@
 				<div class="row row-sm mg-b-20">
 					<div class="col-lg-12"></div>
 				</div>
+				<h:form id="liste">
+					<rich:panel header="VISUALISER NOTE"
+						styleclass="panel panel-success">
+						<div class="row row-sm mg-b-20">
+							<div class="col-lg-12">
+								<div class="row row-sm">
 
-				<rich:panel header="PARAMETRAGE INSCRIPTION "
-					styleclass="panel panel-success">
-					<div class="row row-sm mg-b-20">
-						<div class="col-lg-12">
-							<div class="row row-sm">
 
 
-								<div class="table-responsive">
-									<h:form id="liste">
+									<div class="table-responsive">
+
 										<TABLE class="table">
 											<tr>
-												<td><h:outputLabel styleClass="grey" value="Année" /></td>
-												<td><h:inputText
-														value="#{piService.param.annee.anneeScolaire}"
-														required="true" class="form-control" disabled="true" /></td>
-												<td><h:outputLabel styleClass="grey" value="Classe" /></td>
+												<td><h:outputLabel styleClass="grey" value="Niveau" /></td>
 												<td><h:selectOneMenu class="form-control"
-														value="#{piService.param.classe}"
-														converter="#{classeConverter}" id="classe">
-														<s:selectItems value="#{piService.listeClasse}" var="type"
-															label="#{type.libelle}"
+														value="#{noteService.niveau}"
+														converter="#{niveauConverter}" id="cont"
+														noSelectionLabel="--- Selectionnez ---">
+
+														<s:selectItems value="#{noteService.listeNiveau}"
+															var="type" label="#{type.libelle}"
 															noSelectionLabel="--- Selectionnez ---" />
+
+														<a:support event="onchange"
+															action="#{noteService.chargerListeClasse()}"
+															ajaxSingle="true" reRender="classe" status="waitStatus"></a:support>
 													</h:selectOneMenu></td>
 
+												<td><h:outputLabel styleClass="grey" value="Classe" /></td>
+												<td><h:selectOneMenu class="form-control"
+														value="#{noteService.note.cl}"
+														converter="#{classeConverter}" id="classe"
+														noSelectionLabel="--- Selectionnez ---">
+
+														<s:selectItems value="#{noteService.listeClasse}"
+															var="type" label="#{type.libelle}"
+															noSelectionLabel="--- Selectionnez ---" />
+														<a:support event="onchange"
+															action="#{noteService.chargerListeMatClasse()}"
+															ajaxSingle="true" reRender="matiere" status="waitStatus"></a:support>
+
+													</h:selectOneMenu></td>
 											</tr>
 											<tr>
 
+												<td><h:outputLabel styleClass="grey" value="Evaluation" /></td>
 
-												<td><h:outputLabel styleClass="grey"
-														value="Montant Inscription" /></td>
-												<td><h:inputText value="#{piService.param.droit_ins}"
-														required="true" class="form-control" /></td>
+												<td><h:selectOneMenu class="form-control"
+														value="#{noteService.note.eval}">
 
+														<f:selectItem itemValue="1ère Composition"
+															itemLabel="1ère Composition" />
+
+														<f:selectItem itemValue="2ème Composition"
+															itemLabel="2ème Composition" />
+
+														<f:selectItem itemValue="3ème Composition"
+															itemLabel="3ème Composition" />
+													</h:selectOneMenu></td>
+
+												<td><h:outputLabel styleClass="grey" value="Matière" /></td>
+												<td><h:selectOneMenu class="form-control"
+														value="#{noteService.note.matiere}"
+														converter="#{matiereConverter}" id="matiere"
+														noSelectionLabel="--- Selectionnez ---">
+														<s:selectItems value="#{noteService.listeMatiere}"
+															var="type" label="#{type.libelle}"
+															noSelectionLabel="--- Selectionnez ---" />
+
+													</h:selectOneMenu></td>
+											</tr>
+											<tr>
 												<td><h:outputLabel styleClass="grey"
-														value="Montant Mensualité" /></td>
-												<td><h:inputText value="#{piService.param.mensualite}"
-														required="true" class="form-control" /></td>
+														value="Année Scolaire" /></td>
+												<td><h:inputText
+														value="#{noteService.annee.anneeScolaire}"
+														class="form-control" disabled="true" /></td>
+												<td><a:commandLink value="" status="waitStatus"
+														reRender="liste" title="Suivant"
+														action="#{noteService.chargerListeNotes()}">
+														<s:graphicImage fileName="left32.png" style="border:0px;"
+															value="/picto/left32.png" alt="" />
+
+													</a:commandLink></td>
 											</tr>
 										</TABLE>
-										<p align="center">
 
-
-											<a:commandLink styleClass="btn btn-danger" value=""
-												action="#{piService.annulerAjout()}" reRender="liste"
-												status="waitStatus">
-																		
-																		Annuler			
-																				</a:commandLink>
-											<rich:spacer width="10px;"></rich:spacer>
-
-											<a:commandLink styleClass="btn btn-success" value=""
-												action="#{piService.ajouterInscription()}" reRender="liste, table"
-												status="waitStatus">
-																		
-																		Valider			
-																				</a:commandLink>
-
-										</p>
-									</h:form>
-									<h:form id="table">
-										<rich:dataTable value="#{piService.liste}" var="classe"
-											id="lstdemande" style="width:100%;" rows="8"
-											rowClasses="row1,row2">
+										<rich:dataTable value="#{noteService.listeNotes}" var="mat"
+											id="eleve" style="width:100%;" rows="8"
+											rowClasses="row1,row2" >
 											<f:facet name="header">
 												<rich:columnGroup>
 
 													<rich:column>
-														<h:outputLabel value="Annee"
+														<h:outputLabel value="Eleve"
 															style="color:white;font-size:12px;font-family: Arial;text-align:center;" />
 													</rich:column>
 
@@ -166,82 +192,55 @@
 													</rich:column>
 
 													<rich:column>
-														<h:outputLabel value="Montant Inscription"
+														<h:outputLabel value="Matière"
 															style="color:white;font-size:12px;font-family: Arial;text-align:center;" />
 													</rich:column>
 
 													<rich:column>
-														<h:outputLabel value="Montant Mensualité"
+														<h:outputLabel value="Note"
 															style="color:white;font-size:12px;font-family: Arial;text-align:center;" />
 													</rich:column>
-
-
-													<rich:column>
-														<h:outputLabel value="Action"
-															style="color:white;font-size:12px;font-family: Arial;text-align:center;" />
-													</rich:column>
-
 
 												</rich:columnGroup>
 											</f:facet>
 
-
-											<rich:column>
-												<h:outputText value="#{classe.annee.anneeScolaire}"
-													styleClass="grey" />
+											<rich:column filterBy="#{mat.eleve.nom}" filterEvent="onkeyup">
+												<h:outputLabel value="#{mat.eleve.nom} #{mat.eleve.prenom}"></h:outputLabel>
 											</rich:column>
-
-											<rich:column filterBy="#{classe.classe.libelle}"
+											<rich:column>
+												<h:outputLabel value="#{mat.cl.libelle}"></h:outputLabel>
+											</rich:column>
+											<rich:column filterBy="#{mat.matiere.libelle}"
 												filterEvent="onkeyup">
-												<h:outputText value="#{classe.classe.libelle}"
-													styleClass="grey" />
+												<h:outputLabel value="#{mat.matiere.libelle}"></h:outputLabel>
 											</rich:column>
 
-
 											<rich:column>
-												<h:outputText value="#{classe.droit_ins}" styleClass="grey">
-													<f:convertNumber pattern="#,##0" />
-												</h:outputText>
-											</rich:column>
-
-
-											<rich:column>
-												<h:outputText value="#{classe.mensualite}" styleClass="grey">
-
-													<f:convertNumber pattern="#,##0" />
-												</h:outputText>
-											</rich:column>
-
-
-											<rich:column>
-
-
-												<a:commandLink value="" status="waitStatus"
-													action="#{piService.versModifierInscription(classe)}"
-													reRender="liste" title="Modifier">
-													<s:graphicImage fileName="edit.png" style="border:0px;"
-														value="/picto/edit.png" width="16" height="16" alt="" />
-
-												</a:commandLink>
-
+												<h:inputText value="#{mat.note}" class="form-control"
+													 disabled = "true"></h:inputText>
 											</rich:column>
 
 										</rich:dataTable>
 										<rich:datascroller status="waitStatus" stepControls="auto"
-											style="width:100%" for="lstdemande"
-											rendered="#{not empty piService.liste}" />
-									</h:form>
+											style="width:100%" for="eleve" ajaxSingle="false"
+											rendered="#{not empty noteService.listeEleves}" />
+
+									</div>
 								</div>
-
-
 							</div>
 						</div>
-					</div>
-				</rich:panel>
+
+					</rich:panel>
+
+
+				</h:form>
+
+
 			</div>
+
+
 		</div>
 	</div>
-
 	<!-- az-content -->
 
 	<div class="az-footer ht-20">
