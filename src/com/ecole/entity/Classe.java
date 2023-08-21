@@ -64,12 +64,29 @@ public class Classe implements Serializable {
 		this.idclasse = idclasse;
 	}
 
+
+
+	public Double getDroit_ins() {
+		return droit_ins;
+	}
+
+	public void setDroit_ins(Double droit_ins) {
+		this.droit_ins = droit_ins;
+	}
+
+	public Double getMensualite() {
+		return mensualite;
+	}
+
+	public void setMensualite(Double mensualite) {
+		this.mensualite = mensualite;
+	}
+
 	@Override
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		result = prime * result
-				+ ((idclasse == null) ? 0 : idclasse.hashCode());
+		result = prime * result + ((idclasse == null) ? 0 : idclasse.hashCode());
 		return result;
 	}
 
@@ -88,22 +105,6 @@ public class Classe implements Serializable {
 		} else if (!idclasse.equals(other.idclasse))
 			return false;
 		return true;
-	}
-
-	public Double getDroit_ins() {
-		return droit_ins;
-	}
-
-	public void setDroit_ins(Double droit_ins) {
-		this.droit_ins = droit_ins;
-	}
-
-	public Double getMensualite() {
-		return mensualite;
-	}
-
-	public void setMensualite(Double mensualite) {
-		this.mensualite = mensualite;
 	}
 
 }

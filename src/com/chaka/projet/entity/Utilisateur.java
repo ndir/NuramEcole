@@ -84,6 +84,11 @@ public class Utilisateur implements Serializable {
 	private String telephone;
 	
 	
+	private String diplome_ac;
+	
+	private String diplome_p;
+	
+	
 	
 	/**
 	 *  insertion souané
@@ -312,6 +317,22 @@ public class Utilisateur implements Serializable {
 
 	public void setTelephone(String telephone) {
 		this.telephone = telephone;
+	}
+
+	public String getDiplome_ac() {
+		return diplome_ac;
+	}
+
+	public void setDiplome_ac(String diplome_ac) {
+		this.diplome_ac = diplome_ac;
+	}
+
+	public String getDiplome_p() {
+		return diplome_p;
+	}
+
+	public void setDiplome_p(String diplome_p) {
+		this.diplome_p = diplome_p;
 	}
 
 	

@@ -9,13 +9,18 @@ import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
+import org.jboss.seam.faces.FacesMessages;
 
 import com.ecole.entity.AnneeScolaire;
 import com.ecole.entity.Classe;
 import com.ecole.entity.Eleve;
+import com.ecole.entity.Evaluation;
+import com.ecole.entity.Inscription;
+import com.ecole.entity.Matiere;
 import com.ecole.entity.MatiereClasse;
 import com.ecole.entity.Niveau;
 import com.ecole.entity.Note;
+import com.ecole.entity.ParamInscription;
 
 @Scope(ScopeType.SESSION)
 @Name("noteService")
@@ -36,16 +41,74 @@ public class NoteService implements Serializable {
 	private List<Classe> listeClasse = new ArrayList<Classe>();
 	private List<String> heures = new ArrayList<String>();
 	private List<MatiereClasse> listeMatiereClasse = new ArrayList<MatiereClasse>();
+	private List<Matiere> listeMatiere = new ArrayList<Matiere>();
 	private MatiereClasse matClasse = new MatiereClasse();
 	private List<Eleve> eleves = new ArrayList<Eleve>();
+	private List<Evaluation> listeEval = new ArrayList<Evaluation>();
+	private List<Evaluation> listeEval1 = new ArrayList<Evaluation>();
+	private Evaluation eval = new Evaluation();
 	private Note note = new Note();
+	private List<String> lsite = new ArrayList<String>();
+	private String ev = new String();
+	private List<Note> listeNotes = new ArrayList<Note>();
 
-	
+	private boolean choix;
+
+	@In
+	private AnneeScolaire annee;
+
 	@SuppressWarnings("unchecked")
 	public void chargerListeMatClasse() {
 		listeMatiereClasse = new ArrayList<MatiereClasse>();
-		listeMatiereClasse = dataSource.createQuery("From MatiereClasse m inner join fetch m.classe c where c=:pc")
-				.setParameter("pc", classe).list();
+		listeMatiereClasse = dataSource.createQuery(
+				"From MatiereClasse m inner join fetch m.classe c inner join fetch m.matiere where c=:pc and m.annee_scol=:pannee")
+				.setParameter("pc", note.getCl()).setParameter("pannee", annee.getAnneeScolaire()).list();
+		if (listeMatiereClasse.size() > 0) {
+			for (MatiereClasse mc : listeMatiereClasse) {
+				listeMatiere.add(mc.getMatiere());
+			}
+		}
+		listeEval = new ArrayList<Evaluation>();
+		listeEval = dataSource.createQuery("From  Evaluation ").list();
+		for (Evaluation e : listeEval) {
+			lsite.add(e.getLibelle());
+		}
+	}
+
+	public void annulerAjoutNote() {
+		listeMatiereClasse = new ArrayList<MatiereClasse>();
+		listeEleves = new ArrayList<Eleve>();
+		listeMatiere = new ArrayList<Matiere>();
+		listeClasse = new ArrayList<Classe>();
+	}
+
+	public void ajouterNote() {
+
+		Evaluation e = (Evaluation) dataSource.createQuery("FRom Evaluation e where libelle=:plib")
+				.setParameter("plib", note.getEval()).uniqueResult();
+
+		for (Eleve eleve : listeEleves) {
+			if (eleve.isChoix() & !eleve.isExiste()) {
+				Note n = new Note();
+				n.setAnnee(annee);
+				n.setCl(note.getCl());
+				n.setEleve(eleve);
+				n.setEvaluation(e);
+				n.setMatiere(note.getMatiere());
+				n.setNote(eleve.getNote());
+				dataSource.save(n);
+			}
+
+			if (eleve.isChoix() & eleve.isExiste()) {
+				Note n = (Note) dataSource.get(Note.class, eleve.getIdNote());
+				if (n.getIdNote() != null) {
+					n.setNote(eleve.getNote());
+					dataSource.update(n);
+				}
+			}
+		}
+		FacesMessages.instance().addToControlFromResourceBundle("infoGenerique", "Notes sauvegardées avec succès");
+		annulerAjoutNote();
 	}
 
 	@SuppressWarnings("unchecked")
@@ -54,20 +117,83 @@ public class NoteService implements Serializable {
 		setListeClasse(dataSource.createQuery(" From Classe c inner join fetch c.niveau n where n=:pn")
 				.setParameter("pn", niveau).list());
 	}
+
 	@SuppressWarnings("unchecked")
 	public void chargerListeEleve() {
-		listeEleves = new ArrayList<Eleve>();
-		listeEleves = dataSource.createQuery("From Eleve e inner join fetch e.classe c where c=:pc")
-				.setParameter("pc", classe).list();
-		eleves=listeEleves;
 
+		ParamInscription p = (ParamInscription) dataSource
+				.createQuery("From ParamInscription p inner join fetch p.classe c inner join fetch p.annee pa "
+						+ " where c =:pc and pa =:pa ")
+				.setParameter("pc", note.getCl()).setParameter("pa", annee).uniqueResult();
+
+		if (p != null) {
+			this.setChoix(true);
+			List<Inscription> liste = dataSource
+					.createQuery(
+							"FRom Inscription i inner join fetch i.eleve inner join fetch i.paramins p where p =:pp")
+					.setParameter("pp", p).list();
+			listeEleves = new ArrayList<Eleve>();
+
+			for (Inscription in : liste) {
+				in.getEleve().setChoix(true);
+				noteExiste(in.getEleve());
+				listeEleves.add(in.getEleve());
+			}
+		}
+	}
+
+	public void noteExiste(Eleve e) {
+
+		Note n = (Note) dataSource.createQuery("From Note n inner join fetch n.cl c inner join fetch n.matiere m "
+				+ " inner join fetch n.eleve e inner join fetch n.annee an where c=:pc and m=:pm and an=:pan and e=:pe")
+				.setParameter("pc", note.getCl()).setParameter("pm", note.getMatiere()).setParameter("pan", annee)
+				.setParameter("pe", e).uniqueResult();
+		if (n != null) {
+			e.setExiste(true);
+			e.setIdNote(n.getIdNote());
+			e.setNote(n.getNote());
+		}
+
+	}
+
+	public void cocherTout() {
+		for (Eleve e : listeEleves) {
+			e.setChoix(choix);
+		}
+	}
+
+	@SuppressWarnings("unchecked")
+	public void chargerListeNotes() {
+
+		Evaluation e = (Evaluation) dataSource.createQuery("FRom Evaluation e where libelle=:plib")
+				.setParameter("plib", note.getEval()).uniqueResult();
+		listeNotes = new ArrayList<Note>();
+
+		listeNotes = dataSource
+				.createQuery("From Note n inner join fetch n.cl c inner join fetch n.matiere m "
+						+ "  inner join fetch n.eleve e inner join fetch n.evaluation ev inner join fetch n.annee an "
+						+ "  where c=:pc and ev=:pev and an=:pan and m=:pm")
+				.setParameter("pc", note.getCl()).setParameter("pev", e).setParameter("pan", annee)
+				.setParameter("pm", note.getMatiere()).list();
+		if (listeNotes.size() == 0) {
+			FacesMessages.instance().addToControlFromResourceBundle("erreurGenerique",
+					"Aucune(s) Note(s) pour la matière " + note.getMatiere().getLibelle() + " pour  " + e.getLibelle());
+		}
 	}
 
 	@SuppressWarnings("unchecked")
 	public String saisirNotes() {
 		listeNiveau = new ArrayList<Niveau>();
 		listeNiveau = dataSource.createQuery("From Niveau ").list();
-		return "/pages/ecole/note.xhtml";
+
+		return "/pages/nuramecole/note.xhtml";
+	}
+
+	public String visualiserNotes() {
+		listeNiveau = new ArrayList<Niveau>();
+		listeNiveau = dataSource.createQuery("From Niveau ").list();
+
+		return "/pages/nuramecole/voirnote.xhtml";
 	}
 
 	public Session getDataSource() {
@@ -172,6 +298,78 @@ public class NoteService implements Serializable {
 
 	public void setNote(Note note) {
 		this.note = note;
+	}
+
+	public AnneeScolaire getAnnee() {
+		return annee;
+	}
+
+	public void setAnnee(AnneeScolaire annee) {
+		this.annee = annee;
+	}
+
+	public List<Matiere> getListeMatiere() {
+		return listeMatiere;
+	}
+
+	public void setListeMatiere(List<Matiere> listeMatiere) {
+		this.listeMatiere = listeMatiere;
+	}
+
+	public List<Evaluation> getListeEval() {
+		return listeEval;
+	}
+
+	public void setListeEval(List<Evaluation> listeEval) {
+		this.listeEval = listeEval;
+	}
+
+	public Evaluation getEval() {
+		return eval;
+	}
+
+	public void setEval(Evaluation eval) {
+		this.eval = eval;
+	}
+
+	public List<Evaluation> getListeEval1() {
+		return listeEval1;
+	}
+
+	public void setListeEval1(List<Evaluation> listeEval1) {
+		this.listeEval1 = listeEval1;
+	}
+
+	public List<String> getLsite() {
+		return lsite;
+	}
+
+	public void setLsite(List<String> lsite) {
+		this.lsite = lsite;
+	}
+
+	public String getEv() {
+		return ev;
+	}
+
+	public void setEv(String ev) {
+		this.ev = ev;
+	}
+
+	public List<Note> getListeNotes() {
+		return listeNotes;
+	}
+
+	public void setListeNotes(List<Note> listeNotes) {
+		this.listeNotes = listeNotes;
+	}
+
+	public boolean isChoix() {
+		return choix;
+	}
+
+	public void setChoix(boolean choix) {
+		this.choix = choix;
 	}
 
 }

@@ -65,7 +65,7 @@ public class EvaluationConverter implements Converter {
 	public String getAsString(FacesContext myContextFaces, UIComponent uiComponent, Object objet) {
 		Evaluation typeContrat = (Evaluation)objet;
 		String resultat = "";
-		if (typeContrat != null) {
+		if (typeContrat != null && typeContrat.getIdEvaluation()!=null) {
 			resultat = typeContrat.getIdEvaluation().toString();
 		}
 		return resultat;

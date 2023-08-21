@@ -13,6 +13,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 /**
  * @author a626257
@@ -56,6 +57,15 @@ public class Eleve implements Serializable {
 	private String numero;
 	
 	private String sexe;
+	
+	private float note;
+	
+	
+	private boolean choix;
+	
+	private boolean existe;
+	
+	private Long idNote;
 	
 	@Id
 	@GeneratedValue
@@ -182,6 +192,42 @@ public class Eleve implements Serializable {
 
 	public void setSexe(String sexe) {
 		this.sexe = sexe;
+	}
+
+	@Transient
+	public float getNote() {
+		return note;
+	}
+
+	public void setNote(float note) {
+		this.note = note;
+	}
+
+	@Transient
+	public boolean isChoix() {
+		return choix;
+	}
+
+	public void setChoix(boolean choix) {
+		this.choix = choix;
+	}
+
+	@Transient
+	public boolean isExiste() {
+		return existe;
+	}
+
+	public void setExiste(boolean existe) {
+		this.existe = existe;
+	}
+
+	@Transient
+	public Long getIdNote() {
+		return idNote;
+	}
+
+	public void setIdNote(Long idNote) {
+		this.idNote = idNote;
 	}
 
 }

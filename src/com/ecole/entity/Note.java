@@ -9,6 +9,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 @Entity
 @Table(name = "note")
@@ -18,12 +19,15 @@ public class Note implements Serializable{
 	 */
 	private static final long serialVersionUID = 1L;
 	private Long idNote;
-	private String appreciation;
 	private Eleve eleve;
-	private MatiereClasse matiereClasse;	
+    private Matiere matiere;
+    private Classe cl;
 	private float note;
-	private String semestre;
 	private Evaluation evaluation;
+	private AnneeScolaire annee;
+	private String eval;
+	
+	
 	@Id
 	@GeneratedValue
 	public Long getIdNote() {
@@ -42,13 +46,7 @@ public class Note implements Serializable{
 		this.note = note;
 	}
 
-	public String getAppreciation() {
-		return appreciation;
-	}
-
-	public void setAppreciation(String appreciation) {
-		this.appreciation = appreciation;
-	}
+	
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "idEleve")
 	public Eleve getEleve() {
@@ -59,23 +57,9 @@ public class Note implements Serializable{
 		this.eleve = eleve;
 	}
 	
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "idMatiere")
-	public MatiereClasse getMatiereClasse() {
-		return matiereClasse;
-	}
-
-	public void setMatiereClasse(MatiereClasse matiereClasse) {
-		this.matiereClasse = matiereClasse;
-	}
 	
-	public String getSemestre() {
-		return semestre;
-	}
-
-	public void setSemestre(String semestre) {
-		this.semestre = semestre;
-	}
+	
+	
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "idEvaluation")
 	public Evaluation getEvaluation() {
@@ -84,5 +68,44 @@ public class Note implements Serializable{
 
 	public void setEvaluation(Evaluation evaluation) {
 		this.evaluation = evaluation;
+	}
+
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "idannee")
+	public AnneeScolaire getAnnee() {
+		return annee;
+	}
+
+	public void setAnnee(AnneeScolaire annee) {
+		this.annee = annee;
+	}
+
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "idclasse")
+	public Classe getCl() {
+		return cl;
+	}
+
+	public void setCl(Classe cl) {
+		this.cl = cl;
+	}
+
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "idmatiere")
+	public Matiere getMatiere() {
+		return matiere;
+	}
+
+	public void setMatiere(Matiere matiere) {
+		this.matiere = matiere;
+	}
+
+	@Transient
+	public String getEval() {
+		return eval;
+	}
+
+	public void setEval(String eval) {
+		this.eval = eval;
 	}
 }

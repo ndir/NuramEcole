@@ -144,7 +144,7 @@
 												</rich:columnGroup>
 											</f:facet>
 
-											<rich:column >
+											<rich:column>
 												<h:outputText value="#{classe.niveau.libelle}"
 													styleClass="grey" />
 											</rich:column>
@@ -157,13 +157,13 @@
 
 
 											<rich:column>
-												<h:outputText value="#{classe.droit_ins}" styleClass="grey">
+												<h:outputText value="#{classeService.getDroitInscription(classe)}" styleClass="grey">
 													<f:convertNumber pattern="#,##0" />
 												</h:outputText>
 											</rich:column>
 
 											<rich:column>
-												<h:outputText value="#{classe.mensualite}" styleClass="grey">
+												<h:outputText value="#{classeService.getMensualite(classe)}" styleClass="grey">
 													<f:convertNumber pattern="#,##0" />
 												</h:outputText>
 											</rich:column>
@@ -191,20 +191,20 @@
 
 												</a:commandLink>
 
-												<rich:spacer widht="30px"></rich:spacer>
-												<a:commandLink value="" status="waitStatus"
-													action="#{eleveService.versCreerEleve(classe)}"
-													oncomplete="javascript:Richfaces.showModalPanel('eleve',{width:1300, height:500})"
-													reRender="formeleve" title="Ajouter élève">
-													<s:graphicImage fileName="user_green.png"
-														style="border:0px;" value="/picto/user_green.png" />
+<!-- 												<rich:spacer widht="30px"></rich:spacer> -->
+<!-- 												<a:commandLink value="" status="waitStatus" -->
+<!-- 													action="#{eleveService.versCreerEleve(classe)}" -->
+<!-- 													oncomplete="javascript:Richfaces.showModalPanel('eleve',{width:1300, height:500})" -->
+<!-- 													reRender="formeleve" title="Ajouter élève"> -->
+<!-- 													<s:graphicImage fileName="user_green.png" -->
+<!-- 														style="border:0px;" value="/picto/user_green.png" /> -->
 
-												</a:commandLink>
+<!-- 												</a:commandLink> -->
 
 												<rich:spacer widht="30px"></rich:spacer>
 												<a:commandLink value="" status="waitStatus"
 													action="#{eleveService.listeEleves(classe)}"
-													oncomplete="javascript:Richfaces.showModalPanel('eleves',{width:1000, height:500})"
+													oncomplete="javascript:Richfaces.showModalPanel('eleves',{width:500, height:500})"
 													reRender="formeleves" title="Liste des éléves">
 													<s:graphicImage fileName="info.png" style="border:0px;"
 														value="/picto/info.png" />
@@ -332,10 +332,6 @@
 						<div class="row">
 							<div class="col-md-12">
 								<div class="panel panel-success">
-									<div class="panel-heading">
-										<h3 class="panel-title" style="text-align: center;">Liste
-											des matières</h3>
-									</div>
 
 									<div class="panel-body">
 										<div class="form-group has-success">
@@ -374,7 +370,7 @@
 												</rich:column>
 												<rich:column>
 													<a:commandLink value="" status="waitStatus"
-														oncomplete="javascript:Richfaces.hideModalPanel('matiere',{width:700, height:300})"
+														oncomplete="javascript:Richfaces.hideModalPanel('matiere',{width:500, height:300})"
 														action="#{classeService.supprimerMatiere(mat)}"
 														reRender="formmat" title="Supprimer la matière">
 														<s:graphicImage fileName="cross.png" style="border:0px;"
@@ -398,6 +394,102 @@
 
 					</h:form>
 				</rich:modalPanel>
+				<rich:modalPanel id="eleves"
+					style="background:url('../img2/fond.jpg') repeat-x scroll 0 0 #FFF;height:210; width:300"
+					moveable="true" styleClass="popupAttente">
+					<f:facet name="controls">
+
+						<a:commandLink value="" status="waitStatus" title="Fermer "
+							onclick="javascript:Richfaces.hideModalPanel('eleves')">
+							<s:graphicImage fileName="cross.png" style="border:0px;"
+								value="/picto/cross.png" width="16" height="16" alt="" />
+						</a:commandLink>
+					</f:facet>
+					<f:facet name="header">
+			 LISTE DES ELEVES 
+			</f:facet>
+					<rich:spacer height="10px" />
+					<h:form class="note-form" id="formeleves">
+						<div class="row">
+							<div class="col-md-12">
+								<div class="panel panel-success">
+									<div class="panel-body">
+										<div class="form-group has-success">
+
+											<rich:dataTable value="#{eleveService.listeEleves}" var="mat"
+												id="le" style="width:100%;" rows="10" rowClasses="row1,row2">
+												<f:facet name="header">
+													<rich:columnGroup>
+														<rich:column>
+															<h:outputLabel value="Nom"
+																style="color:white;font-size:12px;font-family: Arial;text-align:center;" />
+														</rich:column>
+
+														<rich:column>
+															<h:outputLabel value="Prénom"
+																style="color:white;font-size:12px;font-family: Arial;text-align:center;" />
+														</rich:column>
+
+														<rich:column>
+															<h:outputLabel value="Date de Naissance"
+																style="color:white;font-size:12px;font-family: Arial;text-align:center;" />
+														</rich:column>
+
+
+														<rich:column>
+															<h:outputLabel value="Réduction"
+																style="color:white;font-size:12px;font-family: Arial;text-align:center;" />
+														</rich:column>
+
+
+														<rich:column>
+															<h:outputLabel value="Titeur"
+																style="color:white;font-size:12px;font-family: Arial;text-align:center;" />
+														</rich:column>
+													</rich:columnGroup>
+												</f:facet>
+												<rich:column>
+													<h:outputLabel value="#{mat.nom}"></h:outputLabel>
+												</rich:column>
+												<rich:column>
+													<h:outputLabel value="#{mat.prenom}"></h:outputLabel>
+												</rich:column>
+
+												<rich:column>
+													<h:outputLabel value="#{mat.dateNaissance}">
+														<f:convertDateTime pattern="dd.MM.yyyy" />
+													</h:outputLabel>
+												</rich:column>
+
+
+												<rich:column>
+													<h:outputLabel
+														value="#{eleveService.versGetReduction(mat)}">
+														<f:convertNumber pattern="#,##0" />
+													</h:outputLabel>
+												</rich:column>
+
+
+												<rich:column>
+													<h:outputLabel value="#{mat.titeur}"></h:outputLabel>
+												</rich:column>
+
+											</rich:dataTable>
+											<rich:datascroller status="waitStatus" stepControls="auto"
+												style="width:100%" for="le" ajaxSingle="false"
+												rendered="#{not empty eleveService.listeEleves}" />
+										</div>
+
+									</div>
+
+								</div>
+							</div>
+						</div>
+
+
+					</h:form>
+				</rich:modalPanel>
+
 
 			</div>
 

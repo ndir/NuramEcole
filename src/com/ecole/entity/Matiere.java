@@ -52,31 +52,6 @@ public class Matiere implements Serializable {
 		this.libelle = libelle;
 	}
 
-	@Override
-	public int hashCode() {
-		final int prime = 31;
-		int result = 1;
-		result = prime * result
-				+ ((idmatiere == null) ? 0 : idmatiere.hashCode());
-		return result;
-	}
-
-	@Override
-	public boolean equals(Object obj) {
-		if (this == obj)
-			return true;
-		if (obj == null)
-			return false;
-		if (getClass() != obj.getClass())
-			return false;
-		Matiere other = (Matiere) obj;
-		if (idmatiere == null) {
-			if (other.idmatiere != null)
-				return false;
-		} else if (!idmatiere.equals(other.idmatiere))
-			return false;
-		return true;
-	}
 
 	
 
@@ -96,6 +71,31 @@ public class Matiere implements Serializable {
 
 	public void setCoef(int coef) {
 		this.coef = coef;
+	}
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((idmatiere == null) ? 0 : idmatiere.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		Matiere other = (Matiere) obj;
+		if (idmatiere == null) {
+			if (other.idmatiere != null)
+				return false;
+		} else if (!idmatiere.equals(other.idmatiere))
+			return false;
+		return true;
 	}
 
 }
