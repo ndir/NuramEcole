@@ -12,20 +12,7 @@
 		<f:loadBundle basename="messages" var="msgBundle">
 		</f:loadBundle>
 
-		<TABLE style="margin-left: 85%;">
-			<tr>
 
-				<td align="right" valign="top"><h:outputLabel
-						value=" #{utilisateur.prenom} - #{utilisateur.nom} (#{utilisateur.profile.libelle})"
-						styleClass="green"
-						style="color:#008040;font-size:15px;font-family: Arial;text-align:center;" />
-
-				</td>
-				<td align="right"><h:commandButton action="#{identity.logout}"
-						image="/picto/deconxion2.png" value=""
-						style="width:30px ; heigth:10px" /></td>
-			</tr>
-		</TABLE>
 		<br />
 		<br />
 		<div id="rd_brand_01">
@@ -48,16 +35,19 @@
 
 
 
-									<li><a:commandLink id="m_1_1" value="Profile utilisateur"
-											status="waitStatus"
-											action="#{gestionMenuService.versGestionProfile}">
-											<s:conversationPropagation propagation="none" />
-										</a:commandLink></li>
+
 
 									<li><a:commandLink value="Institution" status="waitStatus"
 											action="#{instService.versInstitution}">
 											<s:conversationPropagation propagation="none" />
 										</a:commandLink></li>
+
+
+									<li><a:commandLink value="Utilisateur" status="waitStatus"
+											action="#{userService.versCreerUser}">
+											<s:conversationPropagation propagation="none" />
+										</a:commandLink></li>
+
 
 									<li><a:commandLink id="m_1_5" value="Droits d'accès"
 											status="waitStatus"
@@ -68,7 +58,10 @@
 									<li><a:commandLink id="m_1_6" value="Généraux"></a:commandLink>
 										<ul>
 
-
+											<li><a:commandLink id="m_1_12" value="Inscription"
+													status="waitStatus" action="#{piService.versCreer}">
+													<s:conversationPropagation propagation="none" />
+												</a:commandLink></li>
 											<li><a:commandLink id="m_1_9" value="Matières"
 													status="waitStatus"
 													action="#{matiereService.versMatieres()}">
@@ -92,6 +85,11 @@
 													<s:conversationPropagation propagation="none" />
 												</a:commandLink></li>
 
+											<li><a:commandLink value="Réinscription"
+													status="waitStatus" action="#">
+													<s:conversationPropagation propagation="none" />
+												</a:commandLink></li>
+
 											<li><a:commandLink id="m_1_13" value="Evaluations"
 													status="waitStatus"
 													action="#{evaluationService.versEvaluation}">
@@ -99,7 +97,8 @@
 												</a:commandLink></li>
 										</ul></li>
 
-									<li><a:commandLink id="m_3_1" value="Comptabilité"></a:commandLink>
+
+<li><a:commandLink id="m_3_1" value="Comptabilité"></a:commandLink>
 										<ul>
 
 
@@ -116,10 +115,7 @@
 
 
 										</ul></li>
-									<li><a:commandLink id="m_1_12" value="Inscription"
-											status="waitStatus" action="#{piService.versCreer}">
-											<s:conversationPropagation propagation="none" />
-										</a:commandLink></li>
+
 
 								</ul></li>
 						</f:subview>
@@ -130,6 +126,21 @@
 									<s:conversationPropagation propagation="none" />
 								</a:commandLink>
 								<ul>
+									<li><a:commandLink value="Notes"></a:commandLink>
+										<ul>
+
+											<li><a:commandLink id="m_2_3" value="Saisir note"
+													status="waitStatus" action="#{noteService.saisirNotes}">
+													<s:conversationPropagation propagation="none" />
+												</a:commandLink></li>
+
+											<li><a:commandLink value="Visualiser note"
+													status="waitStatus" action="#{noteService.visualiserNotes}">
+													<s:conversationPropagation propagation="none" />
+												</a:commandLink></li>
+
+										</ul></li>
+
 									<li><a:commandLink id="m_2_1" value="Absences"
 											status="waitStatus" action="#{absenceService.versAbsences}">
 											<s:conversationPropagation propagation="none" />
@@ -138,12 +149,6 @@
 											status="waitStatus" action="#{retardService.versRetards}">
 											<s:conversationPropagation propagation="none" />
 										</a:commandLink></li>
-
-									<li><a:commandLink id="m_2_3" value="Saisir note"
-											status="waitStatus" action="#{noteService.saisirNotes}">
-											<s:conversationPropagation propagation="none" />
-										</a:commandLink></li>
-
 
 									<li><a:commandLink id="m_2_4" value="Moyenne devoir"
 											status="waitStatus" action="#">
@@ -160,10 +165,10 @@
 											<s:conversationPropagation propagation="none" />
 										</a:commandLink></li>
 
-
-
+									
 								</ul></li>
 						</f:subview>
+
 						<f:subview id="comptabilite">
 							<li><a:commandLink id="m_4" value="Comptabilité"
 									status="waitStatus" action="#">
@@ -176,6 +181,17 @@
 										</a:commandLink></li>
 								</ul></li>
 						</f:subview>
+
+
+						<span> <h:outputLabel
+								value=" #{utilisateur.prenom} - #{utilisateur.nom} (#{utilisateur.profile.libelle})"
+								styleClass="green"
+								style="color:#008040;font-size:15px;font-family: Arial;text-align:center;" />
+							<h:commandButton action="#{identity.logout}"
+								image="/picto/deconxion2.png" value=""
+								style="width:30px ; heigth:10px" />
+						</span>
+
 
 
 
