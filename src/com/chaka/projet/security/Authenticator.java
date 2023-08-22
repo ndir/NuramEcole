@@ -75,6 +75,9 @@ public class Authenticator {
 	@SuppressWarnings("unchecked")
 	public Authenticator() {
 		super();
+		if (listeAnnee.size() > 0) {
+			annee = listeAnnee.get(0);
+		}
 
 	}
 
@@ -234,6 +237,7 @@ public class Authenticator {
 
 	public List<AnneeScolaire> getListeAnnee() {
 		listeAnnee = dataSource.createQuery("From AnneeScolaire order by idannee desc").list();
+
 		return listeAnnee;
 	}
 
