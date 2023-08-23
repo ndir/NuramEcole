@@ -5,7 +5,6 @@ package com.ecole.entity;
 
 import java.io.Serializable;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
@@ -38,6 +37,10 @@ public class Inscription  implements Serializable {
 	private String commentaire;
 
 	private Double reliquat;
+	
+	private Boolean mois1,mois2,mois3,mois4,mois5,mois6,mois7,mois8,mois9;
+	
+	private int nbreMoisPaye;
 	
 	
 
@@ -78,6 +81,79 @@ public class Inscription  implements Serializable {
 
 	public void setReduction(Double reduction) {
 		this.reduction = reduction;
+	}
+
+	
+	public Boolean getMois1() {
+		return mois1;
+	}
+
+	public void setMois1(Boolean mois1) {
+		this.mois1 = mois1;
+	}
+
+	public Boolean getMois2() {
+		return mois2;
+	}
+
+	public void setMois2(Boolean mois2) {
+		this.mois2 = mois2;
+	}
+
+	public Boolean getMois3() {
+		return mois3;
+	}
+
+	public void setMois3(Boolean mois3) {
+		this.mois3 = mois3;
+	}
+
+	public Boolean getMois4() {
+		return mois4;
+	}
+
+	public void setMois4(Boolean mois4) {
+		this.mois4 = mois4;
+	}
+
+	public Boolean getMois5() {
+		return mois5;
+	}
+
+	public void setMois5(Boolean mois5) {
+		this.mois5 = mois5;
+	}
+
+	public Boolean getMois6() {
+		return mois6;
+	}
+
+	public void setMois6(Boolean mois6) {
+		this.mois6 = mois6;
+	}
+
+	public Boolean getMois7() {
+		return mois7;
+	}
+
+	public void setMois7(Boolean mois7) {
+		this.mois7 = mois7;
+	}
+
+	public Boolean getMois8() {
+		return mois8;
+	}
+
+	public void setMois8(Boolean mois8) {
+		this.mois8 = mois8;
+	}
+
+	public Boolean getMois9() {
+		return mois9;
+	}
+
+	public void setMois9(Boolean mois9) {
+		this.mois9 = mois9;
 	}
 
 	@Override
@@ -149,6 +225,14 @@ public class Inscription  implements Serializable {
 
 	public void setReliquat(Double reliquat) {
 		this.reliquat = reliquat;
+	}
+
+	public int getNbreMoisPaye() {
+		return nbreMoisPaye;
+	}
+
+	public void setNbreMoisPaye(int nbreMoisPaye) {
+		this.nbreMoisPaye = nbreMoisPaye;
 	}
 
 }

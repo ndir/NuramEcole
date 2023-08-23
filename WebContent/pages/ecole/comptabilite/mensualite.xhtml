@@ -1,220 +1,261 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//FR" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<!--  V 0.1 : Maj : 09/11/2007 -->
-
-<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
 	xmlns:ui="http://java.sun.com/jsf/facelets"
 	xmlns:h="http://java.sun.com/jsf/html"
 	xmlns:f="http://java.sun.com/jsf/core"
-	xmlns:rich="http://richfaces.ajax4jsf.org/rich"
 	xmlns:a="https://ajax4jsf.dev.java.net/ajax"
-	xmlns:t="http://myfaces.apache.org/tomahawk"
+	xmlns:rich="http://richfaces.ajax4jsf.org/rich"
 	xmlns:s="http://jboss.com/products/seam/taglib"
-	xmlns:c="http://java.sun.com/jstl/core"
-	template="/template/template.xhtml">
-	<!-- Page d'accueil -->
+	xmlns:t="http://myfaces.apache.org/tomahawk">
+<head>
+<!-- Global site tag (gtag.js) - Google Analytics -->
 
-	<ui:define name="title">GSS</ui:define>
-	<ui:define name="body">
-		<rich:spacer height="20px;"></rich:spacer>
-		<div class="divtest">
+<script>
+	window.dataLayer = window.dataLayer || [];
+	function gtag() {
+		dataLayer.push(arguments);
+	}
+	gtag('js', new Date());
 
+	gtag('config', 'UA-90680653-2');
+</script>
 
-			<div class="container" style="margin-left: 5%;">
-
-				<h:form id="liste">
-					<div class="row">
-						<div class="col-md-12">
-							<div class="panel panel-success">
-
-								<div class="panel-heading"></div>
-
-								<div class="panel-body">
+<!-- Required meta tags -->
+<meta charset="utf-8"></meta>
+<meta name="viewport"
+	content="width=device-width, initial-scale=1, shrink-to-fit=no"></meta>
 
 
-									<div class="form-group has-success">
-										<LEGEND>PAIEMENT DE LA MENSUALITE </LEGEND>
-									</div>
-									<FIELDSET>
+<!-- Meta -->
+<meta name="description"
+	content="Responsive Bootstrap 4 Dashboard Template"></meta>
+<meta name="author" content="BootstrapDash"></meta>
 
+<title>E-SCHOOL</title>
+
+<!-- vendor css -->
+<link href="lib/fontawesome-free/css/all.min.css" rel="stylesheet"></link>
+<link href="lib/ionicons/css/ionicons.min.css" rel="stylesheet"></link>
+<link href="lib/typicons.font/typicons.css" rel="stylesheet"></link>
+<link href="lib/flag-icon-css/css/flag-icon.min.css" rel="stylesheet"></link>
+
+<!-- azia CSS -->
+<link rel="stylesheet" href="css/azia.css"></link>
+
+</head>
+<body>
+
+	<div class="az-header">
+		<div class="container">
+
+			<div class="az-header-center"></div>
+
+			<ui:include src="/template/include/header2.xhtml" />
+
+
+		</div>
+	</div>
+	<a:status id="waitStatusHaut" forceId="true"
+		onstart="javascript:Richfaces.showModalPanel('waitModalPanelHaut');"
+		onstop="javascript:Richfaces.hideModalPanel('waitModalPanelHaut');" />
+	<a:status id="waitStatus" forceId="true"
+		onstart="javascript:Richfaces.showModalPanel('waitModalPanel');"
+		onstop="javascript:Richfaces.hideModalPanel('waitModalPanel');" />
+	<rich:modalPanel id="waitModalPanel" autosized="false" width="500"
+		height="100" styleClass="popupAttente" moveable="false"
+		resizeable="false">
+		<div style="text-align: center; height: 40px;">
+			<img src="../../picto/loading.gif" alt="" width="32" height="32" />
+		</div>
+		<span> <h:outputText
+				value="#{msgBundle['label.traitementencours']}" />
+		</span>
+	</rich:modalPanel>
+	<a:outputPanel id="erreurStd" ajaxRendered="true">
+		<h:message infoClass="informationGenerique"
+			errorClass="informationGenerique" warnClass="informationGenerique"
+			for="infoGenerique" />
+		<h:inputHidden id="infoGenerique" />
+		<h:message infoClass="confirmationerrorGenerique"
+			errorClass="confirmationerrorGenerique"
+			warnClass="confirmationerrorGenerique" for="erreurGenerique" />
+		<h:inputHidden id="erreurGenerique" style="font-size:12px;" />
+	</a:outputPanel>
+
+	<div class="az-content az-content-dashboard">
+		<div class="container">
+			<div class="az-content-body">
+				<div class="row row-sm mg-b-20">
+					<div class="col-lg-12"></div>
+				</div>
+
+				<rich:panel header="PARAMETRAGE INSCRIPTION "
+					styleclass="panel panel-success">
+					<div class="row row-sm mg-b-20">
+						<div class="col-lg-12">
+							<div class="row row-sm">
+
+
+								<div class="table-responsive">
+									<h:form id="liste">
 										<TABLE class="table">
 											<tr>
-												<td><h:outputLabel styleClass="grey" value="Niveau" /></td>
-												<td><h:selectOneMenu class="form-control"
-														value="#{recetteService.niveau}"
-														converter="#{niveauConverter}" id="cont"
-														noSelectionLabel="--- Selectionnez ---">
-
-														<s:selectItems value="#{recetteService.listeNiveau}"
-															var="type" label="#{type.libelle}"
-															noSelectionLabel="--- Selectionnez ---" />
-
-														<a:support event="onchange"
-															action="#{recetteService.chargerListeClasse()}"
-															ajaxSingle="true" reRender="classe" status="waitStatus"></a:support>
-													</h:selectOneMenu></td>
-
+												<td><h:outputLabel styleClass="grey" value="Année" /></td>
+												<td><h:inputText
+														value="#{piService.param.annee.anneeScolaire}"
+														required="true" class="form-control" disabled="true" /></td>
 												<td><h:outputLabel styleClass="grey" value="Classe" /></td>
 												<td><h:selectOneMenu class="form-control"
-														value="#{recetteService.classe}"
-														converter="#{classeConverter}" id="classe"
-														noSelectionLabel="--- Selectionnez ---">
-
-														<s:selectItems value="#{recetteService.listeClasse}"
-															var="type" label="#{type.libelle}"
+														value="#{piService.param.classe}"
+														converter="#{classeConverter}" id="classe">
+														<s:selectItems value="#{piService.listeClasse}" var="type"
+															label="#{type.libelle}"
 															noSelectionLabel="--- Selectionnez ---" />
-														<a:support event="onchange"
-															action="#{recetteService.chargerListeEleveClasse(recetteService.classe)}"
-															ajaxSingle="true" reRender="eleve" status="waitStatus"></a:support>
-
-													</h:selectOneMenu></td>
-												<td><h:outputLabel styleClass="grey" value="Eleve" /></td>
-												<td><h:selectOneMenu class="form-control"
-														value="#{recetteService.eleve}"
-														converter="#{eleveConverter}" id="eleve"
-														noSelectionLabel="--- Selectionnez ---">
-														<s:selectItems value="#{recetteService.listeEleve}"
-															var="el" label="#{el.prenom} #{el.nom} / De #{el.titeur}"
-															noSelectionLabel="--- Selectionnez ---" />
-														<a:support event="onchange"
-															action="#{recetteService.retreiveInfoIncription}"
-															ajaxSingle="true" reRender="liste" status="waitStatus"></a:support>
-
 													</h:selectOneMenu></td>
 
 											</tr>
-										</TABLE>
-									</FIELDSET>
-									<DIV id="idDivMEns" rendered="false">
-										<TABLE class="table">
 											<tr>
-												<td width="500">
-													<div class="panel-body" id="tbEleve">
 
 
-														<div class="form-group has-success"></div>
-														<table class="table">
-															<tr>
+												<td><h:outputLabel styleClass="grey"
+														value="Montant Inscription" /></td>
+												<td><h:inputText value="#{piService.param.droit_ins}"
+														required="true" class="form-control" /></td>
 
-																<td><h:outputLabel styleClass="grey"
-																		id="infosEleve"
-																		value="L'ELEVE :  #{recetteService.eleve.prenom} #{recetteService.eleve.nom} / De #{recetteService.eleve.titeur} en classe de #{recetteService.classe.libelle}" /></td>
-															</tr>
-															<tr>
-																<td><h:outputLabel styleClass="grey"
-																		value="MENSUALITE CLASSE : ">
-																		<h:outputText styleClass="grey" id="idInfosValMens"
-																			value="#{recetteService.inscription.paramins.mensualite}">
-																			<f:convertNumber pattern="#,##0" />
-																		</h:outputText>
+												<td><h:outputLabel styleClass="grey"
+														value="Montant Mensualité" /></td>
+												<td><h:inputText value="#{piService.param.mensualite}"
+														required="true" class="form-control" /></td>
+											</tr>
+										</TABLE>
+										<p align="center">
 
-																	</h:outputLabel> <h:outputLabel styleClass="grey" value="  F CFA " /></td>
-															</tr>
-															<tr>
-																<td><h:outputLabel styleClass="grey"
-																		value="BENEFICIE DE REDUCTION DE : ">
-																		<h:outputText styleClass="grey" id="infosReduction"
-																			value="#{recetteService.inscription.reduction}">
-																			<f:convertNumber pattern="#,##0" />
-																		</h:outputText>
-																	</h:outputLabel> <h:outputLabel styleClass="grey" value="  F CFA " /></td>
-															</tr>
-															<tr>
-																<td><h:outputLabel styleClass="grey"
-																		value="RELIQUAT : ">
-																		<h:outputText styleClass="grey" id="infosReliquat"
-																			value="#{recetteService.inscription.reliquat}">
-																			<f:convertNumber pattern="#,##0" />
-																		</h:outputText>
-																	</h:outputLabel> <h:outputLabel styleClass="grey" value="  F CFA " /></td>
-															</tr>
-															<tr>
-																<td><h:outputLabel styleClass="grey"
-																		value="A PAYER : ">
-																		<h:inputText styleClass="grey" id="infosAPayer"
-																			value="#{recetteService.recetteEnCreation.montantPaye}" />
 
-																	</h:outputLabel> <h:outputLabel styleClass="grey" value="  F CFA " /></td>
-															</tr>
-															<TR>
-																<td align="center"><a:commandLink
-																		styleClass="btn btn-danger" value=""
-																		action="#{recetteService.annulerAjout()}"
-																		reRender="liste" status="waitStatus">
+											<a:commandLink styleClass="btn btn-danger" value=""
+												action="#{piService.annulerAjout()}" reRender="liste"
+												status="waitStatus">
 																		
 																		Annuler			
-																				</a:commandLink> <rich:spacer width="10px;"></rich:spacer> <a:commandLink
-																		styleClass="btn btn-success" value=""
-																		action="#{recetteService.ajouterRecette()}"
-																		reRender="liste" status="waitStatus">
+																				</a:commandLink>
+											<rich:spacer width="10px;"></rich:spacer>
+
+											<a:commandLink styleClass="btn btn-success" value=""
+												action="#{piService.ajouterInscription()}" reRender="liste, table"
+												status="waitStatus">
 																		
 																		Valider			
-																				</a:commandLink></td>
-															</TR>
+																				</a:commandLink>
 
-														</table>
+										</p>
+									</h:form>
+									<h:form id="table">
+										<rich:dataTable value="#{piService.liste}" var="classe"
+											id="lstdemande" style="width:100%;" rows="8"
+											rowClasses="row1,row2">
+											<f:facet name="header">
+												<rich:columnGroup>
 
-
-											</div>
-											</td>
-
-
-
-											<td />
-											<td><rich:dataTable value="#{noteService.eleves}"
-													var="mat" id="idTablistMesualite" style="width:100%;" rows="8"
-													rowClasses="row1,row2">
-													<f:facet name="header">
-														<rich:columnGroup>
-
-															<rich:column>
-																<h:outputLabel value="Nom"
-																	style="color:white;font-size:12px;font-family: Arial;text-align:center;" />
-															</rich:column>
-
-															<rich:column>
-																<h:outputLabel value="Prénom"
-																	style="color:white;font-size:12px;font-family: Arial;text-align:center;" />
-															</rich:column>
-
-															<rich:column>
-																<h:outputLabel value="Note"
-																	style="color:white;font-size:12px;font-family: Arial;text-align:center;" />
-															</rich:column>
-
-														</rich:columnGroup>
-													</f:facet>
-
-													<rich:column filterBy="#{mat.nom}" filterEvent="onkeyup">
-														<h:outputLabel value="#{mat.nom}"></h:outputLabel>
-													</rich:column>
-													<rich:column filterBy="#{mat.prenom}" filterEvent="onkeyup">
-														<h:outputLabel value="#{mat.prenom}"></h:outputLabel>
-													</rich:column>
 													<rich:column>
-														<h:inputText value="#{noteService.note.note}"
-															class="form-control" width="5px"></h:inputText>
+														<h:outputLabel value="Annee"
+															style="color:white;font-size:12px;font-family: Arial;text-align:center;" />
 													</rich:column>
 
-												</rich:dataTable> <rich:datascroller status="waitStatus" stepControls="auto"
-													style="width:100%" for="idTablistMesualite" ajaxSingle="false"
-													rendered="#{not empty noteService.listeEleves}" /></td>
-											</tr>
-										</TABLE>
-									</DIV>
+													<rich:column>
+														<h:outputLabel value="Classe"
+															style="color:white;font-size:12px;font-family: Arial;text-align:center;" />
+													</rich:column>
+
+													<rich:column>
+														<h:outputLabel value="Montant Inscription"
+															style="color:white;font-size:12px;font-family: Arial;text-align:center;" />
+													</rich:column>
+
+													<rich:column>
+														<h:outputLabel value="Montant Mensualité"
+															style="color:white;font-size:12px;font-family: Arial;text-align:center;" />
+													</rich:column>
+
+
+													<rich:column>
+														<h:outputLabel value="Action"
+															style="color:white;font-size:12px;font-family: Arial;text-align:center;" />
+													</rich:column>
+
+
+												</rich:columnGroup>
+											</f:facet>
+
+
+											<rich:column>
+												<h:outputText value="#{classe.annee.anneeScolaire}"
+													styleClass="grey" />
+											</rich:column>
+
+											<rich:column filterBy="#{classe.classe.libelle}"
+												filterEvent="onkeyup">
+												<h:outputText value="#{classe.classe.libelle}"
+													styleClass="grey" />
+											</rich:column>
+
+
+											<rich:column>
+												<h:outputText value="#{classe.droit_ins}" styleClass="grey">
+													<f:convertNumber pattern="#,##0" />
+												</h:outputText>
+											</rich:column>
+
+
+											<rich:column>
+												<h:outputText value="#{classe.mensualite}" styleClass="grey">
+
+													<f:convertNumber pattern="#,##0" />
+												</h:outputText>
+											</rich:column>
+
+
+											<rich:column>
+
+
+												<a:commandLink value="" status="waitStatus"
+													action="#{piService.versModifierInscription(classe)}"
+													reRender="liste" title="Modifier">
+													<s:graphicImage fileName="edit.png" style="border:0px;"
+														value="/picto/edit.png" width="16" height="16" alt="" />
+
+												</a:commandLink>
+
+											</rich:column>
+
+										</rich:dataTable>
+										<rich:datascroller status="waitStatus" stepControls="auto"
+											style="width:100%" for="lstdemande"
+											rendered="#{not empty piService.liste}" />
+									</h:form>
 								</div>
+
 
 							</div>
 						</div>
 					</div>
-
-
-				</h:form>
+				</rich:panel>
 			</div>
-
-
-
 		</div>
+	</div>
 
+	<!-- az-content -->
 
-	</ui:define>
-</ui:composition>
+	<div class="az-footer ht-20">
+		<div class="container ht-100p pd-t-0-f">
+			<span
+				class="text-muted d-block text-center text-sm-left d-sm-inline-block">Copyright
+				© NUMRAMTECH 2023</span> <span
+				class="float-none float-sm-right d-block mt-1 mt-sm-0 text-center">
+				<a href="#" target="_blank"></a>
+			</span>
+		</div>
+		<!-- container -->
+	</div>
+	<!-- az-footer -->
+
+</body>
+</html>

@@ -3,7 +3,6 @@ package com.ecole.entity;
 import java.io.Serializable;
 import java.util.Date;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
@@ -12,8 +11,6 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
-import org.jboss.seam.annotations.In;
-import org.jboss.seam.annotations.Out;
 
 import com.chaka.projet.entity.Utilisateur;
 
@@ -29,6 +26,7 @@ public class Recette implements Serializable{
 	private TypeRecette typeRecette;
 	private Double montantPaye;
 	private Date datePaiment;
+	private int[] mois; 
 	
 	/**
 	 * Utilisateur loggué
@@ -137,7 +135,15 @@ public class Recette implements Serializable{
 			return false;
 		return true;
 	}
-	
 
+	public int[] getMois() {
+		return mois;
+	}
+
+	public void setMois(int[] mois) {
+		this.mois = mois;
+	}
+
+	
 	
 }

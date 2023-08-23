@@ -43,14 +43,6 @@ public class RecetteService implements Serializable {
 	 */
 	private static final long serialVersionUID = 1L;
 
-	public Eleve getEleve() {
-		return eleve;
-	}
-
-	public void setEleve(Eleve eleve) {
-		this.eleve = eleve;
-	}
-
 	private List<Recette> listeRecette = new ArrayList<Recette>();
 
 	private Recette recetteEnCreation = new Recette();
@@ -87,17 +79,17 @@ public class RecetteService implements Serializable {
 	private Classe classe;
 	private List<Classe> listeClasse;
 
-
+	private String[] lesMois;
 
 	@SuppressWarnings("unchecked")
 	public void chargerListeRecette(String codeRecette) {
 		listeRecette = new ArrayList<Recette>();
-		listeRecette = dataSource.createQuery(" From Recette ").list();
+		listeRecette = dataSource.createQuery(" From Recette  where inscription.eleve=:pe order by idRecette desc ")
+				.setParameter("pe", this.eleve).list();
 	}
 
 	public String versRecette() {
-		this.setRecetteEnCreation(new Recette());
-		//chargerListeRecette();
+		
 		return "/pages/ecole/creereval.xhtml";
 	}
 	/**
@@ -108,9 +100,8 @@ public class RecetteService implements Serializable {
 		System.out.println("anneé en cours "+annee.getAnneeScolaire());
 		retreiveListNiveau();
 		this.setRecetteEnCreation(new Recette());
-		codeRecette = "MENS";
-		chargerListeRecette(codeRecette);
-		return "/pages/ecole/comptabilite/mensualite.xhtml";
+
+		return "/pages/nuramecole/mensualite.xhtml";
 	}
 	/**
 	 * get liste niveau
@@ -150,6 +141,9 @@ public class RecetteService implements Serializable {
 				.setParameter("pe", this.eleve)
 				.setParameter("pa", annee).uniqueResult();
 		System.out.println("**La prinscription est la "+inscription.getParamins().getMensualite()+"\n reduction "+inscription.getReduction());
+		codeRecette = "MENS";
+		
+		chargerListeRecette(codeRecette);
 		return inscription;
 	}
 	public void ajouterRecette() {
@@ -168,7 +162,7 @@ public class RecetteService implements Serializable {
 			} else {
 				dataSource.update(recetteEnCreation);
 			}
-			//chargerListeRecette();
+			chargerListeRecette("MENS");
 			this.setRecetteEnCreation(new Recette());
 			FacesMessages.instance().addToControlFromResourceBundle("infoGenerique", "Evaluation ajoutée avec succés");
 		} catch (HibernateException e) {
@@ -270,6 +264,21 @@ public class RecetteService implements Serializable {
 
 	public void setParamInscription(ParamInscription paramInscription) {
 		this.paramInscription = paramInscription;
+	}
+	public Eleve getEleve() {
+		return eleve;
+	}
+
+	public void setEleve(Eleve eleve) {
+		this.eleve = eleve;
+	}
+
+	public String[] getLesMois() {
+		return lesMois;
+	}
+
+	public void setLesMois(String[] lesMois) {
+		this.lesMois = lesMois;
 	}
 
 }

@@ -1,0 +1,360 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:a="https://ajax4jsf.dev.java.net/ajax"
+	xmlns:rich="http://richfaces.ajax4jsf.org/rich"
+	xmlns:s="http://jboss.com/products/seam/taglib"
+	xmlns:t="http://myfaces.apache.org/tomahawk">
+<head>
+<!-- Global site tag (gtag.js) - Google Analytics -->
+
+<script>
+	window.dataLayer = window.dataLayer || [];
+	function gtag() {
+		dataLayer.push(arguments);
+	}
+	gtag('js', new Date());
+
+	gtag('config', 'UA-90680653-2');
+</script>
+
+<!-- Required meta tags -->
+<meta charset="utf-8"></meta>
+<meta name="viewport"
+	content="width=device-width, initial-scale=1, shrink-to-fit=no"></meta>
+
+
+<!-- Meta -->
+<meta name="description"
+	content="Responsive Bootstrap 4 Dashboard Template"></meta>
+<meta name="author" content="BootstrapDash"></meta>
+
+<title>E-SCHOOL</title>
+
+<!-- vendor css -->
+<link href="lib/fontawesome-free/css/all.min.css" rel="stylesheet"></link>
+<link href="lib/ionicons/css/ionicons.min.css" rel="stylesheet"></link>
+<link href="lib/typicons.font/typicons.css" rel="stylesheet"></link>
+<link href="lib/flag-icon-css/css/flag-icon.min.css" rel="stylesheet"></link>
+
+<!-- azia CSS -->
+<link rel="stylesheet" href="css/azia.css"></link>
+
+</head>
+<body>
+
+	<div class="az-header">
+		<div class="container">
+
+			<div class="az-header-center"></div>
+
+			<ui:include src="/template/include/header2.xhtml" />
+
+
+		</div>
+	</div>
+	<a:status id="waitStatusHaut" forceId="true"
+		onstart="javascript:Richfaces.showModalPanel('waitModalPanelHaut');"
+		onstop="javascript:Richfaces.hideModalPanel('waitModalPanelHaut');" />
+	<a:status id="waitStatus" forceId="true"
+		onstart="javascript:Richfaces.showModalPanel('waitModalPanel');"
+		onstop="javascript:Richfaces.hideModalPanel('waitModalPanel');" />
+	<rich:modalPanel id="waitModalPanel" autosized="false" width="500"
+		height="100" styleClass="popupAttente" moveable="false"
+		resizeable="false">
+		<div style="text-align: center; height: 40px;">
+			<img src="../../picto/loading.gif" alt="" width="32" height="32" />
+		</div>
+		<span> <h:outputText
+				value="#{msgBundle['label.traitementencours']}" />
+		</span>
+	</rich:modalPanel>
+	<a:outputPanel id="erreurStd" ajaxRendered="true">
+		<h:message infoClass="informationGenerique"
+			errorClass="informationGenerique" warnClass="informationGenerique"
+			for="infoGenerique" />
+		<h:inputHidden id="infoGenerique" />
+		<h:message infoClass="confirmationerrorGenerique"
+			errorClass="confirmationerrorGenerique"
+			warnClass="confirmationerrorGenerique" for="erreurGenerique" />
+		<h:inputHidden id="erreurGenerique" style="font-size:12px;" />
+	</a:outputPanel>
+
+	<div class="az-content az-content-dashboard">
+		<div class="container">
+			<div class="az-content-body">
+				<div class="row row-sm mg-b-20">
+					<div class="col-lg-12"></div>
+				</div>
+
+				<rich:panel
+					header="PAIEMENT ELEVE POUR L'ANNEE #{annee.anneeScolaire}"
+					styleclass="panel panel-success">
+					<div class="row row-sm mg-b-20">
+						<div class="col-lg-12">
+							<div class="row row-sm">
+
+
+								<div class="table-responsive">
+									<h:form id="liste">
+
+										<TABLE class="table">
+											<tr>
+												<td><h:outputLabel styleClass="grey" value="Niveau" /></td>
+												<td><h:selectOneMenu class="form-control"
+														value="#{recetteService.niveau}"
+														converter="#{niveauConverter}" id="cont"
+														noSelectionLabel="--- Selectionnez ---">
+
+														<s:selectItems value="#{recetteService.listeNiveau}"
+															var="type" label="#{type.libelle}"
+															noSelectionLabel="--- Selectionnez ---" />
+
+														<a:support event="onchange"
+															action="#{recetteService.chargerListeClasse()}"
+															ajaxSingle="true" reRender="classe" status="waitStatus"></a:support>
+													</h:selectOneMenu></td>
+
+												<td><h:outputLabel styleClass="grey" value="Classe" /></td>
+												<td><h:selectOneMenu class="form-control"
+														value="#{recetteService.classe}"
+														converter="#{classeConverter}" id="classe"
+														noSelectionLabel="--- Selectionnez ---">
+
+														<s:selectItems value="#{recetteService.listeClasse}"
+															var="type" label="#{type.libelle}"
+															noSelectionLabel="--- Selectionnez ---" />
+														<a:support event="onchange"
+															action="#{recetteService.chargerListeEleveClasse(recetteService.classe)}"
+															ajaxSingle="true" reRender="eleve" status="waitStatus"></a:support>
+
+													</h:selectOneMenu></td>
+												<td><h:outputLabel styleClass="grey" value="Eleve" /></td>
+												<td><h:selectOneMenu class="form-control"
+														value="#{recetteService.eleve}"
+														converter="#{eleveConverter}" id="eleve"
+														noSelectionLabel="--- Selectionnez ---">
+														<s:selectItems value="#{recetteService.listeEleve}"
+															var="el" label="#{el.prenom} #{el.nom} / De #{el.titeur}"
+															noSelectionLabel="--- Selectionnez ---" />
+														<a:support event="onchange"
+															action="#{recetteService.retreiveInfoIncription}"
+															ajaxSingle="true" reRender="liste" status="waitStatus"></a:support>
+
+													</h:selectOneMenu></td>
+
+											</tr>
+											<tr>
+												<td><h:outputLabel styleClass="grey"
+														value="Mois scolaires" /></td>
+												<td><h:outputLabel styleClass="grey" value="Nov" />
+												 <h:selectBooleanCheckbox
+														id="active" value="#{recetteService.inscription.mois1}"
+														disabled="#{recetteService.inscription.mois1}">
+														</h:selectBooleanCheckbox>
+
+													<h:outputLabel styleClass="grey" value="Dec" /> 
+													<h:selectBooleanCheckbox
+														value="#{recetteService.inscription.mois2}"
+														disabled="#{recetteService.inscription.mois2}">
+
+													</h:selectBooleanCheckbox> 
+													
+													<h:outputLabel styleClass="grey" value="Jan" />
+													 <h:selectBooleanCheckbox
+														value="#{recetteService.inscription.mois3}">
+													</h:selectBooleanCheckbox> 
+													<h:outputLabel styleClass="grey" value="Fev" />
+													 <h:selectBooleanCheckbox
+														value="#{recetteService.inscription.mois4}">
+													</h:selectBooleanCheckbox> 
+													<h:outputLabel styleClass="grey" value="Mars" />
+													 <h:selectBooleanCheckbox
+														value="#{recetteService.inscription.mois5}">
+													</h:selectBooleanCheckbox> 
+													<h:outputLabel styleClass="grey" value="Avr" /> 
+													<h:selectBooleanCheckbox
+														value="#{recetteService.inscription.mois6}">
+													</h:selectBooleanCheckbox> 
+													<h:outputLabel styleClass="grey" value="Mai " /> 
+													
+													<h:selectBooleanCheckbox
+														value="#{recetteService.inscription.mois7}">
+													</h:selectBooleanCheckbox> 
+													<h:outputLabel styleClass="grey" value="Juin " /> 
+													<h:selectBooleanCheckbox
+														value="#{recetteService.inscription.mois8}">
+													</h:selectBooleanCheckbox> 
+													<h:outputLabel styleClass="grey" value="Juil" /> 
+													<h:selectBooleanCheckbox
+														value="#{recetteService.inscription.mois9}">
+													</h:selectBooleanCheckbox></td>
+											</tr>
+										</TABLE>
+
+
+
+										<TABLE>
+											<tr>
+												<td width="450">
+													<FIELDSET>
+														<LEGEND><h6>FORMULAIRE DE PAIEMENT</h6></LEGEND>
+
+														<table class="table">
+															<tr>
+
+																<td><h:outputLabel styleClass="grey"
+																		id="infosEleve"
+																		value="L'ELEVE :  #{recetteService.eleve.prenom} #{recetteService.eleve.nom} / De #{recetteService.eleve.titeur} en classe de #{recetteService.classe.libelle}" /></td>
+															</tr>
+															<tr>
+																<td><h:outputLabel styleClass="grey"
+																		value="MENSUALITE CLASSE : ">
+																		<h:outputText styleClass="grey" id="idInfosValMens"
+																			value="#{recetteService.inscription.paramins.mensualite}">
+																			<f:convertNumber pattern="#,##0" />
+																		</h:outputText>
+
+																	</h:outputLabel> <h:outputLabel styleClass="grey" value="  F CFA " /></td>
+															</tr>
+															<tr>
+																<td><h:outputLabel styleClass="grey"
+																		value="BENEFICIE DE REDUCTION DE : ">
+																		<h:outputText styleClass="grey" id="infosReduction"
+																			value="#{recetteService.inscription.reduction}">
+																			<f:convertNumber pattern="#,##0" />
+																		</h:outputText>
+																	</h:outputLabel> <h:outputLabel styleClass="grey" value="  F CFA " /></td>
+															</tr>
+															<tr>
+																<td><h:outputLabel styleClass="grey"
+																		value="RELIQUAT : ">
+																		<h:outputText styleClass="grey" id="infosReliquat"
+																			value="#{recetteService.inscription.reliquat}">
+																			<f:convertNumber pattern="#,##0" />
+																		</h:outputText>
+																	</h:outputLabel> <h:outputLabel styleClass="grey" value="  F CFA " /></td>
+															</tr>
+															<tr>
+																<td><h:outputLabel styleClass="grey"
+																		value="A PAYER : ">
+																		<h:inputText styleClass="grey" id="infosAPayer"
+																			value="#{recetteService.recetteEnCreation.montantPaye}" />
+
+																	</h:outputLabel> <h:outputLabel styleClass="grey" value="  F CFA " /></td>
+															</tr>
+															<TR>
+																<td align="center"><a:commandLink
+																		styleClass="btn btn-danger" value=""
+																		action="#{recetteService.annulerAjout()}"
+																		reRender="liste" status="waitStatus">
+																		
+																		Annuler			
+																				</a:commandLink> <rich:spacer width="10px;"></rich:spacer> <a:commandLink
+																		styleClass="btn btn-success" value=""
+																		action="#{recetteService.ajouterRecette()}"
+																		reRender="liste" status="waitStatus">
+																		
+																		Valider			
+																				</a:commandLink></td>
+															</TR>
+
+														</table>
+													</FIELDSET>
+
+												</td>
+
+												<td width="50" valign="top" />
+
+
+												<td width="500" valign="top">
+
+													<FIELDSET>
+														<LEGEND><h6>HISTORIQUE DES PAIEMENTS</h6></LEGEND>
+														<rich:dataTable value="#{recetteService.listeRecette}"
+															var="rec" id="idTablistMesualite" style="width:100%;"
+															rows="8" rowClasses="row1,row2">
+															<f:facet name="header">
+																<rich:columnGroup>
+
+																	<rich:column>
+																		<h:outputLabel value="Mois"
+																			style="color:white;font-size:12px;font-family: Arial;text-align:center;" />
+																	</rich:column>
+																	<rich:column>
+																		<h:outputLabel value="Date"
+																			style="color:white;font-size:12px;font-family: Arial;text-align:center;" />
+																	</rich:column>
+																	<rich:column>
+																		<h:outputLabel value="Montant Payé"
+																			style="color:white;font-size:12px;font-family: Arial;text-align:center;" />
+																	</rich:column>
+
+																	<rich:column>
+																		<h:outputLabel value="Reliquat"
+																			style="color:white;font-size:12px;font-family: Arial;text-align:center;" />
+																	</rich:column>
+
+																</rich:columnGroup>
+															</f:facet>
+
+															<rich:column>
+																<h:outputLabel value=""></h:outputLabel>
+															</rich:column>
+															<rich:column>
+																<h:outputLabel value="#{rec.datePaiment}"></h:outputLabel>
+															</rich:column>
+															<rich:column>
+																<h:outputLabel value="#{rec.montantPaye}">
+																	<f:convertNumber pattern="#,##0" />
+																</h:outputLabel>
+															</rich:column>
+															<rich:column>
+																<h:outputLabel value="#{rec.montantPaye}">
+																	<f:convertNumber pattern="#,##0" />
+																</h:outputLabel>
+															</rich:column>
+
+														</rich:dataTable>
+														<rich:datascroller status="waitStatus" stepControls="auto"
+															style="width:100%" for="idTablistMesualite"
+															ajaxSingle="false"
+															rendered="#{not empty recetteService.listeRecette}" />
+													</FIELDSET>
+												</td>
+											</tr>
+										</TABLE>
+									</h:form>
+
+
+								</div>
+
+
+							</div>
+						</div>
+					</div>
+				</rich:panel>
+			</div>
+		</div>
+	</div>
+
+	<!-- az-content -->
+
+	<div class="az-footer ht-20">
+		<div class="container ht-100p pd-t-0-f">
+			<span
+				class="text-muted d-block text-center text-sm-left d-sm-inline-block">Copyright
+				© NUMRAMTECH 2023</span> <span
+				class="float-none float-sm-right d-block mt-1 mt-sm-0 text-center">
+				<a href="#" target="_blank"></a>
+			</span>
+		</div>
+		<!-- container -->
+	</div>
+	<!-- az-footer -->
+
+</body>
+</html>
+
