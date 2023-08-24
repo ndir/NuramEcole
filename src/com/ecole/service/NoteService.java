@@ -80,6 +80,7 @@ public class NoteService implements Serializable {
 		listeEleves = new ArrayList<Eleve>();
 		listeMatiere = new ArrayList<Matiere>();
 		listeClasse = new ArrayList<Classe>();
+		this.setNote(new Note());
 	}
 
 	public void ajouterNote() {
@@ -107,6 +108,7 @@ public class NoteService implements Serializable {
 				}
 			}
 		}
+		
 		FacesMessages.instance().addToControlFromResourceBundle("infoGenerique", "Notes sauvegardées avec succès");
 		annulerAjoutNote();
 	}
@@ -189,10 +191,14 @@ public class NoteService implements Serializable {
 		return "/pages/nuramecole/note.xhtml";
 	}
 
+	@SuppressWarnings("unchecked")
 	public String visualiserNotes() {
 		listeNiveau = new ArrayList<Niveau>();
 		listeNiveau = dataSource.createQuery("From Niveau ").list();
-
+		this.setNiveau(new Niveau());
+		this.setClasse(new Classe());
+		this.setNote(new Note());
+		listeEleves = new ArrayList<Eleve>();
 		return "/pages/nuramecole/voirnote.xhtml";
 	}
 

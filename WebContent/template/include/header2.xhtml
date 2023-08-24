@@ -95,7 +95,7 @@
 													action="#{evaluationService.versEvaluation}">
 													<s:conversationPropagation propagation="none" />
 												</a:commandLink></li>
-											<li><a:commandLink  value="Appréciation"
+											<li><a:commandLink value="Appréciation"
 													status="waitStatus" action="#{apService.versAp}">
 													<s:conversationPropagation propagation="none" />
 												</a:commandLink></li>
@@ -130,39 +130,28 @@
 									<s:conversationPropagation propagation="none" />
 								</a:commandLink>
 								<ul>
-									<li><a:commandLink value="Notes"></a:commandLink>
-										<ul>
 
-											<li><a:commandLink id="m_2_3" value="Saisir note"
-													status="waitStatus" action="#{noteService.saisirNotes}">
-													<s:conversationPropagation propagation="none" />
-												</a:commandLink></li>
 
-											<li><a:commandLink value="Visualiser note"
-													status="waitStatus" action="#{noteService.visualiserNotes}">
-													<s:conversationPropagation propagation="none" />
-												</a:commandLink></li>
 
-										</ul></li>
-
-									<li><a:commandLink id="m_2_1" value="Absences"
-											status="waitStatus" action="#{absenceService.versAbsences}">
-											<s:conversationPropagation propagation="none" />
-										</a:commandLink></li>
-									<li><a:commandLink id="m_2_2" value="Retards"
-											status="waitStatus" action="#{retardService.versRetards}">
+									<li><a:commandLink id="m_2_3" value="Saisir note"
+											status="waitStatus" action="#{noteService.saisirNotes}">
 											<s:conversationPropagation propagation="none" />
 										</a:commandLink></li>
 
-									<li><a:commandLink id="m_2_4" value="Moyenne devoir"
-											status="waitStatus" action="#">
+									<li><a:commandLink value="Visualiser note"
+											status="waitStatus" action="#{noteService.visualiserNotes}">
 											<s:conversationPropagation propagation="none" />
 										</a:commandLink></li>
+
 
 									<li><a:commandLink id="m_2_5" value="Délibération"
-											status="waitStatus" action="#">
+											status="waitStatus" action="#{dService.versDeliberation}">
 											<s:conversationPropagation propagation="none" />
 										</a:commandLink></li>
+
+
+
+
 
 									<li><a:commandLink id="m_2_6" value="Bulletin de notes "
 											status="waitStatus" action="#">

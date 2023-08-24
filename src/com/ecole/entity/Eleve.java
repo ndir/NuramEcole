@@ -38,10 +38,6 @@ public class Eleve implements Serializable {
 
 	private String telephone;
 
-	
-
-	
-
 	private String adresse;
 
 	private int age;
@@ -66,6 +62,8 @@ public class Eleve implements Serializable {
 	private boolean existe;
 	
 	private Long idNote;
+	
+	private Long idMat;
 	
 	@Id
 	@GeneratedValue
@@ -228,6 +226,15 @@ public class Eleve implements Serializable {
 
 	public void setIdNote(Long idNote) {
 		this.idNote = idNote;
+	}
+
+	@Transient
+	public Long getIdMat() {
+		return idMat;
+	}
+
+	public void setIdMat(Long idMat) {
+		this.idMat = idMat;
 	}
 
 }
