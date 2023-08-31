@@ -4,6 +4,7 @@
 package com.ecole.entity;
 
 import java.io.Serializable;
+import java.util.List;
 
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -11,7 +12,9 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 import com.chaka.projet.entity.Utilisateur;
 
@@ -27,22 +30,41 @@ public class Deliberation implements Serializable {
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-	
+
 	private Long id;
-	
+
 	private Eleve eleve;
-	
+
 	private AnneeScolaire annee;
-	
+
 	private Evaluation evaluation;
-	
-	private float moyenne;
-	
+
+	private Double moyenne;
+
 	private String rang;
-	
+
 	private Classe classe;
-	
+
 	private Utilisateur user;
+
+	private String ap;
+
+	private String moy;
+
+	private boolean choix;
+	private List<Note> listeNote;
+
+	private String ecole;
+
+	private String tel;
+
+	private String slogan;
+
+	private String eff;
+
+	private Double total;
+	
+	private String cumul;
 
 	@Id
 	@GeneratedValue
@@ -82,14 +104,6 @@ public class Deliberation implements Serializable {
 
 	public void setEvaluation(Evaluation evaluation) {
 		this.evaluation = evaluation;
-	}
-
-	public float getMoyenne() {
-		return moyenne;
-	}
-
-	public void setMoyenne(float moyenne) {
-		this.moyenne = moyenne;
 	}
 
 	public String getRang() {
@@ -144,5 +158,107 @@ public class Deliberation implements Serializable {
 			return false;
 		return true;
 	}
+
+	public String getAp() {
+		return ap;
+	}
+
+	public void setAp(String ap) {
+		this.ap = ap;
+	}
+
+	public String getMoy() {
+		return moy;
+	}
+
+	public void setMoy(String moy) {
+		this.moy = moy;
+	}
+
+	public Double getMoyenne() {
+		return moyenne;
+	}
+
+	public void setMoyenne(Double moyenne) {
+		this.moyenne = moyenne;
+	}
+
+	@Transient
+	public boolean isChoix() {
+		return choix;
+	}
+
+	public void setChoix(boolean choix) {
+		this.choix = choix;
+	}
+
+	@OneToMany(fetch = FetchType.EAGER)
+	@JoinColumn(name = "id")
+	public List<Note> getListeNote() {
+		return listeNote;
+	}
+
+	public void setListeNote(List<Note> listeNote) {
+		this.listeNote = listeNote;
+	}
+
+	@Transient
+	public String getEcole() {
+		return ecole;
+	}
+
+	public void setEcole(String ecole) {
+		this.ecole = ecole;
+	}
+
+
+
+	@Transient
+	public String getTel() {
+		return tel;
+	}
+
+	public void setTel(String tel) {
+		this.tel = tel;
+	}
+
+	@Transient
+	public String getSlogan() {
+		return slogan;
+	}
+
+	public void setSlogan(String slogan) {
+		this.slogan = slogan;
+	}
+
+	
+
+	@Transient
+	public String getEff() {
+		return eff;
+	}
+
+	public void setEff(String eff) {
+		this.eff = eff;
+	}
+
+	@Transient
+	public Double getTotal() {
+		return total;
+	}
+
+	public void setTotal(Double total) {
+		this.total = total;
+	}
+
+	public String getCumul() {
+		return cumul;
+	}
+
+	public void setCumul(String cumul) {
+		this.cumul = cumul;
+	}
+
+
 
 }

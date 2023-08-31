@@ -49,9 +49,10 @@ public class NoteService implements Serializable {
 	private Evaluation eval = new Evaluation();
 	private Note note = new Note();
 	private List<String> lsite = new ArrayList<String>();
-	private String ev = new String();
+	// private String ev = new String();
 	private List<Note> listeNotes = new ArrayList<Note>();
 
+	private Evaluation ev = new Evaluation();
 	private boolean choix;
 
 	@In
@@ -59,20 +60,31 @@ public class NoteService implements Serializable {
 
 	@SuppressWarnings("unchecked")
 	public void chargerListeMatClasse() {
+		// Evaluation e = (Evaluation) dataSource.createQuery("FRom Evaluation e where
+		// libelle=:plib")
+		// .setParameter("plib", ev).uniqueResult();
+		System.out.println("Entrer " + ev.getLibelle());
+		// System.out.println("Entrer "+e.getIdEvaluation());
 		listeMatiereClasse = new ArrayList<MatiereClasse>();
 		listeMatiereClasse = dataSource.createQuery(
-				"From MatiereClasse m inner join fetch m.classe c inner join fetch m.matiere where c=:pc and m.annee_scol=:pannee")
-				.setParameter("pc", note.getCl()).setParameter("pannee", annee.getAnneeScolaire()).list();
+				"From MatiereClasse m inner join fetch m.classe c inner join fetch m.matiere inner join fetch m.eval ev where c=:pc and m.annee_scol=:pannee "
+						+ " and ev =:pev")
+				.setParameter("pc", note.getCl()).setParameter("pannee", annee.getAnneeScolaire())
+				.setParameter("pev", ev).list();
+		listeMatiere = new ArrayList<Matiere>();
+		System.out.println("Taille liste " + listeMatiereClasse.size());
 		if (listeMatiereClasse.size() > 0) {
 			for (MatiereClasse mc : listeMatiereClasse) {
 				listeMatiere.add(mc.getMatiere());
 			}
 		}
-		listeEval = new ArrayList<Evaluation>();
-		listeEval = dataSource.createQuery("From  Evaluation ").list();
-		for (Evaluation e : listeEval) {
-			lsite.add(e.getLibelle());
-		}
+
+	}
+
+	public void getEval1() {
+		ev = new Evaluation();
+		ev = (Evaluation) dataSource.get(Evaluation.class, note.getEvaluation().getIdEvaluation());
+		System.out.println("EV " + ev.getIdEvaluation());
 	}
 
 	public void annulerAjoutNote() {
@@ -83,10 +95,31 @@ public class NoteService implements Serializable {
 		this.setNote(new Note());
 	}
 
-	public void ajouterNote() {
+	public int getCof(Matiere m) {
+		int cof = 0;
+		for (MatiereClasse mc : listeMatiereClasse) {
+			if (mc.getMatiere().getIdmatiere().equals(m.getIdmatiere())) {
+				cof = mc.getCoef();
+				break;
+			}
+		}
+		return cof;
+	}
 
-		Evaluation e = (Evaluation) dataSource.createQuery("FRom Evaluation e where libelle=:plib")
-				.setParameter("plib", note.getEval()).uniqueResult();
+	public void ajouterNote() {
+		if (note.getEvaluation() == null) {
+			FacesMessages.instance().addToControlFromResourceBundle("erreurGenerique", "Evaluation Obligatoire");
+			return;
+		}
+
+		for (Eleve eleve : listeEleves) {
+
+			if (eleve.getNote() > eleve.getCoef()) {
+				FacesMessages.instance().addToControlFromResourceBundle("erreurGenerique",
+						"Note supérieure au coéfficient pour l'éléve " + eleve.getNom() + " " + eleve.getPrenom());
+				return;
+			}
+		}
 
 		for (Eleve eleve : listeEleves) {
 			if (eleve.isChoix() & !eleve.isExiste()) {
@@ -94,9 +127,10 @@ public class NoteService implements Serializable {
 				n.setAnnee(annee);
 				n.setCl(note.getCl());
 				n.setEleve(eleve);
-				n.setEvaluation(e);
+				n.setEvaluation(note.getEvaluation());
 				n.setMatiere(note.getMatiere());
 				n.setNote(eleve.getNote());
+				n.setCoef(getCof(note.getMatiere()));
 				dataSource.save(n);
 			}
 
@@ -108,7 +142,7 @@ public class NoteService implements Serializable {
 				}
 			}
 		}
-		
+
 		FacesMessages.instance().addToControlFromResourceBundle("infoGenerique", "Notes sauvegardées avec succès");
 		annulerAjoutNote();
 	}
@@ -118,6 +152,9 @@ public class NoteService implements Serializable {
 		setListeClasse(new ArrayList<Classe>());
 		setListeClasse(dataSource.createQuery(" From Classe c inner join fetch c.niveau n where n=:pn")
 				.setParameter("pn", niveau).list());
+		listeEval = new ArrayList<Evaluation>();
+		listeEval = dataSource.createQuery("From  Evaluation ").list();
+		System.out.println("Taille liste " + listeEval.size());
 	}
 
 	@SuppressWarnings("unchecked")
@@ -136,9 +173,17 @@ public class NoteService implements Serializable {
 					.setParameter("pp", p).list();
 			listeEleves = new ArrayList<Eleve>();
 
+			MatiereClasse mc = (MatiereClasse) dataSource
+					.createQuery("From MatiereClasse mc inner join fetch mc.classe c inner join fetch mc.matiere m "
+							+ " inner join fetch mc.eval ev where c=:pc and m=:pm and ev=:pev and mc.annee_scol =:pan")
+					.setParameter("pc", note.getCl()).setParameter("pm", note.getMatiere())
+					.setParameter("pev", note.getEvaluation()).setParameter("pan", annee.getAnneeScolaire())
+					.uniqueResult();
+			
 			for (Inscription in : liste) {
 				in.getEleve().setChoix(true);
 				noteExiste(in.getEleve());
+				in.getEleve().setCoef(mc.getCoef());
 				listeEleves.add(in.getEleve());
 			}
 		}
@@ -147,9 +192,9 @@ public class NoteService implements Serializable {
 	public void noteExiste(Eleve e) {
 
 		Note n = (Note) dataSource.createQuery("From Note n inner join fetch n.cl c inner join fetch n.matiere m "
-				+ " inner join fetch n.eleve e inner join fetch n.annee an where c=:pc and m=:pm and an=:pan and e=:pe")
+				+ " inner join fetch n.eleve e inner join fetch n.annee an inner join fetch n.evaluation ev where c=:pc and m=:pm and an=:pan and e=:pe and ev =:pev ")
 				.setParameter("pc", note.getCl()).setParameter("pm", note.getMatiere()).setParameter("pan", annee)
-				.setParameter("pe", e).uniqueResult();
+				.setParameter("pe", e).setParameter("pev", note.getEvaluation()).uniqueResult();
 		if (n != null) {
 			e.setExiste(true);
 			e.setIdNote(n.getIdNote());
@@ -167,19 +212,21 @@ public class NoteService implements Serializable {
 	@SuppressWarnings("unchecked")
 	public void chargerListeNotes() {
 
-		Evaluation e = (Evaluation) dataSource.createQuery("FRom Evaluation e where libelle=:plib")
-				.setParameter("plib", note.getEval()).uniqueResult();
+		// Evaluation e = (Evaluation) dataSource.createQuery("FRom Evaluation e where
+		// libelle=:plib")
+		// .setParameter("plib", note.getEval()).uniqueResult();
 		listeNotes = new ArrayList<Note>();
 
 		listeNotes = dataSource
 				.createQuery("From Note n inner join fetch n.cl c inner join fetch n.matiere m "
 						+ "  inner join fetch n.eleve e inner join fetch n.evaluation ev inner join fetch n.annee an "
 						+ "  where c=:pc and ev=:pev and an=:pan and m=:pm")
-				.setParameter("pc", note.getCl()).setParameter("pev", e).setParameter("pan", annee)
+				.setParameter("pc", note.getCl()).setParameter("pev", ev).setParameter("pan", annee)
 				.setParameter("pm", note.getMatiere()).list();
 		if (listeNotes.size() == 0) {
 			FacesMessages.instance().addToControlFromResourceBundle("erreurGenerique",
-					"Aucune(s) Note(s) pour la matière " + note.getMatiere().getLibelle() + " pour  " + e.getLibelle());
+					"Aucune(s) Note(s) pour la matière " + note.getMatiere().getLibelle() + " pour  "
+							+ ev.getLibelle());
 		}
 	}
 
@@ -187,7 +234,12 @@ public class NoteService implements Serializable {
 	public String saisirNotes() {
 		listeNiveau = new ArrayList<Niveau>();
 		listeNiveau = dataSource.createQuery("From Niveau ").list();
-
+		this.setNiveau(new Niveau());
+		this.setClasse(new Classe());
+		this.setNote(new Note());
+		listeEleves = new ArrayList<Eleve>();
+		listeEval = new ArrayList<Evaluation>();
+		listeEval = dataSource.createQuery("From  Evaluation ").list();
 		return "/pages/nuramecole/note.xhtml";
 	}
 
@@ -199,6 +251,7 @@ public class NoteService implements Serializable {
 		this.setClasse(new Classe());
 		this.setNote(new Note());
 		listeEleves = new ArrayList<Eleve>();
+
 		return "/pages/nuramecole/voirnote.xhtml";
 	}
 
@@ -354,13 +407,13 @@ public class NoteService implements Serializable {
 		this.lsite = lsite;
 	}
 
-	public String getEv() {
-		return ev;
-	}
-
-	public void setEv(String ev) {
-		this.ev = ev;
-	}
+//	public String getEv() {
+//		return ev;
+//	}
+//
+//	public void setEv(String ev) {
+//		this.ev = ev;
+//	}
 
 	public List<Note> getListeNotes() {
 		return listeNotes;

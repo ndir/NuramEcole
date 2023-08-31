@@ -114,7 +114,22 @@
 															action="#{noteService.chargerListeClasse()}"
 															ajaxSingle="true" reRender="classe" status="waitStatus"></a:support>
 													</h:selectOneMenu></td>
+												<td><h:outputLabel styleClass="grey" value="Evaluation" /></td>
+												<td><h:selectOneMenu class="form-control"
+														value="#{noteService.note.evaluation}"
+														converter="#{evaluationConverter}" id="eval"
+														noSelectionLabel="--- Selectionnez ---">
 
+														<s:selectItems value="#{noteService.listeEval}" var="type"
+															label="#{type.libelle}"
+															noSelectionLabel="--- Selectionnez ---" />
+														<a:support event="onchange"
+															action="#{noteService.getEval1()}" ajaxSingle="true"
+															status="waitStatus"></a:support>
+													</h:selectOneMenu></td>
+
+											</tr>
+											<tr>
 												<td><h:outputLabel styleClass="grey" value="Classe" /></td>
 												<td><h:selectOneMenu class="form-control"
 														value="#{noteService.note.cl}"
@@ -129,9 +144,18 @@
 															ajaxSingle="true" reRender="matiere" status="waitStatus"></a:support>
 
 													</h:selectOneMenu></td>
-											</tr>
-											<tr>
+												<!-- 												<td><h:selectOneMenu class="form-control" -->
+												<!-- 														value="#{noteService.note.eval}"> -->
 
+												<!-- 														<f:selectItem itemValue="1ère Composition" -->
+												<!-- 															itemLabel="1ère Composition" /> -->
+
+												<!-- 														<f:selectItem itemValue="2ème Composition" -->
+												<!-- 															itemLabel="2ème Composition" /> -->
+
+												<!-- 														<f:selectItem itemValue="3ème Composition" -->
+												<!-- 															itemLabel="3ème Composition" /> -->
+												<!-- 													</h:selectOneMenu></td> -->
 												<td><h:outputLabel styleClass="grey" value="Matière" /></td>
 												<td><h:selectOneMenu class="form-control"
 														value="#{noteService.note.matiere}"
@@ -142,23 +166,11 @@
 															noSelectionLabel="--- Selectionnez ---" />
 														<a:support event="onchange"
 															action="#{noteService.chargerListeEleve()}"
-															ajaxSingle="true" reRender="liste" status="waitStatus"></a:support>
+															ajaxSingle="true" reRender="eleve" status="waitStatus"></a:support>
 													</h:selectOneMenu></td>
 
-												<td><h:outputLabel styleClass="grey" value="Evaluation" /></td>
 
-												<td><h:selectOneMenu class="form-control"
-														value="#{noteService.note.eval}">
 
-														<f:selectItem itemValue="1ère Composition"
-															itemLabel="1ère Composition" />
-
-														<f:selectItem itemValue="2ème Composition"
-															itemLabel="2ème Composition" />
-
-														<f:selectItem itemValue="3ème Composition"
-															itemLabel="3ème Composition" />
-													</h:selectOneMenu></td>
 
 											</tr>
 											<tr>
@@ -206,6 +218,10 @@
 														<h:outputLabel value="Note"
 															style="color:white;font-size:12px;font-family: Arial;text-align:center;" />
 													</rich:column>
+													<rich:column>
+														<h:outputLabel value="Coefficient"
+															style="color:white;font-size:12px;font-family: Arial;text-align:center;" />
+													</rich:column>
 
 												</rich:columnGroup>
 											</f:facet>
@@ -221,6 +237,11 @@
 											<rich:column>
 												<h:inputText value="#{mat.note}" class="form-control"
 													width="5px"></h:inputText>
+											</rich:column>
+
+											<rich:column>
+												<h:outputLabel value="#{mat.coef}" class="form-control"
+													width="5px"></h:outputLabel>
 											</rich:column>
 
 										</rich:dataTable>

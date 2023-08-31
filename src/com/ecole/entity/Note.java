@@ -1,5 +1,6 @@
 package com.ecole.entity;
 
+import java.io.InputStream;
 import java.io.Serializable;
 
 import javax.persistence.Entity;
@@ -13,21 +14,30 @@ import javax.persistence.Transient;
 
 @Entity
 @Table(name = "note")
-public class Note implements Serializable{
+public class Note implements Serializable {
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
 	private Long idNote;
 	private Eleve eleve;
-    private Matiere matiere;
-    private Classe cl;
+	private Matiere matiere;
+	private Classe cl;
 	private float note;
 	private Evaluation evaluation;
 	private AnneeScolaire annee;
 	private String eval;
-	
-	
+	private int coef;
+	private String ecole;
+	private String tel;
+	private String slogan;
+	private String eff;
+	private String ap;
+	private String moy;
+	private String rang;
+	private Double total;
+	private InputStream logo;
+
 	@Id
 	@GeneratedValue
 	public Long getIdNote() {
@@ -46,7 +56,6 @@ public class Note implements Serializable{
 		this.note = note;
 	}
 
-	
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "idEleve")
 	public Eleve getEleve() {
@@ -56,10 +65,7 @@ public class Note implements Serializable{
 	public void setEleve(Eleve eleve) {
 		this.eleve = eleve;
 	}
-	
-	
-	
-	
+
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "idEvaluation")
 	public Evaluation getEvaluation() {
@@ -108,4 +114,93 @@ public class Note implements Serializable{
 	public void setEval(String eval) {
 		this.eval = eval;
 	}
+
+	public int getCoef() {
+		return coef;
+	}
+
+	public void setCoef(int coef) {
+		this.coef = coef;
+	}
+
+	@Transient
+	public String getEcole() {
+		return ecole;
+	}
+
+	public void setEcole(String ecole) {
+		this.ecole = ecole;
+	}
+
+	@Transient
+	public String getTel() {
+		return tel;
+	}
+
+	public void setTel(String tel) {
+		this.tel = tel;
+	}
+
+	@Transient
+	public String getSlogan() {
+		return slogan;
+	}
+
+	public void setSlogan(String slogan) {
+		this.slogan = slogan;
+	}
+
+	public String getEff() {
+		return eff;
+	}
+
+	public void setEff(String eff) {
+		this.eff = eff;
+	}
+
+	@Transient
+	public String getAp() {
+		return ap;
+	}
+
+	public void setAp(String ap) {
+		this.ap = ap;
+	}
+
+	@Transient
+	public String getMoy() {
+		return moy;
+	}
+
+	public void setMoy(String moy) {
+		this.moy = moy;
+	}
+
+	@Transient
+	public String getRang() {
+		return rang;
+	}
+
+	public void setRang(String rang) {
+		this.rang = rang;
+	}
+
+	@Transient
+	public Double getTotal() {
+		return total;
+	}
+
+	public void setTotal(Double total) {
+		this.total = total;
+	}
+
+	@Transient
+	public InputStream getLogo() {
+		return logo;
+	}
+
+	public void setLogo(InputStream logo) {
+		this.logo = logo;
+	}
+
 }

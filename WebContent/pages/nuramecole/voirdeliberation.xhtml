@@ -52,7 +52,23 @@
 
 			<ui:include src="/template/include/header2.xhtml" />
 
+			<ui:insert name="impression">
+				<rich:modalPanel id="modalPdf" autosized="false" width="980"
+					height="620" moveable="true" resizeable="true">
 
+					<f:facet name="controls">
+						<a onclick="Richfaces.hideModalPanel('modalPdf');"
+							style="cursor: pointer" href="#">Fermer</a>
+					</f:facet>
+					<h:form id="frmPdf">
+						<a:mediaOutput element="object" id="id" cacheable="false"
+							session="true" createContent="#{fileUploadService.paintPdf}"
+							type="application/pdf" mimeType="application/pdf"
+							style="width:90%; height:600px;" value="#{filePrintService.id}" />
+
+					</h:form>
+				</rich:modalPanel>
+			</ui:insert>
 		</div>
 	</div>
 	<a:status id="waitStatusHaut" forceId="true"
@@ -89,7 +105,8 @@
 					<div class="col-lg-12"></div>
 				</div>
 				<h:form id="liste">
-					<rich:panel header="DELIBERATION" styleclass="panel panel-success">
+					<rich:panel header="VOIR DELIBERATION"
+						styleclass="panel panel-success">
 						<div class="row row-sm mg-b-20">
 							<div class="col-lg-12">
 								<div class="row row-sm">
@@ -122,9 +139,6 @@
 											</tr>
 											<tr>
 
-
-
-
 												<td><h:outputLabel styleClass="grey" value="Evaluation" /></td>
 
 												<td><h:selectOneMenu class="form-control"
@@ -146,7 +160,7 @@
 														class="form-control" disabled="true" /></td>
 												<td><a:commandLink value="" status="waitStatus"
 														reRender="liste" title="Suivant"
-														action="#{dService.deliberer()}">
+														action="#{dService.voirdeliberer()}">
 														<s:graphicImage fileName="left32.png" style="border:0px;"
 															value="/picto/left32.png" alt="" />
 
@@ -154,49 +168,20 @@
 											</tr>
 										</TABLE>
 
-										<a:outputPanel
-											rendered="#{dService.listeElevesNonNote.size > 0}">
-											<h6 style="color: red">Le ou les éléves ci-dessous ne
-												sont pas notés pour certaines matières.</h6>
-											<h6 style="color: red">Si vous continuer il(s) seront
-												ignorés dans la délibération.</h6>
-											<a:commandLink value="" status="waitStatus" reRender="liste"
-												title="Suivant"
-												action="#{dService.delibererAvecEleveExclu()}">
-												<s:graphicImage fileName="left32.png" style="border:0px;"
-													value="/picto/left32.png" alt="" />
-											</a:commandLink>
-											<rich:dataTable value="#{dService.listeElevesNonNote}"
-												var="mat" id="eleve" style="width:100%;" rows="8"
-												rowClasses="row1,row2">
-												<f:facet name="header">
-													<rich:columnGroup>
-														<rich:column>
-															<h:outputLabel value="Eleve"
-																style="color:white;font-size:12px;font-family: Arial;text-align:center;" />
-														</rich:column>
-														<rich:column>
-															<h:outputLabel value="Matiere"
-																style="color:white;font-size:12px;font-family: Arial;text-align:center;" />
-														</rich:column>
-													</rich:columnGroup>
-												</f:facet>
-												<rich:column filterBy="#{mat.nom}" filterEvent="onkeyup">
-													<h:outputLabel value="#{mat.nom} #{mat.prenom}"></h:outputLabel>
-												</rich:column>
 
-												<rich:column>
-													<h:outputLabel value="#{dService.getMatiere(mat)}"
-														class="form-control" width="5px"></h:outputLabel>
-												</rich:column>
-											</rich:dataTable>
-											<rich:datascroller status="waitStatus" stepControls="auto"
-												style="width:100%" for="eleve" ajaxSingle="false"
-												rendered="#{not empty dService.listeElevesNonNote}" />
-										</a:outputPanel>
 
 										<a:outputPanel
 											rendered="#{dService.listeDeliberationF.size > 0}">
+											<p align="right">
+
+												<a:commandLink styleClass="btn btn-success" value=""
+													action="#{dService.imprimerTout()}"
+													oncomplete="#{dService.showModal}" status="waitStatus">
+																		
+																		Impimer Tout			
+																				</a:commandLink>
+
+											</p>
 											<rich:dataTable value="#{dService.listeDeliberationF}"
 												var="mat" id="deli" style="width:100%;" rows="8"
 												rowClasses="row1,row2">
@@ -224,7 +209,13 @@
 																style="color:white;font-size:12px;font-family: Arial;text-align:center;" />
 														</rich:column>
 														<rich:column>
-															<h:outputLabel value="Details"
+															<h:selectBooleanCheckbox value="#{dService.choix}">
+																<a:support event="onchange" ajaxSingle="true"
+																	action="#{dService.cocherTout()}" reRender="liste"></a:support>
+															</h:selectBooleanCheckbox>
+														</rich:column>
+														<rich:column>
+															<h:outputLabel value="Imprimer"
 																style="color:white;font-size:12px;font-family: Arial;text-align:center;" />
 														</rich:column>
 													</rich:columnGroup>
@@ -234,33 +225,46 @@
 													<h:outputLabel value="#{mat.eleve.nom} #{mat.eleve.prenom}"
 														styleClass="grey"></h:outputLabel>
 												</rich:column>
-
 												<rich:column>
 													<h:outputLabel value="#{mat.cumul}" styleClass="grey">
+
 													</h:outputLabel>
 												</rich:column>
-
 												<rich:column>
 													<h:outputLabel value="#{mat.moy}" styleClass="grey">
+
 													</h:outputLabel>
 												</rich:column>
 
 												<rich:column>
 													<h:outputLabel value="#{mat.rang}" styleClass="grey"></h:outputLabel>
 												</rich:column>
-
 												<rich:column>
 													<h:outputLabel value="#{mat.ap}" styleClass="grey"></h:outputLabel>
 												</rich:column>
+												<rich:column>
+													<h:selectBooleanCheckbox value="#{mat.choix}">
 
+													</h:selectBooleanCheckbox>
+												</rich:column>
 												<rich:column style="width:8%;">
-													<a:commandLink value="" status="waitStatus" action="#"
-														title="Details">
+													<a:commandLink value="" status="waitStatus"
+														action="#{dService.versDetails(mat)}"
+														oncomplete="javascript:Richfaces.showModalPanel('sim',{width:500, height:300})"
+														title="Details" reRender="form">
 														<s:graphicImage fileName="info.png" style="border:0px;"
 															value="/picto/info.png" width="16" height="16" alt="" />
 													</a:commandLink>
-												</rich:column>
+													<rich:spacer widht="40px"></rich:spacer>
 
+													<a:commandLink value="" status="waitStatus"
+														action="#{dService.imprimerBulletin(mat)}"
+														oncomplete="#{dService.showModal}"
+														title="Imprimer Bulletin">
+														<s:graphicImage fileName="printer.png" style="border:0px;"
+															value="/picto/printer.png" width="16" height="16" alt="" />
+													</a:commandLink>
+												</rich:column>
 											</rich:dataTable>
 											<rich:datascroller status="waitStatus" stepControls="auto"
 												style="width:100%" for="deli" ajaxSingle="false"
@@ -277,6 +281,82 @@
 
 				</h:form>
 
+				<rich:modalPanel id="sim"
+					style="background:url('../img2/fond.jpg') repeat-x scroll 0 0 #FFF;height:210; width:400"
+					moveable="true" styleClass="popupAttente">
+					<f:facet name="controls">
+
+						<a:commandLink value="" status="waitStatus" title="Fermer "
+							onclick="javascript:Richfaces.hideModalPanel('sim')">
+							<s:graphicImage fileName="cross.png" style="border:0px;"
+								value="/picto/cross.png" width="16" height="16" alt="" />
+						</a:commandLink>
+					</f:facet>
+					<f:facet name="header">
+			 DETAILS BULLETIN ELEVE
+			</f:facet>
+					<rich:spacer height="10px" />
+					<h:form class="note-form" id="form">
+						<div class="row">
+							<div class="col-md-12">
+								<div class="panel panel-success">
+									<div class="panel-heading">
+
+										<h6 class="panel-title" style="text-align: center;">
+											<STRONG>#{dService.chaine}</STRONG>
+										</h6>
+									</div>
+
+									<div class="panel-body">
+										<div class="form-group has-success">
+											<rich:dataTable value="#{dService.listeNote}" var="mat"
+												id="dnote" style="width:100%;" rows="8"
+												rowClasses="row1,row2">
+												<f:facet name="header">
+													<rich:columnGroup>
+														<rich:column>
+															<h:outputLabel value="Matiere"
+																style="color:white;font-size:12px;font-family: Arial;text-align:center;" />
+														</rich:column>
+														<rich:column>
+															<h:outputLabel value="Note"
+																style="color:white;font-size:12px;font-family: Arial;text-align:center;" />
+														</rich:column>
+														<rich:column>
+															<h:outputLabel value="Coef"
+																style="color:white;font-size:12px;font-family: Arial;text-align:center;" />
+														</rich:column>
+													</rich:columnGroup>
+												</f:facet>
+												<rich:column>
+													<h:outputLabel value="#{mat.matiere.libelle}"
+														styleClass="grey"></h:outputLabel>
+												</rich:column>
+												<rich:column>
+													<h:outputLabel value="#{mat.note}" styleClass="grey">
+													</h:outputLabel>
+												</rich:column>
+												<rich:column>
+													<h:outputLabel value="#{mat.coef}" styleClass="grey">
+													</h:outputLabel>
+												</rich:column>
+											</rich:dataTable>
+											<rich:datascroller status="waitStatus" stepControls="auto"
+												style="width:100%" for="dnote" ajaxSingle="false"
+												rendered="#{not empty dService.listeNote}" />
+
+
+										</div>
+
+									</div>
+
+								</div>
+							</div>
+						</div>
+
+
+					</h:form>
+				</rich:modalPanel>
 
 			</div>
 

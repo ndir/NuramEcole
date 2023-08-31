@@ -1,0 +1,265 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="bulletin" language="groovy" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="89af52a8-d2ec-4f35-8f4d-da069730ec92">
+	<property name="ireport.zoom" value="1.5"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="75"/>
+	<parameter name="logo" class="java.io.InputStream"/>
+	<parameter name="ecole" class="java.lang.String"/>
+	<parameter name="slogan" class="java.lang.String"/>
+	<parameter name="tel" class="java.lang.String"/>
+	<parameter name="total" class="java.lang.String"/>
+	<parameter name="moy" class="java.lang.String"/>
+	<parameter name="rang" class="java.lang.String"/>
+	<parameter name="app" class="java.lang.String"/>
+	<parameter name="eff" class="java.lang.String"/>
+	<queryString language="hql">
+		<![CDATA[from Note]]>
+	</queryString>
+	<field name="annee" class="com.ecole.entity.AnneeScolaire"/>
+	<field name="cl" class="com.ecole.entity.Classe"/>
+	<field name="coef" class="java.lang.Integer"/>
+	<field name="eleve" class="com.ecole.entity.Eleve"/>
+	<field name="eval" class="java.lang.String"/>
+	<field name="evaluation" class="com.ecole.entity.Evaluation"/>
+	<field name="idNote" class="java.lang.Long"/>
+	<field name="matiere" class="com.ecole.entity.Matiere"/>
+	<field name="note" class="java.lang.Float"/>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="247" splitType="Stretch">
+			<image>
+				<reportElement x="3" y="5" width="100" height="50" uuid="2e970148-b146-41b9-99cd-da53529800c5"/>
+				<imageExpression><![CDATA[$P{logo}]]></imageExpression>
+			</image>
+			<textField>
+				<reportElement x="0" y="59" width="543" height="20" uuid="9fb14f85-97f4-4793-bb0f-8ac3e9db9c6a"/>
+				<textElement>
+					<font size="12" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{ecole}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="3" y="118" width="552" height="31" uuid="d3d87f71-7694-4a04-b511-50cd41e7caae"/>
+				<textElement textAlignment="Center">
+					<font size="16" isBold="true"/>
+				</textElement>
+				<text><![CDATA[FICHE D'EVALUATION]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="3" y="158" width="546" height="20" uuid="e2ef9c59-6a1c-415b-8c3a-41ecd36eacb8"/>
+				<textElement>
+					<font size="12" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA["PRENOM ET NOM "+$F{eleve}.getPrenom().toUpperCase() + " " +$F{eleve}.getNom().toUpperCase()]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="3" y="180" width="546" height="20" uuid="8a03dedc-1684-41fb-b4b0-3904d77e6a0a"/>
+				<textElement>
+					<font size="12" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA["CLASSE  "+$F{cl}.getLibelle().toUpperCase()+" EFFECTIF "+$P{eff}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="3" y="202" width="546" height="20" uuid="039d8eb2-3b03-47b0-bf6d-d6b81cff79b3"/>
+				<textElement>
+					<font size="12" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA["ANNE SCOLAIRE "+$F{annee}.getAnneeScolaire()]]></textFieldExpression>
+			</textField>
+			<textField pattern="EEEEE dd MMMMM yyyy">
+				<reportElement x="302" y="0" width="251" height="20" uuid="3086e59e-a433-440c-9699-cbffcfb1be00"/>
+				<textElement textAlignment="Right">
+					<font size="12" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[new java.util.Date()]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="0" y="87" width="543" height="20" uuid="ce9ce57f-d4fe-4dc5-9065-91d0d5bb4177"/>
+				<textElement>
+					<font size="12" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{tel}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="0" y="73" width="543" height="20" uuid="4471c004-3592-4e61-8586-75c8ad4a0948"/>
+				<textElement>
+					<font size="12" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{slogan}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="3" y="223" width="546" height="20" uuid="8b0185a3-d875-40ea-874e-5cd170bbecf5"/>
+				<textElement>
+					<font size="12" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{evaluation}.getLibelle()]]></textFieldExpression>
+			</textField>
+			<line>
+				<reportElement mode="Opaque" x="0" y="110" width="556" height="1" uuid="6b9721a3-a48c-460d-bb67-9f17191086e1"/>
+				<graphicElement>
+					<pen lineWidth="2.0" lineStyle="Solid"/>
+				</graphicElement>
+			</line>
+			<line>
+				<reportElement mode="Opaque" x="0" y="142" width="556" height="1" uuid="c5d07c78-4381-4c5e-b1d7-e3e82f8de7c9"/>
+				<graphicElement>
+					<pen lineWidth="2.0" lineStyle="Solid"/>
+				</graphicElement>
+			</line>
+		</band>
+	</title>
+	<columnHeader>
+		<band height="36" splitType="Stretch">
+			<rectangle>
+				<reportElement x="0" y="15" width="299" height="20" uuid="c8b62943-cfb4-480c-81db-de11450dfa17"/>
+			</rectangle>
+			<rectangle>
+				<reportElement x="299" y="15" width="123" height="20" uuid="fe33adc6-c1b5-407c-9748-bfc3f100917e"/>
+			</rectangle>
+			<rectangle>
+				<reportElement x="422" y="15" width="133" height="20" uuid="49e3a82b-23dd-422a-bc9b-9d26c50f6e41"/>
+			</rectangle>
+			<staticText>
+				<reportElement x="0" y="16" width="299" height="20" uuid="2a55ee60-3cf0-4451-95ca-e1c85042af94"/>
+				<textElement textAlignment="Center">
+					<font size="12"/>
+				</textElement>
+				<text><![CDATA[Matière]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="299" y="16" width="123" height="20" uuid="59c16bdf-ed11-4d34-9e4d-cee214a1f7ae"/>
+				<textElement textAlignment="Center">
+					<font size="12"/>
+				</textElement>
+				<text><![CDATA[Note]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="422" y="16" width="133" height="20" uuid="d2db3690-f284-438f-aaf7-d309acbb3c96"/>
+				<textElement textAlignment="Center">
+					<font size="12"/>
+				</textElement>
+				<text><![CDATA[Coéfficient]]></text>
+			</staticText>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="21" splitType="Stretch">
+			<rectangle>
+				<reportElement x="0" y="0" width="299" height="20" uuid="248607d6-bc79-47af-83a2-2f3544503f75"/>
+			</rectangle>
+			<rectangle>
+				<reportElement x="299" y="0" width="123" height="20" uuid="3dad4e31-c8f5-4f4a-8a47-8749ea642825"/>
+			</rectangle>
+			<rectangle>
+				<reportElement x="422" y="0" width="133" height="20" uuid="ae1888b6-a91a-4286-bbe8-a1177d9a4e1d"/>
+			</rectangle>
+			<textField>
+				<reportElement x="3" y="1" width="296" height="20" uuid="3a7242f1-3208-45b4-b3f0-baea8a883584"/>
+				<textElement textAlignment="Center">
+					<font size="12" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{matiere}.getLibelle()]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0">
+				<reportElement x="299" y="1" width="123" height="20" uuid="c5f2128b-52c8-44f2-b944-66767ed9fa45"/>
+				<textElement textAlignment="Center">
+					<font size="12"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{note}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="422" y="1" width="131" height="20" uuid="32645632-7887-44fe-8dbc-3a7d829ba4fb"/>
+				<textElement textAlignment="Center">
+					<font size="12"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{coef}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<summary>
+		<band height="100" splitType="Stretch">
+			<rectangle>
+				<reportElement x="0" y="15" width="299" height="20" uuid="cee38a05-26ff-4727-8e47-baa667fb8bbc"/>
+			</rectangle>
+			<rectangle>
+				<reportElement x="0" y="35" width="299" height="20" uuid="37baf463-9ab1-4b93-9b89-043a44497a45"/>
+			</rectangle>
+			<rectangle>
+				<reportElement x="0" y="55" width="299" height="20" uuid="c01406c1-acc8-45ab-b7a1-7671d8fefc10"/>
+			</rectangle>
+			<staticText>
+				<reportElement x="3" y="16" width="296" height="20" uuid="6ddf3220-4f83-40f0-9549-7148f8c8a28d"/>
+				<textElement textAlignment="Center">
+					<font size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[TOTAL]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="3" y="36" width="296" height="20" uuid="3cf60cff-8184-4857-a8ab-e6423a171f90"/>
+				<textElement textAlignment="Center">
+					<font size="12"/>
+				</textElement>
+				<text><![CDATA[Moyenne]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="3" y="55" width="296" height="20" uuid="ba8a2a01-267f-4f9a-bf91-2a35648a8a25"/>
+				<textElement textAlignment="Center">
+					<font size="12"/>
+				</textElement>
+				<text><![CDATA[Rang]]></text>
+			</staticText>
+			<rectangle>
+				<reportElement x="299" y="15" width="100" height="20" uuid="e4f28e4d-4bca-4f7e-b185-313a8c2ec9d0"/>
+			</rectangle>
+			<rectangle>
+				<reportElement x="299" y="35" width="100" height="20" uuid="0cb53820-e9ec-4cc8-a9d0-0ed79a44027a"/>
+			</rectangle>
+			<rectangle>
+				<reportElement x="299" y="55" width="100" height="20" uuid="6a70919d-6c3a-4fcd-aa52-50be1d8ac644"/>
+			</rectangle>
+			<textField pattern="#,##0">
+				<reportElement x="299" y="15" width="100" height="20" uuid="815ff324-f3e1-4e5d-9c84-96c80727d0e1"/>
+				<textElement textAlignment="Center">
+					<font size="12" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{total}]]></textFieldExpression>
+			</textField>
+			<textField pattern="###0.00">
+				<reportElement x="300" y="36" width="100" height="20" uuid="bddca5f7-eec0-4156-b27f-c34c86a73fb4"/>
+				<textElement textAlignment="Center">
+					<font size="12" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{moy}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="300" y="56" width="100" height="20" uuid="e8e6e76b-2507-488e-80a5-a6b53e532c88"/>
+				<textElement textAlignment="Center">
+					<font size="12" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{rang}]]></textFieldExpression>
+			</textField>
+			<rectangle>
+				<reportElement x="0" y="75" width="299" height="20" uuid="448334ac-463a-420e-ae7b-3931279c357e"/>
+			</rectangle>
+			<staticText>
+				<reportElement x="1" y="75" width="296" height="20" uuid="c6d42341-dc49-42fe-b712-01f99963b4b3"/>
+				<textElement textAlignment="Center">
+					<font size="12"/>
+				</textElement>
+				<text><![CDATA[Appréciation]]></text>
+			</staticText>
+			<rectangle>
+				<reportElement x="299" y="75" width="100" height="20" uuid="65dfaa74-f2c2-4c9d-931f-89c8b7eabcc6"/>
+			</rectangle>
+			<textField>
+				<reportElement x="299" y="76" width="100" height="20" uuid="15b7aac4-c665-4c94-8ab9-f7f93797c81f"/>
+				<textElement textAlignment="Center">
+					<font size="12" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{app}]]></textFieldExpression>
+			</textField>
+		</band>
+	</summary>
+</jasperReport>

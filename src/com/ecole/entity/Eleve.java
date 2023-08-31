@@ -65,6 +65,8 @@ public class Eleve implements Serializable {
 	
 	private Long idMat;
 	
+	private int coef;
+	
 	@Id
 	@GeneratedValue
 	public Long getIdeleve() {
@@ -235,6 +237,15 @@ public class Eleve implements Serializable {
 
 	public void setIdMat(Long idMat) {
 		this.idMat = idMat;
+	}
+
+	@Transient
+	public int getCoef() {
+		return coef;
+	}
+
+	public void setCoef(int coef) {
+		this.coef = coef;
 	}
 
 }
