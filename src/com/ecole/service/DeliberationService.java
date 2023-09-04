@@ -180,10 +180,7 @@ public class DeliberationService implements Serializable {
 				"From DeliberationFinal d inner join fetch d.classe c inner join fetch d.annee inner join fetch d.eleve "
 						+ " where c =:pc and d.annee =:pan")
 				.setParameter("pc", classe).setParameter("pan", annee).list();
-		
-		
-		
-		
+
 		if (listeDeliAn.size() == 0) {
 			ParamInscription p = (ParamInscription) dataSource
 					.createQuery("From ParamInscription p inner join fetch p.classe c inner join fetch p.annee pa "
@@ -416,6 +413,428 @@ public class DeliberationService implements Serializable {
 		}
 
 		getFilePrintService().imprimer("ecole", "allbulletin", param, listeDeli, utilisateur, ExportOption.PDF);
+		this.setShowModal("javascript:Richfaces.showModalPanel('modalPdf')");
+	}
+
+	@SuppressWarnings("unchecked")
+	public void imprimerToutAn() {
+		listeEval = new ArrayList<Evaluation>();
+		listeEval = dataSource.createQuery("From Evaluation ").list();
+		Institution in = (Institution) dataSource.createQuery("From Institution").uniqueResult();
+		listeNote = new ArrayList<Note>();
+		listeNote = new ArrayList<Note>();
+
+		ParamInscription p = (ParamInscription) dataSource
+				.createQuery("From ParamInscription p inner join fetch p.classe c inner join fetch p.annee pa "
+						+ " where c =:pc and pa =:pa ")
+				.setParameter("pc", classe).setParameter("pa", annee).uniqueResult();
+
+		List<Inscription> liste = new ArrayList<Inscription>();
+		if (p != null) {
+			liste = dataSource
+					.createQuery(
+							"From Inscription i inner join fetch i.eleve inner join fetch i.paramins p where p =:pp")
+					.setParameter("pp", p).list();
+
+		}
+		listeNote = dataSource.createQuery("From Note n inner join fetch n.cl c inner join fetch n.eleve e "
+				+ " inner join fetch n.evaluation ev inner join fetch n.annee an inner join fetch n.matiere "
+				+ " where c =:pc and an =:pan ").setParameter("pc", classe).setParameter("pan", annee).list();
+		List<Deliberation> listeD = new ArrayList<Deliberation>();
+		for (DeliberationFinal d : listeDeliAn) {
+			Deliberation deli = new Deliberation();
+			deli.setListeNote(getNotesEleve(d.getEleve(), d));
+			deli.getListeNote().get(0).setEcole(in.getNom());
+			deli.getListeNote().get(0).setSlogan(in.getSologan());
+			deli.getListeNote().get(0).setTel(in.getTelephone());
+			deli.getListeNote().get(0).setEff("" + liste.size());
+			deli.getListeNote().get(0).setAnnee(annee);
+			deli.getListeNote().get(deli.getListeNote().size() - 1).setRangan(d.getRangan());
+			deli.getListeNote().get(deli.getListeNote().size() - 1).setMoyan(d.getMoyans());
+			ExternalContext ec = FacesContext.getCurrentInstance().getExternalContext();
+			ServletContext sc = (ServletContext) ec.getContext();
+			InputStream is = sc.getResourceAsStream("/css2/logogstock.jpg");
+			deli.getListeNote().get(0).setLogo(is);
+			System.out.println("dec "+d.getDecision());
+			if (d.getDecision().equalsIgnoreCase("Passe en classe supérieure")) {
+				deli.getListeNote().get(deli.getListeNote().size() - 1).setDec1("X  Passe en classe supérieure");
+			} else {
+				deli.getListeNote().get(deli.getListeNote().size() - 1).setDec1("Passe en classe supérieure");
+			}
+			if (d.getDecision().equalsIgnoreCase("Redouble")) {
+				deli.getListeNote().get(deli.getListeNote().size() - 1).setDec2("X Redouble");
+				
+			} else {
+				deli.getListeNote().get(deli.getListeNote().size() - 1).setDec2("Redouble");
+			}
+			if (d.getDecision().equalsIgnoreCase("Exclu(e)")) {
+				
+				deli.getListeNote().get(deli.getListeNote().size() - 1).setDec3("X Exclu(e)");
+			} else {
+				deli.getListeNote().get(deli.getListeNote().size() - 1).setDec3("Exclu(e)");
+			}
+			listeD.add(deli);
+		}
+		Map<String, Object> param = new HashMap<String, Object>();
+		getFilePrintService().imprimer("ecole", "allbulletanm", param, listeD, utilisateur, ExportOption.PDF);
+
+		this.setShowModal("javascript:Richfaces.showModalPanel('modalPdf')");
+	}
+
+	public List<Note> getNotesEleve(Eleve eleve, DeliberationFinal deli) {
+
+		List<Note> listeNoteD = new ArrayList<Note>();
+		Double total = 0.0;
+		Double total2 = 0.0;
+		Double total3 = 0.0;
+		boolean existe = false;
+		Note note = new Note();
+		int i = 1;
+		for (Evaluation e : listeEval) {
+			total = 0.0;
+			if (i == 1) {
+				for (Note n : listeNote) {
+					if (eleve.getIdeleve().equals(n.getEleve().getIdeleve())
+							&& e.getIdEvaluation().equals(n.getEvaluation().getIdEvaluation())) {
+						note = new Note();
+						note.setEleve(eleve);
+						note.setCoef1(n.getCoef());
+						note.setRang1(deli.getRang1());
+						note.setCl(deli.getClasse());
+						note.setAnnee(annee);
+						note.setMatiere(n.getMatiere());
+						note.setNote2(0);
+						note.setNote3(0);
+						note.setMoy1(deli.getMoy1s());
+						note.setMoy2(deli.getMoy2s());
+						note.setMoy3(deli.getMoy3s());
+						note.setNote1(n.getNote());
+						note.setAp1(deli.getAp1());
+						note.setAp2(deli.getAp2());
+						note.setEcole(chaine);
+						note.setAp3(deli.getAp3());
+						note.setRang1(deli.getRang1());
+						note.setRang2(deli.getRang2());
+						note.setRang3(deli.getRang3());
+						listeNoteD.add(note);
+					}
+				}
+			}
+			if (i == 2) {
+				for (Note n : listeNote) {
+					if (eleve.getIdeleve().equals(n.getEleve().getIdeleve())
+							&& e.getIdEvaluation().equals(n.getEvaluation().getIdEvaluation())) {
+						existe = false;
+						for (Note nx : listeNoteD) {
+							if (nx.getMatiere().getIdmatiere().equals(n.getMatiere().getIdmatiere())) {
+								nx.setEleve(deli.getEleve());
+								nx.setAp2(deli.getAp2());
+								nx.setCoef2(n.getCoef());
+								nx.setRang2(deli.getRang2());
+								nx.setCl(deli.getClasse());
+								nx.setAnnee(annee);
+								nx.setMatiere(n.getMatiere());
+
+								nx.setNote2(n.getNote());
+								nx.setMoy2(deli.getMoy2s());
+								nx.setMoy1(deli.getMoy1s());
+								nx.setMoy3(deli.getMoy3s());
+								nx.setAp(deli.getAp1());
+								nx.setAp2(deli.getAp2());
+								nx.setAp3(deli.getAp3());
+								nx.setRang1(deli.getRang1());
+								nx.setRang2(deli.getRang2());
+								nx.setRang3(deli.getRang3());
+								existe = true;
+								break;
+							}
+						}
+						if (existe == false) {
+							note = new Note();
+							note.setEleve(deli.getEleve());
+							note.setAp2(deli.getAp2());
+							note.setCoef2(n.getCoef());
+							note.setRang2(deli.getRang2());
+							note.setCl(deli.getClasse());
+							note.setAnnee(annee);
+							note.setMatiere(n.getMatiere());
+							note.setNote1(0);
+							note.setNote3(0);
+							note.setMoy2(deli.getMoy2s());
+							note.setMoy1(deli.getMoy1s());
+							note.setMoy3(deli.getMoy3s());
+							note.setNote2(n.getNote());
+							note.setAp1(deli.getAp1());
+							note.setAp2(deli.getAp2());
+							note.setAp3(deli.getAp3());
+							note.setRang1(deli.getRang1());
+							note.setRang2(deli.getRang2());
+							note.setRang3(deli.getRang3());
+							listeNoteD.add(note);
+						}
+					}
+				}
+			}
+			if (i == 3) {
+				for (Note n : listeNote) {
+					if (eleve.getIdeleve().equals(n.getEleve().getIdeleve())
+							&& e.getIdEvaluation().equals(n.getEvaluation().getIdEvaluation())) {
+						existe = false;
+						for (Note nx : listeNoteD) {
+							if (nx.getMatiere().getIdmatiere().equals(n.getMatiere().getIdmatiere())) {
+								nx.setEleve(deli.getEleve());
+								nx.setAp3(deli.getAp3());
+								nx.setCoef3(n.getCoef());
+								nx.setRang3(deli.getRang3());
+								nx.setCl(deli.getClasse());
+								nx.setAnnee(annee);
+								nx.setMatiere(n.getMatiere());
+								nx.setMoy3(deli.getMoy3s());
+								nx.setMoy1(deli.getMoy1s());
+								nx.setMoy2(deli.getMoy2s());
+								nx.setNote3(n.getNote());
+								nx.setAp(deli.getAp1());
+								nx.setAp2(deli.getAp2());
+								nx.setAp3(deli.getAp3());
+								nx.setRang1(deli.getRang1());
+								nx.setRang2(deli.getRang2());
+								nx.setRang3(deli.getRang3());
+								existe = true;
+								break;
+							}
+						}
+						if (existe == false) {
+							note = new Note();
+							note.setEleve(deli.getEleve());
+							note.setAp3(deli.getAp3());
+							note.setCoef3(n.getCoef());
+							note.setRang3(deli.getRang3());
+							note.setCl(deli.getClasse());
+							note.setAnnee(annee);
+							note.setMatiere(n.getMatiere());
+							note.setNote1(0);
+							note.setNote2(0);
+							note.setMoy1(deli.getMoy1s());
+							note.setMoy2(deli.getMoy2s());
+							note.setMoy3(deli.getMoy3s());
+							note.setNote3(n.getNote());
+							note.setRang1(deli.getRang1());
+							note.setRang2(deli.getRang2());
+							note.setRang3(deli.getRang3());
+							note.setAp1(deli.getAp1());
+							note.setAp2(deli.getAp2());
+							note.setAp3(deli.getAp3());
+							listeNoteD.add(note);
+						}
+					}
+				}
+			}
+			i++;
+		}
+		return listeNoteD;
+	}
+
+	@SuppressWarnings("unchecked")
+	public void imprimerBulletinAn(DeliberationFinal deli) {
+		List<Note> listeNoteD = new ArrayList<Note>();
+		listeEval = new ArrayList<Evaluation>();
+		listeEval = dataSource.createQuery("From Evaluation ").list();
+		Institution in = (Institution) dataSource.createQuery("From Institution").uniqueResult();
+		listeNote = new ArrayList<Note>();
+		listeNote = new ArrayList<Note>();
+		listeNote = dataSource
+				.createQuery("From Note n inner join fetch n.cl c inner join fetch n.eleve e "
+						+ " inner join fetch n.evaluation ev inner join fetch n.annee an inner join fetch n.matiere "
+						+ " where c =:pc and an =:pan  and e =:pe")
+				.setParameter("pc", classe).setParameter("pan", annee).setParameter("pe", deli.getEleve()).list();
+		Double total = 0.0;
+		Double total2 = 0.0;
+		Double total3 = 0.0;
+		boolean existe = false;
+		Note note = new Note();
+		int i = 1;
+		for (Evaluation e : listeEval) {
+			total = 0.0;
+			if (i == 1) {
+				for (Note n : listeNote) {
+					if (e.getIdEvaluation().equals(n.getEvaluation().getIdEvaluation())) {
+						note = new Note();
+						note.setEleve(deli.getEleve());
+						note.setCoef1(n.getCoef());
+						note.setRang1(deli.getRang1());
+						note.setCl(deli.getClasse());
+						note.setAnnee(annee);
+						note.setMatiere(n.getMatiere());
+						note.setNote2(0);
+						note.setNote3(0);
+						note.setMoy1(deli.getMoy1s());
+						note.setMoy2(deli.getMoy2s());
+						note.setMoy3(deli.getMoy3s());
+						note.setNote1(n.getNote());
+						note.setAp1(deli.getAp1());
+						note.setAp2(deli.getAp2());
+						note.setAp3(deli.getAp3());
+						note.setRang1(deli.getRang1());
+						note.setRang2(deli.getRang2());
+						note.setRang3(deli.getRang3());
+						listeNoteD.add(note);
+					}
+				}
+			}
+			if (i == 2) {
+//				listeNote = new ArrayList<Note>();
+//				listeNote = dataSource.createQuery("From Note n inner join fetch n.cl c inner join fetch n.eleve e "
+//						+ " inner join fetch n.evaluation ev inner join fetch n.annee an inner join fetch n.matiere "
+//						+ " where c =:pc and an =:pan and ev =:pev and e =:pe").setParameter("pc", classe)
+//						.setParameter("pan", annee).setParameter("pev", e).setParameter("pe", deli.getEleve()).list();
+
+				for (Note n : listeNote) {
+					if (e.getIdEvaluation().equals(n.getEvaluation().getIdEvaluation())) {
+						existe = false;
+						for (Note nx : listeNoteD) {
+							if (nx.getMatiere().getIdmatiere().equals(n.getMatiere().getIdmatiere())) {
+								nx.setEleve(deli.getEleve());
+								nx.setAp2(deli.getAp2());
+								nx.setCoef2(n.getCoef());
+								nx.setRang2(deli.getRang2());
+								nx.setCl(deli.getClasse());
+								nx.setAnnee(annee);
+								nx.setMatiere(n.getMatiere());
+
+								nx.setNote2(n.getNote());
+								nx.setMoy2(deli.getMoy2s());
+								nx.setMoy1(deli.getMoy1s());
+								nx.setMoy3(deli.getMoy3s());
+								nx.setAp(deli.getAp1());
+								nx.setAp2(deli.getAp2());
+								nx.setAp3(deli.getAp3());
+								nx.setRang1(deli.getRang1());
+								nx.setRang2(deli.getRang2());
+								nx.setRang3(deli.getRang3());
+								existe = true;
+								break;
+							}
+						}
+						if (existe == false) {
+							note = new Note();
+							note.setEleve(deli.getEleve());
+							note.setAp2(deli.getAp2());
+							note.setCoef2(n.getCoef());
+							note.setRang2(deli.getRang2());
+							note.setCl(deli.getClasse());
+							note.setAnnee(annee);
+							note.setMatiere(n.getMatiere());
+							note.setNote1(0);
+							note.setNote3(0);
+							note.setMoy2(deli.getMoy2s());
+							note.setMoy1(deli.getMoy1s());
+							note.setMoy3(deli.getMoy3s());
+							note.setNote2(n.getNote());
+							note.setAp1(deli.getAp1());
+							note.setAp2(deli.getAp2());
+							note.setAp3(deli.getAp3());
+							note.setRang1(deli.getRang1());
+							note.setRang2(deli.getRang2());
+							note.setRang3(deli.getRang3());
+							listeNoteD.add(note);
+						}
+					}
+				}
+			}
+			if (i == 3) {
+				for (Note n : listeNote) {
+					if (e.getIdEvaluation().equals(n.getEvaluation().getIdEvaluation())) {
+						existe = false;
+						for (Note nx : listeNoteD) {
+							if (nx.getMatiere().getIdmatiere().equals(n.getMatiere().getIdmatiere())) {
+								nx.setEleve(deli.getEleve());
+								nx.setAp3(deli.getAp3());
+								nx.setCoef3(n.getCoef());
+								nx.setRang3(deli.getRang3());
+								nx.setCl(deli.getClasse());
+								nx.setAnnee(annee);
+								nx.setMatiere(n.getMatiere());
+								nx.setMoy3(deli.getMoy3s());
+								nx.setMoy1(deli.getMoy1s());
+								nx.setMoy2(deli.getMoy2s());
+								nx.setNote3(n.getNote());
+								nx.setAp(deli.getAp1());
+								nx.setAp2(deli.getAp2());
+								nx.setAp3(deli.getAp3());
+								nx.setRang1(deli.getRang1());
+								nx.setRang2(deli.getRang2());
+								nx.setRang3(deli.getRang3());
+								existe = true;
+								break;
+							}
+						}
+						if (existe == false) {
+							note = new Note();
+							note.setEleve(deli.getEleve());
+							note.setAp3(deli.getAp3());
+							note.setCoef3(n.getCoef());
+							note.setRang3(deli.getRang3());
+							note.setCl(deli.getClasse());
+							note.setAnnee(annee);
+							note.setMatiere(n.getMatiere());
+							note.setNote1(0);
+							note.setNote2(0);
+							note.setMoy1(deli.getMoy1s());
+							note.setMoy2(deli.getMoy2s());
+							note.setMoy3(deli.getMoy3s());
+							note.setNote3(n.getNote());
+							note.setRang1(deli.getRang1());
+							note.setRang2(deli.getRang2());
+							note.setRang3(deli.getRang3());
+							note.setAp1(deli.getAp1());
+							note.setAp2(deli.getAp2());
+							note.setAp3(deli.getAp3());
+							listeNoteD.add(note);
+						}
+					}
+				}
+			}
+			i++;
+		}
+		ParamInscription p = (ParamInscription) dataSource
+				.createQuery("From ParamInscription p inner join fetch p.classe c inner join fetch p.annee pa "
+						+ " where c =:pc and pa =:pa ")
+				.setParameter("pc", classe).setParameter("pa", annee).uniqueResult();
+
+		List<Inscription> liste = new ArrayList<Inscription>();
+		if (p != null) {
+			liste = dataSource
+					.createQuery(
+							"From Inscription i inner join fetch i.eleve inner join fetch i.paramins p where p =:pp")
+					.setParameter("pp", p).list();
+
+		}
+		Map<String, Object> param = new HashMap<String, Object>();
+		param.put("ecole", in.getNom());
+		param.put("slogan", in.getSologan());
+		param.put("tel", in.getTelephone());
+		param.put("moy", deli.getMoyan());
+		param.put("rang", deli.getRangan());
+		if (deli.getDecision().equalsIgnoreCase("Passe en classe supérieure")) {
+			param.put("d1", "X  Passe en classe supérieure");
+		} else {
+			param.put("d1", "Passe en classe supérieure");
+		}
+		if (deli.getDecision().equalsIgnoreCase("Redouble")) {
+			param.put("d2", "X Redouble");
+		} else {
+			param.put("d2", "Redouble");
+		}
+		if (deli.getDecision().equalsIgnoreCase("Exclu(e)")) {
+			param.put("d3", "X Exclu(e)");
+		} else {
+			param.put("d3", "Exclu(e)");
+		}
+
+//		param.put("app", deli.getAp());
+		param.put("eff", liste.size());
+		getFilePrintService().imprimer("ecole", "bulletinan", param, listeNoteD, utilisateur, ExportOption.PDF);
+
 		this.setShowModal("javascript:Richfaces.showModalPanel('modalPdf')");
 	}
 

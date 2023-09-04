@@ -2,7 +2,7 @@
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="bulletin" language="groovy" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="89af52a8-d2ec-4f35-8f4d-da069730ec92">
 	<property name="ireport.zoom" value="1.5"/>
 	<property name="ireport.x" value="0"/>
-	<property name="ireport.y" value="75"/>
+	<property name="ireport.y" value="192"/>
 	<parameter name="logo" class="java.io.InputStream"/>
 	<parameter name="ecole" class="java.lang.String"/>
 	<parameter name="slogan" class="java.lang.String"/>
@@ -66,7 +66,7 @@
 				<textElement>
 					<font size="12" isBold="true"/>
 				</textElement>
-				<textFieldExpression><![CDATA["ANNE SCOLAIRE "+$F{annee}.getAnneeScolaire()]]></textFieldExpression>
+				<textFieldExpression><![CDATA["ANNEE SCOLAIRE "+$F{annee}.getAnneeScolaire()]]></textFieldExpression>
 			</textField>
 			<textField pattern="EEEEE dd MMMMM yyyy">
 				<reportElement x="302" y="0" width="251" height="20" uuid="3086e59e-a433-440c-9699-cbffcfb1be00"/>
@@ -179,7 +179,7 @@
 		</band>
 	</detail>
 	<summary>
-		<band height="100" splitType="Stretch">
+		<band height="257" splitType="Stretch">
 			<rectangle>
 				<reportElement x="0" y="15" width="299" height="20" uuid="cee38a05-26ff-4727-8e47-baa667fb8bbc"/>
 			</rectangle>
@@ -260,6 +260,39 @@
 				</textElement>
 				<textFieldExpression><![CDATA[$P{app}]]></textFieldExpression>
 			</textField>
+			<staticText>
+				<reportElement x="426" y="229" width="128" height="20" uuid="ecf59915-3a9f-48ab-be8d-b8926655b6f8"/>
+				<textElement>
+					<font isBold="true" isUnderline="true"/>
+				</textElement>
+				<text><![CDATA[Le Directeur]]></text>
+			</staticText>
+			<rectangle>
+				<reportElement x="145" y="142" width="145" height="55" uuid="e4fa9eca-7480-438f-bfdc-f72835f2dbe6"/>
+			</rectangle>
+			<rectangle>
+				<reportElement x="-1" y="142" width="146" height="55" uuid="a8322750-98cd-4561-886d-48fbd59ca7d4"/>
+			</rectangle>
+			<rectangle>
+				<reportElement x="145" y="122" width="145" height="20" uuid="bc620b11-ada9-4a9b-8e7c-2a096656ddf9"/>
+			</rectangle>
+			<rectangle>
+				<reportElement x="-1" y="122" width="146" height="20" uuid="c3ff71ec-39ea-4211-ba10-02d6db44631b"/>
+			</rectangle>
+			<staticText>
+				<reportElement x="145" y="123" width="145" height="20" uuid="0db18875-3c2e-4a4a-97ea-daa395f0178e"/>
+				<textElement textAlignment="Center">
+					<font size="12"/>
+				</textElement>
+				<text><![CDATA[Le Parent]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="2" y="123" width="143" height="20" uuid="a4576a6d-468f-4786-ad4a-4cf08270a656"/>
+				<textElement textAlignment="Center">
+					<font size="12"/>
+				</textElement>
+				<text><![CDATA[Le Maître(sse)]]></text>
+			</staticText>
 		</band>
 	</summary>
 </jasperReport>
