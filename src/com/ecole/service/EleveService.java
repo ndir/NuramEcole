@@ -207,7 +207,7 @@ public class EleveService implements Serializable {
 				.createQuery("From Inscription i inner join fetch i.paramins p inner join fetch i.eleve e "
 						+ " where p =:pp and e =:pi")
 				.setParameter("pp", p).setParameter("pi", eleve).uniqueResult();
-		if (ins != null && ins.getReduction() != null) {
+		if (ins != null && ins.getReduction() != 0d) {
 			resul = ins.getReduction();
 		}
 		return resul;

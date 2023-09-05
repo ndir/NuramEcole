@@ -32,15 +32,17 @@ public class Inscription  implements Serializable {
 	
 	private Eleve eleve;
 	
-	private Double reduction;
+	private double reduction = 0d;
 	
 	private String commentaire;
 
-	private Double reliquat;
+	private double reliquat = 0d,avoirEleve =0d, montantInscriptionPaye=0d;
 	
-	private Boolean mois1,mois2,mois3,mois4,mois5,mois6,mois7,mois8,mois9;
-	
+	private boolean mois1=false,mois2=false,mois3=false,mois4=false,mois5=false,mois6=false,mois7=false,mois11=false,mois12=false;
+	private boolean mois10=false;
 	private int nbreMoisPaye;
+	
+	private int moisenCours;
 	
 	
 
@@ -75,97 +77,113 @@ public class Inscription  implements Serializable {
 		this.eleve = eleve;
 	}
 
-	public Double getReduction() {
+	public double getReduction() {
 		return reduction;
 	}
 
-	public void setReduction(Double reduction) {
+	public void setReduction(double reduction) {
 		this.reduction = reduction;
 	}
 
-	
-	public Boolean getMois1() {
+	public boolean getMois1() {
 		return mois1;
 	}
 
-	public void setMois1(Boolean mois1) {
+	public void setMois1(boolean mois1) {
 		this.mois1 = mois1;
 	}
 
-	public Boolean getMois2() {
+	public boolean getMois2() {
 		return mois2;
 	}
 
-	public void setMois2(Boolean mois2) {
+	public void setMois2(boolean mois2) {
 		this.mois2 = mois2;
 	}
 
-	public Boolean getMois3() {
+	public boolean getMois3() {
 		return mois3;
 	}
 
-	public void setMois3(Boolean mois3) {
+	public void setMois3(boolean mois3) {
 		this.mois3 = mois3;
 	}
 
-	public Boolean getMois4() {
+	public boolean getMois4() {
 		return mois4;
 	}
 
-	public void setMois4(Boolean mois4) {
+	public void setMois4(boolean mois4) {
 		this.mois4 = mois4;
 	}
 
-	public Boolean getMois5() {
+	public boolean getMois5() {
 		return mois5;
 	}
 
-	public void setMois5(Boolean mois5) {
+	public void setMois5(boolean mois5) {
 		this.mois5 = mois5;
 	}
 
-	public Boolean getMois6() {
+	public boolean getMois6() {
 		return mois6;
 	}
 
-	public void setMois6(Boolean mois6) {
+	public void setMois6(boolean mois6) {
 		this.mois6 = mois6;
 	}
 
-	public Boolean getMois7() {
+	public boolean getMois7() {
 		return mois7;
 	}
 
-	public void setMois7(Boolean mois7) {
+	public void setMois7(boolean mois7) {
 		this.mois7 = mois7;
 	}
 
-	public Boolean getMois8() {
-		return mois8;
+	public boolean getMois11() {
+		return mois11;
 	}
 
-	public void setMois8(Boolean mois8) {
-		this.mois8 = mois8;
+	public void setMois11(boolean mois11) {
+		this.mois11 = mois11;
 	}
 
-	public Boolean getMois9() {
-		return mois9;
+	public boolean getMois12() {
+		return mois12;
 	}
 
-	public void setMois9(Boolean mois9) {
-		this.mois9 = mois9;
+	public void setMois12(boolean mois12) {
+		this.mois12 = mois12;
 	}
 
 	@Override
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
+		long temp;
+		temp = Double.doubleToLongBits(avoirEleve);
+		result = prime * result + (int) (temp ^ (temp >>> 32));
 		result = prime * result + ((commentaire == null) ? 0 : commentaire.hashCode());
 		result = prime * result + ((eleve == null) ? 0 : eleve.hashCode());
 		result = prime * result + ((id == null) ? 0 : id.hashCode());
+		result = prime * result + (mois1 ? 1231 : 1237);
+		result = prime * result + (mois10 ? 1231 : 1237);
+		result = prime * result + (mois11 ? 1231 : 1237);
+		result = prime * result + (mois12 ? 1231 : 1237);
+		result = prime * result + (mois2 ? 1231 : 1237);
+		result = prime * result + (mois3 ? 1231 : 1237);
+		result = prime * result + (mois4 ? 1231 : 1237);
+		result = prime * result + (mois5 ? 1231 : 1237);
+		result = prime * result + (mois6 ? 1231 : 1237);
+		result = prime * result + (mois7 ? 1231 : 1237);
+		result = prime * result + moisenCours;
+		result = prime * result + nbreMoisPaye;
 		result = prime * result + ((paramins == null) ? 0 : paramins.hashCode());
-		result = prime * result + ((reduction == null) ? 0 : reduction.hashCode());
-		result = prime * result + ((reliquat == null) ? 0 : reliquat.hashCode());
+		temp = Double.doubleToLongBits(reduction);
+		result = prime * result + (int) (temp ^ (temp >>> 32));
+		temp = Double.doubleToLongBits(reliquat);
+		result = prime * result + (int) (temp ^ (temp >>> 32));
 		return result;
 	}
 
@@ -178,6 +196,8 @@ public class Inscription  implements Serializable {
 		if (getClass() != obj.getClass())
 			return false;
 		Inscription other = (Inscription) obj;
+		if (Double.doubleToLongBits(avoirEleve) != Double.doubleToLongBits(other.avoirEleve))
+			return false;
 		if (commentaire == null) {
 			if (other.commentaire != null)
 				return false;
@@ -193,20 +213,38 @@ public class Inscription  implements Serializable {
 				return false;
 		} else if (!id.equals(other.id))
 			return false;
+		if (mois1 != other.mois1)
+			return false;
+		if (mois10 != other.mois10)
+			return false;
+		if (mois11 != other.mois11)
+			return false;
+		if (mois12 != other.mois12)
+			return false;
+		if (mois2 != other.mois2)
+			return false;
+		if (mois3 != other.mois3)
+			return false;
+		if (mois4 != other.mois4)
+			return false;
+		if (mois5 != other.mois5)
+			return false;
+		if (mois6 != other.mois6)
+			return false;
+		if (mois7 != other.mois7)
+			return false;
+		if (moisenCours != other.moisenCours)
+			return false;
+		if (nbreMoisPaye != other.nbreMoisPaye)
+			return false;
 		if (paramins == null) {
 			if (other.paramins != null)
 				return false;
 		} else if (!paramins.equals(other.paramins))
 			return false;
-		if (reduction == null) {
-			if (other.reduction != null)
-				return false;
-		} else if (!reduction.equals(other.reduction))
+		if (Double.doubleToLongBits(reduction) != Double.doubleToLongBits(other.reduction))
 			return false;
-		if (reliquat == null) {
-			if (other.reliquat != null)
-				return false;
-		} else if (!reliquat.equals(other.reliquat))
+		if (Double.doubleToLongBits(reliquat) != Double.doubleToLongBits(other.reliquat))
 			return false;
 		return true;
 	}
@@ -219,11 +257,11 @@ public class Inscription  implements Serializable {
 		this.commentaire = commentaire;
 	}
 
-	public Double getReliquat() {
+	public double getReliquat() {
 		return reliquat;
 	}
 
-	public void setReliquat(Double reliquat) {
+	public void setReliquat(double reliquat) {
 		this.reliquat = reliquat;
 	}
 
@@ -234,5 +272,38 @@ public class Inscription  implements Serializable {
 	public void setNbreMoisPaye(int nbreMoisPaye) {
 		this.nbreMoisPaye = nbreMoisPaye;
 	}
+
+	public int getMoisenCours() {
+		return moisenCours;
+	}
+
+	public void setMoisenCours(int moisenCours) {
+		this.moisenCours = moisenCours;
+	}
+
+	public double getAvoirEleve() {
+		return avoirEleve;
+	}
+
+	public void setAvoirEleve(double avoirEleve) {
+		this.avoirEleve = avoirEleve;
+	}
+
+	public boolean getMois10() {
+		return mois10;
+	}
+
+	public void setMois10(boolean mois10) {
+		this.mois10 = mois10;
+	}
+
+	public double getMontantInscriptionPaye() {
+		return montantInscriptionPaye;
+	}
+
+	public void setMontantInscriptionPaye(double montantInscriptionPaye) {
+		this.montantInscriptionPaye = montantInscriptionPaye;
+	}
+	
 
 }

@@ -148,184 +148,221 @@
 											</tr>
 											<tr>
 												<td><h:outputLabel styleClass="grey"
-														value="Mois scolaires" /></td>
-												<td><h:outputLabel styleClass="grey" value="Nov" />
-												 <h:selectBooleanCheckbox
-														id="active" value="#{recetteService.inscription.mois1}"
-														disabled="#{recetteService.inscription.mois1}">
-														</h:selectBooleanCheckbox>
-
-													<h:outputLabel styleClass="grey" value="Dec" /> 
-													<h:selectBooleanCheckbox
+														value=" Mois scolaires : " /></td>
+												<td><h:outputLabel styleClass="grey" value="Oct" /> <h:selectBooleanCheckbox
+														value="#{recetteService.inscription.mois10}"
+														disabled="#{(recetteService.inscription.mois10 and recetteService.inscription.moisenCours ne '10') and recetteService.inscription.moisenCours ne '0'}">
+													</h:selectBooleanCheckbox> <h:outputLabel styleClass="grey" value="Nov" /> <h:selectBooleanCheckbox
+														id="active" value="#{recetteService.inscription.mois11}"
+														disabled="#{recetteService.inscription.mois11 and recetteService.inscription.moisenCours ne '11'}">
+													</h:selectBooleanCheckbox> <h:outputLabel styleClass="grey" value="Dec" /> <h:selectBooleanCheckbox
+														value="#{recetteService.inscription.mois12}"
+														disabled="#{recetteService.inscription.mois12 and recetteService.inscription.moisenCours ne '12'}">
+													</h:selectBooleanCheckbox> <h:outputLabel styleClass="grey" value="Jan" /> <h:selectBooleanCheckbox
+														value="#{recetteService.inscription.mois1}"
+														disabled="#{recetteService.inscription.mois1 and recetteService.inscription.moisenCours ne '1'}">
+													</h:selectBooleanCheckbox> <h:outputLabel styleClass="grey" value="Fev" /> <h:selectBooleanCheckbox
 														value="#{recetteService.inscription.mois2}"
-														disabled="#{recetteService.inscription.mois2}">
-
-													</h:selectBooleanCheckbox> 
-													
-													<h:outputLabel styleClass="grey" value="Jan" />
-													 <h:selectBooleanCheckbox
-														value="#{recetteService.inscription.mois3}">
-													</h:selectBooleanCheckbox> 
-													<h:outputLabel styleClass="grey" value="Fev" />
-													 <h:selectBooleanCheckbox
-														value="#{recetteService.inscription.mois4}">
-													</h:selectBooleanCheckbox> 
-													<h:outputLabel styleClass="grey" value="Mars" />
-													 <h:selectBooleanCheckbox
-														value="#{recetteService.inscription.mois5}">
-													</h:selectBooleanCheckbox> 
-													<h:outputLabel styleClass="grey" value="Avr" /> 
-													<h:selectBooleanCheckbox
-														value="#{recetteService.inscription.mois6}">
-													</h:selectBooleanCheckbox> 
-													<h:outputLabel styleClass="grey" value="Mai " /> 
-													
-													<h:selectBooleanCheckbox
-														value="#{recetteService.inscription.mois7}">
-													</h:selectBooleanCheckbox> 
-													<h:outputLabel styleClass="grey" value="Juin " /> 
-													<h:selectBooleanCheckbox
-														value="#{recetteService.inscription.mois8}">
-													</h:selectBooleanCheckbox> 
-													<h:outputLabel styleClass="grey" value="Juil" /> 
-													<h:selectBooleanCheckbox
-														value="#{recetteService.inscription.mois9}">
+														disabled="#{recetteService.inscription.mois2 and recetteService.inscription.moisenCours ne '2'}">
+													</h:selectBooleanCheckbox> <h:outputLabel styleClass="grey" value="Mars" /> <h:selectBooleanCheckbox
+														value="#{recetteService.inscription.mois3}"
+														disabled="#{recetteService.inscription.mois3 and recetteService.inscription.moisenCours ne '3'}">
+													</h:selectBooleanCheckbox> <h:outputLabel styleClass="grey" value="Avr" /> <h:selectBooleanCheckbox
+														value="#{recetteService.inscription.mois4}"
+														disabled="#{recetteService.inscription.mois4 and recetteService.inscription.moisenCours ne '4'}">
+													</h:selectBooleanCheckbox> <h:outputLabel styleClass="grey" value="Mai " /> <h:selectBooleanCheckbox
+														value="#{recetteService.inscription.mois5}"
+														disabled="#{recetteService.inscription.mois5 and recetteService.inscription.moisenCours ne '5'}">
+													</h:selectBooleanCheckbox> <h:outputLabel styleClass="grey" value="Juin " /> <h:selectBooleanCheckbox
+														value="#{recetteService.inscription.mois6}"
+														disabled="#{recetteService.inscription.mois6 and recetteService.inscription.moisenCours ne '6'}">
 													</h:selectBooleanCheckbox></td>
+
 											</tr>
 										</TABLE>
 
 
+										<a:outputPanel rendered="#{recetteService.inscription.id > 0}">
+											<TABLE>
+												<tr>
+													<td width="450">
+														<FIELDSET rendered="false">
+															<LEGEND>
+																<h6>FORMULAIRE DE PAIEMENT</h6>
+															</LEGEND>
 
-										<TABLE>
-											<tr>
-												<td width="450">
-													<FIELDSET>
-														<LEGEND><h6>FORMULAIRE DE PAIEMENT</h6></LEGEND>
+															<table class="table">
+																<tr>
 
-														<table class="table">
-															<tr>
+																	<td><h:outputLabel styleClass="grey"
+																			id="infosEleve"
+																			value="L'ELEVE :  #{recetteService.eleve.prenom} #{recetteService.eleve.nom} / De #{recetteService.eleve.titeur} en classe de #{recetteService.classe.libelle}" /></td>
+																</tr>
+																<tr>
+																	<td><h:outputLabel styleClass="grey"
+																			value="MENSUALITE CLASSE : ">
+																			<h:outputText styleClass="grey" id="idInfosValMens"
+																				value="#{recetteService.inscription.paramins.mensualite}">
+																				<f:convertNumber pattern="#,##0" />
+																			</h:outputText>
 
-																<td><h:outputLabel styleClass="grey"
-																		id="infosEleve"
-																		value="L'ELEVE :  #{recetteService.eleve.prenom} #{recetteService.eleve.nom} / De #{recetteService.eleve.titeur} en classe de #{recetteService.classe.libelle}" /></td>
-															</tr>
-															<tr>
-																<td><h:outputLabel styleClass="grey"
-																		value="MENSUALITE CLASSE : ">
-																		<h:outputText styleClass="grey" id="idInfosValMens"
-																			value="#{recetteService.inscription.paramins.mensualite}">
-																			<f:convertNumber pattern="#,##0" />
-																		</h:outputText>
+																		</h:outputLabel> <h:outputLabel styleClass="grey" value="  F CFA " /></td>
+																</tr>
+																<tr>
+																	<td><h:outputLabel styleClass="grey"
+																			value="BENEFICIE DE REDUCTION DE : "
+																			rendered="#{recetteService.inscription.reduction >0}">
+																			<h:outputText styleClass="grey" id="infosReduction"
+																				value="#{recetteService.inscription.reduction}"
+																				rendered="#{recetteService.inscription.reduction >0}">
+																				<f:convertNumber pattern="#,##0" />
+																			</h:outputText>
+																		</h:outputLabel> <h:outputLabel styleClass="grey" value="  F CFA "
+																			rendered="#{recetteService.inscription.reduction >0}" /></td>
+																</tr>
+																<tr>
+																	<td><h:outputLabel styleClass="grey"
+																			value="AVOIR ELEVE : "
+																			rendered="#{recetteService.inscription.avoirEleve > 0}">
+																			<h:outputText styleClass="
+																		grey"
+																				id="infosAvoir"
+																				rendered="#{recetteService.inscription.avoirEleve > 0}"
+																				value="#{recetteService.inscription.avoirEleve}">
+																				<f:convertNumber pattern="#,##0" />
+																			</h:outputText>
+																		</h:outputLabel> <h:outputLabel styleClass="grey" value="  F CFA "
+																			rendered="#{recetteService.inscription.avoirEleve > 0}" /></td>
+																</tr>
+																<tr>
+																	<td><h:outputLabel styleClass="grey"
+																			value="RELIQUAT : "
+																			rendered="#{recetteService.inscription.reliquat >0}">
+																			<h:outputText styleClass="grey" id="infosReliquat"
+																				value="#{recetteService.inscription.reliquat}"
+																				rendered="#{recetteService.inscription.reliquat >0}">
+																				<f:convertNumber pattern="#,##0" />
+																			</h:outputText>
+																		</h:outputLabel> <h:outputLabel styleClass="grey" value="  F CFA "
+																			rendered="#{recetteService.inscription.reliquat >0}" /></td>
+																</tr>
+																<tr>
+																	<td><h:outputLabel styleClass="grey"
+																			value="MONTANT TTL DU : ">
+																			<h:outputText styleClass="grey" id="infosMontantDu"
+																				style="color: red"
+																				value="#{recetteService.montantPayerGenere}">
+																				<f:convertNumber pattern="#,##0" />
+																			</h:outputText>
+																		</h:outputLabel> <h:outputLabel styleClass="grey" value="  F CFA " /></td>
+																	<td />
+																</tr>
+																<tr>
+																	<td><h:outputLabel styleClass="grey"
+																			value="A PAYER : ">
+																			<h:inputText styleClass="grey" id="infosAPayer"
+																				value="#{recetteService.montantPayeFinial}" />
 
-																	</h:outputLabel> <h:outputLabel styleClass="grey" value="  F CFA " /></td>
-															</tr>
-															<tr>
-																<td><h:outputLabel styleClass="grey"
-																		value="BENEFICIE DE REDUCTION DE : ">
-																		<h:outputText styleClass="grey" id="infosReduction"
-																			value="#{recetteService.inscription.reduction}">
-																			<f:convertNumber pattern="#,##0" />
-																		</h:outputText>
-																	</h:outputLabel> <h:outputLabel styleClass="grey" value="  F CFA " /></td>
-															</tr>
-															<tr>
-																<td><h:outputLabel styleClass="grey"
-																		value="RELIQUAT : ">
-																		<h:outputText styleClass="grey" id="infosReliquat"
-																			value="#{recetteService.inscription.reliquat}">
-																			<f:convertNumber pattern="#,##0" />
-																		</h:outputText>
-																	</h:outputLabel> <h:outputLabel styleClass="grey" value="  F CFA " /></td>
-															</tr>
-															<tr>
-																<td><h:outputLabel styleClass="grey"
-																		value="A PAYER : ">
-																		<h:inputText styleClass="grey" id="infosAPayer"
-																			value="#{recetteService.recetteEnCreation.montantPaye}" />
-
-																	</h:outputLabel> <h:outputLabel styleClass="grey" value="  F CFA " /></td>
-															</tr>
-															<TR>
-																<td align="center"><a:commandLink
-																		styleClass="btn btn-danger" value=""
-																		action="#{recetteService.annulerAjout()}"
-																		reRender="liste" status="waitStatus">
+																		</h:outputLabel> <h:outputLabel styleClass="grey" value="  F CFA " /></td>
+																</tr>
+																<TR>
+																	<td align="center"><a:commandLink
+																			styleClass="btn btn-danger" value=""
+																			action="#{recetteService.annulerAjout()}"
+																			reRender="liste" status="waitStatus">
 																		
 																		Annuler			
 																				</a:commandLink> <rich:spacer width="10px;"></rich:spacer> <a:commandLink
-																		styleClass="btn btn-success" value=""
-																		action="#{recetteService.ajouterRecette()}"
-																		reRender="liste" status="waitStatus">
+																			styleClass="btn btn-success" value=""
+																			action="#{recetteService.ajouterRecette()}"
+																			reRender="liste" status="waitStatus">
 																		
 																		Valider			
 																				</a:commandLink></td>
-															</TR>
+																</TR>
 
-														</table>
-													</FIELDSET>
+															</table>
+														</FIELDSET>
 
-												</td>
+													</td>
 
-												<td width="50" valign="top" />
+													<td width="50" valign="top" />
 
 
-												<td width="500" valign="top">
+													<td width="500" valign="top">
 
-													<FIELDSET>
-														<LEGEND><h6>HISTORIQUE DES PAIEMENTS</h6></LEGEND>
-														<rich:dataTable value="#{recetteService.listeRecette}"
-															var="rec" id="idTablistMesualite" style="width:100%;"
-															rows="8" rowClasses="row1,row2">
-															<f:facet name="header">
-																<rich:columnGroup>
+														<FIELDSET>
+															<LEGEND>
+																<h6>HISTORIQUE DES PAIEMENTS</h6>
+															</LEGEND>
+															<rich:dataTable value="#{recetteService.listeRecette}"
+																var="rec" id="idTablistMesualite" style="width:100%;"
+																rows="5" rowClasses="row1,row2">
+																<f:facet name="header">
+																	<rich:columnGroup>
 
-																	<rich:column>
-																		<h:outputLabel value="Mois"
-																			style="color:white;font-size:12px;font-family: Arial;text-align:center;" />
-																	</rich:column>
-																	<rich:column>
-																		<h:outputLabel value="Date"
-																			style="color:white;font-size:12px;font-family: Arial;text-align:center;" />
-																	</rich:column>
-																	<rich:column>
-																		<h:outputLabel value="Montant Payé"
-																			style="color:white;font-size:12px;font-family: Arial;text-align:center;" />
-																	</rich:column>
+																		<rich:column>
+																			<h:outputLabel value="Mois concernés"
+																				style="color:white;font-size:12px;font-family: Arial;text-align:center;" />
+																		</rich:column>
+																		<rich:column>
+																			<h:outputLabel value="Date paiement"
+																				style="color:white;font-size:12px;font-family: Arial;text-align:center;" />
+																		</rich:column>
+																		<rich:column>
+																			<h:outputLabel value="Montant Payé XOF"
+																				style="color:white;font-size:12px;font-family: Arial;text-align:center;" />
+																		</rich:column>
 
-																	<rich:column>
-																		<h:outputLabel value="Reliquat"
-																			style="color:white;font-size:12px;font-family: Arial;text-align:center;" />
-																	</rich:column>
+																		<rich:column>
+																			<h:outputLabel value="Reliquat XOF"
+																				style="color:white;font-size:12px;font-family: Arial;text-align:center;" />
+																		</rich:column>
+																		<rich:column>
+																			<h:outputLabel value="Action"
+																				style="color:white;font-size:12px;font-family: Arial;text-align:center;" />
+																		</rich:column>
+																	</rich:columnGroup>
+																</f:facet>
 
-																</rich:columnGroup>
-															</f:facet>
+																<rich:column>
+																	<h:outputText
+																		value="#{recetteService.retreiveMonthByInt(rec.moisPaye)}"
+																		styleClass="capitalized"></h:outputText>
+																</rich:column>
+																<rich:column>
+																	<h:outputLabel value="#{rec.datePaiment}"></h:outputLabel>
+																</rich:column>
+																<rich:column>
+																	<h:outputLabel value="#{rec.montantPaye}">
+																		<f:convertNumber pattern="#,##0" />
+																	</h:outputLabel>
+																</rich:column>
+																
+																<rich:column>
+																	<a:commandLink value="" status="waitStatus"
+																		action="#{recetteService.versModifierRecette(rec)}"
+																		reRender="liste" title="Modifier">
+																		<s:graphicImage fileName="edit.png"
+																			style="border:0px;" value="/picto/edit.png"
+																			width="16" height="16" alt="" rendered="#{rec.editable}" />
 
-															<rich:column>
-																<h:outputLabel value=""></h:outputLabel>
-															</rich:column>
-															<rich:column>
-																<h:outputLabel value="#{rec.datePaiment}"></h:outputLabel>
-															</rich:column>
-															<rich:column>
-																<h:outputLabel value="#{rec.montantPaye}">
-																	<f:convertNumber pattern="#,##0" />
-																</h:outputLabel>
-															</rich:column>
-															<rich:column>
-																<h:outputLabel value="#{rec.montantPaye}">
-																	<f:convertNumber pattern="#,##0" />
-																</h:outputLabel>
-															</rich:column>
-
-														</rich:dataTable>
-														<rich:datascroller status="waitStatus" stepControls="auto"
-															style="width:100%" for="idTablistMesualite"
-															ajaxSingle="false"
-															rendered="#{not empty recetteService.listeRecette}" />
-													</FIELDSET>
-												</td>
-											</tr>
-										</TABLE>
+																	</a:commandLink>
+																	<s:graphicImage fileName="clock_edit.png"
+																		style="border:0px;" value="/picto2/clock_edit.png"
+																		width="16" height="16" alt=""
+																		rendered="#{!rec.editable}" />
+																</rich:column>
+															</rich:dataTable>
+															<rich:datascroller status="waitStatus"
+																stepControls="auto" style="width:100%"
+																for="idTablistMesualite" ajaxSingle="false"
+																rendered="#{not empty recetteService.listeRecette}" />
+														</FIELDSET>
+													</td>
+												</tr>
+											</TABLE>
+										</a:outputPanel>
 									</h:form>
 
 

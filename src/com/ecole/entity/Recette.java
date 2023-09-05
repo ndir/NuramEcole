@@ -1,6 +1,7 @@
 package com.ecole.entity;
 
 import java.io.Serializable;
+import java.util.Arrays;
 import java.util.Date;
 
 import javax.persistence.Entity;
@@ -24,9 +25,11 @@ public class Recette implements Serializable{
 	private Long idRecette;
 	private Inscription inscription;
 	private TypeRecette typeRecette;
-	private Double montantPaye;
+	private double montantPaye =0;
 	private Date datePaiment;
 	private int[] mois; 
+	private int moisPaye;
+	private boolean editable=false;
 	
 	/**
 	 * Utilisateur loggué
@@ -61,11 +64,11 @@ public class Recette implements Serializable{
 		this.typeRecette = typeRecette;
 	}
 
-	public Double getMontantPaye() {
+	public double getMontantPaye() {
 		return montantPaye;
 	}
 
-	public void setMontantPaye(Double montantPaye) {
+	public void setMontantPaye(double montantPaye) {
 		this.montantPaye = montantPaye;
 	}
 
@@ -94,8 +97,13 @@ public class Recette implements Serializable{
 		result = prime * result + ((datePaiment == null) ? 0 : datePaiment.hashCode());
 		result = prime * result + ((idRecette == null) ? 0 : idRecette.hashCode());
 		result = prime * result + ((inscription == null) ? 0 : inscription.hashCode());
-		result = prime * result + ((montantPaye == null) ? 0 : montantPaye.hashCode());
+		result = prime * result + Arrays.hashCode(mois);
+		result = prime * result + moisPaye;
+		long temp;
+		temp = Double.doubleToLongBits(montantPaye);
+		result = prime * result + (int) (temp ^ (temp >>> 32));
 		result = prime * result + ((typeRecette == null) ? 0 : typeRecette.hashCode());
+		result = prime * result + ((utilisateur == null) ? 0 : utilisateur.hashCode());
 		return result;
 	}
 
@@ -123,15 +131,21 @@ public class Recette implements Serializable{
 				return false;
 		} else if (!inscription.equals(other.inscription))
 			return false;
-		if (montantPaye == null) {
-			if (other.montantPaye != null)
-				return false;
-		} else if (!montantPaye.equals(other.montantPaye))
+		if (!Arrays.equals(mois, other.mois))
+			return false;
+		if (moisPaye != other.moisPaye)
+			return false;
+		if (Double.doubleToLongBits(montantPaye) != Double.doubleToLongBits(other.montantPaye))
 			return false;
 		if (typeRecette == null) {
 			if (other.typeRecette != null)
 				return false;
 		} else if (!typeRecette.equals(other.typeRecette))
+			return false;
+		if (utilisateur == null) {
+			if (other.utilisateur != null)
+				return false;
+		} else if (!utilisateur.equals(other.utilisateur))
 			return false;
 		return true;
 	}
@@ -142,6 +156,22 @@ public class Recette implements Serializable{
 
 	public void setMois(int[] mois) {
 		this.mois = mois;
+	}
+
+	public int getMoisPaye() {
+		return moisPaye;
+	}
+
+	public void setMoisPaye(int moisPaye) {
+		this.moisPaye = moisPaye;
+	}
+
+	public boolean isEditable() {
+		return editable;
+	}
+
+	public void setEditable(boolean editable) {
+		this.editable = editable;
 	}
 
 	
