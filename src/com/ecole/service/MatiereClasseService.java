@@ -80,6 +80,17 @@ public class MatiereClasseService implements Serializable {
 
 	}
 
+	@SuppressWarnings("unchecked")
+	public void voirMatiereClasse() {
+
+		listeMatClasse = new ArrayList<MatiereClasse>();
+		listeMatClasse = dataSource.createQuery(
+				"From MatiereClasse m inner join fetch m.matiere ma inner join fetch m.classe c inner join fetch m.eval ev"
+						+ " where  m.annee_scol =:pan  ")
+				.setParameter("pan", anneeScolaire.getAnneeScolaire()).list();
+
+	}
+
 	public String versClasseMat() {
 		this.setMatClasse(new MatiereClasse());
 		chargerListe();
@@ -98,11 +109,12 @@ public class MatiereClasseService implements Serializable {
 	public void ajouterClasseMatiere() {
 		for (Matiere mat : listeMatiere) {
 			if (mat.getCoef() > 0) {
-				MatiereClasse m = (MatiereClasse) dataSource
-						.createQuery("From MatiereClasse m inner join fetch m.matiere ma inner join fetch m.classe c"
-								+ " where ma =:pma and c =:pc and m.annee_scol =:pan ")
+				MatiereClasse m = (MatiereClasse) dataSource.createQuery(
+						"From MatiereClasse m inner join fetch m.matiere ma inner join fetch m.classe c inner join fetch m.eval ev"
+								+ " where ma =:pma and c =:pc and m.annee_scol =:pan and ev =:pev ")
 						.setParameter("pma", mat).setParameter("pc", matClasse.getClasse())
-						.setParameter("pan", anneeScolaire.getAnneeScolaire()).uniqueResult();
+						.setParameter("pan", anneeScolaire.getAnneeScolaire()).setParameter("pev", matClasse.getEval())
+						.uniqueResult();
 				if (m == null) {
 					MatiereClasse mc = new MatiereClasse();
 					mc.setAnnee_scol(anneeScolaire.getAnneeScolaire());
@@ -120,9 +132,14 @@ public class MatiereClasseService implements Serializable {
 		this.setMatClasse(new MatiereClasse());
 		listeMatiere = new ArrayList<Matiere>();
 		listeClasse = new ArrayList<Classe>();
-		listeEval = new ArrayList<Evaluation>();
+		// listeEval = new ArrayList<Evaluation>();
 		FacesMessages.instance().addToControlFromResourceBundle("infoGenerique", "Opération effectuée avec succés");
 
+	}
+
+	public void supprimerMatClasse(MatiereClasse mat) {
+		dataSource.delete(mat);
+		voirMatiereClasse();
 	}
 
 	public Session getDataSource() {

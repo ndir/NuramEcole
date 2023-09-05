@@ -79,7 +79,7 @@
 		<h:message infoClass="confirmationerrorGenerique"
 			errorClass="confirmationerrorGenerique"
 			warnClass="confirmationerrorGenerique" for="erreurGenerique" />
-		<h:inputHidden id="erreurGenerique"  />
+		<h:inputHidden id="erreurGenerique" />
 	</a:outputPanel>
 
 	<div class="az-content az-content-dashboard">
@@ -113,9 +113,24 @@
 
 														<a:support event="onchange"
 															action="#{noteService.chargerListeClasse()}"
-															ajaxSingle="true" reRender="classe" status="waitStatus"></a:support>
+															ajaxSingle="true" reRender="classe,eval"
+															status="waitStatus"></a:support>
 													</h:selectOneMenu></td>
+												<td><h:outputLabel styleClass="grey" value="Evaluation" /></td>
 
+												<td><h:selectOneMenu class="form-control"
+														value="#{noteService.note.evaluation}"
+														converter="#{evaluationConverter}" id="eval">
+														<s:selectItems value="#{noteService.listeEval}" var="type"
+															label="#{type.libelle}"
+															noSelectionLabel="--- Selectionnez ---" />
+														<a:support event="onchange"
+															action="#{noteService.getEval1()}"
+															ajaxSingle="true" 
+															status="waitStatus"></a:support>
+													</h:selectOneMenu></td>
+											</tr>
+											<tr>
 												<td><h:outputLabel styleClass="grey" value="Classe" /></td>
 												<td><h:selectOneMenu class="form-control"
 														value="#{noteService.note.cl}"
@@ -130,24 +145,6 @@
 															ajaxSingle="true" reRender="matiere" status="waitStatus"></a:support>
 
 													</h:selectOneMenu></td>
-											</tr>
-											<tr>
-
-												<td><h:outputLabel styleClass="grey" value="Evaluation" /></td>
-
-												<td><h:selectOneMenu class="form-control"
-														value="#{noteService.note.eval}">
-
-														<f:selectItem itemValue="1ère Composition"
-															itemLabel="1ère Composition" />
-
-														<f:selectItem itemValue="2ème Composition"
-															itemLabel="2ème Composition" />
-
-														<f:selectItem itemValue="3ème Composition"
-															itemLabel="3ème Composition" />
-													</h:selectOneMenu></td>
-
 												<td><h:outputLabel styleClass="grey" value="Matière" /></td>
 												<td><h:selectOneMenu class="form-control"
 														value="#{noteService.note.matiere}"
@@ -177,7 +174,7 @@
 
 										<rich:dataTable value="#{noteService.listeNotes}" var="mat"
 											id="eleve" style="width:100%;" rows="8"
-											rowClasses="row1,row2" >
+											rowClasses="row1,row2">
 											<f:facet name="header">
 												<rich:columnGroup>
 
@@ -204,7 +201,8 @@
 												</rich:columnGroup>
 											</f:facet>
 
-											<rich:column filterBy="#{mat.eleve.nom}" filterEvent="onkeyup">
+											<rich:column filterBy="#{mat.eleve.nom}"
+												filterEvent="onkeyup">
 												<h:outputLabel value="#{mat.eleve.nom} #{mat.eleve.prenom}"></h:outputLabel>
 											</rich:column>
 											<rich:column>
@@ -217,7 +215,7 @@
 
 											<rich:column>
 												<h:inputText value="#{mat.note}" class="form-control"
-													 disabled = "true"></h:inputText>
+													disabled="true"></h:inputText>
 											</rich:column>
 
 										</rich:dataTable>

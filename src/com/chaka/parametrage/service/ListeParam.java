@@ -83,7 +83,7 @@ public class ListeParam implements Serializable {
 	
 	@Create
 	public void ChargerLesListesParamStock(){
-		System.out.print("#----------------------------------------- CHARGER LES LISTES PARAMETRAGES  -------------------------------#");
+		
 		
 //		this.actualiserListeFonction();
 //		this.actualiserListeInstitution();
