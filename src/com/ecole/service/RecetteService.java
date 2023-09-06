@@ -271,6 +271,7 @@ public class RecetteService implements Serializable {
 
 				if (inscription.getMoisenCours() == 0) {
 					recetteEnCreation.setMoisPaye(10);
+					inscription.setMoisenCours(11);
 				} else if (inscription.getMoisenCours() == 12) {
 					inscription.setMoisenCours(1);
 					recetteEnCreation.setMoisPaye(12);
