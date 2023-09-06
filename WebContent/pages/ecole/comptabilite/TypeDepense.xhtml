@@ -26,7 +26,8 @@
 						<div class="col-md-12">
 							<div class="panel panel-success">
 								<div class="panel-heading">
-									<h3 class="panel-title" style="text-align: center;">LES TYPES DE DEPENSE</h3>
+									<h3 class="panel-title" style="text-align: center;">LES
+										TYPES DE DEPENSE</h3>
 								</div>
 
 								<div class="panel-body">
@@ -45,8 +46,8 @@
 
 									<div class="form-group has-success"></div>
 									<rich:dataTable value="#{typeDepenseService.listeTypeDepense}"
-										var="typeDepense" id="lstTypeDepense" style="width:100%;" rows="8"
-										rowClasses="row1,row2">
+										var="typeDepense" id="lstTypeDepense" style="width:100%;"
+										rows="8" rowClasses="row1,row2">
 										<f:facet name="header">
 											<rich:columnGroup>
 
@@ -68,14 +69,15 @@
 											</rich:columnGroup>
 										</f:facet>
 
-										
+
 										<rich:column filterBy="#{typeDepense.code}"
 											filterEvent="onkeyup">
 											<h:outputText value="#{typeDepense.code}" styleClass="grey" />
 										</rich:column>
 										<rich:column filterBy="#{typeDepense.libelle}"
 											filterEvent="onkeyup">
-											<h:outputText value="#{typeDepense.libelle}" styleClass="grey" />
+											<h:outputText value="#{typeDepense.libelle}"
+												styleClass="grey" />
 										</rich:column>
 
 
@@ -123,7 +125,7 @@
 				</a:commandLink>
 			</f:facet>
 			<f:facet name="header">
-			 AJOUTER TYPE RECETTE
+			 AJOUTER TYPE DEPENSE
 			</f:facet>
 			<rich:spacer height="10px" />
 			<h:form class="note-form" id="form">
@@ -134,22 +136,23 @@
 					<div class="col-md-12">
 						<div class="panel panel-success">
 							<div class="panel-heading">
-								<h3 class="panel-title" style="text-align: center;">Ajouter
-									type recette</h3>
+								
 							</div>
 
 							<div class="panel-body">
 								<div class="form-group has-success">
 									<TABLE class="table">
 										<tr>
-										
+
 
 											<td><h:outputLabel styleClass="grey" value="Code" /></td>
-											<td><h:inputText value="#{typeDepenseService.typeDepense.code}"
+											<td><h:inputText
+													value="#{typeDepenseService.typeDepense.code}"
 													required="true" class="form-control" /></td>
-													
-													<td><h:outputLabel styleClass="grey" value="Libellé" /></td>
-											<td><h:inputText value="#{typeDepenseService.typeDepense.libelle}"
+
+											<td><h:outputLabel styleClass="grey" value="Libellé" /></td>
+											<td><h:inputText
+													value="#{typeDepenseService.typeDepense.libelle}"
 													required="true" class="form-control" /></td>
 										</tr>
 									</TABLE>

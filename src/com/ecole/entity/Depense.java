@@ -28,6 +28,9 @@ public class Depense implements Serializable{
 	private Date dateDepense;
 	private int moisPaye;
 	private boolean editable=false;
+	private AnneeScolaire annee;
+	
+	private String commentaire;
 	
 	/**
 	 * Utilisateur loggué
@@ -93,6 +96,21 @@ public class Depense implements Serializable{
 
 	public void setEditable(boolean editable) {
 		this.editable = editable;
+	}
+	
+	@ManyToOne(fetch=FetchType.LAZY)
+	@JoinColumn(name="idannee")
+	public AnneeScolaire getAnnee() {
+		return annee;
+	}
+	public void setAnnee(AnneeScolaire annee) {
+		this.annee = annee;
+	}
+	public String getCommentaire() {
+		return commentaire;
+	}
+	public void setCommentaire(String commentaire) {
+		this.commentaire = commentaire;
 	}
 
 	

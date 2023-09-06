@@ -46,7 +46,7 @@
 <body>
 
 	<div class="az-header">
-		
+
 		<div class="container">
 			<div class="az-header-center"></div>
 			<a:status id="waitStatusHaut" forceId="true"
@@ -65,7 +65,7 @@
 						value="#{msgBundle['label.traitementencours']}" />
 				</span>
 			</rich:modalPanel>
-			
+
 			<ui:include src="/template/include/header2.xhtml" />
 			<ui:insert name="impression">
 				<rich:modalPanel id="modalPdf" autosized="false" width="980"
@@ -153,60 +153,73 @@
 						</div>
 
 						<div class="col-lg-7">
-							<rich:panel header="GEDE:GESTION SÜRE ET TRANSPARENTE DE L'EAU">
+							<rich:panel header="#{statService.ins.nom} #{statService.ins.sologan}">
 								<div class="card card-dashboard-pageviews">
+									<p>
+
+										<a:mediaOutput element="img" cacheable="false" session="true"
+											createContent="#{statService.effectifarClasse}"
+											mimeType="image/gif" />
+									</p>
+									<h5>
+										<span styleClass="grey" style="color: green"> EFFECTIF
+											TOTAL : #{statService.nbeleve} dont #{statService.nbgarcon}
+											garçons et #{statService.nbfille} filles </span>
+									</h5>
+									<rich:dataTable value="#{statService.listeClasse}" var="classe"
+										id="lstdemande" style="width:100%;" rows="8"
+										rowClasses="row1,row2">
+										<f:facet name="header">
+											<rich:columnGroup>
 
 
-									<table class="table mg-b-0">
-										<tbody>
-											<tr>
-												<td><a:commandLink value="" status="waitStatus"
-														action="#{clientService.versRechercherClient}">
-														<img src="img/client1.png" style="width: 60%;" />
-													</a:commandLink></td>
-												<td><a:commandLink value="" status="waitStatus"
-														action="#{quartierService.versQuartier}">
-														<img src="img/quartier.jpg" style="width: 60%;" />
-													</a:commandLink></td>
-
-											</tr>
+												<rich:column>
+													<h:outputLabel value="Libelle"
+														style="color:white;font-size:12px;font-family: Arial;text-align:center;" />
+												</rich:column>
 
 
+												<rich:column>
+													<h:outputLabel value="Effectif"
+														style="color:white;font-size:12px;font-family: Arial;text-align:center;" />
+												</rich:column>
+
+												<rich:column>
+													<h:outputLabel value="Fille(s)"
+														style="color:white;font-size:12px;font-family: Arial;text-align:center;" />
+												</rich:column>
+
+												<rich:column>
+													<h:outputLabel value="Garçon(s)"
+														style="color:white;font-size:12px;font-family: Arial;text-align:center;" />
+												</rich:column>
 
 
+											</rich:columnGroup>
+										</f:facet>
 
 
+										<rich:column>
+											<h:outputText value="#{classe.libelle}" styleClass="grey">
+											</h:outputText>
+										</rich:column>
 
-										</tbody>
-
-									</table>
-
-									<table class="table mg-b-0">
-										<tbody>
-											<tr>
-												<td><a:commandLink value="" status="waitStatus"
-														action="#{DemandedeService.versCreerDemande}">
-														<img src="img/demande.jpg" style="width: 60%;" />
-													</a:commandLink></td>
-												<td><a:commandLink value="" status="waitStatus"
-														action="#{releveDuForageService.versEspaceReleveForage}">
-														<img src="img/forage1.jpg" style="width: 60%;" />
-													</a:commandLink></td>
-
-											</tr>
-
-
-
-
-
-
-
-										</tbody>
-
-									</table>
-
-
-
+										<rich:column>
+											<h:outputText value="#{classe.nombre}" styleClass="grey">
+											</h:outputText>
+										</rich:column>
+										<rich:column>
+											<h:outputText value="#{classe.fille}" styleClass="grey">
+											</h:outputText>
+										</rich:column>
+										<rich:column>
+											<h:outputText value="#{classe.garcon}" styleClass="grey">
+											</h:outputText>
+										</rich:column>
+									</rich:dataTable>
+									<rich:datascroller status="waitStatus" stepControls="auto"
+										style="width:100%" for="lstdemande"
+										rendered="#{not empty statService.listeClasse}" />
 								</div>
 							</rich:panel>
 						</div>
@@ -284,7 +297,7 @@
 	</div>
 	<!-- az-content -->
 
-	
+
 	<div class="az-footer ht-20">
 		<div class="container ht-100p pd-t-0-f">
 			<span

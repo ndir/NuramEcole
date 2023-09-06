@@ -12,12 +12,11 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
-
 import com.chaka.projet.entity.Utilisateur;
 
 @Entity
 @Table(name = "recette")
-public class Recette implements Serializable{
+public class Recette implements Serializable {
 	/**
 	 * 
 	 */
@@ -25,17 +24,21 @@ public class Recette implements Serializable{
 	private Long idRecette;
 	private Inscription inscription;
 	private TypeRecette typeRecette;
-	private double montantPaye =0;
+	private double montantPaye = 0;
 	private Date datePaiment;
-	private int[] mois; 
+	private int[] mois;
 	private int moisPaye;
-	private boolean editable=false;
-	
+	private boolean editable = false;
+
+	private AnneeScolaire annee;
+
+	private String commentaire;
+
 	/**
 	 * Utilisateur loggué
 	 */
 	private Utilisateur utilisateur;
-	
+
 	@Id
 	@GeneratedValue
 	public Long getIdRecette() {
@@ -45,8 +48,9 @@ public class Recette implements Serializable{
 	public void setIdRecette(Long idRecette) {
 		this.idRecette = idRecette;
 	}
-	@ManyToOne(fetch=FetchType.LAZY)
-	@JoinColumn(name="idInscription")
+
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "idInscription")
 	public Inscription getInscription() {
 		return inscription;
 	}
@@ -54,8 +58,9 @@ public class Recette implements Serializable{
 	public void setInscription(Inscription inscription) {
 		this.inscription = inscription;
 	}
-	@ManyToOne(fetch=FetchType.LAZY)
-	@JoinColumn(name="idTypeRecette")
+
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "idTypeRecette")
 	public TypeRecette getTypeRecette() {
 		return typeRecette;
 	}
@@ -79,9 +84,9 @@ public class Recette implements Serializable{
 	public void setDatePaiment(Date datePaiment) {
 		this.datePaiment = datePaiment;
 	}
-	
-	@ManyToOne(fetch=FetchType.LAZY)
-	@JoinColumn(name="idUtilisateur")
+
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "idUtilisateur")
 	public Utilisateur getUtilisateur() {
 		return utilisateur;
 	}
@@ -174,6 +179,22 @@ public class Recette implements Serializable{
 		this.editable = editable;
 	}
 
-	
-	
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "idannee")
+	public AnneeScolaire getAnnee() {
+		return annee;
+	}
+
+	public void setAnnee(AnneeScolaire annee) {
+		this.annee = annee;
+	}
+
+	public String getCommentaire() {
+		return commentaire;
+	}
+
+	public void setCommentaire(String commentaire) {
+		this.commentaire = commentaire;
+	}
+
 }

@@ -21,6 +21,7 @@ import org.jboss.seam.faces.FacesMessages;
 import com.chaka.projet.entity.Utilisateur;
 import com.ecole.entity.AnneeScolaire;
 import com.ecole.entity.Classe;
+import com.ecole.entity.Depense;
 import com.ecole.entity.Eleve;
 import com.ecole.entity.Inscription;
 import com.ecole.entity.Niveau;
@@ -48,6 +49,10 @@ public class RecetteService implements Serializable {
 	private List<Recette> listeRecette = new ArrayList<Recette>();
 
 	private Recette recetteEnCreation = new Recette();
+
+	private List<TypeRecette> listeTypeRecette = new ArrayList<TypeRecette>();
+
+	private List<Recette> listeRecettes = new ArrayList<Recette>();
 
 	private String codeRecette;
 	private List<Eleve> listeEleve = new ArrayList<Eleve>();
@@ -87,7 +92,7 @@ public class RecetteService implements Serializable {
 
 	private double reliquatInitial;
 
-	private double montantPayeFinial=0d;
+	private double montantPayeFinial = 0d;
 
 	@SuppressWarnings("unchecked")
 	public void chargerListeRecette(String codeRecette) {
@@ -96,9 +101,53 @@ public class RecetteService implements Serializable {
 				.setParameter("pe", this.eleve).list();
 	}
 
+	@SuppressWarnings("unchecked")
 	public String versRecette() {
+		listeTypeRecette = new ArrayList<TypeRecette>();
+		listeTypeRecette = dataSource.createQuery("From TypeRecette where code <>:pcode1 and code <>:pcode2")
+				.setParameter("pcode1", "INS").setParameter("pcode2", "MENS").list();
+		chargerListeRecette();
+		return "/pages/nuramecole/creerrecette.xhtml";
+	}
 
-		return "/pages/ecole/creereval.xhtml";
+	public void ajouterRecettes() {
+		if (recetteEnCreation.getTypeRecette() == null) {
+			FacesMessages.instance().addToControlFromResourceBundle("erreurGenerique",
+					"Veuillez choisir un type de recette");
+			return;
+		}
+		if (recetteEnCreation.getMontantPaye() <= 0) {
+			FacesMessages.instance().addToControlFromResourceBundle("erreurGenerique",
+					"Veuillez renseigner le montant");
+			return;
+		}
+		if (recetteEnCreation.getDatePaiment() == null) {
+			FacesMessages.instance().addToControlFromResourceBundle("erreurGenerique", "Veuillez renseigner la date");
+			return;
+		}
+		recetteEnCreation.setAnnee(annee);
+		recetteEnCreation.setUtilisateur(utilisateur);
+		if (recetteEnCreation.getIdRecette() == null) {
+			dataSource.save(recetteEnCreation);
+		} else {
+			dataSource.update(recetteEnCreation);
+		}
+		FacesMessages.instance().addToControlFromResourceBundle("infoGenerique", "Recette ajoutée avec succès");
+		this.setRecetteEnCreation(new Recette());
+		chargerListeRecette();
+	}
+
+	public void versModifierRecettes(Recette recette) {
+		this.setRecetteEnCreation(recette);
+	}
+
+	@SuppressWarnings("unchecked")
+	public void chargerListeRecette() {
+		listeRecettes = new ArrayList<Recette>();
+		listeRecettes = dataSource
+				.createQuery("From Recette r inner join fetch r.annee an inner join fetch r.typeRecette "
+						+ " inner join fetch r.utilisateur where an =:pan ")
+				.setParameter("pan", annee).list();
 	}
 
 	/**
@@ -107,9 +156,8 @@ public class RecetteService implements Serializable {
 	 * @return
 	 */
 	public String versMensualite() {
-		System.out.println("anneé en cours " + annee.getAnneeScolaire());
 		retreiveListNiveau();
-		//this.setRecetteEnCreation(new Recette());
+		// this.setRecetteEnCreation(new Recette());
 
 		return "/pages/nuramecole/mensualite.xhtml";
 	}
@@ -163,39 +211,40 @@ public class RecetteService implements Serializable {
 			codeRecette = "MENS";
 
 			chargerListeRecette(codeRecette);
-			
-			/*if(inscription .getReliquat() > 0d){
-				System.out.println("** Dans if reliquat > 0 **");
-			recetteEnCreation = (Recette) dataSource
-					.createQuery(" From Recette r where r.inscription=:pi order by idRecette desc limit 1")
-					.setParameter("pi", this.inscription).setMaxResults(1);
-			}
-			
-			if(recetteEnCreation ==null && recetteEnCreation.getIdRecette()==null){
-				recetteEnCreation = new Recette();
-			}*/
-			
+
+			/*
+			 * if(inscription .getReliquat() > 0d){
+			 * System.out.println("** Dans if reliquat > 0 **"); recetteEnCreation =
+			 * (Recette) dataSource
+			 * .createQuery(" From Recette r where r.inscription=:pi order by idRecette desc limit 1"
+			 * ) .setParameter("pi", this.inscription).setMaxResults(1); }
+			 * 
+			 * if(recetteEnCreation ==null && recetteEnCreation.getIdRecette()==null){
+			 * recetteEnCreation = new Recette(); }
+			 */
+
 			if (inscription != null) {
 				double mensualite = 0;
-				if(inscription.getReliquat() == 0){
-					mensualite = inscription.getParamins().getMensualite();	
+				if (inscription.getReliquat() == 0) {
+					mensualite = inscription.getParamins().getMensualite();
 					reliquatInitial = 0d;
-					moisConcerne(inscription.getMoisenCours()== 0 ?10 : inscription.getMoisenCours());
-				}else{
+					moisConcerne(inscription.getMoisenCours() == 0 ? 10 : inscription.getMoisenCours());
+				} else {
 					reliquatInitial = inscription.getReliquat();
-					moisConcerne(inscription.getMoisenCours()); 
+					moisConcerne(inscription.getMoisenCours());
 				}
 				montantPayerGenere = mensualite + reliquatInitial
 						- (inscription.getReduction() > 0 ? inscription.getReduction() : 0);
 				setMontantPayeFinial(montantPayerGenere);
-				
+
 				moisConcerne(moisEnChiffre());
-				
+
 			}
 
 		} catch (HibernateException e) {
 			e.printStackTrace();
-			//FacesMessages.instance().addToControlFromResourceBundle("erreurGenerique", "Aucun éléve trouvé !!");
+			// FacesMessages.instance().addToControlFromResourceBundle("erreurGenerique",
+			// "Aucun éléve trouvé !!");
 
 		}
 
@@ -203,37 +252,36 @@ public class RecetteService implements Serializable {
 
 	public void ajouterRecette() {
 		try {
-				recetteEnCreation.setMontantPaye(montantPayeFinial);//Montant payé
-			
+			recetteEnCreation.setMontantPaye(montantPayeFinial);// Montant payé
+
 			if (this.recetteEnCreation.getMontantPaye() == 0d) {
 				FacesMessages.instance().addToControlFromResourceBundle("erreurGenerique",
 						"Veuillez saisir un montant");
 				return;
 			}
-			
+
 			recetteEnCreation.setDatePaiment(new Date());
 			recetteEnCreation.setUtilisateur(utilisateur);
 			/** Mise à jour d'inscription **/
-			 
+
 			if (montantPayerGenere <= recetteEnCreation.getMontantPaye()) {
 				inscription.setReliquat(0d);
 				inscription.setAvoirEleve(recetteEnCreation.getMontantPaye() - montantPayerGenere);
 				/** Mise à jour d'inscription **/
-				
+
 				if (inscription.getMoisenCours() == 0) {
 					recetteEnCreation.setMoisPaye(10);
-				}
-				else if (inscription.getMoisenCours() == 12) {
+				} else if (inscription.getMoisenCours() == 12) {
 					inscription.setMoisenCours(1);
 					recetteEnCreation.setMoisPaye(12);
-				}else{
+				} else {
 					recetteEnCreation.setMoisPaye(inscription.getMoisenCours());
 					inscription.setMoisenCours(inscription.getMoisenCours() + 1);
-					
+
 				}
 				recetteEnCreation.setEditable(true);
 			} else {
-				
+
 				if (inscription.getMoisenCours() == 0) {
 					inscription.setMoisenCours(10);
 					recetteEnCreation.setMoisPaye(10);
@@ -241,32 +289,32 @@ public class RecetteService implements Serializable {
 				recetteEnCreation.setMoisPaye(inscription.getMoisenCours());
 				inscription.setReliquat(montantPayerGenere - recetteEnCreation.getMontantPaye());
 				inscription.setAvoirEleve(0d);
-				
+
 			}
-			
-			System.out.println("**recetteEnCreation = "+recetteEnCreation);
-			System.out.println("### recetteEnCreation = "+recetteEnCreation.getIdRecette());
-			if (recetteEnCreation.getIdRecette()==null) {
-				System.out.println("**1111** "+inscription.getReliquat()); 
-				
+
+			System.out.println("**recetteEnCreation = " + recetteEnCreation);
+			System.out.println("### recetteEnCreation = " + recetteEnCreation.getIdRecette());
+			if (recetteEnCreation.getIdRecette() == null) {
+				System.out.println("**1111** " + inscription.getReliquat());
+
 				recetteEnCreation.setInscription(inscription);
 				recetteEnCreation.setTypeRecette(getTypeRecetteByCode(this.codeRecette));
-				//recetteEnCreation.setMoisPaye(moisEnChiffre()>0?moisEnChiffre()+1:10); // Si 1er enregistrement mettre le mois de novembre
-				//moisConcerne(moisEncoursDePaiement());
-				System.out.println("**montant paye** "+recetteEnCreation.getMontantPaye());
-				
+				// recetteEnCreation.setMoisPaye(moisEnChiffre()>0?moisEnChiffre()+1:10); // Si
+				// 1er enregistrement mettre le mois de novembre
+				// moisConcerne(moisEncoursDePaiement());
+				System.out.println("**montant paye** " + recetteEnCreation.getMontantPaye());
+
 				recetteEnCreation.setMontantPaye(montantPayeFinial);
 				dataSource.save(recetteEnCreation);
 				dataSource.flush();
-			}
-			else{
-				
-				System.out.println("**2222** "+inscription.getReliquat()); 
+			} else {
+
+				System.out.println("**2222** " + inscription.getReliquat());
 				recetteEnCreation.setMontantPaye(montantPayeFinial);
 				dataSource.merge(recetteEnCreation);
 			}
 
-			//moisConcerne(inscription.getMoisenCours()); // Activer le mois suivant
+			// moisConcerne(inscription.getMoisenCours()); // Activer le mois suivant
 			dataSource.merge(inscription);
 			chargerListeRecette("MENS");
 			retreiveInfoIncription();
@@ -316,7 +364,7 @@ public class RecetteService implements Serializable {
 			inscription.setMois6(true);
 		if (mois == 7)
 			inscription.setMois7(true);
-		if (mois == 10 || mois ==0)
+		if (mois == 10 || mois == 0)
 			inscription.setMois10(true);
 		if (mois == 11)
 			inscription.setMois11(true);
@@ -329,40 +377,62 @@ public class RecetteService implements Serializable {
 				.uniqueResult();
 	}
 
-	public String retreiveMonthByInt(int month){
+	public String retreiveMonthByInt(int month) {
 		try {
 			String monthString;
-			
+
 			switch (month) {
-			    case 1:  monthString = "Janvier";      break;
-			    case 2:  monthString = "Février";      break;
-			    case 3:  monthString = "Mars";         break;
-			    case 4:  monthString = "Avril";        break;
-			    case 5:  monthString = "Mai";          break;
-			    case 6:  monthString = "Juin";         break;
-			    case 7:  monthString = "Juillet";      break;
-			    case 10: monthString = "Octobre";       break;
-			    case 11: monthString = "Novembre";      break;
-			    case 12: monthString = "Décembre";      break;
-			    default: monthString = "Invalid month"; break;
+			case 1:
+				monthString = "Janvier";
+				break;
+			case 2:
+				monthString = "Février";
+				break;
+			case 3:
+				monthString = "Mars";
+				break;
+			case 4:
+				monthString = "Avril";
+				break;
+			case 5:
+				monthString = "Mai";
+				break;
+			case 6:
+				monthString = "Juin";
+				break;
+			case 7:
+				monthString = "Juillet";
+				break;
+			case 10:
+				monthString = "Octobre";
+				break;
+			case 11:
+				monthString = "Novembre";
+				break;
+			case 12:
+				monthString = "Décembre";
+				break;
+			default:
+				monthString = "Invalid month";
+				break;
 			}
 			System.out.println(monthString);
-			
-			monthString = new DateFormatSymbols().getMonths()[month-1].toUpperCase();
+
+			monthString = new DateFormatSymbols().getMonths()[month - 1].toUpperCase();
 			return monthString;
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
-			//e.printStackTrace();
+			// e.printStackTrace();
 			return null;
 		}
 	}
-	
+
 	public void versModifierRecette(Recette recette) {
 		this.setRecetteEnCreation(recette);
 		double montantRestitue = recette.getMontantPaye() + inscription.getReliquat() + inscription.getAvoirEleve();
 		montantPayeFinial = recette.getMontantPaye();
 		montantPayerGenere = montantRestitue;
-		
+
 	}
 
 	public List<Recette> getListeRecette() {
@@ -499,6 +569,22 @@ public class RecetteService implements Serializable {
 
 	public void setMontantPayeFinial(double montantPayeFinial) {
 		this.montantPayeFinial = montantPayeFinial;
+	}
+
+	public List<TypeRecette> getListeTypeRecette() {
+		return listeTypeRecette;
+	}
+
+	public void setListeTypeRecette(List<TypeRecette> listeTypeRecette) {
+		this.listeTypeRecette = listeTypeRecette;
+	}
+
+	public List<Recette> getListeRecettes() {
+		return listeRecettes;
+	}
+
+	public void setListeRecettes(List<Recette> listeRecettes) {
+		this.listeRecettes = listeRecettes;
 	}
 
 }

@@ -12,6 +12,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 /**
  * @author a626257
@@ -35,6 +36,12 @@ public class Classe implements Serializable {
 	private Double droit_ins;
 	
 	private Double mensualite;
+	
+	private int nombre;
+	
+	private int fille;
+	
+	private int garcon;
 
 	@ManyToOne(fetch=FetchType.LAZY)
 	@JoinColumn(name="idniveau")
@@ -105,6 +112,31 @@ public class Classe implements Serializable {
 		} else if (!idclasse.equals(other.idclasse))
 			return false;
 		return true;
+	}
+
+	@Transient
+	public int getNombre() {
+		return nombre;
+	}
+
+	public void setNombre(int nombre) {
+		this.nombre = nombre;
+	}
+	@Transient
+	public int getFille() {
+		return fille;
+	}
+
+	public void setFille(int fille) {
+		this.fille = fille;
+	}
+	@Transient
+	public int getGarcon() {
+		return garcon;
+	}
+
+	public void setGarcon(int garcon) {
+		this.garcon = garcon;
 	}
 
 }

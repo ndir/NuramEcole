@@ -89,7 +89,7 @@
 					<div class="col-lg-12"></div>
 				</div>
 				<h:form id="liste">
-					<rich:panel header="NOUVELLE INSCRIPTION"
+					<rich:panel header="COMPTABILITE : RECETTE"
 						styleclass="panel panel-success">
 						<div class="row row-sm mg-b-20">
 							<div class="col-lg-12">
@@ -100,132 +100,42 @@
 									<div class="table-responsive">
 										<table class="table">
 											<tr>
-												<td><h:outputLabel styleClass="grey" value="Niveau" /></td>
+												<td><h:outputLabel styleClass="grey"
+														value="Type de dépense" /></td>
 												<td><h:selectOneMenu class="form-control"
-														value="#{eleveService.niveau}"
-														converter="#{niveauConverter}" id="cont"
+														value="#{recetteService.recetteEnCreation.typeRecette}"
+														converter="#{typerecetteConverter}" id="cont"
 														noSelectionLabel="--- Selectionnez ---">
 
-														<s:selectItems value="#{eleveService.listeNiveau}"
+														<s:selectItems value="#{recetteService.listeTypeRecette}"
 															var="type" label="#{type.libelle}"
 															noSelectionLabel="--- Selectionnez ---" />
 
-														<a:support event="onchange"
-															action="#{eleveService.chargerListeClasse()}"
-															ajaxSingle="true" reRender="classe" status="waitStatus"></a:support>
 													</h:selectOneMenu></td>
-
-												<td><h:outputLabel styleClass="grey" value="Classe" /></td>
-												<td><h:selectOneMenu class="form-control"
-														value="#{eleveService.classe}"
-														converter="#{classeConverter}" id="classe"
-														noSelectionLabel="--- Selectionnez ---">
-
-														<s:selectItems value="#{eleveService.listeClasse}"
-															var="type" label="#{type.libelle}" />
-														<a:support event="onchange"
-															action="#{eleveService.getMntInscription()}"
-															ajaxSingle="true" reRender="ins" status="waitStatus"></a:support>
-													</h:selectOneMenu></td>
-
-											</tr>
-											<tr>
-												<td><h:outputLabel styleClass="grey"
-														value="Année Scolaire" /></td>
-												<td><h:inputText
-														value="#{eleveService.annee.anneeScolaire}"
-														class="form-control" disabled="true" /></td>
-
-
-												<td><h:outputLabel styleClass="grey" value="Prénom" /></td>
-												<td><h:inputText value="#{eleveService.eleve.prenom}"
-														styleClass="form-control" /></td>
-
-
-											</tr>
-											<tr>
-												<td><h:outputLabel styleClass="grey" value="Nom" /></td>
-												<td><h:inputText value="#{eleveService.eleve.nom}"
-														styleClass="form-control" /></td>
-
-
-												<td><h:outputLabel styleClass="grey"
-														value="Nationalité" /></td>
-												<td><h:inputText
-														value="#{eleveService.eleve.nationalite}"
-														class="form-control" /></td>
-											</tr>
-											<tr>
-
-												<td><h:outputLabel styleClass="grey"
-														value="Date de naissance" /></td>
+												<td><h:outputLabel styleClass="grey" value="Date" /></td>
 												<td><rich:calendar
-														value="#{eleveService.eleve.dateNaissance}"
-														cellWidth="0px" cellHeight="20px" datePattern="dd/MM/yyyy"
+														value="#{recetteService.recetteEnCreation.datePaiment}" cellWidth="0px"
+														cellHeight="20px" datePattern="dd/MM/yyyy"
 														buttonIcon="/img2/calendrier.png"></rich:calendar></td>
-
-
-												<td><h:outputLabel styleClass="grey" value="Titeur" /></td>
-												<td><h:inputText value="#{eleveService.eleve.titeur}"
-														styleClass="form-control" /></td>
 											</tr>
 											<tr>
-												<td><h:outputLabel styleClass="grey" value="Contact" /></td>
+												<td><h:outputLabel styleClass="grey" value="Montant" /></td>
 												<td><h:inputText
-														value="#{eleveService.eleve.telephone}"
+														value="#{recetteService.recetteEnCreation.montantPaye}"
 														styleClass="form-control" /></td>
-												<td><h:outputLabel styleClass="grey" value="Réduction" /></td>
-												<td><h:inputText
-														value="#{eleveService.inscription.reduction}"
-														class="form-control" /></td>
-
-											</tr>
-											<tr>
 												<td><h:outputLabel styleClass="grey"
-														value="Commentaire réduction" /></td>
+														value="Commentaire" /></td>
 												<td><h:inputTextarea
-														value="#{eleveService.inscription.commentaire}"
-														styleClass="form-control" cols="40" rows="5" /></td>
-
-
-												<td><h:outputLabel styleClass="grey" value="Sexe" /></td>
-												<td><h:selectOneMenu value="#{eleveService.eleve.sexe}"
-														styleClass="form-control">
-														<f:selectItem itemValue="M" itemLabel="Masculin" />
-														<f:selectItem itemValue="F" itemLabel="Féminin" />
-													</h:selectOneMenu></td>
-											</tr>
-											<tr>
-												<td><h:outputLabel styleClass="grey"
-														value="Montant Inscription" /></td>
-												<td><h:inputText value="#{eleveService.mntIns}"
-														styleClass="form-control" id="ins" disabled="true">
-															<f:convertNumber pattern="#,##0" />
-													</h:inputText></td>
-												<td><h:outputLabel styleClass="grey"
-														value="Montant Payé" /></td>
-												<td><h:inputText value="#{eleveService.mntPaye}"
-														styleClass="form-control" /></td>
-											</tr>
-											<tr>
-												<td><h:outputLabel styleClass="grey" value="Adresse" /></td>
-												<td><h:inputTextarea
-														value="#{eleveService.eleve.adresse}"
-														styleClass="form-control" cols="40" rows="4" /></td>
-
-
-												<td><h:outputLabel styleClass="grey"
-														value="Autres Info" /></td>
-												<td><h:inputTextarea
-														value="#{eleveService.eleve.autre_info}"
+														value="#{recetteService.recetteEnCreation.commentaire}"
 														styleClass="form-control" cols="40" rows="4" /></td>
 											</tr>
+
 										</table>
 										<p align="center">
 
 
 											<a:commandLink styleClass="btn btn-danger" value=""
-												action="#{eleveService.annulerAjout()}" reRender="liste"
+												action="#{recetteService.annulerAjout()}" reRender="liste"
 												status="waitStatus">
 																		
 																		Annuler			
@@ -233,25 +143,100 @@
 											<rich:spacer width="10px;"></rich:spacer>
 
 											<a:commandLink styleClass="btn btn-success" value=""
-												action="#{eleveService.ajouterInscription()}"
-												reRender="liste" status="waitStatus">
+												action="#{recetteService.ajouterRecettes()}" reRender="liste"
+												status="waitStatus">
 																		
 																		Valider			
 																				</a:commandLink>
 										</p>
+										<rich:dataTable value="#{recetteService.listeRecettes}" var="dep"
+											id="lstdemande" style="width:100%;" rows="10"
+											rowClasses="row1,row2">
+											<f:facet name="header">
+												<rich:columnGroup>
+
+													<rich:column>
+														<h:outputLabel value="Type de recette"
+															style="color:white;font-size:12px;font-family: Arial;text-align:center;" />
+													</rich:column>
+
+													<rich:column>
+														<h:outputLabel value="Date"
+															style="color:white;font-size:12px;font-family: Arial;text-align:center;" />
+													</rich:column>
+
+													<rich:column>
+														<h:outputLabel value="Montant"
+															style="color:white;font-size:12px;font-family: Arial;text-align:center;" />
+													</rich:column>
+
+													<rich:column>
+														<h:outputLabel value="Enregistrée par"
+															style="color:white;font-size:12px;font-family: Arial;text-align:center;" />
+													</rich:column>
+
+													<rich:column>
+														<h:outputLabel value="Commentaire"
+															style="color:white;font-size:12px;font-family: Arial;text-align:center;" />
+													</rich:column>
+
+													<rich:column>
+														<h:outputLabel value="Modifier"
+															style="color:white;font-size:12px;font-family: Arial;text-align:center;" />
+													</rich:column>
+												</rich:columnGroup>
+											</f:facet>
+
+											<rich:column filterBy="#{dep.typeRecette.libelle}"
+												filterEvent="onkeyup">
+												<h:outputText value="#{dep.typeRecette.libelle}"
+													styleClass="grey" />
+											</rich:column>
+											<rich:column>
+												<h:outputText value="#{dep.datePaiment}" styleClass="grey">
+													<f:convertDateTime pattern="dd/MM/yyyy" />
+												</h:outputText>
+											</rich:column>
+
+											<rich:column>
+												<h:outputText value="#{dep.montantPaye}" styleClass="grey">
+													<f:convertNumber pattern="#,##0" />
+												</h:outputText>
+											</rich:column>
+
+											<rich:column>
+												<h:outputText
+													value="#{dep.utilisateur.nom} #{dep.utilisateur.prenom}"
+													styleClass="grey" />
+											</rich:column>
+
+											<rich:column>
+												<h:inputTextarea value="#{dep.commentaire}"
+													styleClass="grey" cols="40" rows="2" disabled = "true"/>
+											</rich:column>
+											<rich:column>
+												<a:commandLink value="" status="waitStatus"
+													action="#{recetteService.versModifierRecettes(dep)}"
+													reRender="liste" title="Modifier">
+													<s:graphicImage fileName="edit.png" style="border:0px;"
+														value="/picto/edit.png" width="16" height="16" alt="" />
+
+												</a:commandLink>
+											</rich:column>
 
 
+
+
+										</rich:dataTable>
+										<rich:datascroller status="waitStatus" stepControls="auto"
+											style="width:100%" for="lstdemande"
+											rendered="#{not empty recetteService.listeRecettes}" />
 									</div>
 								</div>
 							</div>
 						</div>
-
 					</rich:panel>
-
 				</h:form>
-
-
-
 			</div>
 
 

@@ -23,6 +23,8 @@ import com.ecole.entity.Eleve;
 import com.ecole.entity.Inscription;
 import com.ecole.entity.Niveau;
 import com.ecole.entity.ParamInscription;
+import com.ecole.entity.Recette;
+import com.ecole.entity.TypeRecette;
 import com.rhospi.commons.ChakaUtils;
 
 /**
@@ -61,6 +63,10 @@ public class EleveService implements Serializable {
 	private Inscription inscription = new Inscription();
 
 	ParamInscription p = new ParamInscription();
+
+	private Double mntIns = 0d;
+
+	private Double mntPaye = 0d;
 
 	@In
 	private AnneeScolaire annee;
@@ -135,6 +141,17 @@ public class EleveService implements Serializable {
 		FacesMessages.instance().addToControlFromResourceBundle("infoGenerique", "Evaluation ajoutée avec succés");
 	}
 
+	public void getMntInscription() {
+		ParamInscription paramins = (ParamInscription) dataSource
+				.createQuery("From ParamInscription p inner join fetch p.annee inner join fetch p.classe"
+						+ " where p.annee =:pannee and p.classe =:pclasse")
+				.setParameter("pannee", annee).setParameter("pclasse", classe).uniqueResult();
+
+		if (paramins != null) {
+			mntIns = paramins.getDroit_ins();
+		}
+	}
+
 	public void ajouterInscription() {
 		if (this.eleve.getNom().isEmpty() || this.eleve.getPrenom().isEmpty()) {
 			FacesMessages.instance().addToControlFromResourceBundle("erreurGenerique",
@@ -166,11 +183,35 @@ public class EleveService implements Serializable {
 			dataSource.save(eleve);
 			inscription.setParamins(paramins);
 			inscription.setEleve(eleve);
+			if (mntPaye > 0) {
+				inscription.setMontantInscriptionPaye(mntPaye);
+				if (mntPaye > mntIns) {
+					inscription.setAvoirEleve(mntPaye - mntIns);
+				}
+				if (mntPaye < mntIns) {
+					inscription.setReliquat(mntIns - mntPaye);
+				}
+			}
 			dataSource.save(inscription);
+			if (mntPaye > 0) {
+				Recette recette = new Recette();
+				recette.setInscription(inscription);
+				recette.setTypeRecette(getTypeRecetteByCode("INS"));
+				recette.setDatePaiment(ChakaUtils.sysDate());
+				recette.setMontantPaye(mntPaye);
+				dataSource.save(recette);
+			}
 			this.setEleve(new Eleve());
 			this.setInscription(new Inscription());
+			mntPaye = 0d;
+			mntIns  = 0d;
 			FacesMessages.instance().addToControlFromResourceBundle("infoGenerique", "Evaluation ajoutée avec succés");
 		}
+	}
+
+	public TypeRecette getTypeRecetteByCode(String codeRecette) {
+		return (TypeRecette) dataSource.createQuery(" From TypeRecette where code=:pc").setParameter("pc", codeRecette)
+				.uniqueResult();
 	}
 
 	public AnneeScolaire getAnnee() {
@@ -307,6 +348,22 @@ public class EleveService implements Serializable {
 
 	public void setInscription(Inscription inscription) {
 		this.inscription = inscription;
+	}
+
+	public Double getMntIns() {
+		return mntIns;
+	}
+
+	public void setMntIns(Double mntIns) {
+		this.mntIns = mntIns;
+	}
+
+	public Double getMntPaye() {
+		return mntPaye;
+	}
+
+	public void setMntPaye(Double mntPaye) {
+		this.mntPaye = mntPaye;
 	}
 
 }
