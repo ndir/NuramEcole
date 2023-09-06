@@ -314,10 +314,7 @@
 																				style="color:white;font-size:12px;font-family: Arial;text-align:center;" />
 																		</rich:column>
 
-																		<rich:column>
-																			<h:outputLabel value="Reliquat XOF"
-																				style="color:white;font-size:12px;font-family: Arial;text-align:center;" />
-																		</rich:column>
+																		
 																		<rich:column>
 																			<h:outputLabel value="Action"
 																				style="color:white;font-size:12px;font-family: Arial;text-align:center;" />
@@ -331,7 +328,9 @@
 																		styleClass="capitalized"></h:outputText>
 																</rich:column>
 																<rich:column>
-																	<h:outputLabel value="#{rec.datePaiment}"></h:outputLabel>
+																	<h:outputLabel value="#{rec.datePaiment}">
+																	<f:convertDateTime pattern="dd/MM/yyyy" />
+																	</h:outputLabel>
 																</rich:column>
 																<rich:column>
 																	<h:outputLabel value="#{rec.montantPaye}">

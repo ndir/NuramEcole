@@ -226,15 +226,17 @@ public class RecetteService implements Serializable {
 			if (inscription != null) {
 				double mensualite = 0;
 				if (inscription.getReliquat() == 0) {
-					mensualite = inscription.getParamins().getMensualite();
+					mensualite = inscription.getParamins().getMensualite() ;
 					reliquatInitial = 0d;
+					montantPayerGenere = mensualite - inscription.getAvoirEleve() 
+							- (inscription.getReduction() > 0 ? inscription.getReduction() : 0);
 					moisConcerne(inscription.getMoisenCours() == 0 ? 10 : inscription.getMoisenCours());
 				} else {
 					reliquatInitial = inscription.getReliquat();
+					montantPayerGenere =  reliquatInitial;
 					moisConcerne(inscription.getMoisenCours());
 				}
-				montantPayerGenere = mensualite + reliquatInitial
-						- (inscription.getReduction() > 0 ? inscription.getReduction() : 0);
+				
 				setMontantPayeFinial(montantPayerGenere);
 
 				moisConcerne(moisEnChiffre());
