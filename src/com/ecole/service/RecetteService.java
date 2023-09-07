@@ -97,8 +97,9 @@ public class RecetteService implements Serializable {
 	@SuppressWarnings("unchecked")
 	public void chargerListeRecette(String codeRecette) {
 		listeRecette = new ArrayList<Recette>();
-		listeRecette = dataSource.createQuery(" From Recette  where inscription.eleve=:pe order by idRecette desc ")
-				.setParameter("pe", this.eleve).list();
+		listeRecette = dataSource.createQuery(" From Recette  where inscription.eleve=:pe and typeRecette.code=:pt order by idRecette desc")
+				.setParameter("pe", this.eleve)
+				.setParameter("pt", codeRecette).list();
 	}
 
 	@SuppressWarnings("unchecked")
@@ -189,7 +190,7 @@ public class RecetteService implements Serializable {
 			listeEleve = new ArrayList<Eleve>();
 			listeEleve = dataSource
 					.createQuery(
-							"Select i.eleve From Inscription i where i.paramins.classe=:pc and i.paramins.annee=:pa")
+							"Select i.eleve From Inscription i where i.paramins.classe=:pc and i.paramins.annee=:pa order by i.eleve.nom")
 					.setParameter("pc", classe).setParameter("pa", annee).list();
 
 			// retreiveInfoIncription();
@@ -205,24 +206,10 @@ public class RecetteService implements Serializable {
 			inscription = (Inscription) dataSource
 					.createQuery(" From Inscription i where i.eleve=:pe and i.paramins.annee=:pa ")
 					.setParameter("pe", this.eleve).setParameter("pa", annee).uniqueResult();
-			// System.out.println("**La prinscription est la
-			// "+inscription.getParamins().getMensualite()+"\n reduction
-			// "+inscription.getReduction());
+			
 			codeRecette = "MENS";
 
 			chargerListeRecette(codeRecette);
-
-			/*
-			 * if(inscription .getReliquat() > 0d){
-			 * System.out.println("** Dans if reliquat > 0 **"); recetteEnCreation =
-			 * (Recette) dataSource
-			 * .createQuery(" From Recette r where r.inscription=:pi order by idRecette desc limit 1"
-			 * ) .setParameter("pi", this.inscription).setMaxResults(1); }
-			 * 
-			 * if(recetteEnCreation ==null && recetteEnCreation.getIdRecette()==null){
-			 * recetteEnCreation = new Recette(); }
-			 */
-
 			if (inscription != null) {
 				double mensualite = 0;
 				if (inscription.getReliquat() == 0) {
