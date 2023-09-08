@@ -34,6 +34,8 @@ public class AnneeScolaire implements Serializable {
 	private Long idannee;
 	
 	private String anneeScolaire;
+	
+	private int year;
 
 	@Id
 	@GeneratedValue
@@ -76,6 +78,14 @@ public class AnneeScolaire implements Serializable {
 		} else if (!idannee.equals(other.idannee))
 			return false;
 		return true;
+	}
+
+	public int getYear() {
+		return year;
+	}
+
+	public void setYear(int year) {
+		this.year = year;
 	}
 	
 	

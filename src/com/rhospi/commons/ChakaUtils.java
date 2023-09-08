@@ -477,8 +477,7 @@ public class ChakaUtils implements Serializable {
     public static boolean date1AfterDate2(Date date1, Date date2){
     	Calendar cal1 = createCalendarFromDate(date1);
     	Calendar cal2 = createCalendarFromDate(date2);    	
-    	System.out.println(cal1.getTime());
-    	System.out.println(cal2.getTime());
+    	
     	return cal1.after(cal2);
     }
     

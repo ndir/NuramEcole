@@ -5,6 +5,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.Serializable;
+import java.text.DateFormatSymbols;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -73,6 +74,8 @@ public class StatistiqueService implements Serializable {
 
 	private List<Recette> listeRecette = new ArrayList<Recette>();
 
+	private List<Recette> listeRecettes = new ArrayList<Recette>();
+
 	private List<TypeRecette> listeTypeRecette = new ArrayList<TypeRecette>();
 
 	private List<TypeDepense> listeTypeDepense = new ArrayList<TypeDepense>();
@@ -88,6 +91,10 @@ public class StatistiqueService implements Serializable {
 	private Double solde;
 
 	private String mois;
+
+	private int lemois;
+
+	private int nbjour;
 
 	private List<ParamInscription> listeParm = new ArrayList<ParamInscription>();
 
@@ -105,8 +112,73 @@ public class StatistiqueService implements Serializable {
 		return "/pages/nuramecole/etatmensuel.xhtml";
 	}
 
+	public void retreiveMonthByString(String month) {
+
+		if (month.equals("10")) {
+			lemois = 10;
+			nbjour = 31;
+		}
+		if (month.equals("11")) {
+			lemois = 11;
+			nbjour = 31;
+		}
+		if (month.equals("12")) {
+			lemois = 12;
+			nbjour = 31;
+		}
+		if (month.equals("1")) {
+			lemois = 1;
+			nbjour = 31;
+		}
+		if (month.equals("2")) {
+			lemois = 02;
+		}
+		if (month.equals("3")) {
+			lemois = 3;
+			nbjour = 31;
+		}
+		if (month.equals("4")) {
+			lemois = 4;
+			nbjour = 30;
+		}
+		if (month.equals("5")) {
+			lemois = 5;
+			nbjour = 31;
+		}
+
+		if (month.equals("6")) {
+			lemois = 6;
+			nbjour = 30;
+		}
+		if (month.equals("7")) {
+			lemois = 7;
+			nbjour = 31;
+		}
+
+	}
+
+	public boolean bissextile(int y) {
+		boolean b = false;
+		if (y % 400 == 0) {
+			b = true;
+		} else if (y % 100 == 0) {
+			b = false;
+		} else if (y % 4 == 0) {
+			b = true;
+		} else {
+			b = false;
+		}
+		if (b == true) {
+
+		} else {
+
+		}
+		return b;
+	}
+
 	@SuppressWarnings("unchecked")
 	public void etatsMensuel() {
+		int month = 0;
 		listeParm = new ArrayList<ParamInscription>();
 		listeParm = dataSource
 				.createQuery(
@@ -117,19 +189,57 @@ public class StatistiqueService implements Serializable {
 				.createQuery("From Inscription i inner join fetch i.paramins p "
 						+ " inner join fetch p.annee an inner join fetch i.eleve where an =:pan ")
 				.setParameter("pan", annee).list();
-
+		listeRecettes = new ArrayList<Recette>();
 		listeRecette = new ArrayList<Recette>();
-		listeRecette = dataSource.createQuery("From Recette d inner join fetch d.typeRecette inner join fetch "
-				+ " d.inscription i  inner join fetch i.paramins p inner join fetch p.annee an inner join fetch i.eleve where an =:pan ")
-				.setParameter("pan", annee).list();
+		retreiveMonthByString(mois);
 
+		listeRecettes = dataSource.createQuery("From Recette d inner join fetch d.typeRecette ty inner join fetch "
+				+ " d.inscription i  inner join fetch i.paramins p inner join fetch p.annee an inner join fetch i.eleve where an =:pan and ty.code =:pcode "
+				+ " and d.moisPaye =:pmois ").setParameter("pan", annee).setParameter("pcode", "MENS")
+				.setParameter("pmois", lemois).list();
+
+	}
+
+	public void zoomPaiement(ParamInscription param) {
+		System.out.println("ZOOM DETAILS PAIEMENT");
+		listeRecette = new ArrayList<Recette>();
+		for (Recette recette : listeRecettes) {
+			if (recette.getInscription().getParamins().getId().equals(param.getId())) {
+				listeRecette.add(recette);
+			}
+		}
+	}
+
+	@SuppressWarnings({ "unused", "unchecked" })
+	public void montantParClasse(OutputStream out, Object data) {
+		DefaultCategoryDataset dataset = new DefaultCategoryDataset();
+		if (listeParm.size() > 0) {
+			for (ParamInscription param : listeParm) {
+				dataset.addValue(getMontantPayer(param), param.getClasse().getLibelle(),
+						ChakaUtils.formateDate(ChakaUtils.sysDate(), "dd/MM/yyyy"));
+			}
+
+		}
+		JFreeChart barChart = ChartFactory.createBarChart("MONTANT PAYER PAR CLASSE", "", "MONTANT PAYES", dataset,
+				PlotOrientation.VERTICAL, true, true, false);
+		BufferedImage bufferedImage = barChart.createBufferedImage(430, 300);
+		try {
+			ImageIO.write(bufferedImage, "gif", out);
+		} catch (IOException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+		try {
+			ChartUtilities.saveChartAsJPEG(new File("C:\\chart6.jpg"), barChart, 600, 400);
+		} catch (Exception e) {
+		}
 	}
 
 	public Double getMontantAPayer(ParamInscription param) {
 		Double mnt = 0d;
 		for (Inscription in : listeIns) {
 			if (in.getParamins().getId().equals(param.getId())) {
-				mnt = ( mnt + param.getMensualite() ) - in.getReduction();
+				mnt = (mnt + param.getMensualite()) - in.getReduction();
 			}
 		}
 		return mnt;
@@ -137,14 +247,32 @@ public class StatistiqueService implements Serializable {
 
 	public Double getMontantPayer(ParamInscription param) {
 		Double mnt = 0d;
-		for (Recette in : listeRecette) {
-			if (in.getInscription().getParamins().getId().equals(param.getId())
-					&& in.getTypeRecette().getCode().equalsIgnoreCase("MENS")) {
-				mnt = ( mnt + in.getMontantPaye() ) ; //- in.getInscription().getAvoirEleve()
-				
+		for (Recette in : listeRecettes) {
+			if (in.getInscription().getParamins().getId().equals(param.getId())) {
+				mnt = (mnt + in.getMontantPaye()); // - in.getInscription().getAvoirEleve()
+
 			}
 		}
 		return mnt;
+	}
+
+	public Double getMontantResteAPayer(ParamInscription param) {
+		Double apayer = 0d, payer = 0d;
+		apayer = getMontantAPayer(param);
+		payer = getMontantPayer(param);
+		return apayer - payer;
+	}
+
+	public float getTauxRecouvrement(ParamInscription param) {
+		float taux = 0;
+		Double apayer = 0d, payer = 0d;
+		apayer = getMontantAPayer(param);
+		payer = getMontantPayer(param);
+		if (payer > 0)
+			taux = (float) ((payer * 100) / apayer);
+		else
+			taux = 0;
+		return taux;
 	}
 
 	@SuppressWarnings("unchecked")
@@ -519,6 +647,14 @@ public class StatistiqueService implements Serializable {
 
 	public void setListeParm(List<ParamInscription> listeParm) {
 		this.listeParm = listeParm;
+	}
+
+	public List<Recette> getListeRecettes() {
+		return listeRecettes;
+	}
+
+	public void setListeRecettes(List<Recette> listeRecettes) {
+		this.listeRecettes = listeRecettes;
 	}
 
 }
