@@ -32,6 +32,8 @@ public class Depense implements Serializable{
 	
 	private String commentaire;
 	
+	
+	
 	/**
 	 * Utilisateur loggué
 	 */

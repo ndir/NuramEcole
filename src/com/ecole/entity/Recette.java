@@ -11,6 +11,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 import com.chaka.projet.entity.Utilisateur;
 
@@ -33,7 +34,9 @@ public class Recette implements Serializable {
 	private AnneeScolaire annee;
 
 	private String commentaire;
-
+	
+	private Double montant;
+	
 	/**
 	 * Utilisateur loggué
 	 */
@@ -196,5 +199,16 @@ public class Recette implements Serializable {
 	public void setCommentaire(String commentaire) {
 		this.commentaire = commentaire;
 	}
+
+	@Transient
+	public Double getMontant() {
+		return montant;
+	}
+
+	public void setMontant(Double montant) {
+		this.montant = montant;
+	}
+
+	
 
 }

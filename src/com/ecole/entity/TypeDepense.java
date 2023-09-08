@@ -6,6 +6,7 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 @Entity
 @Table(name="typeDepense")
@@ -22,6 +23,8 @@ public class TypeDepense implements Serializable {
 	private String code;
 	
 	private String libelle;
+	
+	private Double montant;
 
 	@Id
 	@GeneratedValue
@@ -86,6 +89,15 @@ public class TypeDepense implements Serializable {
 		} else if (!libelle.equals(other.libelle))
 			return false;
 		return true;
+	}
+
+	@Transient
+	public Double getMontant() {
+		return montant;
+	}
+
+	public void setMontant(Double montant) {
+		this.montant = montant;
 	}
 
 	

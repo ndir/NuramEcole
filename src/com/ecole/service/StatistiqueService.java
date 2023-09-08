@@ -1,6 +1,3 @@
-/**
- * 
- */
 package com.ecole.service;
 
 import java.awt.image.BufferedImage;
@@ -9,6 +6,7 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import javax.imageio.ImageIO;
@@ -19,6 +17,7 @@ import org.jboss.seam.annotations.Create;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
+import org.jboss.seam.faces.FacesMessages;
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartUtilities;
 import org.jfree.chart.JFreeChart;
@@ -27,9 +26,13 @@ import org.jfree.data.category.DefaultCategoryDataset;
 
 import com.ecole.entity.AnneeScolaire;
 import com.ecole.entity.Classe;
+import com.ecole.entity.Depense;
 import com.ecole.entity.Inscription;
 import com.ecole.entity.Institution;
 import com.ecole.entity.ParamInscription;
+import com.ecole.entity.Recette;
+import com.ecole.entity.TypeDepense;
+import com.ecole.entity.TypeRecette;
 import com.rhospi.commons.ChakaUtils;
 
 /**
@@ -61,6 +64,209 @@ public class StatistiqueService implements Serializable {
 	private Institution ins = new Institution();
 
 	private int nbgarcon;
+
+	private Date dateDeb;
+
+	private Date dateFin;
+
+	private List<Depense> listeDepense = new ArrayList<Depense>();
+
+	private List<Recette> listeRecette = new ArrayList<Recette>();
+
+	private List<TypeRecette> listeTypeRecette = new ArrayList<TypeRecette>();
+
+	private List<TypeDepense> listeTypeDepense = new ArrayList<TypeDepense>();
+
+	private List<Recette> listeRecetteZoom = new ArrayList<Recette>();
+
+	private List<Depense> listeDepenseZoom = new ArrayList<Depense>();
+
+	private Double recette;
+
+	private Double depense;
+
+	private Double solde;
+
+	private String mois;
+
+	private List<ParamInscription> listeParm = new ArrayList<ParamInscription>();
+
+	public String versEntreeSortie() {
+		listeDepense = new ArrayList<Depense>();
+		listeRecette = new ArrayList<Recette>();
+		listeTypeDepense = new ArrayList<TypeDepense>();
+		listeTypeRecette = new ArrayList<TypeRecette>();
+		return "/pages/nuramecole/etat.xhtml";
+	}
+
+	public String versEtatsMensuel() {
+		listeParm = new ArrayList<ParamInscription>();
+		listeIns = new ArrayList<Inscription>();
+		return "/pages/nuramecole/etatmensuel.xhtml";
+	}
+
+	@SuppressWarnings("unchecked")
+	public void etatsMensuel() {
+		listeParm = new ArrayList<ParamInscription>();
+		listeParm = dataSource
+				.createQuery(
+						"From ParamInscription p inner join fetch p.classe inner join fetch p.annee an where an =:pan ")
+				.setParameter("pan", annee).list();
+		listeIns = new ArrayList<Inscription>();
+		listeIns = dataSource
+				.createQuery("From Inscription i inner join fetch i.paramins p "
+						+ " inner join fetch p.annee an inner join fetch i.eleve where an =:pan ")
+				.setParameter("pan", annee).list();
+
+		listeRecette = new ArrayList<Recette>();
+		listeRecette = dataSource.createQuery("From Recette d inner join fetch d.typeRecette inner join fetch "
+				+ " d.inscription i  inner join fetch i.paramins p inner join fetch p.annee an inner join fetch i.eleve where an =:pan ")
+				.setParameter("pan", annee).list();
+
+	}
+
+	public Double getMontantAPayer(ParamInscription param) {
+		Double mnt = 0d;
+		for (Inscription in : listeIns) {
+			if (in.getParamins().getId().equals(param.getId())) {
+				mnt = ( mnt + param.getMensualite() ) - in.getReduction();
+			}
+		}
+		return mnt;
+	}
+
+	public Double getMontantPayer(ParamInscription param) {
+		Double mnt = 0d;
+		for (Recette in : listeRecette) {
+			if (in.getInscription().getParamins().getId().equals(param.getId())
+					&& in.getTypeRecette().getCode().equalsIgnoreCase("MENS")) {
+				mnt = ( mnt + in.getMontantPaye() ) ; //- in.getInscription().getAvoirEleve()
+				
+			}
+		}
+		return mnt;
+	}
+
+	@SuppressWarnings("unchecked")
+	public void etatsEntreeSortie() {
+		listeDepense = new ArrayList<Depense>();
+		listeRecette = new ArrayList<Recette>();
+		if (dateDeb == null && dateFin == null) {
+			FacesMessages.instance().addToControlFromResourceBundle("erreurGenerique",
+					"Veuillez renseigner au moins une date ");
+			return;
+		}
+		if (dateDeb == null && dateFin != null) {
+			dateDeb = dateFin;
+		}
+		if (dateFin == null && dateDeb != null) {
+			dateFin = dateDeb;
+		}
+
+		listeDepense = dataSource.createQuery(
+				"From Depense d inner join fetch d.typeDepense inner join fetch d.utilisateur u where d.dateDepense between :p1 and :p2 ")
+				.setParameter("p1", dateDeb).setParameter("p2", dateFin).list();
+		listeRecette = dataSource.createQuery(
+				"From Recette d inner join fetch d.typeRecette inner join fetch d.utilisateur  u left outer join fetch"
+						+ " d.inscription where d.datePaiment between :p1 and :p2 ")
+				.setParameter("p1", dateDeb).setParameter("p2", dateFin).list();
+
+		depense = 0d;
+		recette = 0d;
+		for (Depense d : listeDepense) {
+			depense = depense + d.getMontantPaye();
+		}
+
+		for (Recette r : listeRecette) {
+			recette = recette + r.getMontantPaye();
+			if (r.getInscription() != null && r.getInscription().getAvoirEleve() > 0) {
+
+				recette = recette - r.getInscription().getAvoirEleve();
+			}
+		}
+		solde = recette - depense;
+		listeTypeRecette = new ArrayList<TypeRecette>();
+		listeTypeDepense = new ArrayList<TypeDepense>();
+		List<TypeRecette> listeTypeRecette1 = dataSource.createQuery("From TypeRecette").list();
+		List<TypeDepense> listeTypeDepense1 = dataSource.createQuery("From TypeDepense ").list();
+
+		Double recette = 0.0;
+		Double depense = 0.0;
+		for (TypeRecette rec : listeTypeRecette1) {
+			recette = 0.0;
+			for (Recette r : listeRecette) {
+				if (rec.getId().equals(r.getTypeRecette().getId())) {
+					recette = recette + r.getMontantPaye();
+					if (r.getInscription() != null && r.getInscription().getAvoirEleve() > 0) {
+						recette = recette - r.getInscription().getAvoirEleve();
+					}
+				}
+			}
+			if (recette > 0) {
+				rec.setMontant(recette);
+				listeTypeRecette.add(rec);
+			}
+		}
+
+		for (TypeDepense dep : listeTypeDepense1) {
+			depense = 0.0;
+			for (Depense r : listeDepense) {
+				if (dep.getId().equals(r.getTypeDepense().getId())) {
+					depense = depense + r.getMontantPaye();
+				}
+			}
+			if (depense > 0) {
+				dep.setMontant(depense);
+				listeTypeDepense.add(dep);
+			}
+		}
+	}
+
+	public void zoomRecette(TypeRecette typeRecette) {
+		listeRecetteZoom = new ArrayList<Recette>();
+		for (Recette r : listeRecette) {
+			if (typeRecette.getId().equals(r.getTypeRecette().getId())) {
+				if (r.getInscription() != null && r.getInscription().getAvoirEleve() > 0) {
+					r.setMontant(r.getMontantPaye() - r.getInscription().getAvoirEleve());
+				} else {
+					r.setMontant(r.getMontantPaye());
+				}
+				listeRecetteZoom.add(r);
+			}
+		}
+	}
+
+	public void zoomDepense(TypeDepense typedepense) {
+		listeDepenseZoom = new ArrayList<Depense>();
+		for (Depense dep : listeDepense) {
+			if (typedepense.getId().equals(dep.getTypeDepense().getId())) {
+				listeDepenseZoom.add(dep);
+			}
+		}
+	}
+
+	public Double getMontantTypeRecette(TypeRecette rec) {
+		Double recette = 0.0;
+		for (Recette r : listeRecette) {
+			if (rec.getId().equals(r.getTypeRecette().getId())) {
+				recette = recette + r.getMontantPaye();
+				if (r.getInscription() != null && r.getInscription().getAvoirEleve() > 0) {
+					recette = recette - r.getInscription().getAvoirEleve();
+				}
+			}
+		}
+		return recette;
+	}
+
+	public Double getMontantTypeDepense(TypeDepense dep) {
+		Double depense = 0.0;
+		for (Depense d : listeDepense) {
+			if (d.getTypeDepense().getId().equals(dep.getId())) {
+				depense = depense + d.getMontantPaye();
+			}
+		}
+		return depense;
+	}
 
 	@SuppressWarnings({ "unused", "unchecked" })
 	public void effectifarClasse(OutputStream out, Object data) {
@@ -123,7 +329,7 @@ public class StatistiqueService implements Serializable {
 				effectifClasse(param);
 
 			}
-			
+
 		}
 		listeIns = new ArrayList<Inscription>();
 		listeIns = dataSource
@@ -133,9 +339,9 @@ public class StatistiqueService implements Serializable {
 		for (Classe cl : listeClasse) {
 			getNombreFilleGarcon(listeIns, cl);
 		}
-		
+
 		nbeleve = nbgarcon + nbfille;
-		
+
 	}
 
 	@SuppressWarnings("unchecked")
@@ -153,27 +359,22 @@ public class StatistiqueService implements Serializable {
 	}
 
 	public void getNombreFilleGarcon(List<Inscription> liste, Classe classe) {
-		try {
-			int nombref = 0;
-			int nombreg = 0;
+		int nombref = 0;
+		int nombreg = 0;
 
-			for (Inscription ins : liste) {
-				if (ins.getParamins().getClasse().getIdclasse().equals(classe.getIdclasse())) {
-					if (ins.getEleve().getSexe().equalsIgnoreCase("M")) {
-						nombreg++;
-						nbgarcon++;
-					} else {
-						nombref++;
-						nbfille++;
-					}
+		for (Inscription ins : liste) {
+			if (ins.getParamins().getClasse().getIdclasse().equals(classe.getIdclasse())) {
+				if (ins.getEleve().getSexe().equalsIgnoreCase("M")) {
+					nombreg++;
+					nbgarcon++;
+				} else {
+					nombref++;
+					nbfille++;
 				}
 			}
-			classe.setFille(nombref);
-			classe.setGarcon(nombreg);
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			//e.printStackTrace();
 		}
+		classe.setFille(nombref);
+		classe.setGarcon(nombreg);
 	}
 
 	public List<Classe> getListeClasse() {
@@ -214,6 +415,110 @@ public class StatistiqueService implements Serializable {
 
 	public void setIns(Institution ins) {
 		this.ins = ins;
+	}
+
+	public Date getDateDeb() {
+		return dateDeb;
+	}
+
+	public void setDateDeb(Date dateDeb) {
+		this.dateDeb = dateDeb;
+	}
+
+	public Date getDateFin() {
+		return dateFin;
+	}
+
+	public void setDateFin(Date dateFin) {
+		this.dateFin = dateFin;
+	}
+
+	public List<Depense> getListeDepense() {
+		return listeDepense;
+	}
+
+	public void setListeDepense(List<Depense> listeDepense) {
+		this.listeDepense = listeDepense;
+	}
+
+	public List<Recette> getListeRecette() {
+		return listeRecette;
+	}
+
+	public void setListeRecette(List<Recette> listeRecette) {
+		this.listeRecette = listeRecette;
+	}
+
+	public Double getRecette() {
+		return recette;
+	}
+
+	public void setRecette(Double recette) {
+		this.recette = recette;
+	}
+
+	public Double getDepense() {
+		return depense;
+	}
+
+	public void setDepense(Double depense) {
+		this.depense = depense;
+	}
+
+	public Double getSolde() {
+		return solde;
+	}
+
+	public void setSolde(Double solde) {
+		this.solde = solde;
+	}
+
+	public List<TypeRecette> getListeTypeRecette() {
+		return listeTypeRecette;
+	}
+
+	public void setListeTypeRecette(List<TypeRecette> listeTypeRecette) {
+		this.listeTypeRecette = listeTypeRecette;
+	}
+
+	public List<TypeDepense> getListeTypeDepense() {
+		return listeTypeDepense;
+	}
+
+	public void setListeTypeDepense(List<TypeDepense> listeTypeDepense) {
+		this.listeTypeDepense = listeTypeDepense;
+	}
+
+	public List<Recette> getListeRecetteZoom() {
+		return listeRecetteZoom;
+	}
+
+	public void setListeRecetteZoom(List<Recette> listeRecetteZoom) {
+		this.listeRecetteZoom = listeRecetteZoom;
+	}
+
+	public List<Depense> getListeDepenseZoom() {
+		return listeDepenseZoom;
+	}
+
+	public void setListeDepenseZoom(List<Depense> listeDepenseZoom) {
+		this.listeDepenseZoom = listeDepenseZoom;
+	}
+
+	public String getMois() {
+		return mois;
+	}
+
+	public void setMois(String mois) {
+		this.mois = mois;
+	}
+
+	public List<ParamInscription> getListeParm() {
+		return listeParm;
+	}
+
+	public void setListeParm(List<ParamInscription> listeParm) {
+		this.listeParm = listeParm;
 	}
 
 }
