@@ -36,7 +36,7 @@ public class Inscription  implements Serializable {
 	
 	private String commentaire;
 
-	private double reliquat = 0d,avoirEleve =0d, montantInscriptionPaye=0d;
+	private double reliquat = 0d,avoirEleve =0d, montantInscriptionPaye=0d,reliquat_ins=0d;
 	
 	private boolean mois1=false,mois2=false,mois3=false,mois4=false,mois5=false,mois6=false,mois7=false,mois11=false,mois12=false;
 	private boolean mois10=false;
@@ -303,6 +303,14 @@ public class Inscription  implements Serializable {
 
 	public void setMontantInscriptionPaye(double montantInscriptionPaye) {
 		this.montantInscriptionPaye = montantInscriptionPaye;
+	}
+
+	public double getReliquat_ins() {
+		return reliquat_ins;
+	}
+
+	public void setReliquat_ins(double reliquat_ins) {
+		this.reliquat_ins = reliquat_ins;
 	}
 	
 

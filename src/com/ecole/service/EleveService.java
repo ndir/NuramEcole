@@ -189,7 +189,7 @@ public class EleveService implements Serializable {
 					inscription.setAvoirEleve(mntPaye - mntIns);
 				}
 				if (mntPaye < mntIns) {
-					inscription.setReliquat(mntIns - mntPaye);
+					inscription.setReliquat_ins(mntIns - mntPaye);
 				}
 			}
 			dataSource.save(inscription);
