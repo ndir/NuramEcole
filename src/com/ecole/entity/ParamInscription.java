@@ -13,6 +13,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 /**
  * @author A626257
@@ -20,22 +21,30 @@ import javax.persistence.Table;
  */
 @Entity
 @Table(name = "paraminsription")
-public class ParamInscription implements Serializable{
+public class ParamInscription implements Serializable {
 
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-	
+
 	private Long id;
-	
+
 	private AnneeScolaire annee;
-	
+
 	private Classe classe;
-	
+
 	private Double droit_ins;
-	
+
 	private Double mensualite;
+
+	private Double Apayer;
+
+	private Double payer;
+
+	private Double Rpayer;
+
+	private float taux;
 
 	@Id
 	@GeneratedValue
@@ -48,7 +57,7 @@ public class ParamInscription implements Serializable{
 	}
 
 	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name="idanne")
+	@JoinColumn(name = "idanne")
 	public AnneeScolaire getAnnee() {
 		return annee;
 	}
@@ -56,8 +65,9 @@ public class ParamInscription implements Serializable{
 	public void setAnnee(AnneeScolaire annee) {
 		this.annee = annee;
 	}
+
 	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name="idclasse")
+	@JoinColumn(name = "idclasse")
 	public Classe getClasse() {
 		return classe;
 	}
@@ -106,6 +116,41 @@ public class ParamInscription implements Serializable{
 			return false;
 		return true;
 	}
-	
+
+	@Transient
+	public Double getApayer() {
+		return Apayer;
+	}
+
+	public void setApayer(Double apayer) {
+		Apayer = apayer;
+	}
+
+	@Transient
+	public Double getPayer() {
+		return payer;
+	}
+
+	public void setPayer(Double payer) {
+		this.payer = payer;
+	}
+
+	@Transient
+	public Double getRpayer() {
+		return Rpayer;
+	}
+
+	public void setRpayer(Double rpayer) {
+		Rpayer = rpayer;
+	}
+
+	@Transient
+	public float getTaux() {
+		return taux;
+	}
+
+	public void setTaux(float taux) {
+		this.taux = taux;
+	}
 
 }

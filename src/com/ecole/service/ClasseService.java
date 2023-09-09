@@ -54,8 +54,12 @@ public class ClasseService implements Serializable {
 	public String versClasse() {
 		this.setClasse(new Classe());
 		chargerListeClasse();
-		System.out.println("Annee " + annee.getAnneeScolaire());
+		
 		return "/pages/nuramecole/creerclasse.xhtml";
+	}
+	
+	public String versAcceuil() {
+		return "/pages/nuramecole/template/index.xhtml";
 	}
 
 	@SuppressWarnings("unchecked")

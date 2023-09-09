@@ -8,15 +8,19 @@ import java.io.Serializable;
 import java.text.DateFormatSymbols;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.imageio.ImageIO;
 
 import org.hibernate.Session;
+import org.jboss.seam.Component;
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.Create;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
+import org.jboss.seam.annotations.Out;
 import org.jboss.seam.annotations.Scope;
 import org.jboss.seam.faces.FacesMessages;
 import org.jfree.chart.ChartFactory;
@@ -25,6 +29,7 @@ import org.jfree.chart.JFreeChart;
 import org.jfree.chart.plot.PlotOrientation;
 import org.jfree.data.category.DefaultCategoryDataset;
 
+import com.chaka.projet.entity.Utilisateur;
 import com.ecole.entity.AnneeScolaire;
 import com.ecole.entity.Classe;
 import com.ecole.entity.Depense;
@@ -35,6 +40,8 @@ import com.ecole.entity.Recette;
 import com.ecole.entity.TypeDepense;
 import com.ecole.entity.TypeRecette;
 import com.rhospi.commons.ChakaUtils;
+import com.rhospi.commons.FileUploadService;
+import com.rhospi.commons.ChakaUtils.ExportOption;
 
 /**
  * @author A626257
@@ -92,11 +99,20 @@ public class StatistiqueService implements Serializable {
 
 	private String mois;
 
+	private String moisch;
+
 	private int lemois;
 
 	private int nbjour;
 
+	FileUploadService filePrintService;
 	private List<ParamInscription> listeParm = new ArrayList<ParamInscription>();
+
+	private String showModal = "";
+
+	@In(required = false)
+	@Out(required = false)
+	private Utilisateur utilisateur;
 
 	public String versEntreeSortie() {
 		listeDepense = new ArrayList<Depense>();
@@ -112,47 +128,77 @@ public class StatistiqueService implements Serializable {
 		return "/pages/nuramecole/etatmensuel.xhtml";
 	}
 
+	public void imprimerEtatsMensuel() {
+		Institution in = (Institution) dataSource.createQuery("From Institution").uniqueResult();
+
+		for (ParamInscription p : listeParm) {
+			p.setApayer(getMontantAPayer(p));
+			p.setPayer(getMontantPayer(p));
+			p.setRpayer(p.getApayer() - p.getPayer());
+			p.setTaux(getTauxRecouvrement(p));
+		}
+
+		Map<String, Object> param = new HashMap<String, Object>();
+		param.put("ecole", in.getNom());
+		param.put("slogan", in.getSologan());
+		param.put("tel", in.getTelephone());
+		retreiveMonthByString(mois);
+		param.put("etat", "ETAT MENSUEL MOIS : " + moisch);
+		getFilePrintService().imprimer("ecole", "etat", param, listeParm, utilisateur, ExportOption.PDF);
+		this.setShowModal("javascript:Richfaces.showModalPanel('modalPdf')");
+	}
+
 	public void retreiveMonthByString(String month) {
 
 		if (month.equals("10")) {
 			lemois = 10;
 			nbjour = 31;
+			moisch = "OCTOBRE";
 		}
 		if (month.equals("11")) {
 			lemois = 11;
 			nbjour = 31;
+			moisch = "NOVEMBRE";
 		}
 		if (month.equals("12")) {
 			lemois = 12;
 			nbjour = 31;
+			moisch = "DECEMBRE";
 		}
 		if (month.equals("1")) {
 			lemois = 1;
 			nbjour = 31;
+			moisch = "JANVIER";
 		}
 		if (month.equals("2")) {
 			lemois = 02;
+			moisch = "FEVRIER";
 		}
 		if (month.equals("3")) {
 			lemois = 3;
 			nbjour = 31;
+			moisch = "MARS";
 		}
 		if (month.equals("4")) {
 			lemois = 4;
 			nbjour = 30;
+			moisch = "AVRIL";
 		}
 		if (month.equals("5")) {
 			lemois = 5;
 			nbjour = 31;
+			moisch = "MAI";
 		}
 
 		if (month.equals("6")) {
 			lemois = 6;
 			nbjour = 30;
+			moisch = "JUIN";
 		}
 		if (month.equals("7")) {
 			lemois = 7;
 			nbjour = 31;
+			moisch = "JUILLET";
 		}
 
 	}
@@ -654,6 +700,26 @@ public class StatistiqueService implements Serializable {
 
 	public void setListeRecettes(List<Recette> listeRecettes) {
 		this.listeRecettes = listeRecettes;
+	}
+
+	public FileUploadService getFilePrintService() {
+		if (filePrintService == null) {
+			filePrintService = (FileUploadService) Component.getInstance(FileUploadService.class);
+
+		}
+		return filePrintService;
+	}
+
+	public void setFilePrintService(FileUploadService filePrintService) {
+		this.filePrintService = filePrintService;
+	}
+
+	public String getShowModal() {
+		return showModal;
+	}
+
+	public void setShowModal(String showModal) {
+		this.showModal = showModal;
 	}
 
 }

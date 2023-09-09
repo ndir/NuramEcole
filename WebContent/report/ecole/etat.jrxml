@@ -1,0 +1,231 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="bulletin" language="groovy" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="89af52a8-d2ec-4f35-8f4d-da069730ec92">
+	<property name="ireport.zoom" value="1.5"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<parameter name="logo" class="java.io.InputStream"/>
+	<parameter name="ecole" class="java.lang.String"/>
+	<parameter name="slogan" class="java.lang.String"/>
+	<parameter name="tel" class="java.lang.String"/>
+	<parameter name="total" class="java.lang.String"/>
+	<parameter name="moy" class="java.lang.String"/>
+	<parameter name="rang" class="java.lang.String"/>
+	<parameter name="app" class="java.lang.String"/>
+	<parameter name="eff" class="java.lang.String"/>
+	<parameter name="etat" class="java.lang.String"/>
+	<queryString language="hql">
+		<![CDATA[from ParamInscription]]>
+	</queryString>
+	<field name="annee" class="com.ecole.entity.AnneeScolaire"/>
+	<field name="apayer" class="java.lang.Double"/>
+	<field name="classe" class="com.ecole.entity.Classe"/>
+	<field name="droit_ins" class="java.lang.Double"/>
+	<field name="id" class="java.lang.Long"/>
+	<field name="mensualite" class="java.lang.Double"/>
+	<field name="payer" class="java.lang.Double"/>
+	<field name="rpayer" class="java.lang.Double"/>
+	<field name="taux" class="java.lang.Float"/>
+	<variable name="T1" class="java.lang.Number" calculation="Sum">
+		<variableExpression><![CDATA[$F{apayer}]]></variableExpression>
+	</variable>
+	<variable name="T2" class="java.lang.Number" calculation="Sum">
+		<variableExpression><![CDATA[$F{payer}]]></variableExpression>
+	</variable>
+	<variable name="T3" class="java.lang.Number" calculation="Sum">
+		<variableExpression><![CDATA[$F{rpayer}]]></variableExpression>
+	</variable>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="205" splitType="Stretch">
+			<image>
+				<reportElement x="3" y="5" width="100" height="50" uuid="2e970148-b146-41b9-99cd-da53529800c5"/>
+				<imageExpression><![CDATA[$P{logo}]]></imageExpression>
+			</image>
+			<textField>
+				<reportElement x="0" y="59" width="543" height="20" uuid="9fb14f85-97f4-4793-bb0f-8ac3e9db9c6a"/>
+				<textElement>
+					<font size="12" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{ecole}]]></textFieldExpression>
+			</textField>
+			<textField pattern="EEEEE dd MMMMM yyyy">
+				<reportElement x="302" y="0" width="251" height="20" uuid="3086e59e-a433-440c-9699-cbffcfb1be00"/>
+				<textElement textAlignment="Right">
+					<font size="12" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[new java.util.Date()]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="0" y="87" width="543" height="20" uuid="ce9ce57f-d4fe-4dc5-9065-91d0d5bb4177"/>
+				<textElement>
+					<font size="12" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{tel}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="0" y="73" width="543" height="20" uuid="4471c004-3592-4e61-8586-75c8ad4a0948"/>
+				<textElement>
+					<font size="12" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{slogan}]]></textFieldExpression>
+			</textField>
+			<rectangle>
+				<reportElement x="1" y="125" width="552" height="43" backcolor="#CCCCCC" uuid="7f03130e-676c-4102-9af2-63d7f354af7b"/>
+			</rectangle>
+			<textField>
+				<reportElement x="3" y="126" width="550" height="43" uuid="970fc8d1-d1b8-48cb-af90-d367677a26bd"/>
+				<textElement textAlignment="Center">
+					<font size="24" isBold="true" isUnderline="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{etat}]]></textFieldExpression>
+			</textField>
+		</band>
+	</title>
+	<columnHeader>
+		<band height="36" splitType="Stretch">
+			<rectangle>
+				<reportElement x="0" y="15" width="103" height="20" uuid="330df0dd-7f67-41e5-a769-5a7b04a260f8"/>
+			</rectangle>
+			<rectangle>
+				<reportElement x="102" y="15" width="113" height="20" uuid="1aa09b29-0c02-4018-88d6-9d137a9d7947"/>
+			</rectangle>
+			<rectangle>
+				<reportElement x="214" y="15" width="102" height="20" uuid="57a0e652-7b93-49f3-a01d-e76cfd0bb35e"/>
+			</rectangle>
+			<rectangle>
+				<reportElement x="316" y="15" width="115" height="20" uuid="b148a534-03af-455d-9dcc-ac1c0b7146ca"/>
+			</rectangle>
+			<rectangle>
+				<reportElement x="431" y="15" width="124" height="20" uuid="95d5b8d0-3c38-4e35-a5bb-c757c730aa9b"/>
+			</rectangle>
+			<staticText>
+				<reportElement x="1" y="16" width="88" height="20" uuid="c5a77fb1-4241-4aa5-8b94-b82eab5b978e"/>
+				<textElement textAlignment="Center">
+					<font size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[CLASSE]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="105" y="16" width="109" height="20" uuid="d0eabc80-a444-4efd-bd01-38c53d329a14"/>
+				<textElement textAlignment="Center">
+					<font size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[MNT A PAYER]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="215" y="16" width="101" height="20" uuid="280f646e-5ed8-4d13-9e6b-6df63fd64e8b"/>
+				<textElement textAlignment="Center">
+					<font size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[MNT  PAYER]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="316" y="16" width="115" height="20" uuid="7d173bad-6940-4382-8eab-456cc789244b"/>
+				<textElement textAlignment="Center">
+					<font size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[MNT  RESTANT]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="431" y="15" width="122" height="20" uuid="4dc2c208-4cf4-43cd-a5a4-6d27e764b87e"/>
+				<textElement textAlignment="Center">
+					<font size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[TAUX(%)]]></text>
+			</staticText>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="21" splitType="Stretch">
+			<rectangle>
+				<reportElement x="0" y="0" width="102" height="20" uuid="782281fc-402c-4de7-bca0-6977e01b5273"/>
+			</rectangle>
+			<rectangle>
+				<reportElement x="102" y="0" width="112" height="20" uuid="53a51994-bc06-49b5-a0bf-099ea7130c18"/>
+			</rectangle>
+			<rectangle>
+				<reportElement x="214" y="0" width="102" height="20" uuid="97cc8e8c-9aef-43a7-9027-4fa6bc460532"/>
+			</rectangle>
+			<rectangle>
+				<reportElement x="316" y="0" width="115" height="20" uuid="4ed7842a-6278-45e8-a676-e81e3b893f0f"/>
+			</rectangle>
+			<rectangle>
+				<reportElement x="431" y="0" width="124" height="20" uuid="bc6dccca-d951-4172-b76d-e9b9bb37f725"/>
+			</rectangle>
+			<textField>
+				<reportElement x="3" y="1" width="99" height="20" uuid="dad26618-cc45-40b4-ab48-315c7bf13232"/>
+				<textElement>
+					<font size="12" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{classe}.getLibelle()]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0">
+				<reportElement x="102" y="0" width="112" height="20" uuid="4da75696-18a2-4375-828f-461949300e15"/>
+				<textElement textAlignment="Center">
+					<font size="12" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{apayer}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0">
+				<reportElement x="217" y="0" width="100" height="20" uuid="7e0ea8c2-cd7c-4e79-a3e6-601e05b2145c"/>
+				<textElement textAlignment="Center">
+					<font size="12" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{payer}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0">
+				<reportElement x="317" y="1" width="114" height="20" uuid="5107772c-a016-41eb-8989-2c861177b765"/>
+				<textElement textAlignment="Center">
+					<font size="12" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{rpayer}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0.00">
+				<reportElement x="431" y="1" width="122" height="20" uuid="d517f382-dfd2-49c6-970a-3ec3cb900fd2"/>
+				<textElement textAlignment="Center">
+					<font size="12" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{taux}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<summary>
+		<band height="68" splitType="Stretch">
+			<rectangle>
+				<reportElement x="102" y="-1" width="112" height="20" uuid="c03a8cd9-48e7-409f-8a30-bbfcedb18d97"/>
+			</rectangle>
+			<rectangle>
+				<reportElement x="214" y="-1" width="102" height="20" uuid="bc171491-1f86-4e97-aa9b-10b2d6cf2550"/>
+			</rectangle>
+			<rectangle>
+				<reportElement x="316" y="-1" width="115" height="20" uuid="1b33dd12-70f0-4326-9275-028bbe46a224"/>
+			</rectangle>
+			<rectangle>
+				<reportElement x="431" y="-1" width="124" height="20" uuid="72eb445a-3ac7-4500-ba30-22eeafc41f4c"/>
+			</rectangle>
+			<textField pattern="#,##0">
+				<reportElement x="105" y="0" width="109" height="20" uuid="d597cd91-2b25-4348-845c-e270917c35d2"/>
+				<textElement textAlignment="Center">
+					<font size="12" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$V{T1}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0">
+				<reportElement x="216" y="0" width="100" height="20" uuid="1a27af8d-d2d5-45b1-8bde-cf19dfe02e13"/>
+				<textElement textAlignment="Center">
+					<font size="12" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$V{T2}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0">
+				<reportElement x="321" y="0" width="110" height="20" uuid="05e881ac-0444-4a4a-851e-136c858c79db"/>
+				<textElement textAlignment="Center">
+					<font size="12" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$V{T3}]]></textFieldExpression>
+			</textField>
+		</band>
+	</summary>
+</jasperReport>

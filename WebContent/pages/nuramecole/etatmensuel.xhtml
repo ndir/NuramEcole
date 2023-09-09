@@ -53,6 +53,23 @@
 			<ui:include src="/template/include/header2.xhtml" />
 
 
+			<ui:insert name="impression">
+				<rich:modalPanel id="modalPdf" autosized="false" width="980"
+					height="620" moveable="true" resizeable="true">
+
+					<f:facet name="controls">
+						<a onclick="Richfaces.hideModalPanel('modalPdf');"
+							style="cursor: pointer" href="#">Fermer</a>
+					</f:facet>
+					<h:form id="frmPdf">
+						<a:mediaOutput element="object" id="id" cacheable="false"
+							session="true" createContent="#{fileUploadService.paintPdf}"
+							type="application/pdf" mimeType="application/pdf"
+							style="width:90%; height:600px;" value="#{filePrintService.id}" />
+
+					</h:form>
+				</rich:modalPanel>
+			</ui:insert>
 		</div>
 	</div>
 	<a:status id="waitStatusHaut" forceId="true"
@@ -117,6 +134,7 @@
 													</h:selectOneMenu></td>
 												<td><a:commandLink styleClass="btn btn-success"
 														value="" action="#{statService.etatsMensuel()}"
+														
 														reRender="liste" status="waitStatus">
 																		
 																		Valider			
@@ -124,6 +142,7 @@
 
 											</tr>
 										</table>
+
 										<rich:dataTable value="#{statService.listeParm}" var="dep"
 											style="width:100%;" rows="8" rowClasses="row1,row2"
 											id="lstdemande">
@@ -201,6 +220,16 @@
 											style="width:100%" for="lstdemande"
 											rendered="#{not empty statService.listeParm}" />
 										<p align="left">
+											<a:commandLink styleClass="btn btn-success" value=""
+												action="#{statService.imprimerEtatsMensuel()}"
+												reRender="liste" status="waitStatus"
+												oncomplete="#{statService.showModal}"
+												rendered="#{statService.listeRecettes.size > 0}">
+																		
+																		Imprimer			
+																				</a:commandLink>
+										</p>
+										<p align="left">
 											<a:mediaOutput element="img" cacheable="false" session="true"
 												createContent="#{statService.montantParClasse}"
 												mimeType="image/gif"
@@ -212,7 +241,7 @@
 						</div>
 					</rich:panel>
 				</h:form>
-	<rich:modalPanel id="zdepense"
+				<rich:modalPanel id="zdepense"
 					style="background:url('../img2/fond.jpg') repeat-x scroll 0 0 #FFF;height:210; width:300"
 					moveable="true" styleClass="popupAttente">
 					<f:facet name="controls">
@@ -234,8 +263,8 @@
 									<div class="panel-body">
 										<div class="form-group has-success">
 
-											<rich:dataTable value="#{statService.listeRecette}"
-												var="zd" id="led" style="width:100%;" rows="10"
+											<rich:dataTable value="#{statService.listeRecette}" var="zd"
+												id="led" style="width:100%;" rows="10"
 												rowClasses="row1,row2">
 												<f:facet name="header">
 													<rich:columnGroup>
@@ -251,7 +280,7 @@
 												</f:facet>
 												<rich:column>
 													<h:outputLabel value="#{zd.datePaiment}">
-													<f:convertDateTime pattern = "dd/MM/yyyy" />
+														<f:convertDateTime pattern="dd/MM/yyyy" />
 													</h:outputLabel>
 												</rich:column>
 												<rich:column>
