@@ -212,8 +212,7 @@
 						</div>
 					</rich:panel>
 				</h:form>
-
-				<rich:modalPanel id="zdepense"
+	<rich:modalPanel id="zdepense"
 					style="background:url('../img2/fond.jpg') repeat-x scroll 0 0 #FFF;height:210; width:300"
 					moveable="true" styleClass="popupAttente">
 					<f:facet name="controls">
@@ -225,7 +224,7 @@
 						</a:commandLink>
 					</f:facet>
 					<f:facet name="header">
-			 DETAILS DES PAIEMETS
+			 DETAILS DES DEPENSES
 			</f:facet>
 					<rich:spacer height="10px" />
 					<h:form class="note-form" id="fdepense">
@@ -235,31 +234,34 @@
 									<div class="panel-body">
 										<div class="form-group has-success">
 
-											<rich:dataTable value="#{statService.listeRecette}" var="mat"
-												id="le" style="width:100%;" rows="10" rowClasses="row1,row2">
+											<rich:dataTable value="#{statService.listeRecette}"
+												var="zd" id="led" style="width:100%;" rows="10"
+												rowClasses="row1,row2">
 												<f:facet name="header">
 													<rich:columnGroup>
 														<rich:column>
-															<h:outputLabel value="Eleve"
+															<h:outputLabel value="Date"
 																style="color:white;font-size:12px;font-family: Arial;text-align:center;" />
 														</rich:column>
 														<rich:column>
-															<h:outputLabel value="Montant Payé"
+															<h:outputLabel value="Montant"
 																style="color:white;font-size:12px;font-family: Arial;text-align:center;" />
 														</rich:column>
 													</rich:columnGroup>
 												</f:facet>
 												<rich:column>
-													<h:outputLabel value="#{mat.inscription.eleve.nom} #{mat.inscription.eleve.prenom}"></h:outputLabel>
+													<h:outputLabel value="#{zd.datePaiment}">
+													<f:convertDateTime pattern = "dd/MM/yyyy" />
+													</h:outputLabel>
 												</rich:column>
 												<rich:column>
-													<h:outputLabel value="#{mat.montantPaye}">
+													<h:outputLabel value="#{zd.montantPaye}">
 														<f:convertNumber pattern="#,##0" />
 													</h:outputLabel>
 												</rich:column>
 											</rich:dataTable>
 											<rich:datascroller status="waitStatus" stepControls="auto"
-												style="width:100%" for="le" ajaxSingle="false"
+												style="width:100%" for="led" ajaxSingle="false"
 												rendered="#{not empty statService.listeRecette}" />
 										</div>
 									</div>
@@ -268,9 +270,12 @@
 						</div>
 					</h:form>
 				</rich:modalPanel>
+
 			</div>
+
 		</div>
 	</div>
+
 	<!-- az-content -->
 	<div class="az-footer ht-20">
 		<div class="container ht-100p pd-t-0-f">

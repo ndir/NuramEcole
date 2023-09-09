@@ -201,7 +201,6 @@ public class StatistiqueService implements Serializable {
 	}
 
 	public void zoomPaiement(ParamInscription param) {
-		System.out.println("ZOOM DETAILS PAIEMENT");
 		listeRecette = new ArrayList<Recette>();
 		for (Recette recette : listeRecettes) {
 			if (recette.getInscription().getParamins().getId().equals(param.getId())) {
