@@ -178,6 +178,15 @@
 														disabled="#{recetteService.inscription.mois6 and recetteService.inscription.moisenCours ne '6'}">
 													</h:selectBooleanCheckbox></td>
 
+												<td><h:outputLabel styleClass="grey" rendered="#{recetteService.inscription.reliquat_ins > 0 and recetteService.inscription.moisenCours ==0}"
+														value="Reliquat inscription : " style="color: red">
+														<h:outputText styleClass="grey" id="idRlqIns" style="color: red"
+															value="#{recetteService.inscription.reliquat_ins}">
+															<f:convertNumber pattern="#,##0" />
+														</h:outputText>
+
+													</h:outputLabel> <h:outputLabel styleClass="grey" value="  F CFA " rendered="#{recetteService.inscription.reliquat_ins > 0 and recetteService.inscription.moisenCours ==0}"/></td>
+
 											</tr>
 										</TABLE>
 
@@ -314,7 +323,7 @@
 																				style="color:white;font-size:12px;font-family: Arial;text-align:center;" />
 																		</rich:column>
 
-																		
+
 																		<rich:column>
 																			<h:outputLabel value="Action"
 																				style="color:white;font-size:12px;font-family: Arial;text-align:center;" />
@@ -329,7 +338,7 @@
 																</rich:column>
 																<rich:column>
 																	<h:outputLabel value="#{rec.datePaiment}">
-																	<f:convertDateTime pattern="dd/MM/yyyy" />
+																		<f:convertDateTime pattern="dd/MM/yyyy" />
 																	</h:outputLabel>
 																</rich:column>
 																<rich:column>
@@ -337,14 +346,15 @@
 																		<f:convertNumber pattern="#,##0" />
 																	</h:outputLabel>
 																</rich:column>
-																
+
 																<rich:column>
 																	<a:commandLink value="" status="waitStatus"
 																		action="#{recetteService.versModifierRecette(rec)}"
 																		reRender="liste" title="Modifier">
 																		<s:graphicImage fileName="edit.png"
 																			style="border:0px;" value="/picto/edit.png"
-																			width="16" height="16" alt="" rendered="#{rec.editable}" />
+																			width="16" height="16" alt=""
+																			rendered="#{rec.editable}" />
 
 																	</a:commandLink>
 																	<s:graphicImage fileName="clock_edit.png"

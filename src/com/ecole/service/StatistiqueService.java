@@ -532,22 +532,27 @@ public class StatistiqueService implements Serializable {
 	}
 
 	public void getNombreFilleGarcon(List<Inscription> liste, Classe classe) {
-		int nombref = 0;
-		int nombreg = 0;
+		try {
+			int nombref = 0;
+			int nombreg = 0;
 
-		for (Inscription ins : liste) {
-			if (ins.getParamins().getClasse().getIdclasse().equals(classe.getIdclasse())) {
-				if (ins.getEleve().getSexe().equalsIgnoreCase("M")) {
-					nombreg++;
-					nbgarcon++;
-				} else {
-					nombref++;
-					nbfille++;
+			for (Inscription ins : liste) {
+				if (ins.getParamins().getClasse().getIdclasse().equals(classe.getIdclasse())) {
+					if (ins.getEleve().getSexe().equalsIgnoreCase("M")) {
+						nombreg++;
+						nbgarcon++;
+					} else {
+						nombref++;
+						nbfille++;
+					}
 				}
 			}
+			classe.setFille(nombref);
+			classe.setGarcon(nombreg);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			//e.printStackTrace();
 		}
-		classe.setFille(nombref);
-		classe.setGarcon(nombreg);
 	}
 
 	public List<Classe> getListeClasse() {
