@@ -96,64 +96,10 @@
 				<h:form>
 					<div class="row row-sm mg-b-20">
 
-						<div class="col-lg-5">
+
+						<div class="col-lg-12">
 							<rich:panel
-								header="Encaissements du  #{clientService.dateDuJour}">
-								<div class="card card-dashboard-pageviews">
-									<div class="card-header"></div>
-									<a:outputPanel
-										rendered="#{utilisateur.profile.libelle=='Admin'}">
-										<h:outputLabel
-											value="Total Encaissement : #{clientService.getTotalEncaissement()}"
-											style="color:black; font-size: 12px; font-family: Arial;">
-										</h:outputLabel>
-									</a:outputPanel>
-									<rich:dataTable value="#{clientService.listeUser}" var="user"
-										id="lstCli" style="width:100%;" rows="10"
-										rowClasses="row1,row2">
-										<f:facet name="header">
-											<rich:columnGroup>
-												<rich:column>
-													<h:outputLabel value="Utilisateur"
-														style="color:white;font-size:12px;font-family: Arial;text-align:center;" />
-												</rich:column>
-												<rich:column>
-													<h:outputLabel value="Montant Encaissé"
-														style="color:white;font-size:12px;font-family: Arial;text-align:center;" />
-												</rich:column>
-
-											</rich:columnGroup>
-										</f:facet>
-
-										<rich:column>
-											<h:outputText value="#{user.nom} #{user.prenom}"
-												styleClass="grey" />
-										</rich:column>
-										<rich:column>
-											<h:outputText value="#{user.apport1}" styleClass="grey">
-												<f:convertNumber pattern="#,##0" />
-											</h:outputText>
-										</rich:column>
-
-									</rich:dataTable>
-									<rich:datascroller status="waitStatus" stepControls="auto"
-										style="width:100%" for="lstCli"
-										rendered="#{not empty clientService.listeUser}" />
-
-									<a:commandLink value="" status="waitStatus"
-										action="#{clientService.versImprimerBordereau()}"
-										rendered="#{droitsService.estAutorise('Bordereau')}"
-										oncomplete="javascript:Richfaces.showModalPanel('bordereau',{width:480, height:400})"
-										reRender="formbor" title="Bordereau ">
-										<s:graphicImage fileName="avoir.png" style="border:0px;"
-											value="/picto/avoir.png" width="35" height="35" alt="" />
-									</a:commandLink>
-								</div>
-							</rich:panel>
-						</div>
-
-						<div class="col-lg-7">
-							<rich:panel header="#{statService.ins.nom} #{statService.ins.sologan}">
+								header="#{statService.ins.nom} #{statService.ins.sologan}">
 								<div class="card card-dashboard-pageviews">
 									<p>
 
@@ -165,6 +111,15 @@
 										<span styleClass="grey" style="color: green"> EFFECTIF
 											TOTAL : #{statService.nbeleve} dont #{statService.nbgarcon}
 											garçons et #{statService.nbfille} filles </span>
+									</h5>
+										<h5 styleClass="grey">
+										<span styleClass="grey" style="font-family: italic;"> TOTAL ENSEIGNANTS:
+											#{statService.getNombreEnseignant()} </span>
+									</h5>
+
+									<h5 styleClass="grey" style="font-family: italic;">
+										<span styleClass="grey"> TOTAL SECRETAIRES:
+											#{statService.getNombreSecreataire()} </span>
 									</h5>
 									<rich:dataTable value="#{statService.listeClasse}" var="classe"
 										id="lstdemande" style="width:100%;" rows="8"

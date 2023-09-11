@@ -112,21 +112,35 @@
 
 														<a:support event="onchange"
 															action="#{noteService.chargerListeClasse()}"
-															ajaxSingle="true" reRender="classe" status="waitStatus"></a:support>
+															ajaxSingle="true" reRender="liste" status="waitStatus"></a:support>
 													</h:selectOneMenu></td>
-												<td><h:outputLabel styleClass="grey" value="Evaluation" /></td>
-												<td><h:selectOneMenu class="form-control"
-														value="#{noteService.note.evaluation}"
-														converter="#{evaluationConverter}" id="eval"
-														noSelectionLabel="--- Selectionnez ---">
+												<a:outputPanel rendered="#{noteService.typenote eq '1'}">
+													<td><h:outputLabel styleClass="grey"
+															value="Evaluation" /></td>
+													<td><h:selectOneMenu class="form-control"
+															value="#{noteService.note.evaluation}"
+															converter="#{evaluationConverter}" id="eval"
+															noSelectionLabel="--- Selectionnez ---">
+															<s:selectItems value="#{noteService.listeEval}"
+																var="type" label="#{type.libelle}"
+																noSelectionLabel="--- Selectionnez ---" />
+															<a:support event="onchange"
+																action="#{noteService.getEval1()}" ajaxSingle="true"
+																status="waitStatus"></a:support>
+														</h:selectOneMenu></td>
+												</a:outputPanel>
+												<a:outputPanel rendered="#{noteService.typenote eq '2'}">
+													<td><h:outputLabel styleClass="grey" value="Semestre" /></td>
+													<td><h:selectOneMenu class="form-control"
+															value="#{noteService.semestre}"
+															converter="#{semestreConverter}" id="sem"
+															noSelectionLabel="--- Selectionnez ---">
+															<s:selectItems value="#{noteService.listeSemestre}"
+																var="type" label="#{type.libelle}"
+																noSelectionLabel="--- Selectionnez ---" />
 
-														<s:selectItems value="#{noteService.listeEval}" var="type"
-															label="#{type.libelle}"
-															noSelectionLabel="--- Selectionnez ---" />
-														<a:support event="onchange"
-															action="#{noteService.getEval1()}" ajaxSingle="true"
-															status="waitStatus"></a:support>
-													</h:selectOneMenu></td>
+														</h:selectOneMenu></td>
+												</a:outputPanel>
 
 											</tr>
 											<tr>
