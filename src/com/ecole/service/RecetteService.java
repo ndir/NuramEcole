@@ -97,9 +97,10 @@ public class RecetteService implements Serializable {
 	@SuppressWarnings("unchecked")
 	public void chargerListeRecette(String codeRecette) {
 		listeRecette = new ArrayList<Recette>();
-		listeRecette = dataSource.createQuery(" From Recette  where inscription.eleve=:pe and typeRecette.code=:pt order by idRecette desc")
-				.setParameter("pe", this.eleve)
-				.setParameter("pt", codeRecette).list();
+		listeRecette = dataSource
+				.createQuery(
+						" From Recette  where inscription.eleve=:pe and typeRecette.code=:pt order by idRecette desc")
+				.setParameter("pe", this.eleve).setParameter("pt", codeRecette).list();
 	}
 
 	@SuppressWarnings("unchecked")
@@ -201,31 +202,38 @@ public class RecetteService implements Serializable {
 	}
 
 	public void retreiveInfoIncription() {
-
 		try {
 			inscription = (Inscription) dataSource
 					.createQuery(" From Inscription i where i.eleve=:pe and i.paramins.annee=:pa ")
 					.setParameter("pe", this.eleve).setParameter("pa", annee).uniqueResult();
-			
-			codeRecette = "MENS";
 
+			codeRecette = "MENS";
 			chargerListeRecette(codeRecette);
 			if (inscription != null) {
 				double mensualite = 0;
+				double reliquat_ins = inscription.getReliquat_ins();
+
 				if (inscription.getReliquat() == 0) {
-					mensualite = inscription.getParamins().getMensualite() ;
+
+					mensualite = inscription.getParamins().getMensualite();
 					reliquatInitial = 0d;
-					montantPayerGenere = mensualite - inscription.getAvoirEleve() 
+					//Cas de reliquat inscription
+					if (reliquat_ins > 0 && inscription.getMoisenCours() == 0) {
+						mensualite += inscription.getReliquat_ins();
+					}
+					montantPayerGenere = mensualite - inscription.getAvoirEleve()
 							- (inscription.getReduction() > 0 ? inscription.getReduction() : 0);
 					moisConcerne(inscription.getMoisenCours() == 0 ? 10 : inscription.getMoisenCours());
+
 				} else {
-					reliquatInitial = inscription.getReliquat();
-					montantPayerGenere =  reliquatInitial;
+					//Cas de reliquat inscription
+					if (reliquat_ins > 0 && inscription.getMoisenCours() == 0) {
+						reliquatInitial = inscription.getReliquat()+ inscription.getReliquat_ins();
+					}
+					montantPayerGenere = reliquatInitial;
 					moisConcerne(inscription.getMoisenCours());
 				}
-				
 				setMontantPayeFinial(montantPayerGenere);
-
 				moisConcerne(moisEnChiffre());
 
 			}
@@ -289,7 +297,8 @@ public class RecetteService implements Serializable {
 
 				recetteEnCreation.setInscription(inscription);
 				recetteEnCreation.setTypeRecette(getTypeRecetteByCode(this.codeRecette));
-				// recetteEnCreation.setMoisPaye(moisEnChiffre()>0?moisEnChiffre()+1:10); // Si
+				// recetteEnCreation.setMoisPaye(moisEnChiffre()>0?moisEnChiffre()+1:10);
+				// // Si
 				// 1er enregistrement mettre le mois de novembre
 				// moisConcerne(moisEncoursDePaiement());
 				System.out.println("**montant paye** " + recetteEnCreation.getMontantPaye());
@@ -304,7 +313,8 @@ public class RecetteService implements Serializable {
 				dataSource.merge(recetteEnCreation);
 			}
 
-			// moisConcerne(inscription.getMoisenCours()); // Activer le mois suivant
+			// moisConcerne(inscription.getMoisenCours()); // Activer le mois
+			// suivant
 			dataSource.merge(inscription);
 			chargerListeRecette("MENS");
 			retreiveInfoIncription();
@@ -419,7 +429,16 @@ public class RecetteService implements Serializable {
 
 	public void versModifierRecette(Recette recette) {
 		this.setRecetteEnCreation(recette);
-		double montantRestitue = recette.getMontantPaye() + inscription.getReliquat() + inscription.getAvoirEleve();
+		double montantRestitue=0d;
+		//Cas de reliquat inscription
+		if (inscription.getReliquat_ins() > 0 && (inscription.getMoisenCours() == 10 || inscription.getMoisenCours() == 11)) {
+			montantRestitue = recette.getMontantPaye() + inscription.getReliquat() + inscription.getAvoirEleve();
+		    inscription.setMoisenCours(0);
+		    inscription.setMois11(false);
+		}
+		else{
+	    montantRestitue = recette.getMontantPaye() + inscription.getReliquat() + inscription.getAvoirEleve();
+		}
 		montantPayeFinial = recette.getMontantPaye();
 		montantPayerGenere = montantRestitue;
 

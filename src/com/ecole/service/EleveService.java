@@ -150,6 +150,7 @@ public class EleveService implements Serializable {
 		if (paramins != null) {
 			mntIns = paramins.getDroit_ins();
 		}
+		System.out.println("***montant ins** "+mntIns);
 	}
 
 	public void ajouterInscription() {
