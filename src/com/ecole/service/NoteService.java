@@ -72,19 +72,25 @@ public class NoteService implements Serializable {
 		// .setParameter("plib", ev).uniqueResult();
 
 		// System.out.println("Entrer "+e.getIdEvaluation());
-		listeMatiereClasse = new ArrayList<MatiereClasse>();
-		listeMatiereClasse = dataSource.createQuery(
-				"From MatiereClasse m inner join fetch m.classe c inner join fetch m.matiere inner join fetch m.eval ev where c=:pc and m.annee_scol=:pannee "
-						+ " and ev =:pev")
-				.setParameter("pc", note.getCl()).setParameter("pannee", annee.getAnneeScolaire())
-				.setParameter("pev", ev).list();
-		listeMatiere = new ArrayList<Matiere>();
+		if(ev.getIdEvaluation()!=null) {
+			listeMatiereClasse = new ArrayList<MatiereClasse>();
+			listeMatiereClasse = dataSource.createQuery(
+					"From MatiereClasse m inner join fetch m.classe c inner join fetch m.matiere inner join fetch m.eval ev where c=:pc and m.annee_scol=:pannee "
+							+ " and ev =:pev")
+					.setParameter("pc", note.getCl()).setParameter("pannee", annee.getAnneeScolaire())
+					.setParameter("pev", ev).list();
+			listeMatiere = new ArrayList<Matiere>();
 
-		if (listeMatiereClasse.size() > 0) {
-			for (MatiereClasse mc : listeMatiereClasse) {
-				listeMatiere.add(mc.getMatiere());
+			if (listeMatiereClasse.size() > 0) {
+				for (MatiereClasse mc : listeMatiereClasse) {
+					listeMatiere.add(mc.getMatiere());
+				}
 			}
+		}else {
+			FacesMessages.instance().addToControlFromResourceBundle("erreurGenerique", "Evaluation Obligatoire");
+			return;
 		}
+		
 
 	}
 

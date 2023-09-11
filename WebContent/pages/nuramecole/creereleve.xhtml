@@ -120,7 +120,6 @@
 														value="#{eleveService.classe}"
 														converter="#{classeConverter}" id="classe"
 														noSelectionLabel="--- Selectionnez ---">
-
 														<s:selectItems value="#{eleveService.listeClasse}"
 															var="type" label="#{type.libelle}" />
 														<a:support event="onchange"
@@ -136,12 +135,9 @@
 														value="#{eleveService.annee.anneeScolaire}"
 														class="form-control" disabled="true" /></td>
 
-
 												<td><h:outputLabel styleClass="grey" value="Prénom" /></td>
 												<td><h:inputText value="#{eleveService.eleve.prenom}"
 														styleClass="form-control" /></td>
-
-
 											</tr>
 											<tr>
 												<td><h:outputLabel styleClass="grey" value="Nom" /></td>

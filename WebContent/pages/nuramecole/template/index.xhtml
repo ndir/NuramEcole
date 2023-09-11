@@ -154,7 +154,8 @@
 										</f:facet>
 
 
-										<rich:column>
+										<rich:column filterBy="#{classe.libelle}"
+												filterEvent="onkeyup">
 											<h:outputText value="#{classe.libelle}" styleClass="grey">
 											</h:outputText>
 										</rich:column>

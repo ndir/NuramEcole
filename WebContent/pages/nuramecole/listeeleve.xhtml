@@ -114,55 +114,55 @@
 
 								<div class="table-responsive">
 									<h:form id="liste">
-										<TABLE class="table">
-											<tr>
+										<FIELDSET>
+											<LEGEND> LISTE ELEVE DE LA CLASSE
+												#{eleveService.classe.libelle}
+												#{eleveService.anneeScolaire.anneeScolaire} </LEGEND>
+											<TABLE class="table">
+												<tr>
+													<td><h:outputLabel styleClass="grey" value="Niveau" /></td>
+													<td><h:selectOneMenu class="form-control"
+															value="#{eleveService.niveau}"
+															converter="#{niveauConverter}" id="cont"
+															noSelectionLabel="--- Selectionnez ---">
 
-												<td><h:outputLabel styleClass="grey" value="Niveau" /></td>
-												<td><h:selectOneMenu class="form-control"
-														value="#{piService.niveau}" converter="#{niveauConverter}"
-														id="cont" noSelectionLabel="--- Selectionnez ---">
+															<s:selectItems value="#{eleveService.listeNiveau}"
+																var="type" label="#{type.libelle}"
+																noSelectionLabel="--- Selectionnez ---" />
 
-														<s:selectItems value="#{piService.listeNiveau}" var="type"
-															label="#{type.libelle}"
-															noSelectionLabel="--- Selectionnez ---" />
+															<a:support event="onchange"
+																action="#{eleveService.chargerListeClasse()}"
+																ajaxSingle="true" reRender="classe" status="waitStatus"></a:support>
+														</h:selectOneMenu></td>
 
-														<a:support event="onchange"
-															action="#{piService.chargerListeClasse()}"
-															ajaxSingle="true" reRender="classe" status="waitStatus"></a:support>
-													</h:selectOneMenu></td>
-												<td><h:outputLabel styleClass="grey" value="Classe" /></td>
-												<td><h:selectOneMenu class="form-control"
-														value="#{piService.param.classe}"
-														converter="#{classeConverter}" id="classe">
-														<s:selectItems value="#{piService.listeClasse}" var="type"
-															label="#{type.libelle}"
-															noSelectionLabel="--- Selectionnez ---" />
-													</h:selectOneMenu></td>
+													<td><h:outputLabel styleClass="grey" value="Classe" /></td>
+													<td><h:selectOneMenu class="form-control"
+															value="#{eleveService.classe}"
+															converter="#{classeConverter}" id="classe"
+															noSelectionLabel="--- Selectionnez ---">
 
-											</tr>
-											<tr>
-												<td><h:outputLabel styleClass="grey"
-														value="Montant Inscription" /></td>
-												<td><h:inputText value="#{piService.param.droit_ins}"
-														required="true" class="form-control" /></td>
+															<s:selectItems value="#{eleveService.listeClasse}"
+																var="type" label="#{type.libelle}" />
 
-												<td><h:outputLabel styleClass="grey"
-														value="Montant Mensualité" /></td>
-												<td><h:inputText value="#{piService.param.mensualite}"
-														required="true" class="form-control" /></td>
-											</tr>
-											<tr>
-												<td><h:outputLabel styleClass="grey" value="Année" /></td>
-												<td><h:inputText
-														value="#{piService.param.annee.anneeScolaire}"
-														required="true" class="form-control" disabled="true" /></td>
-											</tr>
-										</TABLE>
+														</h:selectOneMenu></td>
+
+
+													<td><h:outputLabel styleClass="grey"
+															value="Année Scolaire" /></td>
+													<td><h:inputText
+															value="#{eleveService.anneeScolaire.anneeScolaire}"
+															class="form-control" disabled="true" /></td>
+
+												</tr>
+
+
+											</TABLE>
+										</FIELDSET>
 										<p align="center">
 
 
 											<a:commandLink styleClass="btn btn-danger" value=""
-												action="#{piService.annulerAjout()}" reRender="liste"
+												action="#{eleveService.annulerAjout()}" reRender="liste"
 												status="waitStatus">
 																		
 																		Annuler			
@@ -170,41 +170,45 @@
 											<rich:spacer width="10px;"></rich:spacer>
 
 											<a:commandLink styleClass="btn btn-success" value=""
-												action="#{piService.ajouterInscription()}"
-												reRender="liste, table" status="waitStatus">
+												action="#{eleveService.rechercherEleves()}" reRender="liste"
+												status="waitStatus">
 																		
 																		Valider			
 																				</a:commandLink>
-
 										</p>
-									</h:form>
-									<h:form id="table">
-										<rich:dataTable value="#{piService.liste}" var="classe"
-											id="lstdemande" style="width:100%;" rows="8"
-											rowClasses="row1,row2">
+										<p align="left">
+											<a:commandLink styleClass="btn btn-success" value=""
+												action="#{eleveService.imprimerListeEleves()}"
+												reRender="liste" status="waitStatus"
+												oncomplete="#{eleveService.showModal}">
+																		Imprimer			
+																				</a:commandLink>
+										</p>
+										<rich:dataTable value="#{eleveService.listeIns}" var="mat"
+											id="le" style="width:100%;" rows="10" rowClasses="row1,row2">
 											<f:facet name="header">
 												<rich:columnGroup>
 
 													<rich:column>
-														<h:outputLabel value="Annee"
+														<h:outputLabel value="Elève"
+															style="color:white;font-size:12px;font-family: Arial;text-align:center;" />
+													</rich:column>
+
+
+													<rich:column>
+														<h:outputLabel value="Date de Naissance"
 															style="color:white;font-size:12px;font-family: Arial;text-align:center;" />
 													</rich:column>
 
 													<rich:column>
-														<h:outputLabel value="Classe"
+														<h:outputLabel value="Réduction"
 															style="color:white;font-size:12px;font-family: Arial;text-align:center;" />
 													</rich:column>
 
 													<rich:column>
-														<h:outputLabel value="Montant Inscription"
+														<h:outputLabel value="Titeur"
 															style="color:white;font-size:12px;font-family: Arial;text-align:center;" />
 													</rich:column>
-
-													<rich:column>
-														<h:outputLabel value="Montant Mensualité"
-															style="color:white;font-size:12px;font-family: Arial;text-align:center;" />
-													</rich:column>
-
 
 													<rich:column>
 														<h:outputLabel value="Action"
@@ -215,66 +219,41 @@
 												</rich:columnGroup>
 											</f:facet>
 
-
-											<rich:column>
-												<h:outputText value="#{classe.annee.anneeScolaire}"
-													styleClass="grey" />
-											</rich:column>
-
-											<rich:column filterBy="#{classe.classe.libelle}"
+											<rich:column filterBy="#{mat.eleve.prenom}"
 												filterEvent="onkeyup">
-												<h:outputText value="#{classe.classe.libelle}"
-													styleClass="grey" />
+												<h:outputLabel value="#{mat.eleve.prenom} #{mat.eleve.nom}"></h:outputLabel>
 											</rich:column>
 
 
 											<rich:column>
-												<h:outputText value="#{classe.droit_ins}" styleClass="grey">
+												<h:outputLabel value="#{mat.eleve.dateNaissance}">
+													<f:convertDateTime pattern="dd.MM.yyyy" />
+												</h:outputLabel>
+											</rich:column>
+											<rich:column>
+												<h:outputLabel value="#{mat.reduction}">
 													<f:convertNumber pattern="#,##0" />
-												</h:outputText>
+												</h:outputLabel>
 											</rich:column>
-
-
 											<rich:column>
-												<h:outputText value="#{classe.mensualite}" styleClass="grey">
-
-													<f:convertNumber pattern="#,##0" />
-												</h:outputText>
+												<h:outputLabel
+													value="#{mat.eleve.titeur} #{mat.eleve.telephone}"></h:outputLabel>
 											</rich:column>
-
-
 											<rich:column>
-
-
 												<a:commandLink value="" status="waitStatus"
-													action="#{piService.versModifierInscription(classe)}"
-													reRender="liste" title="Modifier">
+													action="#{eleveService.versModifierEleve(mat)}"
+													oncomplete="javascript:Richfaces.showModalPanel('eleves',{width:700, height:600})"
+													reRender="feleve" title="Modifier">
 													<s:graphicImage fileName="edit.png" style="border:0px;"
 														value="/picto/edit.png" width="16" height="16" alt="" />
-
 												</a:commandLink>
-
-												<rich:spacer width="4px" />
-
-												<a:commandLink value="" status="waitStatus"
-													action="#{piService.versListeEleves(classe)}"
-													oncomplete="javascript:Richfaces.showModalPanel('eleves',{width:500, height:300})"
-													reRender="feleve" title="Liste des Eleves">
-													<s:graphicImage fileName="perso1.jpg" style="border:0px;"
-														value="/img2/perso1.jpg" width="16" height="16" alt="" />
-
-												</a:commandLink>
-
 											</rich:column>
-
 										</rich:dataTable>
 										<rich:datascroller status="waitStatus" stepControls="auto"
-											style="width:100%" for="lstdemande"
-											rendered="#{not empty piService.liste}" />
+											style="width:100%" for="le" ajaxSingle="false"
+											rendered="#{not empty eleveService.listeEleves}" />
 									</h:form>
 								</div>
-
-
 							</div>
 						</div>
 					</div>
@@ -291,7 +270,7 @@
 						</a:commandLink>
 					</f:facet>
 					<f:facet name="header">
-			 LISTE DES ELEVES DE LA CLASSE #{piService.libclasse}
+			MODIFICATION ELEVE
 			</f:facet>
 					<rich:spacer height="10px" />
 					<h:form class="note-form" id="feleve">
@@ -300,59 +279,93 @@
 								<div class="panel panel-success">
 									<div class="panel-body">
 										<div class="form-group has-success">
+											<table class="table">
 
-											<rich:dataTable value="#{piService.listeEleve}" var="mat"
-												id="le" style="width:100%;" rows="10" rowClasses="row1,row2">
-												<f:facet name="header">
-													<rich:columnGroup>
-														<rich:column>
-															<h:outputLabel value="Elève"
-																style="color:white;font-size:12px;font-family: Arial;text-align:center;" />
-														</rich:column>
-														<rich:column>
-															<h:outputLabel value="Sexe"
-																style="color:white;font-size:12px;font-family: Arial;text-align:center;" />
-														</rich:column>
-														<rich:column>
-															<h:outputLabel value="Titeur"
-																style="color:white;font-size:12px;font-family: Arial;text-align:center;" />
-														</rich:column>
+												<tr>
 
-														<rich:column>
-															<h:outputLabel value="Réduction"
-																style="color:white;font-size:12px;font-family: Arial;text-align:center;" />
-														</rich:column>
-													</rich:columnGroup>
-												</f:facet>
-												<rich:column>
-													<h:outputLabel value="#{mat.eleve.nom} #{mat.eleve.prenom}"></h:outputLabel>
-												</rich:column>
-												<rich:column>
-													<h:outputLabel value="#{mat.eleve.sexe}">
-													</h:outputLabel>
-												</rich:column>
-												<rich:column>
-													<h:outputLabel
-														value="#{mat.eleve.titeur} / #{mat.eleve.telephone}">
-													</h:outputLabel>
-												</rich:column>
-												<rich:column>
-													<h:outputLabel value="#{mat.reduction}">
-														<f:convertNumber pattern="#,##0" />
-													</h:outputLabel>
-												</rich:column>
-											</rich:dataTable>
-											<rich:datascroller status="waitStatus" stepControls="auto"
-												style="width:100%" for="le" ajaxSingle="false"
-												rendered="#{not empty piService.listeEleve}" />
+
+													<td><h:outputLabel styleClass="grey" value="Prénom" /></td>
+													<td><h:inputText value="#{eleveService.eleve.prenom}"
+															styleClass="form-control" /></td>
+													<td><h:outputLabel styleClass="grey" value="Nom" /></td>
+													<td><h:inputText value="#{eleveService.eleve.nom}"
+															styleClass="form-control" /></td>
+												</tr>
+												<tr>
+													<td><h:outputLabel styleClass="grey"
+															value="Nationalité" /></td>
+													<td><h:inputText
+															value="#{eleveService.eleve.nationalite}"
+															class="form-control" /></td>
+															
+															<td><h:outputLabel styleClass="grey"
+															value="Date de naissance" /></td>
+													<td><rich:calendar
+															value="#{eleveService.eleve.dateNaissance}"
+															cellWidth="0px" cellHeight="20px"
+															datePattern="dd/MM/yyyy"
+															buttonIcon="/img2/calendrier.png"></rich:calendar></td>
+															
+												</tr>
+												<tr>
+													
+
+													<td><h:outputLabel styleClass="grey" value="Titeur" /></td>
+													<td><h:inputText value="#{eleveService.eleve.titeur}"
+															styleClass="form-control" /></td>
+															
+												<td><h:outputLabel styleClass="grey" value="Contact" /></td>
+													<td><h:inputText
+															value="#{eleveService.eleve.telephone}"
+															styleClass="form-control" /></td>
+												</tr>
+												<tr>
+													
+													<td><h:outputLabel styleClass="grey" value="Réduction" /></td>
+													<td><h:inputText
+															value="#{eleveService.inscription.reduction}"
+															class="form-control" /></td>
+
+												</tr>
+												<tr>
+													<td><h:outputLabel styleClass="grey"
+															value="Commentaire réduction" /></td>
+													<td><h:inputTextarea
+															value="#{eleveService.inscription.commentaire}"
+															styleClass="form-control" cols="40" rows="5" /></td>
+
+
+													<td><h:outputLabel styleClass="grey" value="Sexe" /></td>
+													<td><h:selectOneMenu
+															value="#{eleveService.eleve.sexe}"
+															styleClass="form-control">
+															<f:selectItem itemValue="M" itemLabel="Masculin" />
+															<f:selectItem itemValue="F" itemLabel="Féminin" />
+														</h:selectOneMenu></td>
+												</tr>
+											
+												<tr>
+													<td><h:outputLabel styleClass="grey" value="Adresse" /></td>
+													<td><h:inputTextarea
+															value="#{eleveService.eleve.adresse}"
+															styleClass="form-control" cols="40" rows="4" /></td>
+
+
+													<td><h:outputLabel styleClass="grey"
+															value="Autres Info" /></td>
+													<td><h:inputTextarea
+															value="#{eleveService.eleve.autre_info}"
+															styleClass="form-control" cols="40" rows="4" /></td>
+												</tr>
+											</table>
 
 											<p align="left">
 												<a:commandLink styleClass="btn btn-success" value=""
-													action="#{piService.imprimerListeEleves()}"
-													onclick="javascript:Richfaces.hideModalPanel('eleves',{width:500, height:300})"
+													action="#{eleveService.modifierEleves()}"
+													oncomplete="javascript:Richfaces.hideModalPanel('eleves',{width:500, height:300})"
 													reRender="liste" status="waitStatus"
-													oncomplete="#{piService.showModal}">
-																		Imprimer			
+													>
+																		VALIDER			
 																				</a:commandLink>
 											</p>
 										</div>

@@ -34,7 +34,7 @@
 									<div class="form-group has-success"></div>
 									<FIELDSET>
 										<LEGEND> LISTE ELEVE DE LA CLASSE
-											#{eleveService.eleve.classe.libelle}
+											#{eleveService.classe.libelle}
 											#{eleveService.anneeScolaire.anneeScolaire} </LEGEND>
 										<TABLE class="table">
 											<tr>
@@ -55,7 +55,7 @@
 
 												<td><h:outputLabel styleClass="grey" value="Classe" /></td>
 												<td><h:selectOneMenu class="form-control"
-														value="#{eleveService.eleve.classe}"
+														value="#{eleveService.classe}"
 														converter="#{classeConverter}" id="classe"
 														noSelectionLabel="--- Selectionnez ---">
 

@@ -19,6 +19,7 @@ import org.jboss.seam.faces.FacesMessages;
 
 
 import com.ecole.entity.Matiere;
+import com.ecole.entity.Niveau;
 
 /**
  * @author a626257
@@ -39,11 +40,19 @@ public class MatiereService implements Serializable {
 	private List<Matiere> listeMatiere = new ArrayList<Matiere>();
 
 	private Matiere matiere = new Matiere();
+	
+	private Niveau niveau = new Niveau();
+	
+	private List<Niveau> listeNiveau = new ArrayList<Niveau>();
+	
+	private String typenote;
 
 	@SuppressWarnings("unchecked")
 	public void chargerListeMat() {
 		listeMatiere = new ArrayList<Matiere>();
 		listeMatiere = dataSource.createQuery(" From Matiere ").list();
+		listeNiveau = new ArrayList<Niveau>();
+		listeNiveau = dataSource.createQuery("From Niveau ").list();
 	}
 
 	public String versMatieres() {
@@ -68,6 +77,10 @@ public class MatiereService implements Serializable {
 					"erreurGenerique", "Veuillez renseigner le libellé");
 			return;
 		}
+		
+		if(niveau.getId() == null) {
+			return;
+		}
 
 		Matiere m = getMatiereFrom();
 
@@ -78,6 +91,7 @@ public class MatiereService implements Serializable {
 		}
 
 		if (matiere.getIdmatiere() == null) {
+			matiere.setNiveau(niveau);
 			dataSource.save(matiere);
 		} else {
 			dataSource.update(matiere);
@@ -89,6 +103,7 @@ public class MatiereService implements Serializable {
 	}
 
 	public void versModifierMat(Matiere matiere) {
+		this.setNiveau(matiere.getNiveau());
 		this.setMatiere(matiere);
 	}
 
@@ -106,6 +121,30 @@ public class MatiereService implements Serializable {
 
 	public void setMatiere(Matiere matiere) {
 		this.matiere = matiere;
+	}
+
+	public Niveau getNiveau() {
+		return niveau;
+	}
+
+	public void setNiveau(Niveau niveau) {
+		this.niveau = niveau;
+	}
+
+	public List<Niveau> getListeNiveau() {
+		return listeNiveau;
+	}
+
+	public void setListeNiveau(List<Niveau> listeNiveau) {
+		this.listeNiveau = listeNiveau;
+	}
+
+	public String getTypenote() {
+		return typenote;
+	}
+
+	public void setTypenote(String typenote) {
+		this.typenote = typenote;
 	}
 
 }
