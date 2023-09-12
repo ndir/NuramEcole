@@ -9,6 +9,7 @@ import java.util.Date;
 import java.util.List;
 
 import org.hibernate.HibernateException;
+import org.hibernate.Query;
 import org.hibernate.Session;
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.In;
@@ -93,6 +94,8 @@ public class RecetteService implements Serializable {
 	private double reliquatInitial;
 
 	private double montantPayeFinial = 0d;
+	
+	private Recette theLastRecette;
 
 	@SuppressWarnings("unchecked")
 	public void chargerListeRecette(String codeRecette) {
@@ -150,6 +153,15 @@ public class RecetteService implements Serializable {
 				.createQuery("From Recette r inner join fetch r.annee an inner join fetch r.typeRecette "
 						+ " inner join fetch r.utilisateur where an =:pan ")
 				.setParameter("pan", annee).list();
+	}
+	
+	public void getLasRecette() {
+		 theLastRecette = (Recette) dataSource
+				.createQuery("From Recette r where  r.typeRecette.code=:ptr order by idRecette desc ")
+				//.setParameter("pan", annee)
+				.setParameter("ptr", "MENS").setMaxResults(1).uniqueResult();
+		//theLastRecette=(Recette) theLastRecetteQuery;
+		System.out.println("--theLastRecette-- "+theLastRecette.getIdRecette());
 	}
 
 	/**
@@ -227,6 +239,8 @@ public class RecetteService implements Serializable {
 
 				} else {
 					//Cas de reliquat inscription
+					reliquatInitial = inscription.getReliquat();
+					
 					if (reliquat_ins > 0 && inscription.getMoisenCours() == 0) {
 						reliquatInitial = inscription.getReliquat()+ inscription.getReliquat_ins();
 					}
@@ -250,7 +264,7 @@ public class RecetteService implements Serializable {
 	public void ajouterRecette() {
 		try {
 			recetteEnCreation.setMontantPaye(montantPayeFinial);// Montant payé
-
+			getLasRecette(); //La derniere recette 
 			if (this.recetteEnCreation.getMontantPaye() == 0d) {
 				FacesMessages.instance().addToControlFromResourceBundle("erreurGenerique",
 						"Veuillez saisir un montant");
@@ -277,7 +291,8 @@ public class RecetteService implements Serializable {
 					inscription.setMoisenCours(inscription.getMoisenCours() + 1);
 
 				}
-				recetteEnCreation.setEditable(true);
+				
+				
 			} else {
 
 				if (inscription.getMoisenCours() == 0) {
@@ -290,8 +305,8 @@ public class RecetteService implements Serializable {
 
 			}
 
-			System.out.println("**recetteEnCreation = " + recetteEnCreation);
-			System.out.println("### recetteEnCreation = " + recetteEnCreation.getIdRecette());
+			//System.out.println("**recetteEnCreation = " + recetteEnCreation);
+			//System.out.println("### recetteEnCreation = " + recetteEnCreation.getIdRecette());
 			if (recetteEnCreation.getIdRecette() == null) {
 				System.out.println("**1111** " + inscription.getReliquat());
 
@@ -304,7 +319,12 @@ public class RecetteService implements Serializable {
 				System.out.println("**montant paye** " + recetteEnCreation.getMontantPaye());
 
 				recetteEnCreation.setMontantPaye(montantPayeFinial);
+				recetteEnCreation.setEditable(true);
 				dataSource.save(recetteEnCreation);
+				
+				theLastRecette.setEditable(false);
+				dataSource.merge(theLastRecette);
+				
 				dataSource.flush();
 			} else {
 
