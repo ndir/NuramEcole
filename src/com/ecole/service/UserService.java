@@ -22,6 +22,10 @@ import com.chaka.projet.entity.Utilisateur;
 import com.chaka.projet.entity.UtilisateurSecurise;
 import com.chaka.projet.service.ProfileList;
 import com.chaka.projet.service.utils.ServiceCryptage;
+import com.ecole.entity.AnneeScolaire;
+import com.ecole.entity.Classe;
+import com.ecole.entity.ClasseEnseignant;
+import com.ecole.entity.Niveau;
 import com.google.gdata.data.dublincore.Date;
 
 @Scope(ScopeType.SESSION)
@@ -52,6 +56,21 @@ public class UserService implements Serializable {
 
 	private String mail;
 
+	@In
+	private AnneeScolaire annee;
+	private String ens;
+
+	private Integer nbreUsers = null;
+	private List<ClasseEnseignant> listeClEn = new ArrayList<ClasseEnseignant>();
+	private List<Niveau> listeNiveau = new ArrayList<Niveau>();
+
+	private List<Classe> listeClasse = new ArrayList<Classe>();
+
+	private Classe classe = new Classe();
+	private Niveau niveau = new Niveau();
+
+	private ClasseEnseignant clen = new ClasseEnseignant();
+
 	/**
 	 * Boolean indiquant si l'utilisateur est deja loggué.
 	 */
@@ -64,6 +83,40 @@ public class UserService implements Serializable {
 
 	public void annulerajout() {
 		this.setUser(new Utilisateur());
+	}
+
+	@SuppressWarnings("unchecked")
+	public void listeClasseEnseignant(Utilisateur u) {
+		clen = new ClasseEnseignant();
+		listeNiveau = new ArrayList<Niveau>();
+		listeNiveau = dataSource.createQuery("From Niveau ").list();
+		this.setEns(u.getNomComplet());
+		clen.setEnseignant(u);
+		listeClEn = new ArrayList<ClasseEnseignant>();
+		listeClEn = dataSource
+				.createQuery("From ClasseEnseignant cl inner join fetch cl.classe inner join fetch cl.enseignant en "
+						+ " inner join fetch cl.annee an where an =:pan and en =:pen ")
+				.setParameter("pan", annee).setParameter("pen", u).list();
+	}
+
+	@SuppressWarnings("unchecked")
+	public void ajouterClasse() {
+        clen.setAnnee(annee);
+		clen.setClasse(classe);
+		dataSource.save(clen);
+		listeClEn = new ArrayList<ClasseEnseignant>();
+		listeClEn = dataSource
+				.createQuery("From ClasseEnseignant cl inner join fetch cl.classe inner join fetch cl.enseignant en "
+						+ " inner join fetch cl.annee an where an =:pan and en =:pen ")
+				.setParameter("pan", annee).setParameter("pen", clen.getEnseignant()).list();
+
+	}
+
+	@SuppressWarnings("unchecked")
+	public void chargerListeClasse() {
+		listeClasse = new ArrayList<Classe>();
+		listeClasse = dataSource.createQuery(" From Classe c inner join fetch c.niveau n where n=:pn")
+				.setParameter("pn", niveau).list();
 	}
 
 	@SuppressWarnings("unchecked")
@@ -292,7 +345,7 @@ public class UserService implements Serializable {
 	}
 
 	public String versmodifierMotdePasse() {
-		System.out.println("entere");
+
 		return "/pages/asufor/modifPwd.xhtml";
 	}
 
@@ -397,6 +450,86 @@ public class UserService implements Serializable {
 
 	public void setLoggedIn(boolean loggedIn) {
 		this.loggedIn = loggedIn;
+	}
+
+	public Session getDataSource() {
+		return dataSource;
+	}
+
+	public void setDataSource(Session dataSource) {
+		this.dataSource = dataSource;
+	}
+
+	public AnneeScolaire getAnnee() {
+		return annee;
+	}
+
+	public void setAnnee(AnneeScolaire annee) {
+		this.annee = annee;
+	}
+
+	public String getEns() {
+		return ens;
+	}
+
+	public void setEns(String ens) {
+		this.ens = ens;
+	}
+
+	public Integer getNbreUsers() {
+		return nbreUsers;
+	}
+
+	public void setNbreUsers(Integer nbreUsers) {
+		this.nbreUsers = nbreUsers;
+	}
+
+	public List<ClasseEnseignant> getListeClEn() {
+		return listeClEn;
+	}
+
+	public void setListeClEn(List<ClasseEnseignant> listeClEn) {
+		this.listeClEn = listeClEn;
+	}
+
+	public List<Niveau> getListeNiveau() {
+		return listeNiveau;
+	}
+
+	public void setListeNiveau(List<Niveau> listeNiveau) {
+		this.listeNiveau = listeNiveau;
+	}
+
+	public List<Classe> getListeClasse() {
+		return listeClasse;
+	}
+
+	public void setListeClasse(List<Classe> listeClasse) {
+		this.listeClasse = listeClasse;
+	}
+
+	public Classe getClasse() {
+		return classe;
+	}
+
+	public void setClasse(Classe classe) {
+		this.classe = classe;
+	}
+
+	public Niveau getNiveau() {
+		return niveau;
+	}
+
+	public void setNiveau(Niveau niveau) {
+		this.niveau = niveau;
+	}
+
+	public ClasseEnseignant getClen() {
+		return clen;
+	}
+
+	public void setClen(ClasseEnseignant clen) {
+		this.clen = clen;
 	}
 
 }

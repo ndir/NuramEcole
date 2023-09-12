@@ -21,6 +21,7 @@ import com.ecole.entity.MatiereClasse;
 import com.ecole.entity.Niveau;
 import com.ecole.entity.Note;
 import com.ecole.entity.ParamInscription;
+import com.ecole.entity.Semestres;
 
 @Scope(ScopeType.SESSION)
 @Name("noteService")
@@ -58,33 +59,45 @@ public class NoteService implements Serializable {
 	@In
 	private AnneeScolaire annee;
 
+	private String typenote;
+
+	private List<Semestres> listeSemestre = new ArrayList<Semestres>();
+	
+	private Semestres semestre = new Semestres();
+
 	@SuppressWarnings("unchecked")
 	public void chargerListeMatClasse() {
 		// Evaluation e = (Evaluation) dataSource.createQuery("FRom Evaluation e where
 		// libelle=:plib")
 		// .setParameter("plib", ev).uniqueResult();
-		System.out.println("Entrer " + ev.getLibelle());
+
 		// System.out.println("Entrer "+e.getIdEvaluation());
-		listeMatiereClasse = new ArrayList<MatiereClasse>();
-		listeMatiereClasse = dataSource.createQuery(
-				"From MatiereClasse m inner join fetch m.classe c inner join fetch m.matiere inner join fetch m.eval ev where c=:pc and m.annee_scol=:pannee "
-						+ " and ev =:pev")
-				.setParameter("pc", note.getCl()).setParameter("pannee", annee.getAnneeScolaire())
-				.setParameter("pev", ev).list();
-		listeMatiere = new ArrayList<Matiere>();
-		System.out.println("Taille liste " + listeMatiereClasse.size());
-		if (listeMatiereClasse.size() > 0) {
-			for (MatiereClasse mc : listeMatiereClasse) {
-				listeMatiere.add(mc.getMatiere());
+		if(ev.getIdEvaluation()!=null) {
+			listeMatiereClasse = new ArrayList<MatiereClasse>();
+			listeMatiereClasse = dataSource.createQuery(
+					"From MatiereClasse m inner join fetch m.classe c inner join fetch m.matiere inner join fetch m.eval ev where c=:pc and m.annee_scol=:pannee "
+							+ " and ev =:pev")
+					.setParameter("pc", note.getCl()).setParameter("pannee", annee.getAnneeScolaire())
+					.setParameter("pev", ev).list();
+			listeMatiere = new ArrayList<Matiere>();
+
+			if (listeMatiereClasse.size() > 0) {
+				for (MatiereClasse mc : listeMatiereClasse) {
+					listeMatiere.add(mc.getMatiere());
+				}
 			}
+		}else {
+			FacesMessages.instance().addToControlFromResourceBundle("erreurGenerique", "Evaluation Obligatoire");
+			return;
 		}
+		
 
 	}
 
 	public void getEval1() {
 		ev = new Evaluation();
 		ev = (Evaluation) dataSource.get(Evaluation.class, note.getEvaluation().getIdEvaluation());
-		System.out.println("EV " + ev.getIdEvaluation());
+
 	}
 
 	public void annulerAjoutNote() {
@@ -154,7 +167,12 @@ public class NoteService implements Serializable {
 				.setParameter("pn", niveau).list());
 		listeEval = new ArrayList<Evaluation>();
 		listeEval = dataSource.createQuery("From  Evaluation ").list();
-		System.out.println("Taille liste " + listeEval.size());
+		if (niveau.getLibelle().equalsIgnoreCase("primaire") || niveau.getLibelle().equalsIgnoreCase("Préscolaire")) {
+			typenote = "1";
+		} else {
+			typenote = "2";
+		}
+
 	}
 
 	@SuppressWarnings("unchecked")
@@ -179,7 +197,7 @@ public class NoteService implements Serializable {
 					.setParameter("pc", note.getCl()).setParameter("pm", note.getMatiere())
 					.setParameter("pev", note.getEvaluation()).setParameter("pan", annee.getAnneeScolaire())
 					.uniqueResult();
-			
+
 			for (Inscription in : liste) {
 				in.getEleve().setChoix(true);
 				noteExiste(in.getEleve());
@@ -240,6 +258,8 @@ public class NoteService implements Serializable {
 		listeEleves = new ArrayList<Eleve>();
 		listeEval = new ArrayList<Evaluation>();
 		listeEval = dataSource.createQuery("From  Evaluation ").list();
+		listeSemestre = new ArrayList<Semestres>();
+		listeSemestre = dataSource.createQuery("From Semestres ").list();
 		return "/pages/nuramecole/note.xhtml";
 	}
 
@@ -429,6 +449,30 @@ public class NoteService implements Serializable {
 
 	public void setChoix(boolean choix) {
 		this.choix = choix;
+	}
+
+	public List<Semestres> getListeSemestre() {
+		return listeSemestre;
+	}
+
+	public void setListeSemestre(List<Semestres> listeSemestre) {
+		this.listeSemestre = listeSemestre;
+	}
+
+	public String getTypenote() {
+		return typenote;
+	}
+
+	public void setTypenote(String typenote) {
+		this.typenote = typenote;
+	}
+
+	public Semestres getSemestre() {
+		return semestre;
+	}
+
+	public void setSemestre(Semestres semestre) {
+		this.semestre = semestre;
 	}
 
 }

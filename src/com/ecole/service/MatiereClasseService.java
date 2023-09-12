@@ -51,6 +51,8 @@ public class MatiereClasseService implements Serializable {
 
 	private List<Evaluation> listeEval = new ArrayList<Evaluation>();
 
+	private String typenote;
+
 	public Niveau getNiveau() {
 		return niveau;
 	}
@@ -76,7 +78,8 @@ public class MatiereClasseService implements Serializable {
 	@SuppressWarnings("unchecked")
 	public void chargerMatieres() {
 		listeMatiere = new ArrayList<Matiere>();
-		listeMatiere = dataSource.createQuery(" From Matiere").list();
+		listeMatiere = dataSource.createQuery(" From Matiere m inner join fetch m.niveau n where n =:pn")
+				.setParameter("pn", niveau).list();
 
 	}
 
@@ -103,6 +106,11 @@ public class MatiereClasseService implements Serializable {
 		listeClasse = new ArrayList<Classe>();
 		listeClasse = dataSource.createQuery(" From Classe c inner join fetch c.niveau n where n=:pn")
 				.setParameter("pn", niveau).list();
+		if (niveau.getLibelle().equalsIgnoreCase("Primaire")) {
+			typenote = "1";
+		} else {
+			typenote = "2";
+		}
 
 	}
 
@@ -204,6 +212,14 @@ public class MatiereClasseService implements Serializable {
 
 	public void setListeEval(List<Evaluation> listeEval) {
 		this.listeEval = listeEval;
+	}
+
+	public String getTypenote() {
+		return typenote;
+	}
+
+	public void setTypenote(String typenote) {
+		this.typenote = typenote;
 	}
 
 }

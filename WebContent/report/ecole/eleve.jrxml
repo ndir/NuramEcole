@@ -1,0 +1,172 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="bulletin" language="groovy" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="89af52a8-d2ec-4f35-8f4d-da069730ec92">
+	<property name="ireport.zoom" value="1.5"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<parameter name="logo" class="java.io.InputStream"/>
+	<parameter name="ecole" class="java.lang.String"/>
+	<parameter name="slogan" class="java.lang.String"/>
+	<parameter name="tel" class="java.lang.String"/>
+	<parameter name="total" class="java.lang.String"/>
+	<parameter name="moy" class="java.lang.String"/>
+	<parameter name="rang" class="java.lang.String"/>
+	<parameter name="app" class="java.lang.String"/>
+	<parameter name="eff" class="java.lang.String"/>
+	<parameter name="etat" class="java.lang.String"/>
+	<queryString language="hql">
+		<![CDATA[from Inscription]]>
+	</queryString>
+	<field name="avoirEleve" class="java.lang.Double"/>
+	<field name="commentaire" class="java.lang.String"/>
+	<field name="eleve" class="com.ecole.entity.Eleve"/>
+	<field name="id" class="java.lang.Long"/>
+	<field name="mois1" class="java.lang.Boolean"/>
+	<field name="mois10" class="java.lang.Boolean"/>
+	<field name="mois11" class="java.lang.Boolean"/>
+	<field name="mois12" class="java.lang.Boolean"/>
+	<field name="mois2" class="java.lang.Boolean"/>
+	<field name="mois3" class="java.lang.Boolean"/>
+	<field name="mois4" class="java.lang.Boolean"/>
+	<field name="mois5" class="java.lang.Boolean"/>
+	<field name="mois6" class="java.lang.Boolean"/>
+	<field name="mois7" class="java.lang.Boolean"/>
+	<field name="moisenCours" class="java.lang.Integer"/>
+	<field name="montantInscriptionPaye" class="java.lang.Double"/>
+	<field name="nbreMoisPaye" class="java.lang.Integer"/>
+	<field name="paramins" class="com.ecole.entity.ParamInscription"/>
+	<field name="reduction" class="java.lang.Double"/>
+	<field name="reliquat" class="java.lang.Double"/>
+	<field name="reliquat_ins" class="java.lang.Double"/>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="205" splitType="Stretch">
+			<image>
+				<reportElement x="3" y="5" width="100" height="50" uuid="2e970148-b146-41b9-99cd-da53529800c5"/>
+				<imageExpression><![CDATA[$P{logo}]]></imageExpression>
+			</image>
+			<textField>
+				<reportElement x="0" y="59" width="543" height="20" uuid="9fb14f85-97f4-4793-bb0f-8ac3e9db9c6a"/>
+				<textElement>
+					<font size="12" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{ecole}]]></textFieldExpression>
+			</textField>
+			<textField pattern="EEEEE dd MMMMM yyyy">
+				<reportElement x="302" y="0" width="251" height="20" uuid="3086e59e-a433-440c-9699-cbffcfb1be00"/>
+				<textElement textAlignment="Right">
+					<font size="12" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[new java.util.Date()]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="0" y="87" width="543" height="20" uuid="ce9ce57f-d4fe-4dc5-9065-91d0d5bb4177"/>
+				<textElement>
+					<font size="12" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{tel}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="0" y="73" width="543" height="20" uuid="4471c004-3592-4e61-8586-75c8ad4a0948"/>
+				<textElement>
+					<font size="12" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{slogan}]]></textFieldExpression>
+			</textField>
+			<rectangle>
+				<reportElement x="1" y="125" width="552" height="43" backcolor="#CCCCCC" uuid="7f03130e-676c-4102-9af2-63d7f354af7b"/>
+			</rectangle>
+			<textField>
+				<reportElement x="3" y="126" width="550" height="43" uuid="970fc8d1-d1b8-48cb-af90-d367677a26bd"/>
+				<textElement textAlignment="Center">
+					<font size="24" isBold="true" isUnderline="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{etat}]]></textFieldExpression>
+			</textField>
+		</band>
+	</title>
+	<columnHeader>
+		<band height="36" splitType="Stretch">
+			<rectangle>
+				<reportElement x="0" y="15" width="153" height="20" uuid="330df0dd-7f67-41e5-a769-5a7b04a260f8"/>
+			</rectangle>
+			<rectangle>
+				<reportElement x="153" y="15" width="95" height="20" uuid="1aa09b29-0c02-4018-88d6-9d137a9d7947"/>
+			</rectangle>
+			<rectangle>
+				<reportElement x="248" y="15" width="150" height="20" uuid="57a0e652-7b93-49f3-a01d-e76cfd0bb35e"/>
+			</rectangle>
+			<rectangle>
+				<reportElement x="398" y="15" width="156" height="20" uuid="b148a534-03af-455d-9dcc-ac1c0b7146ca"/>
+			</rectangle>
+			<staticText>
+				<reportElement x="1" y="16" width="152" height="20" uuid="c5a77fb1-4241-4aa5-8b94-b82eab5b978e"/>
+				<textElement textAlignment="Center">
+					<font size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Elève]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="153" y="16" width="95" height="20" uuid="d0eabc80-a444-4efd-bd01-38c53d329a14"/>
+				<textElement textAlignment="Center">
+					<font size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Sexe]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="248" y="16" width="150" height="20" uuid="280f646e-5ed8-4d13-9e6b-6df63fd64e8b"/>
+				<textElement textAlignment="Center">
+					<font size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Titeur]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="398" y="16" width="156" height="20" uuid="7d173bad-6940-4382-8eab-456cc789244b"/>
+				<textElement textAlignment="Center">
+					<font size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[Réduction]]></text>
+			</staticText>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="21" splitType="Stretch">
+			<rectangle>
+				<reportElement x="0" y="0" width="153" height="20" uuid="782281fc-402c-4de7-bca0-6977e01b5273"/>
+			</rectangle>
+			<rectangle>
+				<reportElement x="153" y="0" width="95" height="20" uuid="53a51994-bc06-49b5-a0bf-099ea7130c18"/>
+			</rectangle>
+			<rectangle>
+				<reportElement x="248" y="0" width="150" height="20" uuid="97cc8e8c-9aef-43a7-9027-4fa6bc460532"/>
+			</rectangle>
+			<rectangle>
+				<reportElement x="398" y="0" width="156" height="20" uuid="4ed7842a-6278-45e8-a676-e81e3b893f0f"/>
+			</rectangle>
+			<textField>
+				<reportElement x="4" y="1" width="149" height="20" uuid="c7e0e156-5303-4466-9efa-c45f396779e5"/>
+				<textElement textAlignment="Center"/>
+				<textFieldExpression><![CDATA[$F{eleve}.getPrenom() + " " + $F{eleve}.getNom()]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="153" y="1" width="95" height="20" uuid="6b1055c0-02b3-4458-aced-9a48beafdc42"/>
+				<textElement textAlignment="Center"/>
+				<textFieldExpression><![CDATA[$F{eleve}.getSexe()]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="248" y="1" width="150" height="20" uuid="e0c73ffb-0078-4ac3-af5e-6ac8c0d6dc32"/>
+				<textElement textAlignment="Center"/>
+				<textFieldExpression><![CDATA[$F{eleve}.getTiteur() + "/" +$F{eleve}.getTelephone()]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0">
+				<reportElement x="398" y="1" width="155" height="20" uuid="b01250e8-0850-42c0-8cb4-4e8c45c0006e"/>
+				<textElement textAlignment="Center"/>
+				<textFieldExpression><![CDATA[$F{reduction}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<summary>
+		<band height="68" splitType="Stretch"/>
+	</summary>
+</jasperReport>

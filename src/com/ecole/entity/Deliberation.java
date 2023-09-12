@@ -65,6 +65,8 @@ public class Deliberation implements Serializable {
 	private Double total;
 	
 	private String cumul;
+	
+	private String dec;
 
 	@Id
 	@GeneratedValue
@@ -257,6 +259,15 @@ public class Deliberation implements Serializable {
 
 	public void setCumul(String cumul) {
 		this.cumul = cumul;
+	}
+
+	@Transient
+	public String getDec() {
+		return dec;
+	}
+
+	public void setDec(String dec) {
+		this.dec = dec;
 	}
 
 

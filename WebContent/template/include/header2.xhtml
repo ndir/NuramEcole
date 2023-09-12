@@ -80,13 +80,20 @@
 													<s:conversationPropagation propagation="none" />
 												</a:commandLink></li>
 
-											<li><a:commandLink value="Inscription"
+
+											<li><a:commandLink value="Inscrire Elève"
 													status="waitStatus" action="#{eleveService.versEleve}">
 													<s:conversationPropagation propagation="none" />
 												</a:commandLink></li>
 
-											<li><a:commandLink value="Réinscription"
+											<li><a:commandLink value="Réinsrire Elève"
 													status="waitStatus" action="#">
+													<s:conversationPropagation propagation="none" />
+												</a:commandLink></li>
+
+
+											<li><a:commandLink value="Liste des elèves"
+													status="waitStatus"  action="#{eleveService.versListeEleve}">
 													<s:conversationPropagation propagation="none" />
 												</a:commandLink></li>
 
@@ -167,31 +174,31 @@
 											action="#{depService.versDepense}">
 											<s:conversationPropagation propagation="none" />
 										</a:commandLink></li>
-										
-								<li><a:commandLink value="Recettes" status="waitStatus"
+
+									<li><a:commandLink value="Recettes" status="waitStatus"
 											action="#{recetteService.versRecette}">
 											<s:conversationPropagation propagation="none" />
 										</a:commandLink></li>
 								</ul></li>
 						</f:subview>
-						
+
 						<f:subview id="Statistiques">
-							<li><a:commandLink  value="Statistiques"
-									status="waitStatus" action="#">
+							<li><a:commandLink value="Statistiques" status="waitStatus"
+									action="#">
 									<s:conversationPropagation propagation="none" />
 								</a:commandLink>
 								<ul>
-									<li><a:commandLink  value="Entrée(s)/Sortie(s)"
+									<li><a:commandLink value="Entrée(s)/Sortie(s)"
 											status="waitStatus" action="#{statService.versEntreeSortie}">
 											<s:conversationPropagation propagation="none" />
 										</a:commandLink></li>
 
-									<li><a:commandLink value="Etat Mensuel" status="waitStatus"
-											action="#{statService.versEtatsMensuel}">
+									<li><a:commandLink value="Etat Mensuel"
+											status="waitStatus" action="#{statService.versEtatsMensuel}">
 											<s:conversationPropagation propagation="none" />
 										</a:commandLink></li>
-										
-							
+
+
 								</ul></li>
 						</f:subview>
 

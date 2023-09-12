@@ -110,6 +110,8 @@ public class StatistiqueService implements Serializable {
 
 	private String showModal = "";
 
+	private List<Utilisateur> listeUser = new ArrayList<Utilisateur>();
+
 	@In(required = false)
 	@Out(required = false)
 	private Utilisateur utilisateur;
@@ -409,6 +411,16 @@ public class StatistiqueService implements Serializable {
 		}
 	}
 
+	
+	public String getEleve(Recette recette) {
+		String eleve = "";
+		if(recette.getInscription() !=null && recette.getInscription().getEleve()!=null) {
+			eleve = recette.getInscription().getEleve().getPrenom() + " " +  recette.getInscription().getEleve().getNom() ;
+		}
+		
+		return eleve;
+	}
+	
 	public void zoomDepense(TypeDepense typedepense) {
 		listeDepenseZoom = new ArrayList<Depense>();
 		for (Depense dep : listeDepense) {
@@ -482,9 +494,36 @@ public class StatistiqueService implements Serializable {
 		return liste.size();
 	}
 
+	public int getNombreSecreataire() {
+		int nombre = 0;
+
+		for (Utilisateur u : listeUser) {
+			if (u.getProfile().getLibelle_court().equalsIgnoreCase("SEC")) {
+				nombre++;
+			}
+		}
+
+		return nombre;
+	}
+
+	public int getNombreEnseignant() {
+		int nombre = 0;
+
+		for (Utilisateur u : listeUser) {
+			if (u.getProfile().getLibelle_court().equalsIgnoreCase("ENS")) {
+				nombre++;
+			}
+		}
+		return nombre;
+	}
+
 	@SuppressWarnings("unchecked")
 	@Create
 	public void getEffectifClasses() {
+		listeUser = new ArrayList<Utilisateur>();
+		listeUser = dataSource.createQuery(
+				"From Utilisateur u inner join fetch u.profile p where p.libelle_court =:plib1 or p.libelle_court =:plib2 ")
+				.setParameter("plib1", "ENS").setParameter("plib2", "SEC").list();
 		ins = (Institution) dataSource.createQuery("From Institution").uniqueResult();
 		listeClasse = new ArrayList<Classe>();
 		listeClasse = dataSource.createQuery("From Classe ").list();
@@ -532,27 +571,22 @@ public class StatistiqueService implements Serializable {
 	}
 
 	public void getNombreFilleGarcon(List<Inscription> liste, Classe classe) {
-		try {
-			int nombref = 0;
-			int nombreg = 0;
+		int nombref = 0;
+		int nombreg = 0;
 
-			for (Inscription ins : liste) {
-				if (ins.getParamins().getClasse().getIdclasse().equals(classe.getIdclasse())) {
-					if (ins.getEleve().getSexe().equalsIgnoreCase("M")) {
-						nombreg++;
-						nbgarcon++;
-					} else {
-						nombref++;
-						nbfille++;
-					}
+		for (Inscription ins : liste) {
+			if (ins.getParamins().getClasse().getIdclasse().equals(classe.getIdclasse())) {
+				if (ins.getEleve().getSexe().equalsIgnoreCase("M")) {
+					nombreg++;
+					nbgarcon++;
+				} else {
+					nombref++;
+					nbfille++;
 				}
 			}
-			classe.setFille(nombref);
-			classe.setGarcon(nombreg);
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			//e.printStackTrace();
 		}
+		classe.setFille(nombref);
+		classe.setGarcon(nombreg);
 	}
 
 	public List<Classe> getListeClasse() {
@@ -725,6 +759,14 @@ public class StatistiqueService implements Serializable {
 
 	public void setShowModal(String showModal) {
 		this.showModal = showModal;
+	}
+
+	public List<Utilisateur> getListeUser() {
+		return listeUser;
+	}
+
+	public void setListeUser(List<Utilisateur> listeUser) {
+		this.listeUser = listeUser;
 	}
 
 }

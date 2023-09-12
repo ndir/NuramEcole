@@ -270,10 +270,12 @@
 												</f:facet>
 
 												<a:commandLink value="" status="waitStatus"
-													action="#{userService.modifierUtilisateur(var)}"
-													title="Modifier" reRender="create" ajaxSingle="true">
-													<s:graphicImage fileName="edit.png" style="border:0px;"
-														value="/picto/edit.png" alt="" width="16px;"
+													action="#{userService.listeClasseEnseignant(var)}"
+													oncomplete="javascript:Richfaces.showModalPanel('zclasse',{width:500, height:300})"
+													title="Liste classe" reRender="fclasse" ajaxSingle="true"
+													rendered="#{var.profile.libelle_court eq 'ENS'}">
+													<s:graphicImage fileName="info.png" style="border:0px;"
+														value="/picto/info.png" alt="" width="16px;"
 														height="16px;" />
 												</a:commandLink>
 											</rich:column>
@@ -289,6 +291,91 @@
 						</div>
 					</div>
 				</rich:panel>
+
+
+				<rich:modalPanel id="zclasse"
+					style="background:url('../img2/fond.jpg') repeat-x scroll 0 0 #FFF;height:210; width:300"
+					moveable="true" styleClass="popupAttente">
+					<f:facet name="controls">
+
+						<a:commandLink value="" status="waitStatus" title="Fermer "
+							onclick="javascript:Richfaces.hideModalPanel('zclasse')">
+							<s:graphicImage fileName="cross.png" style="border:0px;"
+								value="/picto/cross.png" width="16" height="16" alt="" />
+						</a:commandLink>
+					</f:facet>
+					<f:facet name="header">
+			 LISTE CLASSE(S) ENSEIGNANT : #{utilisateurService.ens}
+			</f:facet>
+					<rich:spacer height="10px" />
+					<h:form class="note-form" id="fclasse">
+						<div class="row">
+							<div class="col-md-12">
+								<div class="panel panel-success">
+									<div class="panel-body">
+										<div class="form-group has-success">
+											<TABLE class="table">
+												<tr>
+													<td><h:outputLabel styleClass="grey" value="Niveau" /></td>
+													<td><h:selectOneMenu class="form-control"
+															value="#{userService.niveau}"
+															converter="#{niveauConverter}" id="cont"
+															noSelectionLabel="--- Selectionnez ---">
+															<s:selectItems value="#{userService.listeNiveau}"
+																var="type" label="#{type.libelle}"
+																noSelectionLabel="--- Selectionnez ---" />
+															<a:support event="onchange"
+																action="#{userService.chargerListeClasse()}"
+																ajaxSingle="true" reRender="classe" status="waitStatus"></a:support>
+														</h:selectOneMenu></td>
+													<td><h:outputLabel styleClass="grey" value="Classe" /></td>
+													<td><h:selectOneMenu class="form-control"
+															value="#{userService.classe}"
+															converter="#{classeConverter}" id="classe"
+															noSelectionLabel="--- Selectionnez ---">
+															<s:selectItems value="#{userService.listeClasse}"
+																var="type" label="#{type.libelle}"
+																noSelectionLabel="--- Selectionnez ---" />
+														</h:selectOneMenu></td>
+												</tr>
+												<tr>
+													<a:commandLink styleClass="btn btn-success" value=""
+														action="#{userService.ajouterClasse}"
+														status="waitStatus" reRender="fclasse">
+																		
+																		Valider			
+																				</a:commandLink>
+												</tr>
+											</TABLE>
+											<rich:dataTable value="#{userService.listeClEn}" var="zd"
+												id="led" style="width:100%;" rows="10"
+												rowClasses="row1,row2">
+												<f:facet name="header">
+													<rich:columnGroup>
+														<rich:column>
+															<h:outputLabel value="Classe"
+																style="color:white;font-size:12px;font-family: Arial;text-align:center;" />
+														</rich:column>
+
+													</rich:columnGroup>
+												</f:facet>
+												<rich:column>
+													<h:outputLabel value="#{zd.classe.libelle}">
+
+													</h:outputLabel>
+												</rich:column>
+
+											</rich:dataTable>
+											<rich:datascroller status="waitStatus" stepControls="auto"
+												style="width:100%" for="led" ajaxSingle="false"
+												rendered="#{not empty userService.listeClEn}" />
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</h:form>
+				</rich:modalPanel>
 			</div>
 		</div>
 	</div>

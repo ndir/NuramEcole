@@ -6,26 +6,34 @@ package com.ecole.service;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.hibernate.Session;
 import org.hibernate.annotations.ForceDiscriminator;
+import org.jboss.seam.Component;
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
+import org.jboss.seam.annotations.Out;
 import org.jboss.seam.annotations.Scope;
 import org.jboss.seam.faces.FacesMessages;
 
+import com.chaka.projet.entity.Utilisateur;
 import com.ecole.entity.Absence;
 import com.ecole.entity.AnneeScolaire;
 import com.ecole.entity.Classe;
 import com.ecole.entity.Eleve;
 import com.ecole.entity.Inscription;
+import com.ecole.entity.Institution;
 import com.ecole.entity.Niveau;
 import com.ecole.entity.ParamInscription;
 import com.ecole.entity.Recette;
 import com.ecole.entity.TypeRecette;
 import com.rhospi.commons.ChakaUtils;
+import com.rhospi.commons.FileUploadService;
+import com.rhospi.commons.ChakaUtils.ExportOption;
 
 /**
  * @author a626257
@@ -68,8 +76,18 @@ public class EleveService implements Serializable {
 
 	private Double mntPaye = 0d;
 
+	private List<Inscription> listeIns = new ArrayList<Inscription>();
+
 	@In
 	private AnneeScolaire annee;
+
+	FileUploadService filePrintService;
+
+	@In(required = false)
+	@Out(required = false)
+	private Utilisateur utilisateur;
+
+	private String showModal = "";
 
 	@SuppressWarnings("unchecked")
 	public String versEleve() {
@@ -84,6 +102,18 @@ public class EleveService implements Serializable {
 		return "/pages/nuramecole/creereleve.xhtml";
 	}
 
+//	public String versListeEleve() {
+//		this.setEleve(new Eleve());
+//		List<AnneeScolaire> listeAnnee = dataSource.createQuery("From AnneeScolaire order by idannee desc ").list();
+//		if (listeAnnee.size() > 0) {
+//			anneeScolaire = listeAnnee.get(0);
+//		}
+//		listeNiveau = new ArrayList<Niveau>();
+//		listeNiveau = dataSource.createQuery("From Niveau ").list();
+//
+//		return "/pages/nuramecole/creereleve.xhtml";
+//	}
+
 	@SuppressWarnings("unchecked")
 	public String versListeEleve() {
 		List<AnneeScolaire> listeAnnee = dataSource.createQuery("From AnneeScolaire order by idannee desc ").list();
@@ -92,24 +122,36 @@ public class EleveService implements Serializable {
 		}
 		listeNiveau = new ArrayList<Niveau>();
 		listeNiveau = dataSource.createQuery("From Niveau ").list();
-		return "/pages/ecole/listeeleve.xhtml";
+		return "/pages/nuramecole/listeeleve.xhtml";
 	}
 
 	@SuppressWarnings("unchecked")
 	public void rechercherEleves() {
+		listeIns = new ArrayList<Inscription>();
+		ParamInscription p = (ParamInscription) dataSource
+				.createQuery("From ParamInscription p inner join fetch p.classe c inner join fetch p.annee pa "
+						+ " where c =:pc and pa =:pa ")
+				.setParameter("pc", classe).setParameter("pa", annee).uniqueResult();
 
-//		listeEleves = new ArrayList<Eleve>();
-//		listeEleves = dataSource
-//				.createQuery("From Eleve e inner join fetch e.classe c where c=:pc and e.annee_ins=:pan ")
-//				.setParameter("pc", eleve.getClasse()).setParameter("pan", anneeScolaire.getAnneeScolaire()).list();
-//		if (listeEleves.size() == 0) {
-//			FacesMessages.instance().addToControlFromResourceBundle("infoGenerique", "Pas d'éléve pour la classe "
-//					+ eleve.getClasse().getLibelle() + " pour l'année scolaire " + anneeScolaire.getAnneeScolaire());
-//		} else {
-//			FacesMessages.instance().addToControlFromResourceBundle("infoGenerique",
-//					"Le nombre d'éleve de la classe " + eleve.getClasse().getLibelle() + " pour l'année scolaire "
-//							+ anneeScolaire.getAnneeScolaire() + " est de " + listeEleves.size());
-//		}
+		if (p != null) {
+			listeIns = dataSource
+					.createQuery(
+							"From Inscription i inner join fetch i.eleve inner join fetch i.paramins p where p =:pp")
+					.setParameter("pp", p).list();
+
+		}
+
+	}
+
+	public void imprimerListeEleves() {
+		Institution in = (Institution) dataSource.createQuery("From Institution").uniqueResult();
+		Map<String, Object> param = new HashMap<String, Object>();
+		param.put("ecole", in.getNom());
+		param.put("slogan", in.getSologan());
+		param.put("tel", in.getTelephone());
+		param.put("etat", "LISTE DES ELEVES DE LA CLASSE " + classe.getLibelle());
+		getFilePrintService().imprimer("ecole", "eleve", param, listeIns, utilisateur, ExportOption.PDF);
+		this.setShowModal("javascript:Richfaces.showModalPanel('modalPdf')");
 	}
 
 	@SuppressWarnings("unchecked")
@@ -142,6 +184,7 @@ public class EleveService implements Serializable {
 	}
 
 	public void getMntInscription() {
+		mntIns = 0d;
 		ParamInscription paramins = (ParamInscription) dataSource
 				.createQuery("From ParamInscription p inner join fetch p.annee inner join fetch p.classe"
 						+ " where p.annee =:pannee and p.classe =:pclasse")
@@ -150,7 +193,7 @@ public class EleveService implements Serializable {
 		if (paramins != null) {
 			mntIns = paramins.getDroit_ins();
 		}
-		System.out.println("***montant ins** "+mntIns);
+		
 	}
 
 	public void ajouterInscription() {
@@ -200,12 +243,14 @@ public class EleveService implements Serializable {
 				recette.setTypeRecette(getTypeRecetteByCode("INS"));
 				recette.setDatePaiment(ChakaUtils.sysDate());
 				recette.setMontantPaye(mntPaye);
+				recette.setUtilisateur(utilisateur);
 				dataSource.save(recette);
+				
 			}
 			this.setEleve(new Eleve());
 			this.setInscription(new Inscription());
 			mntPaye = 0d;
-			mntIns  = 0d;
+			mntIns = 0d;
 			FacesMessages.instance().addToControlFromResourceBundle("infoGenerique", "Evaluation ajoutée avec succés");
 		}
 	}
@@ -241,6 +286,16 @@ public class EleveService implements Serializable {
 
 			}
 		}
+	}
+
+	public void versModifierEleve(Inscription ins) {
+		this.setEleve(ins.getEleve());
+		this.setInscription(ins);
+	}
+
+	public void modifierEleves() {
+		dataSource.update(eleve);
+		dataSource.update(inscription);
 	}
 
 	public Double versGetReduction(Eleve eleve) {
@@ -365,6 +420,34 @@ public class EleveService implements Serializable {
 
 	public void setMntPaye(Double mntPaye) {
 		this.mntPaye = mntPaye;
+	}
+
+	public List<Inscription> getListeIns() {
+		return listeIns;
+	}
+
+	public void setListeIns(List<Inscription> listeIns) {
+		this.listeIns = listeIns;
+	}
+
+	public FileUploadService getFilePrintService() {
+		if (filePrintService == null) {
+			filePrintService = (FileUploadService) Component.getInstance(FileUploadService.class);
+
+		}
+		return filePrintService;
+	}
+
+	public void setFilePrintService(FileUploadService filePrintService) {
+		this.filePrintService = filePrintService;
+	}
+
+	public String getShowModal() {
+		return showModal;
+	}
+
+	public void setShowModal(String showModal) {
+		this.showModal = showModal;
 	}
 
 }

@@ -201,7 +201,17 @@
 										<div class="form-group has-success">
 											<TABLE class="table">
 												<tr>
+													<td><h:outputLabel styleClass="grey" value="Niveau" /></td>
+													<td><h:selectOneMenu class="form-control"
+															value="#{matiereService.niveau}" converter="#{niveauConverter}"
+															id="cont" noSelectionLabel="--- Selectionnez ---">
 
+															<s:selectItems value="#{matiereService.listeNiveau}" var="type"
+																label="#{type.libelle}"
+																noSelectionLabel="--- Selectionnez ---" />
+
+														
+														</h:selectOneMenu></td>
 
 													<td><h:outputLabel styleClass="grey" value="Libellé" /></td>
 													<td><h:inputText

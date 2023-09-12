@@ -119,7 +119,7 @@
 															noSelectionLabel="--- Selectionnez ---" />
 														<a:support event="onchange"
 															action="#{matclasseService.chargerListeClasse()}"
-															ajaxSingle="true" reRender="classe" status="waitStatus"></a:support>
+															ajaxSingle="true" reRender="liste" status="waitStatus"></a:support>
 
 													</h:selectOneMenu></td>
 
@@ -134,17 +134,20 @@
 
 													</h:selectOneMenu></td>
 
+												<a:outputPanel rendered="#{matclasseService.typenote eq '1'}">
+													<td><h:outputLabel styleClass="grey"
+															value="Evaluation" /></td>
+													<td><h:selectOneMenu class="form-control"
+															value="#{matclasseService.matClasse.eval}"
+															converter="#{evaluationConverter}" id="eval"
+															noSelectionLabel="--- Selectionnez ---">
 
-												<td><h:outputLabel styleClass="grey" value="Evaluation" /></td>
-												<td><h:selectOneMenu class="form-control"
-														value="#{matclasseService.matClasse.eval}"
-														converter="#{evaluationConverter}" id="eval"
-														noSelectionLabel="--- Selectionnez ---">
+															<s:selectItems value="#{matclasseService.listeEval}"
+																var="type" label="#{type.libelle}" />
 
-														<s:selectItems value="#{matclasseService.listeEval}"
-															var="type" label="#{type.libelle}" />
-
-													</h:selectOneMenu></td>
+														</h:selectOneMenu></td>
+												</a:outputPanel>
+												
 
 												<td><h:outputLabel styleClass="grey"
 														value="Année Scolaire" /></td>
@@ -194,7 +197,7 @@
 														<h:outputLabel value="Coefficient:"
 															style="color:white;font-size:12px;font-family: Arial;text-align:center;" />
 													</rich:column>
-													
+
 
 
 
@@ -212,7 +215,7 @@
 												<h:inputText value="#{mat.coef}" style="width:30px;"
 													styleClass="grey"></h:inputText>
 											</rich:column>
-											
+
 										</rich:dataTable>
 										<rich:datascroller status="waitStatus" stepControls="auto"
 											style="width:100%" for="lstdemande" ajaxSingle="false"
@@ -275,9 +278,9 @@
 																style="color:white;font-size:12px;font-family: Arial;text-align:center;" />
 														</rich:column>
 														<rich:column>
-														<h:outputLabel value="Action:"
-															style="color:white;font-size:12px;font-family: Arial;text-align:center;" />
-													</rich:column>
+															<h:outputLabel value="Action:"
+																style="color:white;font-size:12px;font-family: Arial;text-align:center;" />
+														</rich:column>
 													</rich:columnGroup>
 												</f:facet>
 												<rich:column filterBy="#{mat.classe.libelle}"
@@ -296,14 +299,14 @@
 													<h:outputLabel value="#{mat.coef}" style="width:30px;"></h:outputLabel>
 												</rich:column>
 												<rich:column style="width:8%;">
-												<a:commandLink value="" status="waitStatus"
-													action="#{matclasseService.supprimerMatClasse(mat)}"
-													oncomplete="javascript:Richfaces.showModalPanel('sim',{width:700, height:300})"
-													title="Details" reRender="form">
-													<s:graphicImage fileName="cross.png" style="border:0px;"
-														value="/picto/cross.png" width="16" height="16" alt="" />
-												</a:commandLink>
-											</rich:column>
+													<a:commandLink value="" status="waitStatus"
+														action="#{matclasseService.supprimerMatClasse(mat)}"
+														oncomplete="javascript:Richfaces.showModalPanel('sim',{width:700, height:300})"
+														title="Details" reRender="form">
+														<s:graphicImage fileName="cross.png" style="border:0px;"
+															value="/picto/cross.png" width="16" height="16" alt="" />
+													</a:commandLink>
+												</rich:column>
 											</rich:dataTable>
 											<rich:datascroller status="waitStatus" stepControls="auto"
 												style="width:100%" for="matc" ajaxSingle="false"

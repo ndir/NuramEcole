@@ -6,8 +6,11 @@ package com.ecole.entity;
 import java.io.Serializable;
 
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
@@ -31,6 +34,8 @@ public class Matiere implements Serializable {
 	private boolean chosir;
 	
 	private int coef;
+	
+	private Niveau niveau;
 	
 	
 
@@ -96,6 +101,17 @@ public class Matiere implements Serializable {
 		} else if (!idmatiere.equals(other.idmatiere))
 			return false;
 		return true;
+	}
+
+
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "idniveau")
+	public Niveau getNiveau() {
+		return niveau;
+	}
+
+	public void setNiveau(Niveau niveau) {
+		this.niveau = niveau;
 	}
 
 }
