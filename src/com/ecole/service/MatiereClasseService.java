@@ -53,6 +53,8 @@ public class MatiereClasseService implements Serializable {
 
 	private String typenote;
 
+	private String niv;
+
 	public Niveau getNiveau() {
 		return niveau;
 	}
@@ -66,7 +68,7 @@ public class MatiereClasseService implements Serializable {
 	@SuppressWarnings("unchecked")
 	public void chargerListe() {
 		listeNiveau = new ArrayList<Niveau>();
-		listeNiveau = dataSource.createQuery(" From Niveau ").list();
+		listeNiveau = dataSource.createQuery(" From Niveau where code <>:pcode ").setParameter("pcode", "PRE").list();
 		List<AnneeScolaire> listeAnnee = dataSource.createQuery("From AnneeScolaire order by idannee desc ").list();
 		if (listeAnnee.size() > 0) {
 			anneeScolaire = listeAnnee.get(0);
@@ -106,41 +108,61 @@ public class MatiereClasseService implements Serializable {
 		listeClasse = new ArrayList<Classe>();
 		listeClasse = dataSource.createQuery(" From Classe c inner join fetch c.niveau n where n=:pn")
 				.setParameter("pn", niveau).list();
-		if (niveau.getLibelle().equalsIgnoreCase("Primaire")) {
+		if (niveau.getCode().equalsIgnoreCase("ELE")) {
 			typenote = "1";
-		} else {
+		}
+		if (niveau.getCode().equalsIgnoreCase("MOY")) {
 			typenote = "2";
 		}
 
+		if (niveau.getCode().equalsIgnoreCase("SEC")) {
+			typenote = "3";
+		}
 	}
 
+	@SuppressWarnings("unchecked")
 	public void ajouterClasseMatiere() {
-		for (Matiere mat : listeMatiere) {
-			if (mat.getCoef() > 0) {
-				MatiereClasse m = (MatiereClasse) dataSource.createQuery(
-						"From MatiereClasse m inner join fetch m.matiere ma inner join fetch m.classe c inner join fetch m.eval ev"
-								+ " where ma =:pma and c =:pc and m.annee_scol =:pan and ev =:pev ")
-						.setParameter("pma", mat).setParameter("pc", matClasse.getClasse())
-						.setParameter("pan", anneeScolaire.getAnneeScolaire()).setParameter("pev", matClasse.getEval())
-						.uniqueResult();
-				if (m == null) {
-					MatiereClasse mc = new MatiereClasse();
-					mc.setAnnee_scol(anneeScolaire.getAnneeScolaire());
-					mc.setClasse(matClasse.getClasse());
-					mc.setCoef(mat.getCoef());
-					mc.setMatiere(mat);
-					mc.setEval(matClasse.getEval());
-					dataSource.save(mc);
-				} else {
-					m.setCoef(mat.getCoef());
-					dataSource.update(m);
+
+		List<Classe> listeClasse = dataSource.createQuery("From Classe c where niv =:pniv").setParameter("pniv", niv)
+				.list();
+		for (Classe cl : listeClasse) {
+			System.out.println("Classe " + cl.getLibelle());
+			MatiereClasse m = new MatiereClasse();
+			for (Matiere mat : listeMatiere) {
+				if (mat.getCoef() > 0) {
+					if (typenote.equalsIgnoreCase("1")) {
+						m = (MatiereClasse) dataSource.createQuery(
+								"From MatiereClasse m inner join fetch m.matiere ma inner join fetch m.classe c inner join fetch m.eval ev"
+										+ " where ma =:pma and c =:pc and m.annee_scol =:pan and ev =:pev ")
+								.setParameter("pma", mat).setParameter("pc", matClasse.getClasse())
+								.setParameter("pan", anneeScolaire.getAnneeScolaire())
+								.setParameter("pev", matClasse.getEval()).uniqueResult();
+					} else {
+						m = (MatiereClasse) dataSource.createQuery(
+								"From MatiereClasse m inner join fetch m.matiere ma inner join fetch m.classe c "
+										+ " where ma =:pma and c =:pc and m.annee_scol =:pan  ")
+								.setParameter("pma", mat).setParameter("pc", matClasse.getClasse())
+								.setParameter("pan", anneeScolaire.getAnneeScolaire()).uniqueResult();
+					}
+					if (m == null) {
+						MatiereClasse mc = new MatiereClasse();
+						mc.setAnnee_scol(anneeScolaire.getAnneeScolaire());
+						mc.setClasse(cl);
+						mc.setCoef(mat.getCoef());
+						mc.setMatiere(mat);
+						if (typenote.equalsIgnoreCase("1"))
+							mc.setEval(matClasse.getEval());
+						dataSource.save(mc);
+					} else {
+						m.setCoef(mat.getCoef());
+						dataSource.update(m);
+					}
 				}
 			}
 		}
 		this.setMatClasse(new MatiereClasse());
 		listeMatiere = new ArrayList<Matiere>();
 		listeClasse = new ArrayList<Classe>();
-		// listeEval = new ArrayList<Evaluation>();
 		FacesMessages.instance().addToControlFromResourceBundle("infoGenerique", "Opération effectuée avec succés");
 
 	}
@@ -220,6 +242,14 @@ public class MatiereClasseService implements Serializable {
 
 	public void setTypenote(String typenote) {
 		this.typenote = typenote;
+	}
+
+	public String getNiv() {
+		return niv;
+	}
+
+	public void setNiv(String niv) {
+		this.niv = niv;
 	}
 
 }

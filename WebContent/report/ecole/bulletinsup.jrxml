@@ -2,7 +2,7 @@
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="bulletin" language="groovy" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="89af52a8-d2ec-4f35-8f4d-da069730ec92">
 	<property name="ireport.zoom" value="1.5"/>
 	<property name="ireport.x" value="0"/>
-	<property name="ireport.y" value="156"/>
+	<property name="ireport.y" value="60"/>
 	<parameter name="logo" class="java.io.InputStream"/>
 	<parameter name="ecole" class="java.lang.String"/>
 	<parameter name="slogan" class="java.lang.String"/>
@@ -49,11 +49,8 @@
 				</textElement>
 				<textFieldExpression><![CDATA[$F{ecole}]]></textFieldExpression>
 			</textField>
-			<rectangle>
-				<reportElement x="0" y="118" width="553" height="31" backcolor="#CCCCCC" uuid="10592c3b-460e-4152-868e-341b00566b4b"/>
-			</rectangle>
 			<staticText>
-				<reportElement x="3" y="121" width="552" height="31" uuid="d3d87f71-7694-4a04-b511-50cd41e7caae"/>
+				<reportElement x="3" y="123" width="552" height="23" uuid="d3d87f71-7694-4a04-b511-50cd41e7caae"/>
 				<textElement textAlignment="Center">
 					<font size="16" isBold="true"/>
 				</textElement>
@@ -108,6 +105,18 @@
 				</textElement>
 				<textFieldExpression><![CDATA[$F{evaluation}.getLibelle()]]></textFieldExpression>
 			</textField>
+			<line>
+				<reportElement x="3" y="115" width="550" height="1" uuid="d1a933ef-a8ea-498b-960e-d9b6f466da61"/>
+				<graphicElement>
+					<pen lineWidth="2.0" lineStyle="Double"/>
+				</graphicElement>
+			</line>
+			<line>
+				<reportElement x="4" y="151" width="550" height="1" uuid="dfcb6fde-4dcd-41e1-988d-2a865c3477a9"/>
+				<graphicElement>
+					<pen lineWidth="2.0" lineStyle="Double"/>
+				</graphicElement>
+			</line>
 		</band>
 	</title>
 	<columnHeader>

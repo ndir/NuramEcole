@@ -39,6 +39,10 @@ public class Notes implements Serializable {
 	private TypeNote typeNote;
 
 	private Semestres semestre;
+	
+	private Classe classe;
+	
+	private int coef;
 
 	@Id
 	@GeneratedValue
@@ -106,6 +110,24 @@ public class Notes implements Serializable {
 
 	public void setSemestre(Semestres semestre) {
 		this.semestre = semestre;
+	}
+
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "idclasse")
+	public Classe getClasse() {
+		return classe;
+	}
+
+	public void setClasse(Classe classe) {
+		this.classe = classe;
+	}
+
+	public int getCoef() {
+		return coef;
+	}
+
+	public void setCoef(int coef) {
+		this.coef = coef;
 	}
 
 }

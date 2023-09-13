@@ -52,7 +52,7 @@
 
 			<ui:include src="/template/include/header2.xhtml" />
 
-<ui:insert name="impression">
+			<ui:insert name="impression">
 				<rich:modalPanel id="modalPdf" autosized="false" width="980"
 					height="620" moveable="true" resizeable="true">
 
@@ -104,13 +104,14 @@
 				<div class="row row-sm mg-b-20">
 					<div class="col-lg-12"></div>
 				</div>
-				<h:form id="liste">
-					<rich:panel header="DELIBERATION ANNULLE"
-						styleclass="panel panel-success">
-						<div class="row row-sm mg-b-20">
-							<div class="col-lg-12">
-								<div class="row row-sm">
-									<div class="table-responsive">
+
+				<rich:panel header="DELIBERATION ANNULLE"
+					styleclass="panel panel-success">
+					<div class="row row-sm mg-b-20">
+						<div class="col-lg-12">
+							<div class="row row-sm">
+								<div class="table-responsive">
+									<h:form id="liste">
 										<TABLE class="table">
 											<tr>
 												<td><h:outputLabel styleClass="grey" value="Niveau" /></td>
@@ -124,7 +125,7 @@
 
 														<a:support event="onchange"
 															action="#{dService.chargerListeClasse()}"
-															ajaxSingle="true" reRender="classe" status="waitStatus"></a:support>
+															ajaxSingle="true" reRender="liste" status="waitStatus"></a:support>
 													</h:selectOneMenu></td>
 												<td><h:outputLabel styleClass="grey" value="Classe" /></td>
 												<td><h:selectOneMenu class="form-control"
@@ -155,7 +156,7 @@
 
 
 										<a:outputPanel rendered="#{dService.listeDeliAn.size > 0}">
-										<p align="right">
+											<p align="right">
 
 												<a:commandLink styleClass="btn btn-success" value=""
 													action="#{dService.imprimerToutAn()}"
@@ -246,17 +247,17 @@
 													<h:outputLabel value="#{mat.decision}" styleClass="grey"></h:outputLabel>
 												</rich:column>
 												<rich:column>
-												
+
 													<h:selectOneMenu id="shippingOption" required="true"
 														value="#{dService.decision}" class="form-control">
 														<f:selectItem itemValue="Passe en classe supérieure"
 															itemLabel="Passe en classe supérieure" />
 														<f:selectItem itemValue="Redouble" itemLabel="Redouble" />
 														<f:selectItem itemValue="Exclu(e)" itemLabel="Exclu(e)" />
-												<a:support event="onchange" ajaxSingle="true"
-																	action="#{dService.changerDecision(mat)}" reRender="deli"></a:support>
+														<a:support event="onchange" ajaxSingle="true"
+															action="#{dService.changerDecision(mat)}" reRender="deli"></a:support>
 													</h:selectOneMenu>
-													
+
 													<a:commandLink value="" status="waitStatus"
 														action="#{dService.imprimerBulletinAn(mat)}"
 														oncomplete="#{dService.showModal}"
@@ -270,16 +271,16 @@
 												style="width:100%" for="deli" ajaxSingle="false"
 												rendered="#{not empty dService.listeDeliAn}" />
 										</a:outputPanel>
-
-									</div>
+									</h:form>
 								</div>
 							</div>
 						</div>
+					</div>
 
-					</rich:panel>
+				</rich:panel>
 
 
-				</h:form>
+				
 
 
 			</div>

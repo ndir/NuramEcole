@@ -4,6 +4,9 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.faces.application.FacesMessage;
+import javax.faces.context.FacesContext;
+
 import org.hibernate.Session;
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.In;
@@ -20,8 +23,10 @@ import com.ecole.entity.Matiere;
 import com.ecole.entity.MatiereClasse;
 import com.ecole.entity.Niveau;
 import com.ecole.entity.Note;
+import com.ecole.entity.Notes;
 import com.ecole.entity.ParamInscription;
 import com.ecole.entity.Semestres;
+import com.ecole.entity.TypeNote;
 
 @Scope(ScopeType.SESSION)
 @Name("noteService")
@@ -52,7 +57,9 @@ public class NoteService implements Serializable {
 	private List<String> lsite = new ArrayList<String>();
 	// private String ev = new String();
 	private List<Note> listeNotes = new ArrayList<Note>();
-
+	private List<Notes> listeNotess = new ArrayList<Notes>();
+	private TypeNote typeNote = new TypeNote();
+	private List<TypeNote> listeTypeNotes = new ArrayList<TypeNote>();
 	private Evaluation ev = new Evaluation();
 	private boolean choix;
 
@@ -62,7 +69,7 @@ public class NoteService implements Serializable {
 	private String typenote;
 
 	private List<Semestres> listeSemestre = new ArrayList<Semestres>();
-	
+
 	private Semestres semestre = new Semestres();
 
 	@SuppressWarnings("unchecked")
@@ -72,25 +79,33 @@ public class NoteService implements Serializable {
 		// .setParameter("plib", ev).uniqueResult();
 
 		// System.out.println("Entrer "+e.getIdEvaluation());
-		if(ev.getIdEvaluation()!=null) {
-			listeMatiereClasse = new ArrayList<MatiereClasse>();
-			listeMatiereClasse = dataSource.createQuery(
-					"From MatiereClasse m inner join fetch m.classe c inner join fetch m.matiere inner join fetch m.eval ev where c=:pc and m.annee_scol=:pannee "
-							+ " and ev =:pev")
-					.setParameter("pc", note.getCl()).setParameter("pannee", annee.getAnneeScolaire())
-					.setParameter("pev", ev).list();
-			listeMatiere = new ArrayList<Matiere>();
 
-			if (listeMatiereClasse.size() > 0) {
-				for (MatiereClasse mc : listeMatiereClasse) {
-					listeMatiere.add(mc.getMatiere());
-				}
+		listeMatiereClasse = new ArrayList<MatiereClasse>();
+		if (typenote.equalsIgnoreCase("1")) {
+			if (ev.getIdEvaluation() != null) {
+				listeMatiereClasse = dataSource.createQuery(
+						"From MatiereClasse m inner join fetch m.classe c inner join fetch m.matiere inner join fetch m.eval ev where c=:pc and m.annee_scol=:pannee "
+								+ " and ev =:pev")
+						.setParameter("pc", note.getCl()).setParameter("pannee", annee.getAnneeScolaire())
+						.setParameter("pev", ev).list();
+			} else {
+				FacesMessages.instance().addToControlFromResourceBundle("erreurGenerique", "Evaluation Obligatoire");
+				return;
 			}
-		}else {
-			FacesMessages.instance().addToControlFromResourceBundle("erreurGenerique", "Evaluation Obligatoire");
-			return;
+		} else {
+
+			listeMatiereClasse = dataSource.createQuery(
+					"From MatiereClasse m inner join fetch m.classe c inner join fetch m.matiere  where c=:pc and m.annee_scol=:pannee "
+							+ " ")
+					.setParameter("pc", note.getCl()).setParameter("pannee", annee.getAnneeScolaire()).list();
 		}
-		
+		listeMatiere = new ArrayList<Matiere>();
+
+		if (listeMatiereClasse.size() > 0) {
+			for (MatiereClasse mc : listeMatiereClasse) {
+				listeMatiere.add(mc.getMatiere());
+			}
+		}
 
 	}
 
@@ -120,44 +135,85 @@ public class NoteService implements Serializable {
 	}
 
 	public void ajouterNote() {
-		if (note.getEvaluation() == null) {
-			FacesMessages.instance().addToControlFromResourceBundle("erreurGenerique", "Evaluation Obligatoire");
-			return;
-		}
-
-		for (Eleve eleve : listeEleves) {
-
-			if (eleve.getNote() > eleve.getCoef()) {
-				FacesMessages.instance().addToControlFromResourceBundle("erreurGenerique",
-						"Note supérieure au coéfficient pour l'éléve " + eleve.getNom() + " " + eleve.getPrenom());
+		if (typenote.equalsIgnoreCase("1")) {
+			if (note.getEvaluation() == null) {
+				FacesMessages.instance().addToControlFromResourceBundle("erreurGenerique", "Evaluation Obligatoire");
 				return;
 			}
-		}
 
-		for (Eleve eleve : listeEleves) {
-			if (eleve.isChoix() & !eleve.isExiste()) {
-				Note n = new Note();
-				n.setAnnee(annee);
-				n.setCl(note.getCl());
-				n.setEleve(eleve);
-				n.setEvaluation(note.getEvaluation());
-				n.setMatiere(note.getMatiere());
-				n.setNote(eleve.getNote());
-				n.setCoef(getCof(note.getMatiere()));
-				dataSource.save(n);
-			}
+			for (Eleve eleve : listeEleves) {
 
-			if (eleve.isChoix() & eleve.isExiste()) {
-				Note n = (Note) dataSource.get(Note.class, eleve.getIdNote());
-				if (n.getIdNote() != null) {
-					n.setNote(eleve.getNote());
-					dataSource.update(n);
+				if (eleve.getNote() > eleve.getCoef()) {
+					FacesMessages.instance().addToControlFromResourceBundle("erreurGenerique",
+							"Note supérieure au coéfficient pour l'éléve " + eleve.getNom() + " " + eleve.getPrenom());
+					return;
 				}
 			}
+			for (Eleve eleve : listeEleves) {
+				if (eleve.isChoix() & !eleve.isExiste()) {
+					Note n = new Note();
+					n.setAnnee(annee);
+					n.setCl(note.getCl());
+					n.setEleve(eleve);
+					n.setEvaluation(note.getEvaluation());
+					n.setMatiere(note.getMatiere());
+					n.setNote(eleve.getNote());
+					n.setCoef(getCof(note.getMatiere()));
+
+					dataSource.save(n);
+				}
+				if (eleve.isChoix() & eleve.isExiste()) {
+					Note n = (Note) dataSource.get(Note.class, eleve.getIdNote());
+					if (n.getIdNote() != null) {
+						n.setNote(eleve.getNote());
+						dataSource.update(n);
+					}
+				}
+			}
+			FacesMessages.instance().addToControlFromResourceBundle("infoGenerique", "Notes sauvegardées avec succès");
+			annulerAjoutNote();
+		} else {
+			if (semestre == null) {
+				FacesMessages.instance().addToControlFromResourceBundle("erreurGenerique", "Semestre Obligatoire");
+				return;
+			}
+
+//			for (Eleve eleve : listeEleves) {
+//
+//				if (eleve.getNote() > eleve.getCoef()) {
+//					FacesMessages.instance().addToControlFromResourceBundle("erreurGenerique",
+//							"Note supérieure au coéfficient pour l'éléve " + eleve.getNom() + " " + eleve.getPrenom());
+//					return;
+//				}
+//			}
+			for (Eleve eleve : listeEleves) {
+				if (eleve.isChoix() & !eleve.isExiste()) {
+					Notes n = new Notes();
+					n.setAnnee(annee);
+					n.setClasse(note.getCl());
+					n.setSemestre(semestre);
+					n.setEleve(eleve);
+					n.setMatiere(note.getMatiere());
+					n.setNote(eleve.getNote());
+					n.setTypeNote(typeNote);
+					n.setCoef(getCof(note.getMatiere()));
+					dataSource.save(n);
+				}
+
+				if (eleve.isChoix() & eleve.isExiste()) {
+					Notes n = (Notes) dataSource.get(Notes.class, eleve.getIdNote());
+					if (n.getId() != null) {
+						n.setNote(eleve.getNote());
+						dataSource.update(n);
+					}
+				}
+			}
+			this.setNiveau(new Niveau());
+			this.setSemestre(new Semestres());
+			FacesMessages.instance().addToControlFromResourceBundle("infoGenerique", "Notes sauvegardées avec succès");
+			annulerAjoutNote();
 		}
 
-		FacesMessages.instance().addToControlFromResourceBundle("infoGenerique", "Notes sauvegardées avec succès");
-		annulerAjoutNote();
 	}
 
 	@SuppressWarnings("unchecked")
@@ -167,17 +223,21 @@ public class NoteService implements Serializable {
 				.setParameter("pn", niveau).list());
 		listeEval = new ArrayList<Evaluation>();
 		listeEval = dataSource.createQuery("From  Evaluation ").list();
-		if (niveau.getLibelle().equalsIgnoreCase("primaire") || niveau.getLibelle().equalsIgnoreCase("Préscolaire")) {
+		if (niveau.getCode().equalsIgnoreCase("ELE") || niveau.getCode().equalsIgnoreCase("PRE")) {
 			typenote = "1";
 		} else {
 			typenote = "2";
+			listeSemestre = new ArrayList<Semestres>();
+			listeSemestre = dataSource.createQuery("From Semestres ").list();
+			listeTypeNotes = new ArrayList<TypeNote>();
+			listeTypeNotes = dataSource.createQuery("From TypeNote ").list();
 		}
 
 	}
 
 	@SuppressWarnings("unchecked")
 	public void chargerListeEleve() {
-
+		MatiereClasse mc = new MatiereClasse();
 		ParamInscription p = (ParamInscription) dataSource
 				.createQuery("From ParamInscription p inner join fetch p.classe c inner join fetch p.annee pa "
 						+ " where c =:pc and pa =:pa ")
@@ -190,14 +250,20 @@ public class NoteService implements Serializable {
 							"FRom Inscription i inner join fetch i.eleve inner join fetch i.paramins p where p =:pp")
 					.setParameter("pp", p).list();
 			listeEleves = new ArrayList<Eleve>();
-
-			MatiereClasse mc = (MatiereClasse) dataSource
-					.createQuery("From MatiereClasse mc inner join fetch mc.classe c inner join fetch mc.matiere m "
-							+ " inner join fetch mc.eval ev where c=:pc and m=:pm and ev=:pev and mc.annee_scol =:pan")
-					.setParameter("pc", note.getCl()).setParameter("pm", note.getMatiere())
-					.setParameter("pev", note.getEvaluation()).setParameter("pan", annee.getAnneeScolaire())
-					.uniqueResult();
-
+			if (typenote.equalsIgnoreCase("1")) {
+				mc = (MatiereClasse) dataSource
+						.createQuery("From MatiereClasse mc inner join fetch mc.classe c inner join fetch mc.matiere m "
+								+ " inner join fetch mc.eval ev where c=:pc and m=:pm and ev=:pev and mc.annee_scol =:pan")
+						.setParameter("pc", note.getCl()).setParameter("pm", note.getMatiere())
+						.setParameter("pev", note.getEvaluation()).setParameter("pan", annee.getAnneeScolaire())
+						.uniqueResult();
+			} else {
+				mc = (MatiereClasse) dataSource
+						.createQuery("From MatiereClasse mc inner join fetch mc.classe c inner join fetch mc.matiere m "
+								+ " where c=:pc and m=:pm  and mc.annee_scol =:pan")
+						.setParameter("pc", note.getCl()).setParameter("pm", note.getMatiere())
+						.setParameter("pan", annee.getAnneeScolaire()).uniqueResult();
+			}
 			for (Inscription in : liste) {
 				in.getEleve().setChoix(true);
 				noteExiste(in.getEleve());
@@ -229,29 +295,43 @@ public class NoteService implements Serializable {
 
 	@SuppressWarnings("unchecked")
 	public void chargerListeNotes() {
-
-		// Evaluation e = (Evaluation) dataSource.createQuery("FRom Evaluation e where
-		// libelle=:plib")
-		// .setParameter("plib", note.getEval()).uniqueResult();
 		listeNotes = new ArrayList<Note>();
-
-		listeNotes = dataSource
-				.createQuery("From Note n inner join fetch n.cl c inner join fetch n.matiere m "
-						+ "  inner join fetch n.eleve e inner join fetch n.evaluation ev inner join fetch n.annee an "
-						+ "  where c=:pc and ev=:pev and an=:pan and m=:pm")
-				.setParameter("pc", note.getCl()).setParameter("pev", ev).setParameter("pan", annee)
-				.setParameter("pm", note.getMatiere()).list();
-		if (listeNotes.size() == 0) {
-			FacesMessages.instance().addToControlFromResourceBundle("erreurGenerique",
-					"Aucune(s) Note(s) pour la matière " + note.getMatiere().getLibelle() + " pour  "
-							+ ev.getLibelle());
+		listeNotess = new ArrayList<Notes>();
+		if (typenote.equalsIgnoreCase("1")) {
+			listeNotes = dataSource.createQuery("From Note n inner join fetch n.cl c inner join fetch n.matiere m "
+					+ "  inner join fetch n.eleve e inner join fetch n.evaluation ev inner join fetch n.annee an "
+					+ "  where c=:pc and ev=:pev and an=:pan and m=:pm").setParameter("pc", note.getCl())
+					.setParameter("pev", ev).setParameter("pan", annee).setParameter("pm", note.getMatiere()).list();
+			if (listeNotes.size() == 0) {
+				FacesMessages.instance().addToControlFromResourceBundle("erreurGenerique",
+						"Aucune(s) Note(s) pour la matière " + note.getMatiere().getLibelle() + " pour  "
+								+ ev.getLibelle());
+			}
+		} else {
+			listeNotess = dataSource
+					.createQuery("From Notes n inner join fetch n.classe c inner join fetch n.matiere m "
+							+ "  inner join fetch n.eleve e inner join fetch n.semestre ev inner join fetch n.annee an inner join fetch n.typeNote ty "
+							+ "  where c=:pc and ev=:pev and an=:pan and m=:pm and ty=:pty")
+					.setParameter("pc", note.getCl()).setParameter("pev", semestre).setParameter("pan", annee)
+					.setParameter("pm", note.getMatiere()).setParameter("pty", typeNote).list();
+			if (listeNotess.size() == 0) {
+				FacesMessages.instance().addToControlFromResourceBundle("erreurGenerique",
+						"Aucune(s) Note(s) pour la matière " + note.getMatiere().getLibelle() + " pour  "
+								+ semestre.getLibelle());
+				
+			}
 		}
+
+	}
+
+	public void modifierNotes(Notes notes) {
+		dataSource.update(notes);
 	}
 
 	@SuppressWarnings("unchecked")
 	public String saisirNotes() {
 		listeNiveau = new ArrayList<Niveau>();
-		listeNiveau = dataSource.createQuery("From Niveau ").list();
+		listeNiveau = dataSource.createQuery("From Niveau where code <>:pcode").setParameter("pcode", "PRE").list();
 		this.setNiveau(new Niveau());
 		this.setClasse(new Classe());
 		this.setNote(new Note());
@@ -260,18 +340,21 @@ public class NoteService implements Serializable {
 		listeEval = dataSource.createQuery("From  Evaluation ").list();
 		listeSemestre = new ArrayList<Semestres>();
 		listeSemestre = dataSource.createQuery("From Semestres ").list();
+		listeTypeNotes = new ArrayList<TypeNote>();
+		listeTypeNotes = dataSource.createQuery("From TypeNote ").list();
 		return "/pages/nuramecole/note.xhtml";
 	}
 
 	@SuppressWarnings("unchecked")
 	public String visualiserNotes() {
 		listeNiveau = new ArrayList<Niveau>();
-		listeNiveau = dataSource.createQuery("From Niveau ").list();
+		listeNiveau = dataSource.createQuery("From Niveau where code <>:pcode").setParameter("pcode", "PRE").list();
 		this.setNiveau(new Niveau());
 		this.setClasse(new Classe());
 		this.setNote(new Note());
 		listeEleves = new ArrayList<Eleve>();
-
+		listeNotess = new ArrayList<Notes>();
+		listeNotes = new ArrayList<Note>();
 		return "/pages/nuramecole/voirnote.xhtml";
 	}
 
@@ -473,6 +556,30 @@ public class NoteService implements Serializable {
 
 	public void setSemestre(Semestres semestre) {
 		this.semestre = semestre;
+	}
+
+	public TypeNote getTypeNote() {
+		return typeNote;
+	}
+
+	public void setTypeNote(TypeNote typeNote) {
+		this.typeNote = typeNote;
+	}
+
+	public List<TypeNote> getListeTypeNotes() {
+		return listeTypeNotes;
+	}
+
+	public void setListeTypeNotes(List<TypeNote> listeTypeNotes) {
+		this.listeTypeNotes = listeTypeNotes;
+	}
+
+	public List<Notes> getListeNotess() {
+		return listeNotess;
+	}
+
+	public void setListeNotess(List<Notes> listeNotess) {
+		this.listeNotess = listeNotess;
 	}
 
 }

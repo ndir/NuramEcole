@@ -76,9 +76,9 @@
 			errorClass="informationGenerique" warnClass="informationGenerique"
 			for="infoGenerique" />
 		<h:inputHidden id="infoGenerique" />
-		<h:message infoClass="confirmationerrorGenerique"
-			errorClass="confirmationerrorGenerique"
-			warnClass="confirmationerrorGenerique" for="erreurGenerique" />
+		<h:message infoClass="informationGenerique"
+			errorClass="informationGenerique" warnClass="informationGenerique"
+			for="erreurGenerique" style="background-color:red;margin-top:2%;color:white;" />
 		<h:inputHidden id="erreurGenerique" />
 	</a:outputPanel>
 
@@ -113,22 +113,35 @@
 
 														<a:support event="onchange"
 															action="#{noteService.chargerListeClasse()}"
-															ajaxSingle="true" reRender="classe,eval"
-															status="waitStatus"></a:support>
+															ajaxSingle="true" reRender="liste" status="waitStatus"></a:support>
 													</h:selectOneMenu></td>
-												<td><h:outputLabel styleClass="grey" value="Evaluation" /></td>
 
-												<td><h:selectOneMenu class="form-control"
-														value="#{noteService.note.evaluation}"
-														converter="#{evaluationConverter}" id="eval">
-														<s:selectItems value="#{noteService.listeEval}" var="type"
-															label="#{type.libelle}"
-															noSelectionLabel="--- Selectionnez ---" />
-														<a:support event="onchange"
-															action="#{noteService.getEval1()}"
-															ajaxSingle="true" 
-															status="waitStatus"></a:support>
-													</h:selectOneMenu></td>
+												<a:outputPanel rendered="#{noteService.typenote eq '1'}">
+													<td><h:outputLabel styleClass="grey"
+															value="Evaluation" /></td>
+													<td><h:selectOneMenu class="form-control"
+															value="#{noteService.note.evaluation}"
+															converter="#{evaluationConverter}" id="eval">
+															<s:selectItems value="#{noteService.listeEval}"
+																var="type" label="#{type.libelle}"
+																noSelectionLabel="--- Selectionnez ---" />
+															<a:support event="onchange"
+																action="#{noteService.getEval1()}" ajaxSingle="true"
+																status="waitStatus"></a:support>
+														</h:selectOneMenu></td>
+												</a:outputPanel>
+												<a:outputPanel rendered="#{noteService.typenote eq '2'}">
+													<td><h:outputLabel styleClass="grey" value="Semestre" /></td>
+													<td><h:selectOneMenu class="form-control"
+															value="#{noteService.semestre}"
+															converter="#{semestreConverter}" id="sem"
+															noSelectionLabel="--- Selectionnez ---">
+															<s:selectItems value="#{noteService.listeSemestre}"
+																var="type" label="#{type.libelle}"
+																noSelectionLabel="--- Selectionnez ---" />
+
+														</h:selectOneMenu></td>
+												</a:outputPanel>
 											</tr>
 											<tr>
 												<td><h:outputLabel styleClass="grey" value="Classe" /></td>
@@ -162,6 +175,19 @@
 												<td><h:inputText
 														value="#{noteService.annee.anneeScolaire}"
 														class="form-control" disabled="true" /></td>
+												<a:outputPanel rendered="#{noteService.typenote eq '2'}">
+													<td><h:outputLabel styleClass="grey"
+															value="Type de Note" /></td>
+													<td><h:selectOneMenu class="form-control"
+															value="#{noteService.typeNote}"
+															converter="#{typenoteConverter}"
+															noSelectionLabel="--- Selectionnez ---">
+															<s:selectItems value="#{noteService.listeTypeNotes}"
+																var="type" label="#{type.libelle}"
+																noSelectionLabel="--- Selectionnez ---" />
+
+														</h:selectOneMenu></td>
+												</a:outputPanel>
 												<td><a:commandLink value="" status="waitStatus"
 														reRender="liste" title="Suivant"
 														action="#{noteService.chargerListeNotes()}">
@@ -171,58 +197,122 @@
 													</a:commandLink></td>
 											</tr>
 										</TABLE>
+										<a:outputPanel rendered="#{noteService.typenote eq '1'}">
+											<rich:dataTable value="#{noteService.listeNotes}" var="mat"
+												id="eleve" style="width:100%;" rows="8"
+												rowClasses="row1,row2">
+												<f:facet name="header">
+													<rich:columnGroup>
 
-										<rich:dataTable value="#{noteService.listeNotes}" var="mat"
-											id="eleve" style="width:100%;" rows="8"
-											rowClasses="row1,row2">
-											<f:facet name="header">
-												<rich:columnGroup>
+														<rich:column>
+															<h:outputLabel value="Eleve"
+																style="color:white;font-size:12px;font-family: Arial;text-align:center;" />
+														</rich:column>
 
-													<rich:column>
-														<h:outputLabel value="Eleve"
-															style="color:white;font-size:12px;font-family: Arial;text-align:center;" />
-													</rich:column>
+														<rich:column>
+															<h:outputLabel value="Classe"
+																style="color:white;font-size:12px;font-family: Arial;text-align:center;" />
+														</rich:column>
 
-													<rich:column>
-														<h:outputLabel value="Classe"
-															style="color:white;font-size:12px;font-family: Arial;text-align:center;" />
-													</rich:column>
+														<rich:column>
+															<h:outputLabel value="Matière"
+																style="color:white;font-size:12px;font-family: Arial;text-align:center;" />
+														</rich:column>
 
-													<rich:column>
-														<h:outputLabel value="Matière"
-															style="color:white;font-size:12px;font-family: Arial;text-align:center;" />
-													</rich:column>
+														<rich:column>
+															<h:outputLabel value="Note"
+																style="color:white;font-size:12px;font-family: Arial;text-align:center;" />
+														</rich:column>
 
-													<rich:column>
-														<h:outputLabel value="Note"
-															style="color:white;font-size:12px;font-family: Arial;text-align:center;" />
-													</rich:column>
+													</rich:columnGroup>
+												</f:facet>
 
-												</rich:columnGroup>
-											</f:facet>
+												<rich:column filterBy="#{mat.eleve.nom}"
+													filterEvent="onkeyup">
+													<h:outputLabel value="#{mat.eleve.nom} #{mat.eleve.prenom}"></h:outputLabel>
+												</rich:column>
+												<rich:column>
+													<h:outputLabel value="#{mat.cl.libelle}"></h:outputLabel>
+												</rich:column>
+												<rich:column filterBy="#{mat.matiere.libelle}"
+													filterEvent="onkeyup">
+													<h:outputLabel value="#{mat.matiere.libelle}"></h:outputLabel>
+												</rich:column>
 
-											<rich:column filterBy="#{mat.eleve.nom}"
-												filterEvent="onkeyup">
-												<h:outputLabel value="#{mat.eleve.nom} #{mat.eleve.prenom}"></h:outputLabel>
-											</rich:column>
-											<rich:column>
-												<h:outputLabel value="#{mat.cl.libelle}"></h:outputLabel>
-											</rich:column>
-											<rich:column filterBy="#{mat.matiere.libelle}"
-												filterEvent="onkeyup">
-												<h:outputLabel value="#{mat.matiere.libelle}"></h:outputLabel>
-											</rich:column>
+												<rich:column>
+													<h:inputText value="#{mat.note}" class="form-control"
+														disabled="true"></h:inputText>
+												</rich:column>
 
-											<rich:column>
-												<h:inputText value="#{mat.note}" class="form-control"
-													disabled="true"></h:inputText>
-											</rich:column>
+											</rich:dataTable>
+											<rich:datascroller status="waitStatus" stepControls="auto"
+												style="width:100%" for="eleve" ajaxSingle="false"
+												rendered="#{not empty noteService.listeNotes}" />
+										</a:outputPanel>
 
-										</rich:dataTable>
-										<rich:datascroller status="waitStatus" stepControls="auto"
-											style="width:100%" for="eleve" ajaxSingle="false"
-											rendered="#{not empty noteService.listeEleves}" />
 
+										<a:outputPanel rendered="#{noteService.typenote eq '2'}">
+											<rich:dataTable value="#{noteService.listeNotess}" var="mat"
+												style="width:100%;" rows="8" rowClasses="row1,row2"
+												id="notes">
+												<f:facet name="header">
+													<rich:columnGroup>
+
+														<rich:column>
+															<h:outputLabel value="Eleve"
+																style="color:white;font-size:12px;font-family: Arial;text-align:center;" />
+														</rich:column>
+
+														<rich:column>
+															<h:outputLabel value="Classe"
+																style="color:white;font-size:12px;font-family: Arial;text-align:center;" />
+														</rich:column>
+
+														<rich:column>
+															<h:outputLabel value="Matière"
+																style="color:white;font-size:12px;font-family: Arial;text-align:center;" />
+														</rich:column>
+
+														<rich:column>
+															<h:outputLabel value="Note"
+																style="color:white;font-size:12px;font-family: Arial;text-align:center;" />
+														</rich:column>
+													</rich:columnGroup>
+												</f:facet>
+
+												<rich:column filterBy="#{mat.eleve.nom}"
+													filterEvent="onkeyup">
+													<h:outputLabel value="#{mat.eleve.nom} #{mat.eleve.prenom}"></h:outputLabel>
+												</rich:column>
+												<rich:column>
+													<h:outputLabel value="#{mat.classe.libelle}"></h:outputLabel>
+												</rich:column>
+												<rich:column filterBy="#{mat.matiere.libelle}"
+													filterEvent="onkeyup">
+													<h:outputLabel value="#{mat.matiere.libelle}"></h:outputLabel>
+												</rich:column>
+
+												<rich:column>
+													<h:inputText value="#{mat.note}" class="form-control"></h:inputText>
+												</rich:column>
+
+
+												<rich:column>
+													<a:commandLink value="" status="waitStatus"
+														action="#{noteService.modifierNotes(mat)}"
+														reRender="liste" title="Modifier">
+														<s:graphicImage fileName="accept.png" style="border:0px;"
+															value="/picto/accept.png" width="16" height="16" alt="" />
+
+													</a:commandLink>
+
+												</rich:column>
+
+											</rich:dataTable>
+											<rich:datascroller status="waitStatus" stepControls="auto"
+												style="width:100%" for="notes" ajaxSingle="false"
+												rendered="#{not empty noteService.listeNotess}" />
+										</a:outputPanel>
 									</div>
 								</div>
 							</div>

@@ -104,19 +104,15 @@
 				<div class="row row-sm mg-b-20">
 					<div class="col-lg-12"></div>
 				</div>
-
 				<rich:panel header="PARAMETRAGE INSCRIPTION "
 					styleclass="panel panel-success">
 					<div class="row row-sm mg-b-20">
 						<div class="col-lg-12">
 							<div class="row row-sm">
-
-
 								<div class="table-responsive">
 									<h:form id="liste">
 										<TABLE class="table">
 											<tr>
-
 												<td><h:outputLabel styleClass="grey" value="Niveau" /></td>
 												<td><h:selectOneMenu class="form-control"
 														value="#{piService.niveau}" converter="#{niveauConverter}"
@@ -130,6 +126,7 @@
 															action="#{piService.chargerListeClasse()}"
 															ajaxSingle="true" reRender="classe" status="waitStatus"></a:support>
 													</h:selectOneMenu></td>
+
 												<td><h:outputLabel styleClass="grey" value="Classe" /></td>
 												<td><h:selectOneMenu class="form-control"
 														value="#{piService.param.classe}"

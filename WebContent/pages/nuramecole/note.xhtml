@@ -158,18 +158,7 @@
 															ajaxSingle="true" reRender="matiere" status="waitStatus"></a:support>
 
 													</h:selectOneMenu></td>
-												<!-- 												<td><h:selectOneMenu class="form-control" -->
-												<!-- 														value="#{noteService.note.eval}"> -->
 
-												<!-- 														<f:selectItem itemValue="1ère Composition" -->
-												<!-- 															itemLabel="1ère Composition" /> -->
-
-												<!-- 														<f:selectItem itemValue="2ème Composition" -->
-												<!-- 															itemLabel="2ème Composition" /> -->
-
-												<!-- 														<f:selectItem itemValue="3ème Composition" -->
-												<!-- 															itemLabel="3ème Composition" /> -->
-												<!-- 													</h:selectOneMenu></td> -->
 												<td><h:outputLabel styleClass="grey" value="Matière" /></td>
 												<td><h:selectOneMenu class="form-control"
 														value="#{noteService.note.matiere}"
@@ -193,13 +182,19 @@
 												<td><h:inputText
 														value="#{noteService.annee.anneeScolaire}"
 														class="form-control" disabled="true" /></td>
-												<!-- 												<td><a:commandLink value="" status="waitStatus" -->
-												<!-- 														reRender="liste1" title="Suivant" -->
-												<!-- 														action="#{noteService.chargerListeEleve()}"> -->
-												<!-- 														<s:graphicImage fileName="left32.png" style="border:0px;" -->
-												<!-- 															value="/picto/left32.png" alt="" /> -->
+												<a:outputPanel rendered="#{noteService.typenote eq '2'}">
+													<td><h:outputLabel styleClass="grey"
+															value="Type de Note" /></td>
+													<td><h:selectOneMenu class="form-control"
+															value="#{noteService.typeNote}"
+															converter="#{typenoteConverter}"
+															noSelectionLabel="--- Selectionnez ---">
+															<s:selectItems value="#{noteService.listeTypeNotes}"
+																var="type" label="#{type.libelle}"
+																noSelectionLabel="--- Selectionnez ---" />
 
-												<!-- 													</a:commandLink></td> -->
+														</h:selectOneMenu></td>
+												</a:outputPanel>
 											</tr>
 										</TABLE>
 

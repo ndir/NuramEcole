@@ -126,14 +126,10 @@
 													</rich:column>
 
 													<rich:column>
-														<h:outputLabel value="Montant Inscription"
+														<h:outputLabel value="Etape"
 															style="color:white;font-size:12px;font-family: Arial;text-align:center;" />
 													</rich:column>
 
-													<rich:column>
-														<h:outputLabel value="Mensualité"
-															style="color:white;font-size:12px;font-family: Arial;text-align:center;" />
-													</rich:column>
 
 													<rich:column>
 														<h:outputLabel value="Action"
@@ -144,34 +140,21 @@
 												</rich:columnGroup>
 											</f:facet>
 
-											<rich:column>
+											<rich:column filterBy="#{classe.niveau.libelle}"
+												filterEvent="onkeyup">
 												<h:outputText value="#{classe.niveau.libelle}"
 													styleClass="grey" />
+											</rich:column>
+
+
+											<rich:column filterBy="#{classe.niv}" filterEvent="onkeyup">
+												<h:outputText value="#{classe.niv}" styleClass="grey" />
 											</rich:column>
 											<rich:column filterBy="#{classe.libelle}"
 												filterEvent="onkeyup">
 												<h:outputText value="#{classe.libelle}" styleClass="grey" />
 											</rich:column>
-
-
-
-
-											<rich:column>
-												<h:outputText value="#{classeService.getDroitInscription(classe)}" styleClass="grey">
-													<f:convertNumber pattern="#,##0" />
-												</h:outputText>
-											</rich:column>
-
-											<rich:column>
-												<h:outputText value="#{classeService.getMensualite(classe)}" styleClass="grey">
-													<f:convertNumber pattern="#,##0" />
-												</h:outputText>
-											</rich:column>
-
-
 											<rich:column style="width:8%;">
-
-
 												<a:commandLink value="" status="waitStatus"
 													action="#{classeService.versModifierClasse(classe)}"
 													onclick="if (!confirm('Voulez-vous vraiment modifier la classe  ?')) return false"
@@ -191,15 +174,15 @@
 
 												</a:commandLink>
 
-<!-- 												<rich:spacer widht="30px"></rich:spacer> -->
-<!-- 												<a:commandLink value="" status="waitStatus" -->
-<!-- 													action="#{eleveService.versCreerEleve(classe)}" -->
-<!-- 													oncomplete="javascript:Richfaces.showModalPanel('eleve',{width:1300, height:500})" -->
-<!-- 													reRender="formeleve" title="Ajouter élève"> -->
-<!-- 													<s:graphicImage fileName="user_green.png" -->
-<!-- 														style="border:0px;" value="/picto/user_green.png" /> -->
+												<!-- 												<rich:spacer widht="30px"></rich:spacer> -->
+												<!-- 												<a:commandLink value="" status="waitStatus" -->
+												<!-- 													action="#{eleveService.versCreerEleve(classe)}" -->
+												<!-- 													oncomplete="javascript:Richfaces.showModalPanel('eleve',{width:1300, height:500})" -->
+												<!-- 													reRender="formeleve" title="Ajouter élève"> -->
+												<!-- 													<s:graphicImage fileName="user_green.png" -->
+												<!-- 														style="border:0px;" value="/picto/user_green.png" /> -->
 
-<!-- 												</a:commandLink> -->
+												<!-- 												</a:commandLink> -->
 
 												<rich:spacer widht="30px"></rich:spacer>
 												<a:commandLink value="" status="waitStatus"
@@ -265,6 +248,25 @@
 																noSelectionLabel="--- Selectionnez ---" />
 
 
+														</h:selectOneMenu></td>
+												</tr>
+												<tr>
+													<td><h:outputLabel styleClass="grey" value="Mois" /></td>
+													<td><h:selectOneMenu value="#{classeService.niv}"
+															class="form-control">
+															<f:selectItem itemValue="CI" itemLabel="CI" />
+															<f:selectItem itemValue="CP" itemLabel="CP" />
+															<f:selectItem itemValue="CE1" itemLabel="CE1" />
+															<f:selectItem itemValue="CE2" itemLabel="CE2" />
+															<f:selectItem itemValue="CM1" itemLabel="CM1" />
+															<f:selectItem itemValue="CM2" itemLabel="CM2" />
+															<f:selectItem itemValue="6eme" itemLabel="6eme" />
+															<f:selectItem itemValue="5eme" itemLabel="5eme" />
+															<f:selectItem itemValue="4eme" itemLabel="4eme" />
+															<f:selectItem itemValue="3eme" itemLabel="3eme" />
+															<f:selectItem itemValue="Seconde" itemLabel="Seconde" />
+															<f:selectItem itemValue="1ere" itemLabel="1ere" />
+															<f:selectItem itemValue="Terminal" itemLabel="Terminal" />
 														</h:selectOneMenu></td>
 												</tr>
 												<tr>

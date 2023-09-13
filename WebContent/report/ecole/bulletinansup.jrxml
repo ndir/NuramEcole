@@ -2,7 +2,7 @@
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="bulletin" language="groovy" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="89af52a8-d2ec-4f35-8f4d-da069730ec92">
 	<property name="ireport.zoom" value="1.5"/>
 	<property name="ireport.x" value="0"/>
-	<property name="ireport.y" value="290"/>
+	<property name="ireport.y" value="0"/>
 	<style name="table">
 		<box>
 			<pen lineWidth="1.0" lineColor="#000000"/>
@@ -105,11 +105,8 @@
 				</textElement>
 				<textFieldExpression><![CDATA[$F{ecole}]]></textFieldExpression>
 			</textField>
-			<rectangle>
-				<reportElement x="0" y="120" width="555" height="29" backcolor="#CCCCCC" uuid="5d4b422a-b11f-4a7e-ba29-731ca0a438d8"/>
-			</rectangle>
 			<staticText>
-				<reportElement x="3" y="122" width="552" height="31" uuid="d3d87f71-7694-4a04-b511-50cd41e7caae"/>
+				<reportElement x="3" y="122" width="552" height="24" uuid="d3d87f71-7694-4a04-b511-50cd41e7caae"/>
 				<textElement textAlignment="Center">
 					<font size="16" isBold="true"/>
 				</textElement>
@@ -157,6 +154,18 @@
 				</textElement>
 				<textFieldExpression><![CDATA[$F{slogan}]]></textFieldExpression>
 			</textField>
+			<line>
+				<reportElement x="0" y="114" width="550" height="1" uuid="7290e930-e23c-43ea-9adf-ce3f661b50de"/>
+				<graphicElement>
+					<pen lineWidth="2.0" lineStyle="Double"/>
+				</graphicElement>
+			</line>
+			<line>
+				<reportElement x="1" y="150" width="550" height="1" uuid="242a7d2e-78a2-4534-9527-afbcf106ecbc"/>
+				<graphicElement>
+					<pen lineWidth="2.0" lineStyle="Double"/>
+				</graphicElement>
+			</line>
 		</band>
 	</title>
 	<columnHeader>

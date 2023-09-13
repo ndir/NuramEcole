@@ -159,6 +159,18 @@ public class EleveService implements Serializable {
 		listeClasse = new ArrayList<Classe>();
 		listeClasse = dataSource.createQuery(" From Classe c inner join fetch c.niveau n where n=:pn")
 				.setParameter("pn", niveau).list();
+
+		if (listeClasse.size() > 0) {
+			mntIns = 0d;
+			ParamInscription paramins = (ParamInscription) dataSource
+					.createQuery("From ParamInscription p inner join fetch p.annee inner join fetch p.classe"
+							+ " where p.annee =:pannee and p.classe =:pclasse")
+					.setParameter("pannee", annee).setParameter("pclasse", listeClasse.get(0)).uniqueResult();
+
+			if (paramins != null) {
+				mntIns = paramins.getDroit_ins();
+			}
+		}
 	}
 
 	@SuppressWarnings("unchecked")
@@ -193,7 +205,7 @@ public class EleveService implements Serializable {
 		if (paramins != null) {
 			mntIns = paramins.getDroit_ins();
 		}
-		
+
 	}
 
 	public void ajouterInscription() {
@@ -245,11 +257,14 @@ public class EleveService implements Serializable {
 				recette.setMontantPaye(mntPaye);
 				recette.setUtilisateur(utilisateur);
 				dataSource.save(recette);
-				
+
 			}
 			this.setEleve(new Eleve());
 			this.setInscription(new Inscription());
-			mntPaye = 0d;
+
+			mntIns = paramins.getDroit_ins();
+
+		
 			mntIns = 0d;
 			FacesMessages.instance().addToControlFromResourceBundle("infoGenerique", "Evaluation ajoutée avec succés");
 		}

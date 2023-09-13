@@ -51,8 +51,7 @@ public class MatiereService implements Serializable {
 	public void chargerListeMat() {
 		listeMatiere = new ArrayList<Matiere>();
 		listeMatiere = dataSource.createQuery(" From Matiere ").list();
-		listeNiveau = new ArrayList<Niveau>();
-		listeNiveau = dataSource.createQuery("From Niveau ").list();
+		
 	}
 
 	public String versMatieres() {
@@ -72,6 +71,7 @@ public class MatiereService implements Serializable {
 	}
 
 	public void ajouterMat() {
+		System.out.println("Ajout matiere");
 		if (this.matiere.getLibelle().isEmpty()) {
 			FacesMessages.instance().addToControlFromResourceBundle(
 					"erreurGenerique", "Veuillez renseigner le libellé");
@@ -132,6 +132,8 @@ public class MatiereService implements Serializable {
 	}
 
 	public List<Niveau> getListeNiveau() {
+		listeNiveau = new ArrayList<Niveau>();
+		listeNiveau = dataSource.createQuery(" From Niveau where code <>:pcode ").setParameter("pcode", "PRE").list();
 		return listeNiveau;
 	}
 

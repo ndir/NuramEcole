@@ -46,6 +46,7 @@
 		<mapping class="com.ecole.entity.TypeNote" />
 		<mapping class="com.ecole.entity.Semestres" />
 		<mapping class="com.ecole.entity.Notes" />
+		<mapping class="com.ecole.entity.DeliberationMS" />
 		<!-- <property name="show_sql">false</property> <property name="use_sql_comments">false</property> 
 			<property name="order_updates">true</property> <property name="transaction.flush_before_completion">true</property> 
 			<property name="transaction.factory_class">org.hibernate.transaction.JDBCTransactionFactory</property> 

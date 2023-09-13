@@ -9,51 +9,61 @@ import org.hibernate.Session;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
 
+
+import com.chaka.parametrage.entity.Lst_Annee;
 import com.ecole.entity.AnneeScolaire;
-import com.ecole.entity.TypeNote;
+import com.ecole.entity.Niveau;
 
-@Name("typenoteConverter")
-public class TypeNoteConverter implements Converter {
 
+
+@Name("niveauConverter")
+public class NiveauConverter implements Converter {
+	
 	/**
 	 * Session Hibernate
 	 */
 	@In
 	private Session dataSource;
-
+	
 	/**
 	 * Constructeur
 	 */
-	public TypeNoteConverter() {
+	public NiveauConverter() {
 		super();
 	}
-
+	
 	/**
 	 * Transforme la string passée en parametre en objet.
 	 * 
-	 * @param myContextFaces le contexte courant.
-	 * @param pComponent     le composant lié à la transformation.
-	 * @param pValeur        la valeur de l'objet à transformer.
+	 * @param myContextFaces
+	 *            le contexte courant.
+	 * @param pComponent
+	 *            le composant lié à la transformation.
+	 * @param pValeur
+	 *            la valeur de l'objet à transformer.
 	 * @return l'objet transformé.
 	 * @throws ConverterException
 	 * 
 	 */
 	public Object getAsObject(FacesContext myContextFaces, UIComponent pComponent, String pValeur) {
-		TypeNote annee = (TypeNote) this.dataSource.get(TypeNote.class, new Long(pValeur));
+		Niveau annee = (Niveau)this.dataSource.get(Niveau.class, 
+				new Long(pValeur));
 		return annee;
 	}
-
 	/**
 	 * Transforme l'objet passé en parametre en string.
 	 * 
-	 * @param myContextFaces le contexte courant.
-	 * @param uiComponent    le composant lié à la transformation.
-	 * @param objet          la valeure de l'objet à transformer.
+	 * @param myContextFaces
+	 *            le contexte courant.
+	 * @param uiComponent
+	 *            le composant lié à la transformation.
+	 * @param objet
+	 *            la valeure de l'objet à transformer.
 	 * @return l'objet transformé.
 	 * 
 	 */
 	public String getAsString(FacesContext myContextFaces, UIComponent uiComponent, Object objet) {
-		TypeNote annee = (TypeNote) objet;
+		Niveau annee = (Niveau)objet;
 		String resultat = "";
 		if (annee != null && annee.getId()!=null) {
 			resultat = annee.getId().toString();

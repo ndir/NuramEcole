@@ -39,6 +39,8 @@ public class ClasseService implements Serializable {
 
 	private List<MatiereClasse> listeMatClasse = new ArrayList<MatiereClasse>();
 
+	private String niv;
+
 	@In
 	private Session dataSource;
 
@@ -54,10 +56,10 @@ public class ClasseService implements Serializable {
 	public String versClasse() {
 		this.setClasse(new Classe());
 		chargerListeClasse();
-		
+
 		return "/pages/nuramecole/creerclasse.xhtml";
 	}
-	
+
 	public String versAcceuil() {
 		return "/pages/nuramecole/template/index.xhtml";
 	}
@@ -72,6 +74,8 @@ public class ClasseService implements Serializable {
 	}
 
 	public void ajouterClasse() {
+		if (!niv.isEmpty())
+			classe.setNiv(niv);
 		if (this.classe.getLibelle().isEmpty()) {
 			FacesMessages.instance().addToControlFromResourceBundle("erreurGenerique",
 					"Veuillez renseigner le libellé");
@@ -84,6 +88,7 @@ public class ClasseService implements Serializable {
 		if (classe.getIdclasse() == null) {
 			dataSource.save(classe);
 		} else {
+
 			dataSource.update(classe);
 		}
 		chargerListeClasse();
@@ -154,6 +159,14 @@ public class ClasseService implements Serializable {
 
 	public void setListeMatClasse(List<MatiereClasse> listeMatClasse) {
 		this.listeMatClasse = listeMatClasse;
+	}
+
+	public String getNiv() {
+		return niv;
+	}
+
+	public void setNiv(String niv) {
+		this.niv = niv;
 	}
 
 }

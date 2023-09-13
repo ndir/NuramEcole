@@ -496,7 +496,7 @@ div.rd_jsuperfish ul:FIRST-CHILD>li:LAST-CHILD>a:HOVER {
 	background: #e5f7e3 url(../img2/check.gif) no-repeat;
 	border: 1px solid;
 	margin: 0px 0px 5px 0px;
-	padding: 15px 10px 15px 50px;
+	top: 16%;
 	background-repeat: no-repeat;
 	background-position: 10px center;
 	color: #005e20;
@@ -509,10 +509,23 @@ div.rd_jsuperfish ul:FIRST-CHILD>li:LAST-CHILD>a:HOVER {
 	background: #F70227 url(../img2/check.gif) no-repeat;
 	border: 1px solid;
 	margin: 0px 0px 5px 0px;
-	padding: 15px 10px 15px 50px;
+	padding: 20px 20px 20px 50px;
 	background-repeat: no-repeat;
 	background-position: 10px center;
-	color: #005e20;
+	color: #F70227;
+	z-index: 2000;
+	display: block;
+	width: 1010px;
+}
+
+.erreurGenerique {
+	background: #F70227 url(../img2/check.gif) no-repeat;
+	border: 1px solid;
+	margin: 0px 0px 5px 0px;
+	padding: 20px 20px 20px 50px;
+	background-repeat: no-repeat;
+	background-position: 10px center;
+	color: #F70227;
 	z-index: 2000;
 	display: block;
 	width: 1010px;

@@ -101,7 +101,7 @@ public class DeliberationService implements Serializable {
 	@SuppressWarnings("unchecked")
 	public String versDeliberation() {
 		listeNiveau = new ArrayList<Niveau>();
-		listeNiveau = dataSource.createQuery("From Niveau ").list();
+		listeNiveau = dataSource.createQuery("From Niveau where code <>:pcode").setParameter("pcode", "PRE").list();
 		listeEval = new ArrayList<Evaluation>();
 		listeEval = dataSource.createQuery("From Evaluation ").list();
 		listeElevesNonNote = new ArrayList<Eleve>();

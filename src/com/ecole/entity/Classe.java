@@ -42,6 +42,8 @@ public class Classe implements Serializable {
 	private int fille;
 	
 	private int garcon;
+	
+	private String niv;
 
 	@ManyToOne(fetch=FetchType.LAZY)
 	@JoinColumn(name="idniveau")
@@ -137,6 +139,14 @@ public class Classe implements Serializable {
 
 	public void setGarcon(int garcon) {
 		this.garcon = garcon;
+	}
+
+	public String getNiv() {
+		return niv;
+	}
+
+	public void setNiv(String niv) {
+		this.niv = niv;
 	}
 
 }
