@@ -178,14 +178,7 @@ public class NoteService implements Serializable {
 				return;
 			}
 
-//			for (Eleve eleve : listeEleves) {
-//
-//				if (eleve.getNote() > eleve.getCoef()) {
-//					FacesMessages.instance().addToControlFromResourceBundle("erreurGenerique",
-//							"Note supérieure au coéfficient pour l'éléve " + eleve.getNom() + " " + eleve.getPrenom());
-//					return;
-//				}
-//			}
+
 			for (Eleve eleve : listeEleves) {
 				if (eleve.isChoix() & !eleve.isExiste()) {
 					Notes n = new Notes();
