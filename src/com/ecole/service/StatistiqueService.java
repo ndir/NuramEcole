@@ -291,7 +291,7 @@ public class StatistiqueService implements Serializable {
 		param.put("slogan", in.getSologan());
 		param.put("tel", in.getTelephone());
 		retreiveMonthByString(mois);
-		param.put("etat", "ETAT MENSUEL MOIS : " + moisch);
+		param.put("libelle", "ETAT MENSUEL MOIS : " + moisch);
 		getFilePrintService().imprimer("ecole", "details_etat", param, listeInscrption, utilisateur, ExportOption.PDF);
 		this.setShowModal("javascript:Richfaces.showModalPanel('modalPdf')");
 	}

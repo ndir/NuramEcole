@@ -13,6 +13,7 @@
 	<parameter name="app" class="java.lang.String"/>
 	<parameter name="eff" class="java.lang.String"/>
 	<parameter name="petat" class="java.lang.String"/>
+	<parameter name="libelle" class="java.lang.String"/>
 	<queryString language="hql">
 		<![CDATA[from Inscription]]>
 	</queryString>
@@ -94,7 +95,7 @@
 				<textElement textAlignment="Center">
 					<font size="14" isBold="true" isUnderline="true"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$P{petat}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$P{libelle}]]></textFieldExpression>
 			</textField>
 		</band>
 	</title>
