@@ -134,7 +134,6 @@
 													</h:selectOneMenu></td>
 												<td><a:commandLink styleClass="btn btn-success"
 														value="" action="#{statService.etatsMensuel()}"
-														
 														reRender="liste" status="waitStatus">
 																		
 																		Valider			
@@ -215,6 +214,40 @@
 														value="/picto/detail.jpg" width="16" height="16" alt="" />
 												</a:commandLink>
 											</rich:column>
+												<f:facet name="footer">
+
+										<rich:columnGroup id="Total">
+
+											<rich:column colspan="0">
+												<h:outputText value="TOTAl(XOF)" style="color:red;" />
+											</rich:column>
+											<rich:column>
+												<h:outputText value="#{statService.getMontantTotalAPayer()}"
+													style="color:red; font-weight: bold;">
+													<f:convertNumber pattern="#,##0" />
+												</h:outputText>
+											</rich:column>
+
+
+											<rich:column>
+												<h:outputText value="#{statService.getTotalMontantPayer()}"
+													style="color:red; font-weight: bold;">
+													<f:convertNumber pattern="#,##0" />
+												</h:outputText>
+											</rich:column>
+
+											<rich:column>
+												<h:outputText value="#{statService.getMontantTotalResteAPayer()}"
+													style="color:red; font-weight: bold;">
+													<f:convertNumber pattern="#,##0" />
+												</h:outputText>
+											</rich:column>
+
+										
+										</rich:columnGroup>
+
+
+									</f:facet>
 										</rich:dataTable>
 										<rich:datascroller status="waitStatus" stepControls="auto"
 											style="width:100%" for="lstdemande"
@@ -253,7 +286,7 @@
 						</a:commandLink>
 					</f:facet>
 					<f:facet name="header">
-			 DETAILS DES DEPENSES
+			 DETAILS DES PAIEMENTS
 			</f:facet>
 					<rich:spacer height="10px" />
 					<h:form class="note-form" id="fdepense">
@@ -263,35 +296,71 @@
 									<div class="panel-body">
 										<div class="form-group has-success">
 
-											<rich:dataTable value="#{statService.listeRecette}" var="zd"
+											<rich:dataTable value="#{statService.listeInscrption}" var="zd"
 												id="led" style="width:100%;" rows="10"
 												rowClasses="row1,row2">
 												<f:facet name="header">
 													<rich:columnGroup>
 														<rich:column>
-															<h:outputLabel value="Date"
+															<h:outputLabel value="Eleve"
 																style="color:white;font-size:12px;font-family: Arial;text-align:center;" />
 														</rich:column>
 														<rich:column>
-															<h:outputLabel value="Montant"
+															<h:outputLabel value="Réduction"
+																style="color:white;font-size:12px;font-family: Arial;text-align:center;" />
+														</rich:column>
+														<rich:column>
+															<h:outputLabel value="Doit Payer"
+																style="color:white;font-size:12px;font-family: Arial;text-align:center;" />
+														</rich:column>
+														<rich:column>
+															<h:outputLabel value="A Payer"
+																style="color:white;font-size:12px;font-family: Arial;text-align:center;" />
+														</rich:column>
+														<rich:column>
+															<h:outputLabel value="Reste à Payer"
 																style="color:white;font-size:12px;font-family: Arial;text-align:center;" />
 														</rich:column>
 													</rich:columnGroup>
 												</f:facet>
 												<rich:column>
-													<h:outputLabel value="#{zd.datePaiment}">
-														<f:convertDateTime pattern="dd/MM/yyyy" />
+													<h:outputLabel value="#{zd.eleve.nom} #{zd.eleve.prenom}">
+
 													</h:outputLabel>
 												</rich:column>
 												<rich:column>
-													<h:outputLabel value="#{zd.montantPaye}">
+													<h:outputLabel value="#{zd.reduction}">
+
+													</h:outputLabel>
+												</rich:column>
+												<rich:column>
+													<h:outputLabel value="#{statService.montantDoitpayer(zd)}">
+														<f:convertNumber pattern="#,##0" />
+													</h:outputLabel>
+												</rich:column>
+												<rich:column>
+													<h:outputLabel value="#{statService.montantApayer(zd)}">
+														<f:convertNumber pattern="#,##0" />
+													</h:outputLabel>
+												</rich:column>
+												<rich:column>
+													<h:outputLabel value="#{statService.resteApayer(zd)}">
 														<f:convertNumber pattern="#,##0" />
 													</h:outputLabel>
 												</rich:column>
 											</rich:dataTable>
 											<rich:datascroller status="waitStatus" stepControls="auto"
 												style="width:100%" for="led" ajaxSingle="false"
-												rendered="#{not empty statService.listeRecette}" />
+												rendered="#{not empty statService.listeEleves}" />
+											<p align="left">
+												<a:commandLink styleClass="btn btn-success" value=""
+													action="#{statService.imprimerDetailsEtatsMensuel()}"
+													reRender="liste" status="waitStatus"
+													oncomplete="#{statService.showModal}">
+																		
+																		Imprimer			
+																				</a:commandLink>
+											</p>
 										</div>
 									</div>
 								</div>

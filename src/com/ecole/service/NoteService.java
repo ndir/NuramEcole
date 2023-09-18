@@ -7,6 +7,7 @@ import java.util.List;
 import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
 
+import org.apache.poi.util.SystemOutLogger;
 import org.hibernate.Session;
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.In;
@@ -230,6 +231,7 @@ public class NoteService implements Serializable {
 
 	@SuppressWarnings("unchecked")
 	public void chargerListeEleve() {
+		System.out.println("enter classe "+note.getCl().getLibelle() );
 		MatiereClasse mc = new MatiereClasse();
 		ParamInscription p = (ParamInscription) dataSource
 				.createQuery("From ParamInscription p inner join fetch p.classe c inner join fetch p.annee pa "
@@ -237,11 +239,13 @@ public class NoteService implements Serializable {
 				.setParameter("pc", note.getCl()).setParameter("pa", annee).uniqueResult();
 
 		if (p != null) {
+			System.out.println("not null");
 			this.setChoix(true);
 			List<Inscription> liste = dataSource
 					.createQuery(
 							"FRom Inscription i inner join fetch i.eleve inner join fetch i.paramins p where p =:pp")
 					.setParameter("pp", p).list();
+			System.out.println("taille liste "+liste.size() + "param "+p.getId());
 			listeEleves = new ArrayList<Eleve>();
 			if (typenote.equalsIgnoreCase("1")) {
 				mc = (MatiereClasse) dataSource

@@ -33,6 +33,7 @@ import com.chaka.projet.entity.Utilisateur;
 import com.ecole.entity.AnneeScolaire;
 import com.ecole.entity.Classe;
 import com.ecole.entity.Depense;
+import com.ecole.entity.Eleve;
 import com.ecole.entity.Inscription;
 import com.ecole.entity.Institution;
 import com.ecole.entity.ParamInscription;
@@ -111,6 +112,10 @@ public class StatistiqueService implements Serializable {
 	private String showModal = "";
 
 	private List<Utilisateur> listeUser = new ArrayList<Utilisateur>();
+
+	private List<Eleve> listeEleves = new ArrayList<Eleve>();
+
+	private List<Inscription> listeInscrption = new ArrayList<Inscription>();
 
 	@In(required = false)
 	@Out(required = false)
@@ -248,13 +253,57 @@ public class StatistiqueService implements Serializable {
 
 	}
 
+	@SuppressWarnings("unchecked")
 	public void zoomPaiement(ParamInscription param) {
 		listeRecette = new ArrayList<Recette>();
+		listeEleves = new ArrayList<Eleve>();
+
+		listeInscrption = dataSource
+				.createQuery("From Inscription i inner join fetch i.paramins p inner join fetch i.eleve where p=:pp")
+				.setParameter("pp", param).list();
+
 		for (Recette recette : listeRecettes) {
 			if (recette.getInscription().getParamins().getId().equals(param.getId())) {
 				listeRecette.add(recette);
 			}
 		}
+	}
+
+	public Double montantApayer(Inscription ins) {
+		Double mnt = 0d;
+		for (Recette recette : listeRecettes) {
+			if (recette.getInscription().getId().equals(ins.getId())) {
+				mnt = mnt + recette.getMontantPaye();
+			}
+		}
+		return mnt;
+	}
+
+	public void imprimerDetailsEtatsMensuel() {
+		for (Inscription eleve : listeInscrption) {
+			eleve.setaPayer(montantApayer(eleve));
+			eleve.setDoitPayer(montantApayer(eleve));
+			eleve.setResteApayer(resteApayer(eleve));
+		}
+		Institution in = (Institution) dataSource.createQuery("From Institution").uniqueResult();
+		Map<String, Object> param = new HashMap<String, Object>();
+		param.put("ecole", in.getNom());
+		param.put("slogan", in.getSologan());
+		param.put("tel", in.getTelephone());
+		retreiveMonthByString(mois);
+		param.put("etat", "ETAT MENSUEL MOIS : " + moisch);
+		getFilePrintService().imprimer("ecole", "details_etat", param, listeInscrption, utilisateur, ExportOption.PDF);
+		this.setShowModal("javascript:Richfaces.showModalPanel('modalPdf')");
+	}
+
+	public Double resteApayer(Inscription ins) {
+		return montantDoitpayer(ins) - montantApayer(ins);
+	}
+
+	public Double montantDoitpayer(Inscription ins) {
+		Double mnt = 0d;
+		mnt = ins.getParamins().getMensualite() - ins.getReduction();
+		return mnt;
 	}
 
 	@SuppressWarnings({ "unused", "unchecked" })
@@ -282,6 +331,18 @@ public class StatistiqueService implements Serializable {
 		}
 	}
 
+	public Double getMontantTotalAPayer() {
+		Double mnt = 0d;
+		for (ParamInscription param : listeParm) {
+			for (Inscription in : listeIns) {
+				if (in.getParamins().getId().equals(param.getId())) {
+					mnt = (mnt + param.getMensualite()) - in.getReduction();
+				}
+			}
+		}
+		return mnt;
+	}
+
 	public Double getMontantAPayer(ParamInscription param) {
 		Double mnt = 0d;
 		for (Inscription in : listeIns) {
@@ -292,15 +353,38 @@ public class StatistiqueService implements Serializable {
 		return mnt;
 	}
 
+	public Double getTotalMontantPayer() {
+		Double mnt = 0d;
+		for (ParamInscription param : listeParm) {
+			for (Recette in : listeRecettes) {
+				if (in.getInscription().getParamins().getId().equals(param.getId())) {
+					mnt = (mnt + in.getMontantPaye()) - in.getInscription().getAvoirEleve();
+
+				}
+			}
+		}
+		return mnt;
+	}
+
 	public Double getMontantPayer(ParamInscription param) {
 		Double mnt = 0d;
 		for (Recette in : listeRecettes) {
 			if (in.getInscription().getParamins().getId().equals(param.getId())) {
-				mnt = (mnt + in.getMontantPaye()); // - in.getInscription().getAvoirEleve()
+				mnt = (mnt + in.getMontantPaye()) - in.getInscription().getAvoirEleve();
 
 			}
 		}
 		return mnt;
+	}
+
+	public Double getMontantTotalResteAPayer() {
+		Double apayer = 0d, payer = 0d, reste = 0d;
+		for (ParamInscription param : listeParm) {
+			apayer = apayer + getMontantAPayer(param);
+			payer = payer + getMontantPayer(param);
+		}
+		reste = apayer - payer;
+		return reste;
 	}
 
 	public Double getMontantResteAPayer(ParamInscription param) {
@@ -411,16 +495,16 @@ public class StatistiqueService implements Serializable {
 		}
 	}
 
-	
 	public String getEleve(Recette recette) {
 		String eleve = "";
-		if(recette.getInscription() !=null && recette.getInscription().getEleve()!=null) {
-			eleve = recette.getInscription().getEleve().getPrenom() + " " +  recette.getInscription().getEleve().getNom() ;
+		if (recette.getInscription() != null && recette.getInscription().getEleve() != null) {
+			eleve = recette.getInscription().getEleve().getPrenom() + " "
+					+ recette.getInscription().getEleve().getNom();
 		}
-		
+
 		return eleve;
 	}
-	
+
 	public void zoomDepense(TypeDepense typedepense) {
 		listeDepenseZoom = new ArrayList<Depense>();
 		for (Depense dep : listeDepense) {
@@ -767,6 +851,22 @@ public class StatistiqueService implements Serializable {
 
 	public void setListeUser(List<Utilisateur> listeUser) {
 		this.listeUser = listeUser;
+	}
+
+	public List<Eleve> getListeEleves() {
+		return listeEleves;
+	}
+
+	public void setListeEleves(List<Eleve> listeEleves) {
+		this.listeEleves = listeEleves;
+	}
+
+	public List<Inscription> getListeInscrption() {
+		return listeInscrption;
+	}
+
+	public void setListeInscrption(List<Inscription> listeInscrption) {
+		this.listeInscrption = listeInscrption;
 	}
 
 }

@@ -60,22 +60,25 @@ public class ParamInscripionService implements Serializable {
 	private List<Inscription> listeEleve = new ArrayList<Inscription>();
 
 	private String libclasse;
-	
+
 	private String showModal = "";
 
-	
+	private String typeNote;
+
 	FileUploadService filePrintService;
-	
+
 	@In(required = false)
 	@Out(required = false)
 	private Utilisateur utilisateur;
-	
+
+	private String niv;
+
 	@SuppressWarnings("unchecked")
 	public String versCreer() {
 		param = new ParamInscription();
 		param.setAnnee(annee);
 		chargerliste();
-		
+
 		return "/pages/nuramecole/creerparaminscription.xhtml";
 	}
 
@@ -89,8 +92,6 @@ public class ParamInscripionService implements Serializable {
 
 	}
 
-
-	
 	@SuppressWarnings("unchecked")
 	public void versListeEleves(ParamInscription param) {
 		listeEleve = new ArrayList<Inscription>();
@@ -100,42 +101,68 @@ public class ParamInscripionService implements Serializable {
 		this.setLibclasse(param.getClasse().getLibelle());
 		this.setParam(param);
 	}
+
 	public void imprimerListeEleves() {
 		Institution in = (Institution) dataSource.createQuery("From Institution").uniqueResult();
 		Map<String, Object> param = new HashMap<String, Object>();
 		param.put("ecole", in.getNom());
 		param.put("slogan", in.getSologan());
 		param.put("tel", in.getTelephone());
-		param.put("etat", "LISTE DES ELEVES DE LA CLASSE "+this.param.getClasse().getLibelle());
+		param.put("etat", "LISTE DES ELEVES DE LA CLASSE " + this.param.getClasse().getLibelle());
 		getFilePrintService().imprimer("ecole", "eleve", param, listeEleve, utilisateur, ExportOption.PDF);
 		this.setShowModal("javascript:Richfaces.showModalPanel('modalPdf')");
 	}
 
 	@SuppressWarnings("unchecked")
 	public void chargerListeClasse() {
-		System.out.println("Niveau "+niveau.getLibelle());
-		setListeClasse(new ArrayList<Classe>());
-		setListeClasse(dataSource.createQuery(" From Classe c inner join fetch c.niveau n where n=:pn")
-				.setParameter("pn", niveau).list());
+		System.out.println("Niveau " + niveau.getLibelle());
+//		setListeClasse(new ArrayList<Classe>());
+//		setListeClasse(dataSource.createQuery(" From Classe c inner join fetch c.niveau n where n=:pn")
+//				.setParameter("pn", niveau).list());
+		if (niveau.getCode().equalsIgnoreCase("ELE")) {
+			typeNote = "1";
+		}
+		if (niveau.getCode().equalsIgnoreCase("MOY")) {
+			typeNote = "2";
+		}
+
+		if (niveau.getCode().equalsIgnoreCase("SEC")) {
+			typeNote = "3";
+		}
+		if (niveau.getCode().equalsIgnoreCase("PRE")) {
+			typeNote = "4";
+		}
 	}
+	
 
 	public void versModifierInscription(ParamInscription param) {
 		this.setParam(param);
 	}
 
+	@SuppressWarnings("unchecked")
 	public void ajouterInscription() {
-		if (param.getClasse() == null) {
+		if (niv.isEmpty()) {
 			FacesMessages.instance().addToControlFromResourceBundle("erreurGenerique", "Classe obligatoire");
 			return;
 		}
-
-		if (param.getId() == null) {
-			dataSource.save(param);
-		} else {
-			dataSource.update(param);
+		if (param.getMensualite() <= 0) {
+			FacesMessages.instance().addToControlFromResourceBundle("erreurGenerique", "Mensualité obligatoire");
+			return;
 		}
-		this.setParam(new ParamInscription());
-		param.setAnnee(annee);
+		if (param.getDroit_ins() <= 0) {
+			FacesMessages.instance().addToControlFromResourceBundle("erreurGenerique", "Droit d'inscription obligatoire");
+			return;
+		}
+		List<Classe> listeClasse = dataSource.createQuery("From Classe c where niv =:pniv").setParameter("pniv", niv)
+				.list();
+		for (Classe cl : listeClasse) {
+			ParamInscription p = new ParamInscription();
+			p.setAnnee(annee);
+			p.setClasse(cl);
+			p.setMensualite(param.getMensualite());
+			p.setDroit_ins(param.getDroit_ins());
+			dataSource.merge(p);
+		}
 		chargerliste();
 		FacesMessages.instance().addToControlFromResourceBundle("infoGenerique", "Opération effectuée avec succés");
 
@@ -203,6 +230,7 @@ public class ParamInscripionService implements Serializable {
 	public void setLibclasse(String libclasse) {
 		this.libclasse = libclasse;
 	}
+
 	public FileUploadService getFilePrintService() {
 		if (filePrintService == null) {
 			filePrintService = (FileUploadService) Component.getInstance(FileUploadService.class);
@@ -221,6 +249,22 @@ public class ParamInscripionService implements Serializable {
 
 	public void setShowModal(String showModal) {
 		this.showModal = showModal;
+	}
+
+	public String getTypeNote() {
+		return typeNote;
+	}
+
+	public void setTypeNote(String typeNote) {
+		this.typeNote = typeNote;
+	}
+
+	public String getNiv() {
+		return niv;
+	}
+
+	public void setNiv(String niv) {
+		this.niv = niv;
 	}
 
 }

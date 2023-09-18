@@ -93,7 +93,7 @@
 
 
 											<li><a:commandLink value="Liste des elèves"
-													status="waitStatus"  action="#{eleveService.versListeEleve}">
+													status="waitStatus" action="#{eleveService.versListeEleve}">
 													<s:conversationPropagation propagation="none" />
 												</a:commandLink></li>
 
@@ -106,8 +106,12 @@
 													status="waitStatus" action="#{apService.versAp}">
 													<s:conversationPropagation propagation="none" />
 												</a:commandLink></li>
+												
+											<li><a:commandLink value="Observations"
+													status="waitStatus" action="#{apService.versApms}">
+													<s:conversationPropagation propagation="none" />
+												</a:commandLink></li>
 										</ul></li>
-
 
 									<li><a:commandLink id="m_3_1" value="Comptabilité"></a:commandLink>
 										<ul>

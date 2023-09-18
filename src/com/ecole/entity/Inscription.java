@@ -12,6 +12,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 /**
  * @author A626257
@@ -44,7 +45,9 @@ public class Inscription  implements Serializable {
 	
 	private int moisenCours;
 	
-	
+	private Double doitPayer;
+	private Double aPayer;
+	private Double resteApayer;
 
 	@Id
 	@GeneratedValue
@@ -311,6 +314,33 @@ public class Inscription  implements Serializable {
 
 	public void setReliquat_ins(double reliquat_ins) {
 		this.reliquat_ins = reliquat_ins;
+	}
+	
+	@Transient
+	public Double getDoitPayer() {
+		return doitPayer;
+	}
+
+	public void setDoitPayer(Double doitPayer) {
+		this.doitPayer = doitPayer;
+	}
+
+	@Transient
+	public Double getaPayer() {
+		return aPayer;
+	}
+
+	public void setaPayer(Double aPayer) {
+		this.aPayer = aPayer;
+	}
+
+	@Transient
+	public Double getResteApayer() {
+		return resteApayer;
+	}
+
+	public void setResteApayer(Double resteApayer) {
+		this.resteApayer = resteApayer;
 	}
 	
 

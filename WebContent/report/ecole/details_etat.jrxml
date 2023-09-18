@@ -1,0 +1,232 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="bulletin" language="groovy" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="89af52a8-d2ec-4f35-8f4d-da069730ec92">
+	<property name="ireport.zoom" value="1.5"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<parameter name="logo" class="java.io.InputStream"/>
+	<parameter name="ecole" class="java.lang.String"/>
+	<parameter name="slogan" class="java.lang.String"/>
+	<parameter name="tel" class="java.lang.String"/>
+	<parameter name="total" class="java.lang.String"/>
+	<parameter name="moy" class="java.lang.String"/>
+	<parameter name="rang" class="java.lang.String"/>
+	<parameter name="app" class="java.lang.String"/>
+	<parameter name="eff" class="java.lang.String"/>
+	<parameter name="petat" class="java.lang.String"/>
+	<queryString language="hql">
+		<![CDATA[from Inscription]]>
+	</queryString>
+	<field name="aPayer" class="java.lang.Double"/>
+	<field name="avoirEleve" class="java.lang.Double"/>
+	<field name="commentaire" class="java.lang.String"/>
+	<field name="doitPayer" class="java.lang.Double"/>
+	<field name="eleve" class="com.ecole.entity.Eleve"/>
+	<field name="id" class="java.lang.Long"/>
+	<field name="mois1" class="java.lang.Boolean"/>
+	<field name="mois10" class="java.lang.Boolean"/>
+	<field name="mois11" class="java.lang.Boolean"/>
+	<field name="mois12" class="java.lang.Boolean"/>
+	<field name="mois2" class="java.lang.Boolean"/>
+	<field name="mois3" class="java.lang.Boolean"/>
+	<field name="mois4" class="java.lang.Boolean"/>
+	<field name="mois5" class="java.lang.Boolean"/>
+	<field name="mois6" class="java.lang.Boolean"/>
+	<field name="mois7" class="java.lang.Boolean"/>
+	<field name="moisenCours" class="java.lang.Integer"/>
+	<field name="montantInscriptionPaye" class="java.lang.Double"/>
+	<field name="nbreMoisPaye" class="java.lang.Integer"/>
+	<field name="paramins" class="com.ecole.entity.ParamInscription"/>
+	<field name="reduction" class="java.lang.Double"/>
+	<field name="reliquat" class="java.lang.Double"/>
+	<field name="reliquat_ins" class="java.lang.Double"/>
+	<field name="resteApayer" class="java.lang.Double"/>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="171" splitType="Stretch">
+			<image>
+				<reportElement x="3" y="5" width="100" height="50" uuid="2e970148-b146-41b9-99cd-da53529800c5"/>
+				<imageExpression><![CDATA[$P{logo}]]></imageExpression>
+			</image>
+			<textField>
+				<reportElement x="0" y="59" width="543" height="20" uuid="9fb14f85-97f4-4793-bb0f-8ac3e9db9c6a"/>
+				<textElement>
+					<font size="12" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{ecole}]]></textFieldExpression>
+			</textField>
+			<textField pattern="EEEEE dd MMMMM yyyy">
+				<reportElement x="302" y="0" width="251" height="20" uuid="3086e59e-a433-440c-9699-cbffcfb1be00"/>
+				<textElement textAlignment="Right">
+					<font size="12" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[new java.util.Date()]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="0" y="87" width="543" height="20" uuid="ce9ce57f-d4fe-4dc5-9065-91d0d5bb4177"/>
+				<textElement>
+					<font size="12" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{tel}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="0" y="73" width="543" height="20" uuid="4471c004-3592-4e61-8586-75c8ad4a0948"/>
+				<textElement>
+					<font size="12" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{slogan}]]></textFieldExpression>
+			</textField>
+			<line>
+				<reportElement x="3" y="115" width="550" height="1" uuid="d1a933ef-a8ea-498b-960e-d9b6f466da61"/>
+				<graphicElement>
+					<pen lineWidth="2.0" lineStyle="Double"/>
+				</graphicElement>
+			</line>
+			<line>
+				<reportElement x="4" y="151" width="550" height="1" uuid="dfcb6fde-4dcd-41e1-988d-2a865c3477a9"/>
+				<graphicElement>
+					<pen lineWidth="2.0" lineStyle="Double"/>
+				</graphicElement>
+			</line>
+			<textField>
+				<reportElement x="3" y="122" width="550" height="24" uuid="5c50bb26-47e6-4952-863b-ac0c9d134e12"/>
+				<textElement textAlignment="Center">
+					<font size="14" isBold="true" isUnderline="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{petat}]]></textFieldExpression>
+			</textField>
+		</band>
+	</title>
+	<columnHeader>
+		<band height="36" splitType="Stretch">
+			<rectangle>
+				<reportElement x="0" y="15" width="169" height="20" uuid="c8b62943-cfb4-480c-81db-de11450dfa17"/>
+			</rectangle>
+			<rectangle>
+				<reportElement x="168" y="15" width="84" height="20" uuid="fe33adc6-c1b5-407c-9748-bfc3f100917e"/>
+			</rectangle>
+			<rectangle>
+				<reportElement x="251" y="15" width="67" height="20" uuid="49e3a82b-23dd-422a-bc9b-9d26c50f6e41"/>
+			</rectangle>
+			<staticText>
+				<reportElement x="0" y="16" width="169" height="20" uuid="2a55ee60-3cf0-4451-95ca-e1c85042af94"/>
+				<textElement textAlignment="Center">
+					<font size="12"/>
+				</textElement>
+				<text><![CDATA[Elève]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="169" y="15" width="83" height="20" uuid="59c16bdf-ed11-4d34-9e4d-cee214a1f7ae"/>
+				<textElement textAlignment="Center">
+					<font size="12"/>
+				</textElement>
+				<text><![CDATA[Réduction]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="252" y="16" width="66" height="20" uuid="f343382f-6848-4204-8a87-874e81e43504"/>
+				<textElement textAlignment="Center">
+					<font size="12"/>
+				</textElement>
+				<text><![CDATA[Mensualité]]></text>
+			</staticText>
+			<rectangle>
+				<reportElement x="318" y="15" width="81" height="20" uuid="a977515f-4197-428c-8004-ba2ba7a5201d"/>
+			</rectangle>
+			<staticText>
+				<reportElement x="319" y="16" width="79" height="20" uuid="69059cf3-5bde-4554-bc1b-34194e8c8616"/>
+				<textElement textAlignment="Center">
+					<font size="12"/>
+				</textElement>
+				<text><![CDATA[A Payer]]></text>
+			</staticText>
+			<rectangle>
+				<reportElement x="398" y="15" width="81" height="20" uuid="89cb3f76-d00f-4b30-a305-7da0ffa56168"/>
+			</rectangle>
+			<staticText>
+				<reportElement x="399" y="15" width="79" height="20" uuid="44789070-13e3-4048-bc97-46c34c7dc94d"/>
+				<textElement textAlignment="Center">
+					<font size="12"/>
+				</textElement>
+				<text><![CDATA[Reste à Payer]]></text>
+			</staticText>
+			<rectangle>
+				<reportElement x="479" y="15" width="76" height="20" uuid="9c05a3f8-cda9-4314-8600-d9dfa7ba8c9b"/>
+			</rectangle>
+			<staticText>
+				<reportElement x="480" y="15" width="73" height="20" uuid="10fcc9ab-cbe9-4d9e-b818-ffabdc0db88e"/>
+				<textElement textAlignment="Center">
+					<font size="12"/>
+				</textElement>
+				<text><![CDATA[Titeur]]></text>
+			</staticText>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="21" splitType="Stretch">
+			<rectangle>
+				<reportElement x="0" y="0" width="169" height="20" uuid="248607d6-bc79-47af-83a2-2f3544503f75"/>
+			</rectangle>
+			<rectangle>
+				<reportElement x="168" y="0" width="84" height="20" uuid="3dad4e31-c8f5-4f4a-8a47-8749ea642825"/>
+			</rectangle>
+			<rectangle>
+				<reportElement x="251" y="0" width="67" height="20" uuid="ae1888b6-a91a-4286-bbe8-a1177d9a4e1d"/>
+			</rectangle>
+			<textField>
+				<reportElement x="3" y="1" width="166" height="20" uuid="3a7242f1-3208-45b4-b3f0-baea8a883584"/>
+				<textElement textAlignment="Center">
+					<font size="12" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{eleve}.getPrenom()+" " +$F{eleve}.getNom()]]></textFieldExpression>
+			</textField>
+			<rectangle>
+				<reportElement x="318" y="0" width="81" height="20" uuid="89335ea7-e503-4b1b-8fd8-27968f156eec"/>
+			</rectangle>
+			<rectangle>
+				<reportElement x="398" y="0" width="81" height="20" uuid="b31b91c7-5faa-4e5d-a8e4-2ada71e2110b"/>
+			</rectangle>
+			<rectangle>
+				<reportElement x="479" y="0" width="76" height="20" uuid="aa4f742d-a0f5-4796-b067-53fe7fd16903"/>
+			</rectangle>
+			<textField pattern="#,##0">
+				<reportElement x="169" y="1" width="83" height="20" uuid="56d33f7b-1cf6-4b73-a8ef-da7ebdebe12b"/>
+				<textElement textAlignment="Center">
+					<font size="12" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{reduction}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0">
+				<reportElement x="252" y="1" width="67" height="20" uuid="44e7ec1e-497c-486e-8ec0-ff87dfadab21"/>
+				<textElement textAlignment="Center">
+					<font size="12" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{doitPayer}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0">
+				<reportElement x="399" y="1" width="81" height="20" uuid="dbfa9934-29e6-48e4-ac87-f51cf3893ae3"/>
+				<textElement textAlignment="Center">
+					<font size="12" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{resteApayer}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0">
+				<reportElement x="319" y="1" width="80" height="20" uuid="04cd085d-eef1-4728-9083-bbbddf723fe6"/>
+				<textElement textAlignment="Center">
+					<font size="12" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{aPayer}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="480" y="1" width="75" height="20" uuid="bdc65ae6-eefe-4d82-8495-c5822a9dd894"/>
+				<textElement textAlignment="Center">
+					<font size="12" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{eleve}.getTelephone()]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<summary>
+		<band height="34"/>
+	</summary>
+</jasperReport>

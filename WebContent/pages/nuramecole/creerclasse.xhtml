@@ -251,9 +251,12 @@
 														</h:selectOneMenu></td>
 												</tr>
 												<tr>
-													<td><h:outputLabel styleClass="grey" value="Mois" /></td>
+													<td><h:outputLabel styleClass="grey" value="Classe" /></td>
 													<td><h:selectOneMenu value="#{classeService.niv}"
 															class="form-control">
+															<f:selectItem itemValue="PS" itemLabel="PS" />
+															<f:selectItem itemValue="MS" itemLabel="MS" />
+															<f:selectItem itemValue="GS" itemLabel="GS" />
 															<f:selectItem itemValue="CI" itemLabel="CI" />
 															<f:selectItem itemValue="CP" itemLabel="CP" />
 															<f:selectItem itemValue="CE1" itemLabel="CE1" />

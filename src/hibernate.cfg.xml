@@ -37,6 +37,7 @@
 		<mapping class="com.ecole.entity.TypeDepense" />
 		<mapping class="com.ecole.entity.Recette" />
 		<mapping class="com.ecole.entity.Appreciation" />
+		<mapping class="com.ecole.entity.AppreciationMS" />
 		<mapping class="com.ecole.entity.Deliberation" />
 		<mapping class="com.ecole.entity.DeliberationFinal" />
 		<mapping class="com.ecole.entity.Decision" />

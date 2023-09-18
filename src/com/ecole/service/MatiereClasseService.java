@@ -126,7 +126,7 @@ public class MatiereClasseService implements Serializable {
 		List<Classe> listeClasse = dataSource.createQuery("From Classe c where niv =:pniv").setParameter("pniv", niv)
 				.list();
 		for (Classe cl : listeClasse) {
-			System.out.println("Classe " + cl.getLibelle());
+			
 			MatiereClasse m = new MatiereClasse();
 			for (Matiere mat : listeMatiere) {
 				if (mat.getCoef() > 0) {

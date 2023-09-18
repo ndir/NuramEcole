@@ -15,6 +15,7 @@ import org.jboss.seam.annotations.Scope;
 import org.jboss.seam.faces.FacesMessages;
 
 import com.ecole.entity.Appreciation;
+import com.ecole.entity.AppreciationMS;
 
 /**
  * @author A626257
@@ -36,16 +37,32 @@ public class AppreciationService implements Serializable {
 
 	private List<Appreciation> listeAp = new ArrayList<Appreciation>();
 
+	private AppreciationMS apms = new AppreciationMS();
+
+	private List<AppreciationMS> listeAps = new ArrayList<AppreciationMS>();
+
 	public String versAp() {
 		this.setAp(new Appreciation());
 		chargerListeAp();
 		return "/pages/nuramecole/appreciation.xhtml";
 	}
 
+	public String versApms() {
+		this.setApms(new AppreciationMS());
+		chargerListeAps();
+		return "/pages/nuramecole/appreciations.xhtml";
+	}
+
 	@SuppressWarnings("unchecked")
 	public void chargerListeAp() {
 		listeAp = new ArrayList<Appreciation>();
 		listeAp = dataSource.createQuery("From Appreciation ").list();
+	}
+
+	@SuppressWarnings("unchecked")
+	public void chargerListeAps() {
+		listeAps = new ArrayList<AppreciationMS>();
+		listeAps = dataSource.createQuery("From AppreciationMS ").list();
 	}
 
 	public void ajouterAp() {
@@ -73,13 +90,47 @@ public class AppreciationService implements Serializable {
 		chargerListeAp();
 		FacesMessages.instance().addToControlFromResourceBundle("infoGenerique", "Opération effectuée avec succès");
 	}
-	
+
+	public void ajouterAps() {
+		if (apms.getInf() <= 0) {
+			FacesMessages.instance().addToControlFromResourceBundle("erreurGenerique",
+					"Renseiger la moyenne inférieure");
+			return;
+		}
+
+		if (apms.getSup() <= 0) {
+			FacesMessages.instance().addToControlFromResourceBundle("erreurGenerique",
+					"Renseiger la moyenne supérieure");
+			return;
+		}
+		if (apms.getLibelle().isEmpty()) {
+			FacesMessages.instance().addToControlFromResourceBundle("erreurGenerique", "Appréciation obligatoire");
+			return;
+		}
+		if (apms.getId() == null) {
+			dataSource.save(apms);
+		} else {
+			dataSource.update(apms);
+		}
+		this.setApms(new AppreciationMS());
+		chargerListeAps();
+		FacesMessages.instance().addToControlFromResourceBundle("infoGenerique", "Opération effectuée avec succès");
+	}
+
 	public void annulerAp() {
 		this.setAp(new Appreciation());
 	}
 
+	public void annulerAps() {
+		this.setApms(new AppreciationMS());
+	}
+
 	public void versmodifierAp(Appreciation ap) {
 		this.setAp(ap);
+	}
+
+	public void versmodifierAps(AppreciationMS ap) {
+		this.setApms(apms);
 	}
 
 	public Appreciation getAp() {
@@ -96,6 +147,22 @@ public class AppreciationService implements Serializable {
 
 	public void setListeAp(List<Appreciation> listeAp) {
 		this.listeAp = listeAp;
+	}
+
+	public AppreciationMS getApms() {
+		return apms;
+	}
+
+	public void setApms(AppreciationMS apms) {
+		this.apms = apms;
+	}
+
+	public List<AppreciationMS> getListeAps() {
+		return listeAps;
+	}
+
+	public void setListeAps(List<AppreciationMS> listeAps) {
+		this.listeAps = listeAps;
 	}
 
 }
