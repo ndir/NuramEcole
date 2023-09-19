@@ -41,6 +41,9 @@ public class Recette implements Serializable {
 	 * Utilisateur loggué
 	 */
 	private Utilisateur utilisateur;
+	
+	
+	private Double avoirUtilise;
 
 	@Id
 	@GeneratedValue
@@ -207,6 +210,14 @@ public class Recette implements Serializable {
 
 	public void setMontant(Double montant) {
 		this.montant = montant;
+	}
+
+	public Double getAvoirUtilise() {
+		return avoirUtilise;
+	}
+
+	public void setAvoirUtilise(Double avoirUtilise) {
+		this.avoirUtilise = avoirUtilise;
 	}
 
 	

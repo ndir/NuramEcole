@@ -78,6 +78,8 @@ public class EleveService implements Serializable {
 
 	private List<Inscription> listeIns = new ArrayList<Inscription>();
 
+	private boolean paiemens;
+
 	@In
 	private AnneeScolaire annee;
 
@@ -98,7 +100,7 @@ public class EleveService implements Serializable {
 		}
 		listeNiveau = new ArrayList<Niveau>();
 		listeNiveau = dataSource.createQuery("From Niveau ").list();
-
+		this.setPaiemens(true);
 		return "/pages/nuramecole/creereleve.xhtml";
 	}
 
@@ -209,6 +211,7 @@ public class EleveService implements Serializable {
 	}
 
 	public void ajouterInscription() {
+		System.out.println("Entrer ajout inscription "+paiemens);
 		if (this.eleve.getNom().isEmpty() || this.eleve.getPrenom().isEmpty()) {
 			FacesMessages.instance().addToControlFromResourceBundle("erreurGenerique",
 					"Veuillez renseigner le nom et le prénom de l'éléve");
@@ -226,7 +229,7 @@ public class EleveService implements Serializable {
 			return;
 		}
 
-		// Classe cl = (Classe) dataSource.get(Classe.class, classe.getIdclasse());
+		
 
 		ParamInscription paramins = (ParamInscription) dataSource
 				.createQuery("From ParamInscription p inner join fetch p.annee inner join fetch p.classe"
@@ -239,14 +242,21 @@ public class EleveService implements Serializable {
 			dataSource.save(eleve);
 			inscription.setParamins(paramins);
 			inscription.setEleve(eleve);
+			inscription.setPaiemens(paiemens);
 			if (mntPaye > 0) {
 				inscription.setMontantInscriptionPaye(mntPaye);
-				if (mntPaye > mntIns) {
-					inscription.setAvoirEleve(mntPaye - mntIns);
+				if (paiemens) {
+					if (mntPaye > mntIns) {
+						inscription.setAvoirEleve(mntPaye - mntIns);
+					}
+					if (mntPaye < mntIns) {
+						inscription.setReliquat_ins(mntIns - mntPaye);
+					}
+				} else {
+					inscription.setAvoirEleve(0d);
+					inscription.setReliquat_ins(0d);
 				}
-				if (mntPaye < mntIns) {
-					inscription.setReliquat_ins(mntIns - mntPaye);
-				}
+
 			}
 			dataSource.save(inscription);
 			if (mntPaye > 0) {
@@ -261,10 +271,9 @@ public class EleveService implements Serializable {
 			}
 			this.setEleve(new Eleve());
 			this.setInscription(new Inscription());
-
+            this.setClasse(new Classe());
 			mntIns = paramins.getDroit_ins();
-
-		
+            this.setPaiemens(true);
 			mntIns = 0d;
 			FacesMessages.instance().addToControlFromResourceBundle("infoGenerique", "Evaluation ajoutée avec succés");
 		}
@@ -463,6 +472,14 @@ public class EleveService implements Serializable {
 
 	public void setShowModal(String showModal) {
 		this.showModal = showModal;
+	}
+
+	public boolean isPaiemens() {
+		return paiemens;
+	}
+
+	public void setPaiemens(boolean paiemens) {
+		this.paiemens = paiemens;
 	}
 
 }

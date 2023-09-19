@@ -60,7 +60,7 @@ public class ProfileConverter implements Converter {
 	public String getAsString(FacesContext myContextFaces, UIComponent uiComponent, Object objet) {
 		Profile profile = (Profile)objet;
 		String resultat = "";
-		if (profile != null) {
+		if (profile != null && profile.getIdProfile()!=null ) {
 			resultat = profile.getIdProfile().toString();
 		}
 		return resultat;

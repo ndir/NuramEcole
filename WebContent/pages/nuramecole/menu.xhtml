@@ -104,70 +104,107 @@
 				<div class="row row-sm mg-b-20">
 					<div class="col-lg-12"></div>
 				</div>
-				<rich:panel header="DROITS PROFILE" styleclass="panel panel-success">
+				<rich:panel header="PARAMETRAGE MENU"
+					styleclass="panel panel-success">
 					<div class="row row-sm mg-b-20">
 						<div class="col-lg-12">
 							<div class="row row-sm">
 								<div class="table-responsive">
 									<h:form id="liste">
-										<h3 styleClass="tet" style="color: red;">PROFILE
-											#{droitsService.profile.libelle}</h3>
-										<table class="table">
+										<TABLE class="table">
+											<tr>
+												<td><h:outputText value="Profile" styleClass="grey" /></td>
+												<td><rich:spacer width="10px;"></rich:spacer></td>
+												<td><h:selectOneMenu
+														value="#{menuSerivice.menu.menuparent}"
+														converter="#{menuParentConverter}"
+														styleClass="form-control">
+														<s:selectItems value="#{menuSerivice.listeMenuP}" var="pr"
+															label="#{pr.libelle}"
+															noSelectionLabel="--- Selectionnez ---">
+														</s:selectItems>
+													</h:selectOneMenu></td>
+											</tr>
 
-											<tbody>
+											<tr>
+												<td><h:outputText value="Libelle" styleClass="grey" /></td>
+												<td><rich:spacer width="10px;"></rich:spacer></td>
+												<td><h:inputText value="#{menuSerivice.menu.libelle}"
+														id="prenom" style="color:width:500px;"
+														styleClass="form-control" /></td>
+												<td><rich:spacer width="10px;"></rich:spacer></td>
+											</tr>
 
-												<tr>
-													<td><h:outputText value="Profile" styleClass="grey" /></td>
-													<td><rich:spacer width="10px;"></rich:spacer></td>
-													<td><h:selectOneMenu value="#{droitsService.profile}"
-															converter="#{profileConverter}" styleClass="form-control"
-															required="true">
-															<s:selectItems value="#{droitsService.listeProfile}"
-																var="pr" label="#{pr.libelle}"
-																noSelectionLabel="--- Selectionnez ---">
-															</s:selectItems>
-															<a:support event="onchange" reRender="add" />
-														</h:selectOneMenu></td>
 
-												</tr>
-											</tbody>
-
-										</table>
-										<rich:dataTable value="#{droitsService.listeMP}" var="menu"
+										</TABLE>
+										<p align="center">
+											<a:commandLink styleClass="btn btn-success" value=""
+												action="#{menuSerivice.ajouterMenu}" title="valider"
+												reRender="liste" status="waitStatus">
+											
+							VALIDER
+											
+						</a:commandLink>
+										</p>
+										<rich:dataTable value="#{menuSerivice.listeMenu}" var="menu"
 											id="lstdemande" style="width:100%;" rows="10"
 											rowClasses="row1,row2">
 											<f:facet name="header">
 												<rich:columnGroup>
 
 													<rich:column>
+														<h:outputLabel value="Parent"
+															style="color:white;font-size:12px;font-family: Arial;text-align:center;" />
+													</rich:column>
+
+
+													<rich:column>
 														<h:outputLabel value="Libelle"
 															style="color:white;font-size:12px;font-family: Arial;text-align:center;" />
 													</rich:column>
+
+
 
 													<rich:column style="width:5%;">
 														<h:outputLabel value="Modifier"
 															style="color:white;font-size:12px;font-family: Arial;text-align:center;" />
 													</rich:column>
 
+
+
 												</rich:columnGroup>
 											</f:facet>
+
+
+											<rich:column>
+												<h:outputText value="#{menu.menuparent.libelle}"
+													styleClass="grey" />
+											</rich:column>
+
+
 
 											<rich:column>
 												<h:outputText value="#{menu.libelle}" styleClass="grey" />
 											</rich:column>
+
 											<rich:column style="width:5%;">
+
 												<a:commandLink value="" status="waitStatus"
-													action="#{droitsService.listeDroitsParProfile(menu)}"
-													oncomplete="#{droitsService.showModal}"
-													reRender="add,fdroits" title="Modifier">
-													<s:graphicImage fileName="add.png" style="border:0px;"
-														value="/picto/add.png" width="16" height="16" alt="" />
+													action="#{menuSerivice.versModifier(menu)}"
+													reRender="addmenu" title="Modifier">
+													<s:graphicImage fileName="page_edit.png"
+														style="border:0px;" value="/picto/page_edit.png"
+														width="16" height="16" alt="" />
+
 												</a:commandLink>
+
 											</rich:column>
+
+
 										</rich:dataTable>
 										<rich:datascroller status="waitStatus" stepControls="auto"
 											style="width:100%" for="lstdemande"
-											rendered="#{not empty droitsService.listeMP}" />
+											rendered="#{not empty menuSerivice.listeMenu}" />
 									</h:form>
 
 								</div>
@@ -177,47 +214,7 @@
 						</div>
 					</div>
 				</rich:panel>
-				<rich:modalPanel id="droits"
-					style="background:url('../img2/fond.jpg') repeat-x scroll 0 0 #FFF;height:210; width:400"
-					moveable="true" styleClass="popupAttente">
-					<f:facet name="controls">
 
-						<a:commandLink value="" status="waitStatus" title="Fermer "
-							onclick="javascript:Richfaces.hideModalPanel('droits')">
-							<s:graphicImage fileName="cross.png" style="border:0px;"
-								value="/picto/cross.png" width="16" height="16" alt="" />
-						</a:commandLink>
-					</f:facet>
-					<f:facet name="header">
-			DROITS
-			</f:facet>
-					<h:form class="note-form" id="fdroits">
-						<a:commandLink styleClass="btn btn-success" value=""
-							action="#{droitsService.ajouterDroitsProfile}"
-							reRender="add,fdroits" status="waitStatus"
-							oncomplete="#{droitsService.showModal}">			
-							VALIDER
-						</a:commandLink>
-						<rich:dataTable value="#{droitsService.listeMenu}" var="var"
-							id="pdi2" rows="8">
-							<rich:column>
-								<f:facet name="header">
-									<h:outputText value="Menu" styleClass="grey" />
-								</f:facet>
-								<h:outputText value="#{var.libelle}" />
-							</rich:column>
-							<rich:column>
-								<f:facet name="header">
-									<h:outputText value="Choisir" styleClass="grey" />
-								</f:facet>
-								<h:selectBooleanCheckbox value="#{var.choix}" />
-							</rich:column>
-						</rich:dataTable>
-						<rich:datascroller status="waitStatus" stepControls="auto"
-							style="width:100%" for="pdi2" ajaxSingle="false"
-							rendered="#{not empty droitsService.listeMenu}" />
-					</h:form>
-				</rich:modalPanel>
 			</div>
 		</div>
 	</div>

@@ -115,10 +115,6 @@ public class ParamInscripionService implements Serializable {
 
 	@SuppressWarnings("unchecked")
 	public void chargerListeClasse() {
-		System.out.println("Niveau " + niveau.getLibelle());
-//		setListeClasse(new ArrayList<Classe>());
-//		setListeClasse(dataSource.createQuery(" From Classe c inner join fetch c.niveau n where n=:pn")
-//				.setParameter("pn", niveau).list());
 		if (niveau.getCode().equalsIgnoreCase("ELE")) {
 			typeNote = "1";
 		}

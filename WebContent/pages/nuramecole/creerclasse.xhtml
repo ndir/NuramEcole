@@ -247,30 +247,65 @@
 																var="type" label="#{type.libelle}"
 																noSelectionLabel="--- Selectionnez ---" />
 
-
+															<a:support event="onchange"
+																action="#{classeService.chargerListeNiveau()}"
+																ajaxSingle="true" reRender="form" status="waitStatus"></a:support>
 														</h:selectOneMenu></td>
 												</tr>
 												<tr>
-													<td><h:outputLabel styleClass="grey" value="Classe" /></td>
-													<td><h:selectOneMenu value="#{classeService.niv}"
-															class="form-control">
-															<f:selectItem itemValue="PS" itemLabel="PS" />
-															<f:selectItem itemValue="MS" itemLabel="MS" />
-															<f:selectItem itemValue="GS" itemLabel="GS" />
-															<f:selectItem itemValue="CI" itemLabel="CI" />
-															<f:selectItem itemValue="CP" itemLabel="CP" />
-															<f:selectItem itemValue="CE1" itemLabel="CE1" />
-															<f:selectItem itemValue="CE2" itemLabel="CE2" />
-															<f:selectItem itemValue="CM1" itemLabel="CM1" />
-															<f:selectItem itemValue="CM2" itemLabel="CM2" />
-															<f:selectItem itemValue="6eme" itemLabel="6eme" />
-															<f:selectItem itemValue="5eme" itemLabel="5eme" />
-															<f:selectItem itemValue="4eme" itemLabel="4eme" />
-															<f:selectItem itemValue="3eme" itemLabel="3eme" />
-															<f:selectItem itemValue="Seconde" itemLabel="Seconde" />
-															<f:selectItem itemValue="1ere" itemLabel="1ere" />
-															<f:selectItem itemValue="Terminal" itemLabel="Terminal" />
-														</h:selectOneMenu></td>
+													
+													<a:outputPanel rendered="#{classeService.typeNote eq '4'}">
+														<td><h:outputLabel styleClass="grey" value="Classe" /></td>
+														<td><h:selectOneMenu value="#{classeService.niv}"
+																class="form-control">
+																<f:selectItem itemValue="PS" itemLabel="PS" />
+																<f:selectItem itemValue="MS" itemLabel="MS" />
+																<f:selectItem itemValue="GS" itemLabel="GS" />
+															</h:selectOneMenu></td>
+													</a:outputPanel>
+
+													<a:outputPanel rendered="#{classeService.typeNote eq '1'}">
+														<td><h:outputLabel styleClass="grey" value="Classe" /></td>
+														<td><h:selectOneMenu value="#{classeService.niv}"
+																class="form-control">
+
+																<f:selectItem itemValue="CI" itemLabel="CI" />
+																<f:selectItem itemValue="CP" itemLabel="CP" />
+																<f:selectItem itemValue="CE1" itemLabel="CE1" />
+																<f:selectItem itemValue="CE2" itemLabel="CE2" />
+																<f:selectItem itemValue="CM1" itemLabel="CM1" />
+																<f:selectItem itemValue="CM2" itemLabel="CM2" />
+
+															</h:selectOneMenu></td>
+													</a:outputPanel>
+
+
+													<a:outputPanel rendered="#{classeService.typeNote eq '2'}">
+														<td><h:outputLabel styleClass="grey" value="Classe" /></td>
+														<td><h:selectOneMenu value="#{classeService.niv}"
+																class="form-control">
+
+																<f:selectItem itemValue="6eme" itemLabel="6eme" />
+																<f:selectItem itemValue="5eme" itemLabel="5eme" />
+																<f:selectItem itemValue="4eme" itemLabel="4eme" />
+																<f:selectItem itemValue="3eme" itemLabel="3eme" />
+
+															</h:selectOneMenu></td>
+													</a:outputPanel>
+
+													<a:outputPanel rendered="#{classeService.typeNote eq '3'}">
+														<td><h:outputLabel styleClass="grey" value="Classe" /></td>
+														<td><h:selectOneMenu value="#{classeService.niv}"
+																class="form-control">
+
+																<f:selectItem itemValue="Seconde" itemLabel="Seconde" />
+																<f:selectItem itemValue="1ere" itemLabel="1ere" />
+																<f:selectItem itemValue="Terminal" itemLabel="Terminal" />
+
+															</h:selectOneMenu></td>
+													</a:outputPanel>
+
+
 												</tr>
 												<tr>
 													<td><h:outputLabel styleClass="grey" value="Libellé" /></td>

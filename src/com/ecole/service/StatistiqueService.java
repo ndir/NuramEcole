@@ -258,9 +258,9 @@ public class StatistiqueService implements Serializable {
 		listeRecette = new ArrayList<Recette>();
 		listeEleves = new ArrayList<Eleve>();
 
-		listeInscrption = dataSource
-				.createQuery("From Inscription i inner join fetch i.paramins p inner join fetch i.eleve where p=:pp")
-				.setParameter("pp", param).list();
+		listeInscrption = dataSource.createQuery(
+				"From Inscription i inner join fetch i.paramins p inner join fetch i.eleve  where p=:pp and i.paiemens =:pm")
+				.setParameter("pp", param).setParameter("pm", true).list();
 
 		for (Recette recette : listeRecettes) {
 			if (recette.getInscription().getParamins().getId().equals(param.getId())) {
@@ -274,6 +274,9 @@ public class StatistiqueService implements Serializable {
 		for (Recette recette : listeRecettes) {
 			if (recette.getInscription().getId().equals(ins.getId())) {
 				mnt = mnt + recette.getMontantPaye();
+			}
+			if(recette.getAvoirUtilise() > 0) {
+				mnt = mnt + recette.getAvoirUtilise();
 			}
 		}
 		return mnt;
@@ -297,7 +300,12 @@ public class StatistiqueService implements Serializable {
 	}
 
 	public Double resteApayer(Inscription ins) {
-		return montantDoitpayer(ins) - montantApayer(ins);
+		Double reste = 0d;
+		reste = montantDoitpayer(ins) - montantApayer(ins);
+		if (reste < 0) {
+			reste = 0d;
+		}
+		return reste;
 	}
 
 	public Double montantDoitpayer(Inscription ins) {
@@ -335,7 +343,7 @@ public class StatistiqueService implements Serializable {
 		Double mnt = 0d;
 		for (ParamInscription param : listeParm) {
 			for (Inscription in : listeIns) {
-				if (in.getParamins().getId().equals(param.getId())) {
+				if (in.getParamins().getId().equals(param.getId()) && in.isPaiemens()) {
 					mnt = (mnt + param.getMensualite()) - in.getReduction();
 				}
 			}
@@ -346,7 +354,7 @@ public class StatistiqueService implements Serializable {
 	public Double getMontantAPayer(ParamInscription param) {
 		Double mnt = 0d;
 		for (Inscription in : listeIns) {
-			if (in.getParamins().getId().equals(param.getId())) {
+			if (in.getParamins().getId().equals(param.getId()) && in.isPaiemens()) {
 				mnt = (mnt + param.getMensualite()) - in.getReduction();
 			}
 		}
@@ -357,10 +365,13 @@ public class StatistiqueService implements Serializable {
 		Double mnt = 0d;
 		for (ParamInscription param : listeParm) {
 			for (Recette in : listeRecettes) {
-				if (in.getInscription().getParamins().getId().equals(param.getId())) {
-					mnt = (mnt + in.getMontantPaye()) - in.getInscription().getAvoirEleve();
+				if (in.getInscription().getParamins().getId().equals(param.getId()) && in.getInscription().isPaiemens()) {
+					mnt = (mnt + in.getMontantPaye() + in.getAvoirUtilise()) - in.getInscription().getAvoirEleve();
 
 				}
+//				if(in.getAvoirUtilise() > 0) {
+//					mnt = mnt + in.getAvoirUtilise();
+//				}
 			}
 		}
 		return mnt;
@@ -370,7 +381,15 @@ public class StatistiqueService implements Serializable {
 		Double mnt = 0d;
 		for (Recette in : listeRecettes) {
 			if (in.getInscription().getParamins().getId().equals(param.getId())) {
-				mnt = (mnt + in.getMontantPaye()) - in.getInscription().getAvoirEleve();
+				System.out.print("+ in.getAvoirUtilise() " + in.getAvoirUtilise());
+				mnt = (mnt + in.getMontantPaye()) - (in.getInscription().getAvoirEleve());
+				if (in.getMontantPaye() > in.getInscription().getParamins().getMensualite()
+						&& in.getInscription().getAvoirEleve() <= 0) {
+					mnt = mnt - (in.getMontantPaye() - in.getInscription().getParamins().getMensualite());
+				}
+				if (in.getAvoirUtilise() > 0) {
+					mnt = mnt + in.getAvoirUtilise();
+				}
 
 			}
 		}

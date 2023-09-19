@@ -48,6 +48,8 @@ public class Inscription  implements Serializable {
 	private Double doitPayer;
 	private Double aPayer;
 	private Double resteApayer;
+	
+	private boolean paiemens;
 
 	@Id
 	@GeneratedValue
@@ -341,6 +343,14 @@ public class Inscription  implements Serializable {
 
 	public void setResteApayer(Double resteApayer) {
 		this.resteApayer = resteApayer;
+	}
+
+	public boolean isPaiemens() {
+		return paiemens;
+	}
+
+	public void setPaiemens(boolean paiemens) {
+		this.paiemens = paiemens;
 	}
 	
 

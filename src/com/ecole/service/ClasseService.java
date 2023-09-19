@@ -40,6 +40,8 @@ public class ClasseService implements Serializable {
 	private List<MatiereClasse> listeMatClasse = new ArrayList<MatiereClasse>();
 
 	private String niv;
+	
+	private String typeNote;
 
 	@In
 	private Session dataSource;
@@ -71,6 +73,22 @@ public class ClasseService implements Serializable {
 
 	public void annulerAjout() {
 		this.setClasse(new Classe());
+	}
+	
+	public void chargerListeNiveau() {
+		if (classe.getNiveau().getCode().equalsIgnoreCase("ELE")) {
+			setTypeNote("1");
+		}
+		if (classe.getNiveau().getCode().equalsIgnoreCase("MOY")) {
+			setTypeNote("2");
+		}
+
+		if (classe.getNiveau().getCode().equalsIgnoreCase("SEC")) {
+			setTypeNote("3");
+		}
+		if (classe.getNiveau().getCode().equalsIgnoreCase("PRE")) {
+			setTypeNote("4");
+		}
 	}
 
 	public void ajouterClasse() {
@@ -167,6 +185,14 @@ public class ClasseService implements Serializable {
 
 	public void setNiv(String niv) {
 		this.niv = niv;
+	}
+
+	public String getTypeNote() {
+		return typeNote;
+	}
+
+	public void setTypeNote(String typeNote) {
+		this.typeNote = typeNote;
 	}
 
 }

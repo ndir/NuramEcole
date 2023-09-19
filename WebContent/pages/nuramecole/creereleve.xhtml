@@ -191,18 +191,27 @@
 														<f:selectItem itemValue="F" itemLabel="Féminin" />
 													</h:selectOneMenu></td>
 											</tr>
+
+											<tr>
+												<td><h:outputLabel styleClass="grey"
+														value="Paie mensualité" /></td>
+												<td><h:selectBooleanCheckbox
+														value="#{eleveService.paiemens}"></h:selectBooleanCheckbox></td>
+											</tr>
 											<tr>
 												<td><h:outputLabel styleClass="grey"
 														value="Montant Inscription" /></td>
 												<td><h:inputText value="#{eleveService.mntIns}"
 														styleClass="form-control" id="ins" disabled="true">
-															<f:convertNumber pattern="#,##0" />
+														<f:convertNumber pattern="#,##0" />
 													</h:inputText></td>
 												<td><h:outputLabel styleClass="grey"
 														value="Montant Payé" /></td>
 												<td><h:inputText value="#{eleveService.mntPaye}"
 														styleClass="form-control" /></td>
 											</tr>
+
+
 											<tr>
 												<td><h:outputLabel styleClass="grey" value="Adresse" /></td>
 												<td><h:inputTextarea

@@ -28,108 +28,128 @@
 						</f:subview>
 						<f:subview id="subParametrageNew">
 							<li><a:commandLink id="m_1" value="Paramétrage"
-									status="waitStatus" action="#">
+									status="waitStatus" action="#"
+									rendered="#{droitsService.estAutoriseP('Paramétrage')}">
 									<s:conversationPropagation propagation="none" />
 								</a:commandLink>
 								<ul>
 
-
-
-
-
 									<li><a:commandLink value="Institution" status="waitStatus"
-											action="#{instService.versInstitution}">
+											action="#{instService.versInstitution}"
+											rendered="#{droitsService.estAutorise('Institution')}">
 											<s:conversationPropagation propagation="none" />
 										</a:commandLink></li>
 
 
 									<li><a:commandLink value="Utilisateur" status="waitStatus"
-											action="#{userService.versCreerUser}">
+											action="#{userService.versCreerUser}"
+											rendered="#{droitsService.estAutorise('versCreerUser')}">
 											<s:conversationPropagation propagation="none" />
 										</a:commandLink></li>
 
+									<li><a:commandLink value="Menu" status="waitStatus"
+											action="#{menuSerivice.versMenu}"
+											rendered="#{droitsService.utilisateur.profile.libelle_court eq 'ad'}">
+											<s:conversationPropagation propagation="none" />
+										</a:commandLink></li>
 
-									<li><a:commandLink id="m_1_5" value="Droits d'accès"
+									<li><a:commandLink value="Droits utilisateur"
+											status="waitStatus" action="#{droitsService.versDroits}"
+											rendered="#{droitsService.utilisateur.profile.libelle_court eq 'ad'}">
+											<s:conversationPropagation propagation="none" />
+										</a:commandLink></li>
+
+									<li><a:commandLink value="Droits Profile"
 											status="waitStatus"
-											action="#{gestionMenuService.versCreationMenu}">
+											action="#{droitsService.versDroitsProfile}"
+											rendered="#{droitsService.utilisateur.profile.libelle_court eq 'ad'}">
 											<s:conversationPropagation propagation="none" />
 										</a:commandLink></li>
 
-									<li><a:commandLink id="m_1_6" value="Généraux"></a:commandLink>
+									<li><a:commandLink id="m_1_6" value="Généraux">
+										</a:commandLink>
 										<ul>
 
-											<li><a:commandLink id="m_1_12" value="Inscription"
-													status="waitStatus" action="#{piService.versCreer}">
+											<li><a:commandLink id="m_1_12"
+													value="Paramétrage Inscription" status="waitStatus"
+													action="#{piService.versCreer}"
+													rendered="#{droitsService.estAutorise('Paramétrage Inscription')}">
 													<s:conversationPropagation propagation="none" />
 												</a:commandLink></li>
 											<li><a:commandLink id="m_1_9" value="Matières"
 													status="waitStatus"
-													action="#{matiereService.versMatieres()}">
+													action="#{matiereService.versMatieres()}"
+													rendered="#{droitsService.estAutorise('Matières')}">
 													<s:conversationPropagation propagation="none" />
 												</a:commandLink></li>
 
 											<li><a:commandLink id="m_1_8" value="Classe"
-													status="waitStatus" action="#{classeService.versClasse}">
+													status="waitStatus" action="#{classeService.versClasse}"
+													rendered="#{droitsService.estAutorise('Classe')}">
 													<s:conversationPropagation propagation="none" />
 												</a:commandLink></li>
 
 
 											<li><a:commandLink id="m_1_10" value="Matières-Classe"
 													status="waitStatus"
-													action="#{matclasseService.versClasseMat}">
+													action="#{matclasseService.versClasseMat}"
+													rendered="#{droitsService.estAutorise('Matières-Classe')}">
 													<s:conversationPropagation propagation="none" />
 												</a:commandLink></li>
 
 
 											<li><a:commandLink value="Inscrire Elève"
-													status="waitStatus" action="#{eleveService.versEleve}">
+													status="waitStatus" action="#{eleveService.versEleve}"
+													rendered="#{droitsService.estAutorise('Inscrire Elève')}">
 													<s:conversationPropagation propagation="none" />
 												</a:commandLink></li>
 
 											<li><a:commandLink value="Réinsrire Elève"
-													status="waitStatus" action="#">
+													status="waitStatus" action="#"
+													rendered="#{droitsService.estAutorise('Réinsrire Elève')}">
 													<s:conversationPropagation propagation="none" />
 												</a:commandLink></li>
 
 
 											<li><a:commandLink value="Liste des elèves"
-													status="waitStatus" action="#{eleveService.versListeEleve}">
+													status="waitStatus" action="#{eleveService.versListeEleve}"
+													rendered="#{droitsService.estAutorise('Liste des elèves')}">
 													<s:conversationPropagation propagation="none" />
 												</a:commandLink></li>
 
 											<li><a:commandLink id="m_1_13" value="Evaluations"
 													status="waitStatus"
-													action="#{evaluationService.versEvaluation}">
+													action="#{evaluationService.versEvaluation}"
+													rendered="#{droitsService.estAutorise('Evaluations')}">
 													<s:conversationPropagation propagation="none" />
 												</a:commandLink></li>
 											<li><a:commandLink value="Appréciation"
-													status="waitStatus" action="#{apService.versAp}">
+													status="waitStatus" action="#{apService.versAp}"
+													rendered="#{droitsService.estAutorise('Appréciation')}">
 													<s:conversationPropagation propagation="none" />
 												</a:commandLink></li>
-												
+
 											<li><a:commandLink value="Observations"
-													status="waitStatus" action="#{apService.versApms}">
+													status="waitStatus" action="#{apService.versApms}"
+													rendered="#{droitsService.estAutorise('Observations')}">
 													<s:conversationPropagation propagation="none" />
 												</a:commandLink></li>
 										</ul></li>
 
-									<li><a:commandLink id="m_3_1" value="Comptabilité"></a:commandLink>
-										<ul>
 
+									<li><a:commandLink id="m_3_2" value="Type de Recette"
+											status="waitStatus"
+											action="#{typeRecetteService.versTypeRecette}"
+											rendered="#{droitsService.estAutorise('Type de Recette')}">
+											<s:conversationPropagation propagation="none" />
+										</a:commandLink></li>
+									<li><a:commandLink id="m_3_3" value="Type de Depense"
+											status="waitStatus"
+											action="#{typeDepenseService.versTypeDepense}"
+											rendered="#{droitsService.estAutorise('Type de Depense')}">
+											<s:conversationPropagation propagation="none" />
+										</a:commandLink></li>
 
-											<li><a:commandLink id="m_3_2" value="Type de Recette"
-													status="waitStatus"
-													action="#{typeRecetteService.versTypeRecette}">
-													<s:conversationPropagation propagation="none" />
-												</a:commandLink></li>
-											<li><a:commandLink id="m_3_3" value="Type de Depense"
-													status="waitStatus"
-													action="#{typeDepenseService.versTypeDepense}">
-													<s:conversationPropagation propagation="none" />
-												</a:commandLink></li>
-
-
-										</ul></li>
 
 
 								</ul></li>
@@ -137,50 +157,60 @@
 
 						<f:subview id="operateur">
 							<li><a:commandLink id="m_2" value="Gestion Scolaire"
-									status="waitStatus" action="#">
+									status="waitStatus" action="#"
+									rendered="#{droitsService.estAutoriseP('Gestion Scolaire')}">
 									<s:conversationPropagation propagation="none" />
 								</a:commandLink>
 								<ul>
 									<li><a:commandLink id="m_2_3" value="Saisir note"
-											status="waitStatus" action="#{noteService.saisirNotes}">
+											status="waitStatus" action="#{noteService.saisirNotes}"
+											rendered="#{droitsService.estAutorise('Saisir note')}">
 											<s:conversationPropagation propagation="none" />
 										</a:commandLink></li>
 									<li><a:commandLink value="Visualiser note"
-											status="waitStatus" action="#{noteService.visualiserNotes}">
+											status="waitStatus" action="#{noteService.visualiserNotes}"
+											rendered="#{droitsService.estAutorise('Visualiser note')}">
 											<s:conversationPropagation propagation="none" />
 										</a:commandLink></li>
 									<li><a:commandLink id="m_2_5" value="Délibération"
-											status="waitStatus" action="#{dService.versDeliberation}">
+											status="waitStatus" action="#{dService.versDeliberation}"
+											rendered="#{droitsService.estAutorise('Délibération')}">
 											<s:conversationPropagation propagation="none" />
 										</a:commandLink></li>
-									<li><a:commandLink id="m_2_6" value="Bulletin de notes "
-											status="waitStatus" action="#{dService.versVoirDeliberation}">
+									<li><a:commandLink id="m_2_6" value="Bulletin de notes"
+											status="waitStatus" action="#{dService.versVoirDeliberation}"
+											rendered="#{droitsService.estAutorise('Bulletin de notes')}">
 											<s:conversationPropagation propagation="none" />
 										</a:commandLink></li>
 									<li><a:commandLink value="Délibération Annuelle"
-											status="waitStatus" action="#{dService.versDeliberationAn}">
+											status="waitStatus" action="#{dService.versDeliberationAn}"
+											rendered="#{droitsService.estAutorise('Délibération Annuelle')}">
 											<s:conversationPropagation propagation="none" />
 										</a:commandLink></li>
 								</ul></li>
 						</f:subview>
 						<f:subview id="comptabilite">
 							<li><a:commandLink id="m_4" value="Comptabilité"
-									status="waitStatus" action="#">
+									status="waitStatus" action="#"
+									rendered="#{droitsService.estAutoriseP('Comptabilité')}">
 									<s:conversationPropagation propagation="none" />
 								</a:commandLink>
 								<ul>
 									<li><a:commandLink id="m_4_1" value="Mensualité"
-											status="waitStatus" action="#{recetteService.versMensualite}">
+											status="waitStatus" action="#{recetteService.versMensualite}"
+											rendered="#{droitsService.estAutorise('Mensualité')}">
 											<s:conversationPropagation propagation="none" />
 										</a:commandLink></li>
 
 									<li><a:commandLink value="Dépenses" status="waitStatus"
-											action="#{depService.versDepense}">
+											action="#{depService.versDepense}"
+											rendered="#{droitsService.estAutorise('Dépenses')}">
 											<s:conversationPropagation propagation="none" />
 										</a:commandLink></li>
 
 									<li><a:commandLink value="Recettes" status="waitStatus"
-											action="#{recetteService.versRecette}">
+											action="#{recetteService.versRecette}"
+											rendered="#{droitsService.estAutorise('Recettes')}">
 											<s:conversationPropagation propagation="none" />
 										</a:commandLink></li>
 								</ul></li>
@@ -188,17 +218,19 @@
 
 						<f:subview id="Statistiques">
 							<li><a:commandLink value="Statistiques" status="waitStatus"
-									action="#">
+									action="#" rendered="#{droitsService.estAutoriseP('Statistiques')}">
 									<s:conversationPropagation propagation="none" />
 								</a:commandLink>
 								<ul>
 									<li><a:commandLink value="Entrée(s)/Sortie(s)"
-											status="waitStatus" action="#{statService.versEntreeSortie}">
+											status="waitStatus" action="#{statService.versEntreeSortie}"
+											rendered="#{droitsService.estAutorise('Entrée(s)/Sortie(s)')}">
 											<s:conversationPropagation propagation="none" />
 										</a:commandLink></li>
 
 									<li><a:commandLink value="Etat Mensuel"
-											status="waitStatus" action="#{statService.versEtatsMensuel}">
+											status="waitStatus" action="#{statService.versEtatsMensuel}"
+											rendered="#{droitsService.estAutorise('Etat Mensuel')}">
 											<s:conversationPropagation propagation="none" />
 										</a:commandLink></li>
 

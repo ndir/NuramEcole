@@ -31,7 +31,7 @@
 	content="Responsive Bootstrap 4 Dashboard Template"></meta>
 <meta name="author" content="BootstrapDash"></meta>
 
-<title>GEDE</title>
+<title>E-SCHOOL</title>
 
 <!-- vendor css -->
 <link href="lib/fontawesome-free/css/all.min.css" rel="stylesheet"></link>
@@ -51,55 +51,69 @@
 			<div class="az-header-center"></div>
 
 			<ui:include src="/template/include/header2.xhtml" />
+			<ui:insert name="impression">
+				<rich:modalPanel id="modalPdf" autosized="false" width="980"
+					height="620" moveable="true" resizeable="true">
+
+					<f:facet name="controls">
+						<a onclick="Richfaces.hideModalPanel('modalPdf');"
+							style="cursor: pointer" href="#">Fermer</a>
+					</f:facet>
+					<h:form id="frmPdf">
+						<a:mediaOutput element="object" id="id" cacheable="false"
+							session="true" createContent="#{fileUploadService.paintPdf}"
+							type="application/pdf" mimeType="application/pdf"
+							style="width:90%; height:600px;" value="#{filePrintService.id}" />
+
+					</h:form>
+				</rich:modalPanel>
+			</ui:insert>
 
 		</div>
 	</div>
-	
-			<a:status id="waitStatusHaut" forceId="true"
-				onstart="javascript:Richfaces.showModalPanel('waitModalPanelHaut');"
-				onstop="javascript:Richfaces.hideModalPanel('waitModalPanelHaut');" />
-			<a:status id="waitStatus" forceId="true"
-				onstart="javascript:Richfaces.showModalPanel('waitModalPanel');"
-				onstop="javascript:Richfaces.hideModalPanel('waitModalPanel');" />
-			<rich:modalPanel id="waitModalPanel" autosized="false" width="500"
-				height="100" styleClass="popupAttente" moveable="false"
-				resizeable="false">
-				<div style="text-align: center; height: 40px;">
-					<img src="../../picto/loading.gif" alt="" width="32" height="32" />
-				</div>
-				<span> <h:outputText
-						value="#{msgBundle['label.traitementencours']}" />
-				</span>
-			</rich:modalPanel>
-			<a:outputPanel id="erreurStd" ajaxRendered="true">
-				<h:message infoClass="informationGenerique"
-					errorClass="informationGenerique" warnClass="informationGenerique"
-					for="infoGenerique" />
-				<h:inputHidden id="infoGenerique" />
-				<h:message infoClass="confirmationerrorGenerique"
-					errorClass="confirmationerrorGenerique"
-					warnClass="confirmationerrorGenerique" for="erreurGenerique" />
-				<h:inputHidden id="erreurGenerique" style="font-size:12px;" />
-			</a:outputPanel>
-	
+	<a:status id="waitStatusHaut" forceId="true"
+		onstart="javascript:Richfaces.showModalPanel('waitModalPanelHaut');"
+		onstop="javascript:Richfaces.hideModalPanel('waitModalPanelHaut');" />
+	<a:status id="waitStatus" forceId="true"
+		onstart="javascript:Richfaces.showModalPanel('waitModalPanel');"
+		onstop="javascript:Richfaces.hideModalPanel('waitModalPanel');" />
+	<rich:modalPanel id="waitModalPanel" autosized="false" width="500"
+		height="100" styleClass="popupAttente" moveable="false"
+		resizeable="false">
+		<div style="text-align: center; height: 40px;">
+			<img src="../../picto/loading.gif" alt="" width="32" height="32" />
+		</div>
+		<span> <h:outputText
+				value="#{msgBundle['label.traitementencours']}" />
+		</span>
+	</rich:modalPanel>
+	<a:outputPanel id="erreurStd" ajaxRendered="true">
+		<h:message infoClass="informationGenerique"
+			errorClass="informationGenerique" warnClass="informationGenerique"
+			for="infoGenerique" />
+		<h:inputHidden id="infoGenerique" />
+		<h:message infoClass="confirmationerrorGenerique"
+			errorClass="confirmationerrorGenerique"
+			warnClass="confirmationerrorGenerique" for="erreurGenerique" />
+		<h:inputHidden id="erreurGenerique" style="font-size:12px;" />
+	</a:outputPanel>
+
 	<div class="az-content az-content-dashboard">
 		<div class="container">
 			<div class="az-content-body">
 				<div class="row row-sm mg-b-20">
 					<div class="col-lg-12"></div>
 				</div>
-				<h:form id="add">
-					<rich:panel header="DROITS UTILISATEUR"
-						styleclass="panel panel-success">
-						<div class="row row-sm mg-b-20">
-							<div class="col-lg-12">
-								<div class="row row-sm">
-									<h3 style="color: red;">UTILISATEUR
-										#{droitsService.user.nom} #{droitsService.user.prenom}</h3>
-
-									<div class="table-responsive">
-
-										<table class="table mg-b-0">
+				<rich:panel header="DROITS UTILISATEUR"
+					styleclass="panel panel-success">
+					<div class="row row-sm mg-b-20">
+						<div class="col-lg-12">
+							<div class="row row-sm">
+								<div class="table-responsive">
+									<h:form id="liste">
+										<h3 style="color: red;">UTILISATEUR
+											#{droitsService.user.nom} #{droitsService.user.prenom}</h3>
+										<table class="table">
 
 											<tbody>
 
@@ -121,53 +135,50 @@
 
 											</tbody>
 										</table>
-									</div>
-								</div>
-								<rich:dataTable value="#{droitsService.listeMP}" var="menu"
-									id="lstdemande" style="width:100%;" rows="10"
-									rowClasses="row1,row2">
-									<f:facet name="header">
-										<rich:columnGroup>
+										<rich:dataTable value="#{droitsService.listeMP}" var="menu"
+											id="lstdemande" style="width:100%;" rows="10"
+											rowClasses="row1,row2">
+											<f:facet name="header">
+												<rich:columnGroup>
+
+													<rich:column>
+														<h:outputLabel value="Libelle"
+															style="color:white;font-size:12px;font-family: Arial;text-align:center;" />
+													</rich:column>
+
+													<rich:column style="width:5%;">
+														<h:outputLabel value="Modifier"
+															style="color:white;font-size:12px;font-family: Arial;text-align:center;" />
+													</rich:column>
+
+												</rich:columnGroup>
+											</f:facet>
 
 											<rich:column>
-												<h:outputLabel value="Libelle"
-													style="color:white;font-size:12px;font-family: Arial;text-align:center;" />
+												<h:outputText value="#{menu.libelle}" styleClass="grey" />
 											</rich:column>
-
 											<rich:column style="width:5%;">
-												<h:outputLabel value="Modifier"
-													style="color:white;font-size:12px;font-family: Arial;text-align:center;" />
+												<a:commandLink value="" status="waitStatus"
+													action="#{droitsService.listeDroitsByUser(menu)}"
+													oncomplete="#{droitsService.showModal}"
+													reRender="add,fdroits" title="Modifier">
+													<s:graphicImage fileName="add.png" style="border:0px;"
+														value="/picto/add.png" width="16" height="16" alt="" />
+												</a:commandLink>
 											</rich:column>
+										</rich:dataTable>
+										<rich:datascroller status="waitStatus" stepControls="auto"
+											style="width:100%" for="lstdemande"
+											rendered="#{not empty droitsService.listeMP}" />
+									</h:form>
 
-										</rich:columnGroup>
-									</f:facet>
+								</div>
 
-									<rich:column>
-										<h:outputText value="#{menu.libelle}" styleClass="grey" />
-									</rich:column>
-									<rich:column style="width:5%;">
-										<a:commandLink value="" status="waitStatus"
-											action="#{droitsService.listeDroitsByUser(menu)}"
-											oncomplete="#{droitsService.showModal}"
-											reRender="add,fdroits" title="Modifier">
-											<s:graphicImage fileName="add.png" style="border:0px;"
-												value="/picto/add.png" width="16" height="16" alt="" />
-										</a:commandLink>
-									</rich:column>
-								</rich:dataTable>
-								<rich:datascroller status="waitStatus" stepControls="auto"
-									style="width:100%" for="lstdemande"
-									rendered="#{not empty droitsService.listeMP}" />
 
 							</div>
 						</div>
-
-
-
-					</rich:panel>
-
-				</h:form>
-
+					</div>
+				</rich:panel>
 				<rich:modalPanel id="droits"
 					style="background:url('../img2/fond.jpg') repeat-x scroll 0 0 #FFF;height:210; width:400"
 					moveable="true" styleClass="popupAttente">
@@ -209,28 +220,23 @@
 					</h:form>
 				</rich:modalPanel>
 			</div>
-
-
 		</div>
 	</div>
+
 	<!-- az-content -->
 
 	<div class="az-footer ht-20">
 		<div class="container ht-100p pd-t-0-f">
 			<span
 				class="text-muted d-block text-center text-sm-left d-sm-inline-block">Copyright
-				© GEDE 2020</span> <span
+				© NUMRAMTECH 2023</span> <span
 				class="float-none float-sm-right d-block mt-1 mt-sm-0 text-center">
-				<a href="#" target="_blank">Une gestion transparente et sûre de
-					l'eau</a>
+				<a href="#" target="_blank"></a>
 			</span>
 		</div>
 		<!-- container -->
 	</div>
 	<!-- az-footer -->
-
-
-
 
 </body>
 </html>

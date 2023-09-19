@@ -72,7 +72,7 @@ public class UtilisateurConverter implements Converter {
 	public String getAsString(FacesContext myContextFaces, UIComponent uiComponent, Object objet) {
 		Utilisateur user = (Utilisateur)objet;
 		String resultat = "Tous";
-		if (user != null) {
+		if (user != null && user.getIdUtilisateur()!=null) {
 			resultat = user.getIdUtilisateur().toString();
 		}
 		return resultat;
