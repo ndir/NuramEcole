@@ -26,6 +26,8 @@ public class Semestres implements Serializable {
 	private Long id;
 
 	private String libelle;
+	
+	private String code;
 
 	@Id
 	@GeneratedValue
@@ -68,6 +70,14 @@ public class Semestres implements Serializable {
 		} else if (!id.equals(other.id))
 			return false;
 		return true;
+	}
+
+	public String getCode() {
+		return code;
+	}
+
+	public void setCode(String code) {
+		this.code = code;
 	}
 
 }

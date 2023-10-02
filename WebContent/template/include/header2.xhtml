@@ -162,6 +162,19 @@
 									<s:conversationPropagation propagation="none" />
 								</a:commandLink>
 								<ul>
+
+									<li><a:commandLink value="Absences" status="waitStatus"
+											action="#{noteService.versAbsence}"
+											rendered="#{droitsService.estAutorise('Absences')}">
+											<s:conversationPropagation propagation="none" />
+										</a:commandLink></li>
+										
+								<li><a:commandLink value="Retards" status="waitStatus"
+											action="#{noteService.versRetard}"
+											rendered="#{droitsService.estAutorise('Retards')}">
+											<s:conversationPropagation propagation="none" />
+										</a:commandLink></li>
+
 									<li><a:commandLink id="m_2_3" value="Saisir note"
 											status="waitStatus" action="#{noteService.saisirNotes}"
 											rendered="#{droitsService.estAutorise('Saisir note')}">
@@ -218,7 +231,8 @@
 
 						<f:subview id="Statistiques">
 							<li><a:commandLink value="Statistiques" status="waitStatus"
-									action="#" rendered="#{droitsService.estAutoriseP('Statistiques')}">
+									action="#"
+									rendered="#{droitsService.estAutoriseP('Statistiques')}">
 									<s:conversationPropagation propagation="none" />
 								</a:commandLink>
 								<ul>

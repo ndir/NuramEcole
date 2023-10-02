@@ -27,9 +27,14 @@ public class Absence implements Serializable {
 
 	private Eleve eleve;
 
-	private String heure;
+	private int heure;
 	
-	private MatiereClasse matiereClasse;
+	private Matiere matiere;
+	
+	private Semestres semestre;
+	
+	private AnneeScolaire annee;
+	
 
 	@Id
 	@GeneratedValue
@@ -59,21 +64,44 @@ public class Absence implements Serializable {
 		this.eleve = eleve;
 	}
 
-	public String getHeure() {
+	public int getHeure() {
 		return heure;
 	}
 
-	public void setHeure(String heure) {
+	public void setHeure(int heure) {
 		this.heure = heure;
 	}
+	
 	@ManyToOne(fetch=FetchType.LAZY)
-	@JoinColumn(name="idmatclasse")
-	public MatiereClasse getMatiereClasse() {
-		return matiereClasse;
+	@JoinColumn(name="idmatiere")
+	public Matiere getMatiere() {
+		return matiere;
 	}
 
-	public void setMatiereClasse(MatiereClasse matiereClasse) {
-		this.matiereClasse = matiereClasse;
+	public void setMatiere(Matiere matiere) {
+		this.matiere = matiere;
+	}
+
+	
+
+	@ManyToOne(fetch=FetchType.LAZY)
+	@JoinColumn(name="idannee")
+	public AnneeScolaire getAnnee() {
+		return annee;
+	}
+
+	public void setAnnee(AnneeScolaire annee) {
+		this.annee = annee;
+	}
+
+	@ManyToOne(fetch=FetchType.LAZY)
+	@JoinColumn(name="idsemetre")
+	public Semestres getSemestre() {
+		return semestre;
+	}
+
+	public void setSemestre(Semestres semestre) {
+		this.semestre = semestre;
 	}
 
 }

@@ -30,6 +30,7 @@ import com.ecole.entity.Institution;
 import com.ecole.entity.Niveau;
 import com.ecole.entity.ParamInscription;
 import com.ecole.entity.Recette;
+import com.ecole.entity.Retard;
 import com.ecole.entity.TypeRecette;
 import com.rhospi.commons.ChakaUtils;
 import com.rhospi.commons.FileUploadService;
@@ -80,6 +81,10 @@ public class EleveService implements Serializable {
 
 	private boolean paiemens;
 
+	private List<Absence> listeAbsence = new ArrayList<Absence>();
+
+	private List<Retard> listeRetard = new ArrayList<Retard>();
+
 	@In
 	private AnneeScolaire annee;
 
@@ -125,6 +130,31 @@ public class EleveService implements Serializable {
 		listeNiveau = new ArrayList<Niveau>();
 		listeNiveau = dataSource.createQuery("From Niveau ").list();
 		return "/pages/nuramecole/listeeleve.xhtml";
+	}
+
+	@SuppressWarnings("unchecked")
+	public int getHeuresAbsence(Inscription in) {
+		int heures = 0;
+		listeAbsence = new ArrayList<Absence>();
+		listeAbsence = dataSource.createQuery(
+				"From Absence ab inner join fetch ab.eleve ev inner join fetch ab.matiere inner join fetch ab.semestre inner join fetch ab.annee an where an=:pan and ev=:pev")
+				.setParameter("pan", annee).setParameter("pev", in.getEleve()).list();
+		for (Absence ab : listeAbsence) {
+			heures = heures + ab.getHeure();
+		}
+		return heures;
+	}
+
+	public int getRetard(Inscription in) {
+		int heures = 0;
+		listeRetard = new ArrayList<Retard>();
+		listeRetard = dataSource.createQuery(
+				"From Retard ab inner join fetch ab.eleve ev inner join fetch ab.matiere inner join fetch ab.semestre inner join fetch ab.annee an where an=:pan and ev=:pev")
+				.setParameter("pan", annee).setParameter("pev", in.getEleve()).list();
+		for (Retard ab : listeRetard) {
+			heures = heures + ab.getHeures();
+		}
+		return heures;
 	}
 
 	@SuppressWarnings("unchecked")
@@ -211,7 +241,7 @@ public class EleveService implements Serializable {
 	}
 
 	public void ajouterInscription() {
-		System.out.println("Entrer ajout inscription "+paiemens);
+
 		if (this.eleve.getNom().isEmpty() || this.eleve.getPrenom().isEmpty()) {
 			FacesMessages.instance().addToControlFromResourceBundle("erreurGenerique",
 					"Veuillez renseigner le nom et le prénom de l'éléve");
@@ -228,8 +258,6 @@ public class EleveService implements Serializable {
 			FacesMessages.instance().addToControlFromResourceBundle("erreurGenerique", "Veuillez chosir une classe");
 			return;
 		}
-
-		
 
 		ParamInscription paramins = (ParamInscription) dataSource
 				.createQuery("From ParamInscription p inner join fetch p.annee inner join fetch p.classe"
@@ -271,10 +299,13 @@ public class EleveService implements Serializable {
 			}
 			this.setEleve(new Eleve());
 			this.setInscription(new Inscription());
-            this.setClasse(new Classe());
+			this.setClasse(new Classe());
 			mntIns = paramins.getDroit_ins();
-            this.setPaiemens(true);
+			this.setPaiemens(true);
 			mntIns = 0d;
+			mntPaye = 0d;
+			this.setListeClasse(new ArrayList<Classe>());
+			this.setNiveau(new Niveau());
 			FacesMessages.instance().addToControlFromResourceBundle("infoGenerique", "Evaluation ajoutée avec succés");
 		}
 	}
@@ -480,6 +511,22 @@ public class EleveService implements Serializable {
 
 	public void setPaiemens(boolean paiemens) {
 		this.paiemens = paiemens;
+	}
+
+	public List<Absence> getListeAbsence() {
+		return listeAbsence;
+	}
+
+	public void setListeAbsence(List<Absence> listeAbsence) {
+		this.listeAbsence = listeAbsence;
+	}
+
+	public List<Retard> getListeRetard() {
+		return listeRetard;
+	}
+
+	public void setListeRetard(List<Retard> listeRetard) {
+		this.listeRetard = listeRetard;
 	}
 
 }

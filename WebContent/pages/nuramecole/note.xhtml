@@ -132,13 +132,15 @@
 												<a:outputPanel rendered="#{noteService.typenote eq '2'}">
 													<td><h:outputLabel styleClass="grey" value="Semestre" /></td>
 													<td><h:selectOneMenu class="form-control"
-															value="#{noteService.semestre}"
+															value="#{noteService.ss}"
 															converter="#{semestreConverter}" id="sem"
 															noSelectionLabel="--- Selectionnez ---">
 															<s:selectItems value="#{noteService.listeSemestre}"
 																var="type" label="#{type.libelle}"
 																noSelectionLabel="--- Selectionnez ---" />
-
+															<a:support event="onchange"
+																action="#{noteService.getSemestre1()}" ajaxSingle="true"
+																status="waitStatus"></a:support>
 														</h:selectOneMenu></td>
 												</a:outputPanel>
 
@@ -158,7 +160,33 @@
 															ajaxSingle="true" reRender="matiere" status="waitStatus"></a:support>
 
 													</h:selectOneMenu></td>
+												<a:outputPanel rendered="#{noteService.typenote eq '2'}">
+													<td><h:outputLabel styleClass="grey"
+															value="Type de Note" /></td>
+													<td><h:selectOneMenu class="form-control"
+															value="#{noteService.typeNotes}"
+															converter="#{typenoteConverter}"
+															noSelectionLabel="--- Selectionnez ---">
+															<s:selectItems value="#{noteService.listeTypeNotes}"
+																var="type" label="#{type.libelle}"
+																noSelectionLabel="--- Selectionnez ---" />
+															<a:support event="onchange"
+																action="#{noteService.getTypeN()}" ajaxSingle="true"
+																status="waitStatus"></a:support>
+														</h:selectOneMenu></td>
+												</a:outputPanel>
 
+
+
+
+
+											</tr>
+											<tr>
+												<td><h:outputLabel styleClass="grey"
+														value="Année Scolaire" /></td>
+												<td><h:inputText
+														value="#{noteService.annee.anneeScolaire}"
+														class="form-control" disabled="true" /></td>
 												<td><h:outputLabel styleClass="grey" value="Matière" /></td>
 												<td><h:selectOneMenu class="form-control"
 														value="#{noteService.note.matiere}"
@@ -171,30 +199,6 @@
 															action="#{noteService.chargerListeEleve()}"
 															ajaxSingle="true" reRender="eleve" status="waitStatus"></a:support>
 													</h:selectOneMenu></td>
-
-
-
-
-											</tr>
-											<tr>
-												<td><h:outputLabel styleClass="grey"
-														value="Année Scolaire" /></td>
-												<td><h:inputText
-														value="#{noteService.annee.anneeScolaire}"
-														class="form-control" disabled="true" /></td>
-												<a:outputPanel rendered="#{noteService.typenote eq '2'}">
-													<td><h:outputLabel styleClass="grey"
-															value="Type de Note" /></td>
-													<td><h:selectOneMenu class="form-control"
-															value="#{noteService.typeNote}"
-															converter="#{typenoteConverter}"
-															noSelectionLabel="--- Selectionnez ---">
-															<s:selectItems value="#{noteService.listeTypeNotes}"
-																var="type" label="#{type.libelle}"
-																noSelectionLabel="--- Selectionnez ---" />
-
-														</h:selectOneMenu></td>
-												</a:outputPanel>
 											</tr>
 										</TABLE>
 

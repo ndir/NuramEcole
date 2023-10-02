@@ -16,6 +16,7 @@ import javax.faces.context.FacesContext;
 import javax.servlet.ServletContext;
 
 import org.jboss.seam.Component;
+import org.apache.poi.util.SystemOutLogger;
 import org.hibernate.Session;
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.In;
@@ -25,12 +26,15 @@ import org.jboss.seam.annotations.Scope;
 import org.jboss.seam.faces.FacesMessages;
 
 import com.chaka.projet.entity.Utilisateur;
+import com.ecole.entity.Absence;
 import com.ecole.entity.AnneeScolaire;
 import com.ecole.entity.Appreciation;
+import com.ecole.entity.Appreciations;
 import com.ecole.entity.Classe;
 import com.ecole.entity.Decision;
 import com.ecole.entity.Deliberation;
 import com.ecole.entity.DeliberationFinal;
+import com.ecole.entity.DeliberationMS;
 import com.ecole.entity.Eleve;
 import com.ecole.entity.Evaluation;
 import com.ecole.entity.Inscription;
@@ -39,7 +43,11 @@ import com.ecole.entity.Matiere;
 import com.ecole.entity.MatiereClasse;
 import com.ecole.entity.Niveau;
 import com.ecole.entity.Note;
+import com.ecole.entity.Notes;
 import com.ecole.entity.ParamInscription;
+import com.ecole.entity.Retard;
+import com.ecole.entity.Semestres;
+import com.ecole.entity.TypeNote;
 import com.rhospi.commons.ChakaUtils.ExportOption;
 import com.rhospi.commons.FileUploadService;
 
@@ -63,6 +71,7 @@ public class DeliberationService implements Serializable {
 	private List<Eleve> listeEleves = new ArrayList<Eleve>();
 	private List<Eleve> listeElevesNonNote = new ArrayList<Eleve>();
 	private List<Matiere> listeMatiere = new ArrayList<Matiere>();
+	private List<MatiereClasse> listeMatClasse = new ArrayList<MatiereClasse>();
 	private Evaluation evaluation = new Evaluation();
 	private String rangs;
 	private int rang;
@@ -72,7 +81,7 @@ public class DeliberationService implements Serializable {
 	private String chaine;
 	private String showModal = "";
 	private boolean choix;
-
+	private Eleve eleve;
 	private List<DeliberationFinal> listeDeliF = new ArrayList<DeliberationFinal>();
 	private List<DeliberationFinal> listeDeliAn = new ArrayList<DeliberationFinal>();
 	private String decision;
@@ -84,7 +93,34 @@ public class DeliberationService implements Serializable {
 	@Out(required = false)
 	private Utilisateur utilisateur;
 
+	private List<Semestres> listeSemestre = new ArrayList<Semestres>();
+
+	private Semestres semestre = new Semestres();
+
+	private List<DeliberationMS> listeDeliberationMS = new ArrayList<DeliberationMS>();
+
+	private List<DeliberationMS> listeDeliberationS1 = new ArrayList<DeliberationMS>();
+
+	private List<DeliberationMS> listeDeliberationMSF = new ArrayList<DeliberationMS>();
+
+	private List<DeliberationMS> listeDeliberationMSF1 = new ArrayList<DeliberationMS>();
+
+	private List<DeliberationMS> listeDeliberationMSFF = new ArrayList<DeliberationMS>();
+
+	private List<DeliberationMS> listeDeliberationMSFF2 = new ArrayList<DeliberationMS>();
+
+	private List<DeliberationMS> listeDeliberationMSVIEW = new ArrayList<DeliberationMS>();
+
+	private Semestres ss = new Semestres();
 	private List<Evaluation> listeEval = new ArrayList<Evaluation>();
+
+	private String moyenneGen;
+
+	private String rangGen;
+
+	private boolean notecomp;
+
+	private String typenote;
 
 	public Niveau getNiveau() {
 		return niveau;
@@ -109,6 +145,9 @@ public class DeliberationService implements Serializable {
 		this.setEvaluation(new Evaluation());
 		listeDeliberation = new ArrayList<Deliberation>();
 		listeDeliberationF = new ArrayList<Deliberation>();
+		listeDeliberationMS = new ArrayList<DeliberationMS>();
+		listeDeliberationMSFF = new ArrayList<DeliberationMS>();
+		listeDeliberationMSVIEW = new ArrayList<DeliberationMS>();
 		return "/pages/nuramecole/deliberation.xhtml";
 	}
 
@@ -138,7 +177,9 @@ public class DeliberationService implements Serializable {
 		this.setEvaluation(new Evaluation());
 		listeDeliberation = new ArrayList<Deliberation>();
 		listeDeliberationF = new ArrayList<Deliberation>();
-
+		listeDeliberationMS = new ArrayList<DeliberationMS>();
+		listeDeliberationMSFF = new ArrayList<DeliberationMS>();
+		listeDeliberationMSVIEW = new ArrayList<DeliberationMS>();
 		return "/pages/nuramecole/voirdeliberation.xhtml";
 	}
 
@@ -253,7 +294,8 @@ public class DeliberationService implements Serializable {
 			}
 			List<Appreciation> listeAp = new ArrayList<Appreciation>();
 			listeAp = dataSource.createQuery("From Appreciation ").list();
-			Decision decision = (Decision) dataSource.createQuery("From Decision ").uniqueResult();
+			Decision decision = (Decision) dataSource.createQuery("From Decision where code =:pcode ")
+					.setParameter("pcode", "ELE").uniqueResult();
 			for (DeliberationFinal df : listeDeliAn) {
 				Appreciation ap = getAp(listeAp, df.getMoyan());
 				df.setApa(ap.getLibelle());
@@ -267,6 +309,11 @@ public class DeliberationService implements Serializable {
 
 		}
 
+	}
+
+	public void getSemestre1() {
+		semestre = new Semestres();
+		semestre = (Semestres) dataSource.get(Semestres.class, ss.getId());
 	}
 
 	public void changerDecision(DeliberationFinal deli) {
@@ -317,6 +364,14 @@ public class DeliberationService implements Serializable {
 		listeClasse = new ArrayList<Classe>();
 		listeClasse = dataSource.createQuery(" From Classe c inner join fetch c.niveau n where n=:pn")
 				.setParameter("pn", niveau).list();
+		if (niveau.getCode().equalsIgnoreCase("ELE") || niveau.getCode().equalsIgnoreCase("PRE")) {
+			typenote = "1";
+		} else {
+			typenote = "2";
+			setListeSemestre(new ArrayList<Semestres>());
+			setListeSemestre(dataSource.createQuery("From Semestres ").list());
+
+		}
 	}
 
 	public void cocherTout() {
@@ -328,34 +383,69 @@ public class DeliberationService implements Serializable {
 
 	@SuppressWarnings("unchecked")
 	public void voirdeliberer() {
-		if (evaluation == null || evaluation.getIdEvaluation() == null) {
-			FacesMessages.instance().addToControlFromResourceBundle("erreurGenerique", "Evaluation obligatoire");
-			return;
-		}
-		if (classe == null || classe.getIdclasse() == null) {
-			FacesMessages.instance().addToControlFromResourceBundle("erreurGenerique", "Classe obligatoire");
-			return;
-		}
-		ParamInscription p = (ParamInscription) dataSource
-				.createQuery("From ParamInscription p inner join fetch p.classe c inner join fetch p.annee pa "
-						+ " where c =:pc and pa =:pa ")
-				.setParameter("pc", classe).setParameter("pa", annee).uniqueResult();
+		if (typenote.equalsIgnoreCase("1")) {
+			if (evaluation == null || evaluation.getIdEvaluation() == null) {
+				FacesMessages.instance().addToControlFromResourceBundle("erreurGenerique", "Evaluation obligatoire");
+				return;
+			}
+			if (classe == null || classe.getIdclasse() == null) {
+				FacesMessages.instance().addToControlFromResourceBundle("erreurGenerique", "Classe obligatoire");
+				return;
+			}
+			ParamInscription p = (ParamInscription) dataSource
+					.createQuery("From ParamInscription p inner join fetch p.classe c inner join fetch p.annee pa "
+							+ " where c =:pc and pa =:pa ")
+					.setParameter("pc", classe).setParameter("pa", annee).uniqueResult();
 
-		listeDeliberationF = new ArrayList<Deliberation>();
-		listeDeliberationF = dataSource
-				.createQuery("From Deliberation d inner join fetch d.classe c inner join fetch d.evaluation ev "
-						+ " inner join fetch d.annee an where c =:pc and an =:pan and ev =:pev")
-				.setParameter("pc", classe).setParameter("pan", annee).setParameter("pev", evaluation).list();
+			listeDeliberationF = new ArrayList<Deliberation>();
+			listeDeliberationF = dataSource
+					.createQuery("From Deliberation d inner join fetch d.classe c inner join fetch d.evaluation ev "
+							+ " inner join fetch d.annee an where c =:pc and an =:pan and ev =:pev")
+					.setParameter("pc", classe).setParameter("pan", annee).setParameter("pev", evaluation).list();
 
-		if (listeDeliberationF.size() == 0) {
-			FacesMessages.instance().addToControlFromResourceBundle("erreurGenerique", "Aucune délibération trouvée");
-			return;
+			if (listeDeliberationF.size() == 0) {
+				FacesMessages.instance().addToControlFromResourceBundle("erreurGenerique",
+						"Aucune délibération trouvée");
+				return;
+			} else {
+				this.setChoix(true);
+				for (Deliberation d : listeDeliberationF) {
+					d.setChoix(true);
+				}
+			}
 		} else {
-			this.setChoix(true);
-			for (Deliberation d : listeDeliberationF) {
-				d.setChoix(true);
+			System.out.println("ENTRER VOIR DELI");
+			if (semestre == null || semestre.getId() == null) {
+				FacesMessages.instance().addToControlFromResourceBundle("erreurGenerique", "Semestre obligatoire");
+				return;
+			}
+			if (classe == null || classe.getIdclasse() == null) {
+				FacesMessages.instance().addToControlFromResourceBundle("erreurGenerique", "Classe obligatoire");
+				return;
+			}
+			ParamInscription p = (ParamInscription) dataSource
+					.createQuery("From ParamInscription p inner join fetch p.classe c inner join fetch p.annee pa "
+							+ " where c =:pc and pa =:pa ")
+					.setParameter("pc", classe).setParameter("pa", annee).uniqueResult();
+			listeDeliberationMS = new ArrayList<DeliberationMS>();
+			listeDeliberationMS = dataSource
+					.createQuery("From DeliberationMS d inner join fetch d.classe c inner join fetch d.annee an"
+							+ " inner join fetch d.semestre ev inner join fetch d.eleve inner join fetch d.appreciation"
+							+ " inner join fetch d.appreciationgen inner join fetch d.matiere where c =:pc and an =:pan and ev =:pev")
+					.setParameter("pc", classe).setParameter("pan", annee).setParameter("pev", semestre).list();
+
+			if (listeDeliberationMS.size() == 0) {
+				FacesMessages.instance().addToControlFromResourceBundle("erreurGenerique",
+						"Classe " + classe.getLibelle() + " pas encore délibérée pour  " + semestre.getLibelle());
+				return;
+			}
+			for (DeliberationMS d : listeDeliberationMS) {
+				if (!donneesExiste(d.getEleve())) {
+					listeDeliberationMSF1.add(d);
+				}
 			}
 		}
+
 	}
 
 	@SuppressWarnings("unchecked")
@@ -455,7 +545,7 @@ public class DeliberationService implements Serializable {
 			ServletContext sc = (ServletContext) ec.getContext();
 			InputStream is = sc.getResourceAsStream("/css2/logogstock.jpg");
 			deli.getListeNote().get(0).setLogo(is);
-			System.out.println("dec "+d.getDecision());
+			System.out.println("dec " + d.getDecision());
 			if (d.getDecision().equalsIgnoreCase("Passe en classe supérieure")) {
 				deli.getListeNote().get(deli.getListeNote().size() - 1).setDec1("X  Passe en classe supérieure");
 			} else {
@@ -463,12 +553,12 @@ public class DeliberationService implements Serializable {
 			}
 			if (d.getDecision().equalsIgnoreCase("Redouble")) {
 				deli.getListeNote().get(deli.getListeNote().size() - 1).setDec2("X Redouble");
-				
+
 			} else {
 				deli.getListeNote().get(deli.getListeNote().size() - 1).setDec2("Redouble");
 			}
 			if (d.getDecision().equalsIgnoreCase("Exclu(e)")) {
-				
+
 				deli.getListeNote().get(deli.getListeNote().size() - 1).setDec3("X Exclu(e)");
 			} else {
 				deli.getListeNote().get(deli.getListeNote().size() - 1).setDec3("Exclu(e)");
@@ -883,100 +973,294 @@ public class DeliberationService implements Serializable {
 
 	@SuppressWarnings("unchecked")
 	public void deliberer() {
-		if (evaluation == null || evaluation.getIdEvaluation() == null) {
-			FacesMessages.instance().addToControlFromResourceBundle("erreurGenerique", "Evaluation obligatoire");
-			return;
-		}
-		if (classe == null || classe.getIdclasse() == null) {
-			FacesMessages.instance().addToControlFromResourceBundle("erreurGenerique", "Classe obligatoire");
-			return;
-		}
-		ParamInscription p = (ParamInscription) dataSource
-				.createQuery("From ParamInscription p inner join fetch p.classe c inner join fetch p.annee pa "
-						+ " where c =:pc and pa =:pa ")
-				.setParameter("pc", classe).setParameter("pa", annee).uniqueResult();
-
-		if (p != null) {
-			List<Inscription> liste = dataSource
-					.createQuery(
-							"From Inscription i inner join fetch i.eleve inner join fetch i.paramins p where p =:pp")
-					.setParameter("pp", p).list();
-			listeEleves = new ArrayList<Eleve>();
-
-			for (Inscription in : liste) {
-				listeEleves.add(in.getEleve());
+		if (typenote.equalsIgnoreCase("1")) {
+			if (evaluation == null || evaluation.getIdEvaluation() == null) {
+				FacesMessages.instance().addToControlFromResourceBundle("erreurGenerique", "Evaluation obligatoire");
+				return;
 			}
-		}
-		List<Deliberation> deliexiste = dataSource
-				.createQuery("From Deliberation d inner join fetch d.classe c inner join fetch d.annee an"
-						+ " inner join fetch d.evaluation ev where c =:pc and an =:pan and ev =:pev")
-				.setParameter("pc", classe).setParameter("pan", annee).setParameter("pev", evaluation).list();
-		if (deliexiste.size() > 0) {
-			FacesMessages.instance().addToControlFromResourceBundle("erreurGenerique",
-					"Classe " + classe.getLibelle() + " déja délibérée pour  " + evaluation.getLibelle());
-			return;
-		}
-		listeMatiere = dataSource
-				.createQuery("Select mc.matiere from MatiereClasse mc where mc.classe =:pc and mc.annee_scol =:pan "
-						+ " and mc.eval =:peval")
-				.setParameter("pc", classe).setParameter("pan", annee.getAnneeScolaire())
-				.setParameter("peval", evaluation).list();
-
-		List<Note> listeNote = dataSource
-				.createQuery("From Note n inner join fetch n.cl c inner join fetch n.annee an "
-						+ " inner join fetch n.evaluation ev inner join fetch n.eleve "
-						+ " where c =:pc and an =:pan and ev =:pev")
-				.setParameter("pc", classe).setParameter("pan", annee).setParameter("pev", evaluation).list();
-
-		boolean existe = false;
-		listeElevesNonNote = new ArrayList<Eleve>();
-		for (Eleve ev : listeEleves) {
-			existe = false;
-			for (Matiere m : listeMatiere) {
-				for (Note n : listeNote) {
-					if (n.getMatiere().getIdmatiere().equals(m.getIdmatiere())
-							&& ev.getIdeleve().equals(n.getEleve().getIdeleve())) {
-						existe = true;
-						break;
-					}
-				}
-				if (existe == false) { // eleve pas note pour la matiere
-					ev.setIdMat(m.getIdmatiere());
-					listeElevesNonNote.add(ev);
-				}
-				existe = false;
+			if (classe == null || classe.getIdclasse() == null) {
+				FacesMessages.instance().addToControlFromResourceBundle("erreurGenerique", "Classe obligatoire");
+				return;
 			}
-		}
+			ParamInscription p = (ParamInscription) dataSource
+					.createQuery("From ParamInscription p inner join fetch p.classe c inner join fetch p.annee pa "
+							+ " where c =:pc and pa =:pa ")
+					.setParameter("pc", classe).setParameter("pa", annee).uniqueResult();
 
-		if (listeElevesNonNote.size() == 0) {
-// Délibartion de la classe
-			Double cumulnote;
-			Double cumulcoef;
-			Double moyen;
-			String moyens;
-			cumulcoef = CumulCeof();
+			if (p != null) {
+				List<Inscription> liste = dataSource.createQuery(
+						"From Inscription i inner join fetch i.eleve inner join fetch i.paramins p where p =:pp")
+						.setParameter("pp", p).list();
+				listeEleves = new ArrayList<Eleve>();
 
+				for (Inscription in : liste) {
+					listeEleves.add(in.getEleve());
+				}
+			}
+			List<Deliberation> deliexiste = dataSource
+					.createQuery("From Deliberation d inner join fetch d.classe c inner join fetch d.annee an"
+							+ " inner join fetch d.evaluation ev where c =:pc and an =:pan and ev =:pev")
+					.setParameter("pc", classe).setParameter("pan", annee).setParameter("pev", evaluation).list();
+			if (deliexiste.size() > 0) {
+				FacesMessages.instance().addToControlFromResourceBundle("erreurGenerique",
+						"Classe " + classe.getLibelle() + " déja délibérée pour  " + evaluation.getLibelle());
+				return;
+			}
+			listeMatiere = dataSource
+					.createQuery("Select mc.matiere from MatiereClasse mc where mc.classe =:pc and mc.annee_scol =:pan "
+							+ " and mc.eval =:peval")
+					.setParameter("pc", classe).setParameter("pan", annee.getAnneeScolaire())
+					.setParameter("peval", evaluation).list();
+
+			List<Note> listeNote = dataSource
+					.createQuery("From Note n inner join fetch n.cl c inner join fetch n.annee an "
+							+ " inner join fetch n.evaluation ev inner join fetch n.eleve "
+							+ " where c =:pc and an =:pan and ev =:pev")
+					.setParameter("pc", classe).setParameter("pan", annee).setParameter("pev", evaluation).list();
+
+			boolean existe = false;
+			listeElevesNonNote = new ArrayList<Eleve>();
 			for (Eleve ev : listeEleves) {
-				cumulnote = cumulNote(ev, listeNote);
-				moyen = cumulnote / cumulcoef;
-				moyens = "" + moyen;
-				Deliberation d = new Deliberation();
-				d.setAnnee(annee);
-				d.setCumul("" + cumulnote + "/" + cumulcoef);
-				d.setClasse(classe);
-				d.setEleve(ev);
-				d.setMoy(moyens.substring(0, 4));
-				d.setEvaluation(evaluation);
-				d.setMoyenne(Double.valueOf(d.getMoy()));
-				d.setUser(utilisateur);
-				listeDeliberation.add(d);
+				existe = false;
+				for (Matiere m : listeMatiere) {
+					for (Note n : listeNote) {
+						if (n.getMatiere().getIdmatiere().equals(m.getIdmatiere())
+								&& ev.getIdeleve().equals(n.getEleve().getIdeleve())) {
+							existe = true;
+							break;
+						}
+					}
+					if (existe == false) { // eleve pas note pour la matiere
+						ev.setIdMat(m.getIdmatiere());
+						listeElevesNonNote.add(ev);
+					}
+					existe = false;
+				}
+			}
+
+			if (listeElevesNonNote.size() == 0) {
+				// Délibartion de la classe
+				Double cumulnote;
+				Double cumulcoef;
+				Double moyen;
+				String moyens;
+				cumulcoef = CumulCeof();
+
+				for (Eleve ev : listeEleves) {
+					cumulnote = cumulNote(ev, listeNote);
+					moyen = cumulnote / cumulcoef;
+					moyens = "" + moyen;
+					Deliberation d = new Deliberation();
+					d.setAnnee(annee);
+					d.setCumul("" + cumulnote + "/" + cumulcoef);
+					d.setClasse(classe);
+					d.setEleve(ev);
+					d.setMoy(moyens.substring(0, 4));
+					d.setEvaluation(evaluation);
+					d.setMoyenne(Double.valueOf(d.getMoy()));
+					d.setUser(utilisateur);
+					listeDeliberation.add(d);
+				}
+				rang = 1;
+
+				while (listeDeliberation.size() > 0) {
+					Deliberation deli = gererSup();
+					List<Deliberation> liste = new ArrayList<Deliberation>();
+					liste = getMoyenEqual(deli);
+					if (liste.size() > 0) {
+						if (rang == 1) {
+							rangs = rang + "er ex æquo";
+						} else {
+							rangs = rang + "eme ex æquo";
+						}
+					} else {
+						if (rang == 1) {
+							rangs = rang + "er";
+						} else {
+							rangs = rang + "eme";
+						}
+					}
+					deli.setRang(rangs);
+					listeDeliberationF.add(deli);
+					if (liste.size() > 0) {
+						for (Deliberation d : liste) {
+							d.setRang(rangs);
+
+							listeDeliberationF.add(d);
+							listeDeliberation.remove(d);
+							rang = rang + 1;
+						}
+						rang = rang + 1;
+					} else {
+						rang = rang + 1;
+					}
+
+				}
+				List<Appreciation> listeAp = new ArrayList<Appreciation>();
+				listeAp = dataSource.createQuery("From Appreciation ").list();
+				for (Deliberation df : listeDeliberationF) {
+					Appreciation ap = getAp(listeAp, df.getMoyenne());
+					df.setAp(ap.getLibelle());
+					dataSource.save(df);
+				}
+			}
+		} else {
+			if (semestre == null || semestre.getId() == null) {
+				FacesMessages.instance().addToControlFromResourceBundle("erreurGenerique", "Semestre obligatoire");
+				return;
+			}
+			if (classe == null || classe.getIdclasse() == null) {
+				FacesMessages.instance().addToControlFromResourceBundle("erreurGenerique", "Classe obligatoire");
+				return;
+			}
+			ParamInscription p = (ParamInscription) dataSource
+					.createQuery("From ParamInscription p inner join fetch p.classe c inner join fetch p.annee pa "
+							+ " where c =:pc and pa =:pa ")
+					.setParameter("pc", classe).setParameter("pa", annee).uniqueResult();
+			if (p != null) {
+				List<Inscription> liste = dataSource.createQuery(
+						"From Inscription i inner join fetch i.eleve inner join fetch i.paramins p where p =:pp")
+						.setParameter("pp", p).list();
+				listeEleves = new ArrayList<Eleve>();
+
+				for (Inscription in : liste) {
+					listeEleves.add(in.getEleve());
+				}
+			}
+			List<Deliberation> deliexiste = dataSource
+					.createQuery("From DeliberationMS d inner join fetch d.classe c inner join fetch d.annee an"
+							+ " inner join fetch d.semestre ev where c =:pc and an =:pan and ev =:pev")
+					.setParameter("pc", classe).setParameter("pan", annee).setParameter("pev", semestre).list();
+			if (deliexiste.size() > 0) {
+				FacesMessages.instance().addToControlFromResourceBundle("erreurGenerique",
+						"Classe " + classe.getLibelle() + " déja délibérée pour  " + semestre.getLibelle());
+				return;
+			}
+
+			if (semestre.getCode().equalsIgnoreCase("2")) {
+				listeDeliberationS1 = new ArrayList<DeliberationMS>();
+				listeDeliberationS1 = dataSource
+						.createQuery("From DeliberationMS d inner join fetch d.classe c inner join fetch d.annee an"
+								+ " inner join fetch d.semestre ev inner join fetch d.eleve inner join fetch d.appreciation"
+								+ " inner join fetch d.appreciationgen inner join fetch d.matiere where c =:pc and an =:pan and ev.code =:pev")
+						.setParameter("pc", classe).setParameter("pan", annee).setParameter("pev", "1").list();
+
+			}
+
+			listeMatClasse = dataSource.createQuery(
+					"from MatiereClasse mc inner join fetch mc.matiere inner join fetch mc.classe where mc.classe =:pc and mc.annee_scol =:pan "
+							+ " ")
+					.setParameter("pc", classe).setParameter("pan", annee.getAnneeScolaire()).list();
+
+			List<Notes> listeNotes = dataSource
+					.createQuery("From Notes n inner join fetch n.classe c inner join fetch n.annee an "
+							+ " inner join fetch n.typeNote ev inner join fetch n.eleve inner join fetch n.semestre s "
+							+ " where c =:pc and an =:pan and ev.code <>:pev and s=:ps")
+					.setParameter("pc", classe).setParameter("pan", annee).setParameter("pev", "COMP")
+					.setParameter("ps", semestre).list();
+
+			List<Notes> listeNotesComp = dataSource
+					.createQuery("From Notes n inner join fetch n.classe c inner join fetch n.annee an "
+							+ " inner join fetch n.typeNote ev inner join fetch n.eleve inner join fetch n.semestre s "
+							+ " where c =:pc and an =:pan and ev.code =:pev and s=:ps")
+					.setParameter("pc", classe).setParameter("pan", annee).setParameter("pev", "COMP")
+					.setParameter("ps", semestre).list();
+
+			listeDeliberationMSFF = new ArrayList<DeliberationMS>();
+			// Délibartion de la classe
+			Double cumulnote;
+			Double cumulcoef = 0d;
+			Double moyen;
+			Double noteComp = 0d;
+			String moyens;
+			int coef = getTotolCoef();
+			Double total = 0d;
+			// cumulcoef = CumulCeof();
+			for (Eleve ev : listeEleves) {
+				total = 0d;
+				listeDeliberationMS = new ArrayList<DeliberationMS>();
+				for (MatiereClasse mc : listeMatClasse) {
+					cumulnote = cumulNoteMS(ev, listeNotes, mc.getMatiere());
+					noteComp = getNoteComposition(ev, listeNotesComp, mc.getMatiere());
+					if (notecomp)
+						moyen = (cumulnote + noteComp) / 2;
+					else
+						moyen = cumulnote;
+					moyens = "" + moyen;
+					DeliberationMS d = new DeliberationMS();
+					d.setAnnee(annee);
+					d.setMoyD(cumulnote);
+					d.setMoyC(noteComp);
+					d.setCoef(mc.getCoef());
+					d.setCumul(moyen * mc.getCoef());
+					d.setCumuls(moyens.substring(0, 4));
+					if (notecomp) {
+						moyens = "" + noteComp;
+						d.setMoyenneC(moyens);
+					} else {
+						d.setMoyenneC("NO");
+					}
+					moyens = "" + cumulnote;
+					d.setMoyenneD(moyens);
+					d.setMatiere(mc.getMatiere());
+					d.setClasse(classe);
+					d.setEleve(ev);
+					d.setSemestre(semestre);
+					total = total + d.getCumul();
+					listeDeliberationMS.add(d);
+				}
+				List<Appreciations> listeAp = new ArrayList<Appreciations>();
+				listeAp = dataSource.createQuery("From Appreciations ").list();
+				List<Retard> listeRetard = new ArrayList<Retard>();
+				List<Absence> listeAbsence = new ArrayList<Absence>();
+				listeRetard = dataSource
+						.createQuery(
+								"From Retard r inner join fetch r.eleve inner join fetch r.annee an   where an =:pan")
+						.setParameter("pan", annee).list();
+				listeAbsence = dataSource
+						.createQuery(
+								"From Absence r inner join fetch r.eleve inner join fetch r.annee an  where an =:pan")
+						.setParameter("pan", annee).list();
+				for (DeliberationMS deli : listeDeliberationMS) {
+					deli.setTotal(total);
+					moyens = "" + total;
+					deli.setTotals("" + moyens);
+					deli.setTotalcoef(coef);
+					deli.setMoyenne(total / coef);
+					moyens = "" + deli.getMoyenne();
+					// deli.setMoyennes("" + moyens.substring(0, 4));
+					deli.setMoyennes(moyens);
+					deli.setAppreciation(getApMS(listeAp, Double.parseDouble(deli.getCumuls())));
+					deli.setAppreciationgen(getApMS(listeAp, deli.getMoyenne()));
+					deli.setRetard(getRetard(deli.getEleve(), listeRetard));
+					deli.setAbsence(getAbsence(deli.getEleve(), listeAbsence));
+					deli.setApgen(deli.getAppreciationgen().getLibelle());
+					if (semestre.getCode().equalsIgnoreCase("2")) {
+						deli.setMoyenne1(getMoyenneSemestre1(deli));
+						moyens = "" + deli.getMoyenne1();
+						deli.setMoyenne1s("" + moyens.substring(0, 5));
+						deli.setMoyenneAn((deli.getMoyenne1() + deli.getMoyenne()) / 2);
+						moyens = "" + deli.getMoyenneAn();
+						deli.setMoyenneAns("" + moyens.substring(0, 5));
+					}
+					listeDeliberationMSF.add(deli);
+				}
 			}
 			rang = 1;
+			listeDeliberationMS = listeDeliberationMSF;
+			listeDeliberationMSF1 = new ArrayList<DeliberationMS>();
+			listeDeliberationMSF1.add(listeDeliberationMSF.get(0));
+			for (DeliberationMS d : listeDeliberationMSF) {
 
-			while (listeDeliberation.size() > 0) {
-				Deliberation deli = gererSup();
-				List<Deliberation> liste = new ArrayList<Deliberation>();
-				liste = getMoyenEqual(deli);
+				if (!donneesExiste(d.getEleve())) {
+					listeDeliberationMSF1.add(d);
+				}
+			}
+
+			while (listeDeliberationMSF1.size() > 0) {
+				DeliberationMS deli = gererSupMS();
+				List<DeliberationMS> liste = new ArrayList<DeliberationMS>();
+				liste = getMoyenEqualMS(deli);
 				if (liste.size() > 0) {
 					if (rang == 1) {
 						rangs = rang + "er ex æquo";
@@ -990,14 +1274,13 @@ public class DeliberationService implements Serializable {
 						rangs = rang + "eme";
 					}
 				}
-				deli.setRang(rangs);
-				listeDeliberationF.add(deli);
+				deli.setRanggen(rangs);
+				listeDeliberationMSFF.add(deli);
 				if (liste.size() > 0) {
-					for (Deliberation d : liste) {
-						d.setRang(rangs);
-
-						listeDeliberationF.add(d);
-						listeDeliberation.remove(d);
+					for (DeliberationMS d : liste) {
+						d.setRanggen(rangs);
+						listeDeliberationMSFF.add(d);
+						listeDeliberationMSF1.remove(d);
 						rang = rang + 1;
 					}
 					rang = rang + 1;
@@ -1006,14 +1289,149 @@ public class DeliberationService implements Serializable {
 				}
 
 			}
-			List<Appreciation> listeAp = new ArrayList<Appreciation>();
-			listeAp = dataSource.createQuery("From Appreciation ").list();
-			for (Deliberation df : listeDeliberationF) {
-				Appreciation ap = getAp(listeAp, df.getMoyenne());
-				df.setAp(ap.getLibelle());
-				dataSource.save(df);
+//			for (DeliberationMS deli : listeDeliberationMSFF) {
+//				System.out.println("Eleve " + deli.getEleve().getPrenom() + "devoir " + deli.getMoyenneD() + "comp "
+//						+ deli.getMoyenneC() + "cumul " + deli.getCumuls() + "total coef " + deli.getTotalcoef()
+//						+ "Total " + deli.getTotals() + "moyenne " + deli.getMoyennes() + "rang " + deli.getRanggen());
+//			}
+
+			for (DeliberationMS deli : listeDeliberationMS) {
+				for (DeliberationMS d : listeDeliberationMSFF) {
+					if (deli.getEleve().getIdeleve().equals(d.getEleve().getIdeleve())) {
+						deli.setRanggen(d.getRanggen());
+						break;
+					}
+				}
+			}
+			Decision decision = (Decision) dataSource.createQuery("From Decision where code =:pcode ")
+					.setParameter("pcode", "MS").uniqueResult();
+			rang = 1;
+			listeDeliberationMSF1 = new ArrayList<DeliberationMS>();
+			listeDeliberationMSFF = new ArrayList<DeliberationMS>();
+			for (DeliberationMS d : listeDeliberationMS) {
+				if (!donneesExiste(d.getEleve())) {
+					listeDeliberationMSF1.add(d);
+				}
+			}
+			listeDeliberationMSFF2 = new ArrayList<DeliberationMS>();
+			System.out.println("TAILLE POUR RAN AN " + listeDeliberationMSF1.size());
+			while (listeDeliberationMSF1.size() > 0) {
+				DeliberationMS deli = gererSupMSAn();
+				List<DeliberationMS> liste = new ArrayList<DeliberationMS>();
+				liste = getMoyenEqualMSAn(deli);
+				if (liste.size() > 0) {
+					if (rang == 1) {
+						rangs = rang + "er ex æquo";
+					} else {
+						rangs = rang + "eme ex æquo";
+					}
+				} else {
+					if (rang == 1) {
+						rangs = rang + "er";
+					} else {
+						rangs = rang + "eme";
+					}
+				}
+				deli.setRanggan(rangs);
+				System.out.println("RANG AN " + deli.getRanggan() + "eleve " + deli.getEleve());
+				listeDeliberationMSFF.add(deli);
+				if (liste.size() > 0) {
+					for (DeliberationMS d : liste) {
+						d.setRanggen(rangs);
+						listeDeliberationMSFF2.add(d);
+						listeDeliberationMSF1.remove(d);
+						rang = rang + 1;
+					}
+					rang = rang + 1;
+				} else {
+					rang = rang + 1;
+				}
+
+			}
+
+			for (DeliberationMS deli : listeDeliberationMSFF) {
+
+				if (deli.getMoyenneAn() < decision.getMoy()) {
+					deli.setDecision("Redouble");
+				} else {
+					deli.setDecision("Passe en classe supérieure");
+				}
+				// dataSource.save(df);
+			}
+
+			for (DeliberationMS deli : listeDeliberationMSFF) {
+				System.out.println("Eleve " + deli.getEleve().getPrenom() + "devoir " + deli.getMoyenneD() + "comp "
+						+ deli.getMoyenneC() + "cumul " + deli.getCumuls() + "total coef " + deli.getTotalcoef()
+						+ "Total " + deli.getTotals() + "moyenne " + deli.getMoyennes() + "rang " + deli.getRanggan()
+						+ "rand " + deli.getRanggen());
+			}
+
+			System.out.println("***********************************************************************************");
+
+			for (DeliberationMS deli : listeDeliberationMS) {
+
+				if (deli.getMoyenneAn() < decision.getMoy()) {
+					deli.setDecision("Redouble");
+				} else {
+					deli.setDecision("Passe en classe supérieure");
+				}
+				// dataSource.save(df);
+			}
+			for (DeliberationMS deli : listeDeliberationMS) {
+				System.out.println("Eleve " + deli.getEleve().getPrenom() + "devoir " + deli.getMoyenneD() + "comp "
+						+ deli.getMoyenneC() + "cumul " + deli.getCumuls() + "total coef " + deli.getTotalcoef()
+						+ "Total " + deli.getTotals() + "moyenne " + deli.getMoyennes() + "rang " + deli.getRanggen()
+						+ "Appréciation " + deli.getAppreciation().getLibelle() + "Retard " + deli.getRetard()
+						+ "absence " + deli.getAbsence() + "AP GEN " + deli.getAppreciationgen().getLibelle()
+						+ "moyenne 1" + deli.getMoyenne1s() + "Moyenne Ann " + deli.getMoyenneAns());
+				// dataSource.save(deli);
+			}
+
+		}
+
+	}
+
+	public Double getMoyenneSemestre1(DeliberationMS deli) {
+		Double moyenne = 0d;
+		for (DeliberationMS d : listeDeliberationS1) {
+			if (deli.getEleve().getIdeleve().equals(d.getEleve().getIdeleve())) {
+				moyenne = d.getMoyenne();
+				break;
 			}
 		}
+		return moyenne;
+	}
+
+	public void detailsDeliberation(DeliberationMS deli) {
+		listeDeliberationMSVIEW = new ArrayList<DeliberationMS>();
+		eleve = deli.getEleve();
+		for (DeliberationMS d : listeDeliberationMS) {
+			if (d.getEleve().getIdeleve().equals(deli.getEleve().getIdeleve())) {
+				listeDeliberationMSVIEW.add(d);
+				moyenneGen = d.getMoyennes();
+				rangGen = d.getRanggen();
+			}
+		}
+	}
+
+	public boolean donneesExiste(Eleve eleve) {
+		boolean existe = false;
+		for (DeliberationMS d : listeDeliberationMSF1) {
+
+			if (d.getEleve().getIdeleve().equals(eleve.getIdeleve())) {
+				existe = true;
+				break;
+			}
+		}
+		return existe;
+	}
+
+	public int getTotolCoef() {
+		int coef = 0;
+		for (MatiereClasse mc : listeMatClasse) {
+			coef = coef + mc.getCoef();
+		}
+		return coef;
 	}
 
 	public Appreciation getAp(List<Appreciation> listeAp, Double moy) {
@@ -1022,11 +1440,46 @@ public class DeliberationService implements Serializable {
 		for (Appreciation ap : listeAp) {
 			if (ap.getInf() <= moy && ap.getSup() >= moy) {
 				p = ap;
+
 				break;
 			}
 		}
 
 		return p;
+	}
+
+	public Appreciations getApMS(List<Appreciations> listeAp, Double moy) {
+		Appreciations p = new Appreciations();
+
+		for (Appreciations ap : listeAp) {
+			if (ap.getInf() <= moy && ap.getSup() >= moy) {
+				p = ap;
+
+				break;
+			}
+		}
+
+		return p;
+	}
+
+	public int getRetard(Eleve eleve, List<Retard> listeRetard) {
+		int heures = 0;
+		for (Retard ab : listeRetard) {
+			if (ab.getEleve().getIdeleve().equals(eleve.getIdeleve())) {
+				heures = heures + ab.getHeures();
+			}
+		}
+		return heures;
+	}
+
+	public int getAbsence(Eleve eleve, List<Absence> listeAbsence) {
+		int heures = 0;
+		for (Absence ab : listeAbsence) {
+			if (ab.getEleve().getIdeleve().equals(eleve.getIdeleve())) {
+				heures = heures + ab.getHeure();
+			}
+		}
+		return heures;
 	}
 
 	public Deliberation gererSup() {
@@ -1039,6 +1492,30 @@ public class DeliberationService implements Serializable {
 
 		listeDeliberation.remove(d);
 
+		return d;
+	}
+
+	public DeliberationMS gererSupMS() {
+		DeliberationMS d = listeDeliberationMSF1.get(0);
+		for (int i = 1; i < listeDeliberationMSF1.size(); i++) {
+			if (d.getMoyenne() < listeDeliberationMSF1.get(i).getMoyenne()) {
+				d = listeDeliberationMSF1.get(i);
+			}
+		}
+		listeDeliberationMSF1.remove(d);
+
+		return d;
+	}
+
+	public DeliberationMS gererSupMSAn() {
+		DeliberationMS d = listeDeliberationMSF1.get(0);
+		for (int i = 1; i < listeDeliberationMSF1.size(); i++) {
+			if (d.getMoyenneAn() < listeDeliberationMSF1.get(i).getMoyenneAn()) {
+				d = listeDeliberationMSF1.get(i);
+			}
+		}
+		listeDeliberationMSF1.remove(d);
+		System.out.println("SUP " + d.getEleve().getPrenom());
 		return d;
 	}
 
@@ -1068,6 +1545,37 @@ public class DeliberationService implements Serializable {
 		return liste;
 	}
 
+	public List<DeliberationMS> getMoyenEqualMS(DeliberationMS d) {
+		List<DeliberationMS> liste = new ArrayList<DeliberationMS>();
+
+		for (int i = 0; i < listeDeliberationMSF1.size(); i++) {
+
+			if (d.getMoyenne().equals(listeDeliberationMSF1.get(i).getMoyenne())) {
+
+				liste.add(listeDeliberationMSF1.get(i));
+			}
+		}
+
+		return liste;
+	}
+
+	public List<DeliberationMS> getMoyenEqualMSAn(DeliberationMS d) {
+		List<DeliberationMS> liste = new ArrayList<DeliberationMS>();
+
+		for (int i = 0; i < listeDeliberationMSF1.size(); i++) {
+
+			if (d.getMoyenneAn().equals(listeDeliberationMSF1.get(i).getMoyenneAn())) {
+
+				liste.add(listeDeliberationMSF1.get(i));
+			}
+		}
+		System.out.println("equal ");
+		for (int i = 0; i < liste.size(); i++) {
+			System.out.println("equal " + liste.get(i).getEleve().getPrenom());
+		}
+		return liste;
+	}
+
 	public List<DeliberationFinal> getMoyenEqualFinal(DeliberationFinal d) {
 		List<DeliberationFinal> liste = new ArrayList<DeliberationFinal>();
 
@@ -1090,6 +1598,38 @@ public class DeliberationService implements Serializable {
 			}
 		}
 		return cumul;
+	}
+
+	public Double cumulNoteMS(Eleve e, List<Notes> listeNotes, Matiere matiere) {
+		Double cumul = 0.0;
+		int i = 0;
+		for (Notes n : listeNotes) {
+			if (n.getEleve().getIdeleve().equals(e.getIdeleve())
+					&& n.getMatiere().getIdmatiere().equals(matiere.getIdmatiere())) {
+				cumul = cumul + n.getNote();
+				i++;
+			}
+		}
+		cumul = cumul / i;
+		return cumul;
+	}
+
+	public Double getNoteComposition(Eleve e, List<Notes> listeNotes, Matiere matiere) {
+		Double note = 0d;
+		notecomp = false;
+		for (Notes n : listeNotes) {
+			if (n.getEleve().getIdeleve().equals(e.getIdeleve())
+					&& n.getMatiere().getIdmatiere().equals(matiere.getIdmatiere())) {
+				note = (double) n.getNote();
+
+				notecomp = true;
+				break;
+
+			}
+
+		}
+		return note;
+
 	}
 
 	@SuppressWarnings("unchecked")
@@ -1307,4 +1847,125 @@ public class DeliberationService implements Serializable {
 	public void setDecision(String decision) {
 		this.decision = decision;
 	}
+
+	public String getTypenote() {
+		return typenote;
+	}
+
+	public void setTypenote(String typenote) {
+		this.typenote = typenote;
+	}
+
+	public List<Semestres> getListeSemestre() {
+		return listeSemestre;
+	}
+
+	public void setListeSemestre(List<Semestres> listeSemestre) {
+		this.listeSemestre = listeSemestre;
+	}
+
+	public Semestres getSemestre() {
+		return semestre;
+	}
+
+	public void setSemestre(Semestres semestre) {
+		this.semestre = semestre;
+	}
+
+	public Semestres getSs() {
+		return ss;
+	}
+
+	public void setSs(Semestres ss) {
+		this.ss = ss;
+	}
+
+	public boolean isNotecomp() {
+		return notecomp;
+	}
+
+	public void setNotecomp(boolean notecomp) {
+		this.notecomp = notecomp;
+	}
+
+	public List<DeliberationMS> getListeDeliberationMSFF() {
+		return listeDeliberationMSFF;
+	}
+
+	public void setListeDeliberationMSFF(List<DeliberationMS> listeDeliberationMSFF) {
+		this.listeDeliberationMSFF = listeDeliberationMSFF;
+	}
+
+	public List<Deliberation> getListeDeli() {
+		return listeDeli;
+	}
+
+	public void setListeDeli(List<Deliberation> listeDeli) {
+		this.listeDeli = listeDeli;
+	}
+
+	public List<DeliberationMS> getListeDeliberationMS() {
+		return listeDeliberationMS;
+	}
+
+	public void setListeDeliberationMS(List<DeliberationMS> listeDeliberationMS) {
+		this.listeDeliberationMS = listeDeliberationMS;
+	}
+
+	public List<DeliberationMS> getListeDeliberationMSF() {
+		return listeDeliberationMSF;
+	}
+
+	public void setListeDeliberationMSF(List<DeliberationMS> listeDeliberationMSF) {
+		this.listeDeliberationMSF = listeDeliberationMSF;
+	}
+
+	public List<DeliberationMS> getListeDeliberationMSF1() {
+		return listeDeliberationMSF1;
+	}
+
+	public void setListeDeliberationMSF1(List<DeliberationMS> listeDeliberationMSF1) {
+		this.listeDeliberationMSF1 = listeDeliberationMSF1;
+	}
+
+	public List<DeliberationMS> getListeDeliberationMSVIEW() {
+		return listeDeliberationMSVIEW;
+	}
+
+	public void setListeDeliberationMSVIEW(List<DeliberationMS> listeDeliberationMSVIEW) {
+		this.listeDeliberationMSVIEW = listeDeliberationMSVIEW;
+	}
+
+	public Eleve getEleve() {
+		return eleve;
+	}
+
+	public void setEleve(Eleve eleve) {
+		this.eleve = eleve;
+	}
+
+	public String getMoyenneGen() {
+		return moyenneGen;
+	}
+
+	public void setMoyenneGen(String moyenneGen) {
+		this.moyenneGen = moyenneGen;
+	}
+
+	public String getRangGen() {
+		return rangGen;
+	}
+
+	public void setRangGen(String rangGen) {
+		this.rangGen = rangGen;
+	}
+
+	public List<DeliberationMS> getListeDeliberationS1() {
+		return listeDeliberationS1;
+	}
+
+	public void setListeDeliberationS1(List<DeliberationMS> listeDeliberationS1) {
+		this.listeDeliberationS1 = listeDeliberationS1;
+	}
+
 }

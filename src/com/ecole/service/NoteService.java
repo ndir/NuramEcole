@@ -2,6 +2,7 @@ package com.ecole.service;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import javax.faces.application.FacesMessage;
@@ -15,6 +16,7 @@ import org.jboss.seam.annotations.Name;
 import org.jboss.seam.annotations.Scope;
 import org.jboss.seam.faces.FacesMessages;
 
+import com.ecole.entity.Absence;
 import com.ecole.entity.AnneeScolaire;
 import com.ecole.entity.Classe;
 import com.ecole.entity.Eleve;
@@ -26,6 +28,7 @@ import com.ecole.entity.Niveau;
 import com.ecole.entity.Note;
 import com.ecole.entity.Notes;
 import com.ecole.entity.ParamInscription;
+import com.ecole.entity.Retard;
 import com.ecole.entity.Semestres;
 import com.ecole.entity.TypeNote;
 
@@ -63,6 +66,9 @@ public class NoteService implements Serializable {
 	private List<TypeNote> listeTypeNotes = new ArrayList<TypeNote>();
 	private Evaluation ev = new Evaluation();
 	private boolean choix;
+	private Semestres ss = new Semestres();
+	private TypeNote typeNotes = new TypeNote();
+	private Date dateAbsence;
 
 	@In
 	private AnneeScolaire annee;
@@ -73,14 +79,16 @@ public class NoteService implements Serializable {
 
 	private Semestres semestre = new Semestres();
 
+	private List<Absence> listeAbsence = new ArrayList<Absence>();
+
+	private List<Retard> listeRetard = new ArrayList<Retard>();
+
+	private Absence absence = new Absence();
+
+	private Retard retard = new Retard();
+
 	@SuppressWarnings("unchecked")
 	public void chargerListeMatClasse() {
-		// Evaluation e = (Evaluation) dataSource.createQuery("FRom Evaluation e where
-		// libelle=:plib")
-		// .setParameter("plib", ev).uniqueResult();
-
-		// System.out.println("Entrer "+e.getIdEvaluation());
-
 		listeMatiereClasse = new ArrayList<MatiereClasse>();
 		if (typenote.equalsIgnoreCase("1")) {
 			if (ev.getIdEvaluation() != null) {
@@ -114,6 +122,16 @@ public class NoteService implements Serializable {
 		ev = new Evaluation();
 		ev = (Evaluation) dataSource.get(Evaluation.class, note.getEvaluation().getIdEvaluation());
 
+	}
+
+	public void getTypeN() {
+		typeNote = new TypeNote();
+		typeNote = (TypeNote) dataSource.get(TypeNote.class, typeNotes.getId());
+	}
+
+	public void getSemestre1() {
+		semestre = new Semestres();
+		semestre = (Semestres) dataSource.get(Semestres.class, ss.getId());
 	}
 
 	public void annulerAjoutNote() {
@@ -179,7 +197,6 @@ public class NoteService implements Serializable {
 				return;
 			}
 
-
 			for (Eleve eleve : listeEleves) {
 				if (eleve.isChoix() & !eleve.isExiste()) {
 					Notes n = new Notes();
@@ -204,6 +221,8 @@ public class NoteService implements Serializable {
 			}
 			this.setNiveau(new Niveau());
 			this.setSemestre(new Semestres());
+			this.setSs(new Semestres());
+			this.setListeSemestre(new ArrayList<Semestres>());
 			FacesMessages.instance().addToControlFromResourceBundle("infoGenerique", "Notes sauvegardées avec succès");
 			annulerAjoutNote();
 		}
@@ -231,7 +250,6 @@ public class NoteService implements Serializable {
 
 	@SuppressWarnings("unchecked")
 	public void chargerListeEleve() {
-		System.out.println("enter classe "+note.getCl().getLibelle() );
 		MatiereClasse mc = new MatiereClasse();
 		ParamInscription p = (ParamInscription) dataSource
 				.createQuery("From ParamInscription p inner join fetch p.classe c inner join fetch p.annee pa "
@@ -239,13 +257,13 @@ public class NoteService implements Serializable {
 				.setParameter("pc", note.getCl()).setParameter("pa", annee).uniqueResult();
 
 		if (p != null) {
-			System.out.println("not null");
+
 			this.setChoix(true);
 			List<Inscription> liste = dataSource
 					.createQuery(
 							"FRom Inscription i inner join fetch i.eleve inner join fetch i.paramins p where p =:pp")
 					.setParameter("pp", p).list();
-			System.out.println("taille liste "+liste.size() + "param "+p.getId());
+
 			listeEleves = new ArrayList<Eleve>();
 			if (typenote.equalsIgnoreCase("1")) {
 				mc = (MatiereClasse) dataSource
@@ -271,17 +289,36 @@ public class NoteService implements Serializable {
 	}
 
 	public void noteExiste(Eleve e) {
+		if (typenote.equalsIgnoreCase("1")) {
+			Note n = (Note) dataSource.createQuery("From Note n inner join fetch n.cl c inner join fetch n.matiere m "
+					+ " inner join fetch n.eleve e inner join fetch n.annee an inner join fetch n.evaluation ev where c=:pc and m=:pm and an=:pan and e=:pe and ev =:pev ")
+					.setParameter("pc", note.getCl()).setParameter("pm", note.getMatiere()).setParameter("pan", annee)
+					.setParameter("pe", e).setParameter("pev", note.getEvaluation()).uniqueResult();
 
-		Note n = (Note) dataSource.createQuery("From Note n inner join fetch n.cl c inner join fetch n.matiere m "
-				+ " inner join fetch n.eleve e inner join fetch n.annee an inner join fetch n.evaluation ev where c=:pc and m=:pm and an=:pan and e=:pe and ev =:pev ")
-				.setParameter("pc", note.getCl()).setParameter("pm", note.getMatiere()).setParameter("pan", annee)
-				.setParameter("pe", e).setParameter("pev", note.getEvaluation()).uniqueResult();
-		if (n != null) {
-			e.setExiste(true);
-			e.setIdNote(n.getIdNote());
-			e.setNote(n.getNote());
+			if (n != null) {
+				e.setExiste(true);
+				e.setIdNote(n.getIdNote());
+				e.setNote(n.getNote());
+			}
 		}
-
+//		} else {
+//			
+//			if (semestre.getId() == null) {
+//				getSemestre1();
+//			}
+//			Notes n = (Notes) dataSource
+//					.createQuery("From Notes n inner join fetch n.classe c inner join fetch n.matiere m "
+//							+ " inner join fetch n.eleve e inner join fetch n.annee an inner join fetch n.semestre sm"
+//							+ " inner join fetch n.typeNote ev where c=:pc and m=:pm and an=:pan and e=:pe and sm =:pev and ev=:pt")
+//					.setParameter("pc", note.getCl()).setParameter("pm", note.getMatiere()).setParameter("pan", annee)
+//					.setParameter("pe", e).setParameter("pev", semestre).setParameter("pt", typeNote).uniqueResult();
+//
+//			if (n != null) {
+//				e.setExiste(true);
+//				e.setIdNote(n.getId());
+//				e.setNote(n.getNote());
+//			}
+//		}
 	}
 
 	public void cocherTout() {
@@ -315,7 +352,7 @@ public class NoteService implements Serializable {
 				FacesMessages.instance().addToControlFromResourceBundle("erreurGenerique",
 						"Aucune(s) Note(s) pour la matière " + note.getMatiere().getLibelle() + " pour  "
 								+ semestre.getLibelle());
-				
+
 			}
 		}
 
@@ -323,6 +360,158 @@ public class NoteService implements Serializable {
 
 	public void modifierNotes(Notes notes) {
 		dataSource.update(notes);
+	}
+
+	@SuppressWarnings("unchecked")
+	public String versRetard() {
+		chargerRetard();
+		retard = new Retard();
+		listeSemestre = new ArrayList<Semestres>();
+		listeSemestre = dataSource.createQuery("From Semestres").list();
+		return "/pages/nuramecole/retard.xhtml";
+	}
+
+	@SuppressWarnings("unchecked")
+	public String versAbsence() {
+		chargerAbsence();
+		absence = new Absence();
+		setListeClasse(new ArrayList<Classe>());
+		setListeClasse(dataSource
+				.createQuery(" From Classe c inner join fetch c.niveau n where n.code <>:pn and n.code <>:pn1 ")
+				.setParameter("pn", "PRE").setParameter("pn1", "ELE").list());
+		listeSemestre = new ArrayList<Semestres>();
+		listeSemestre = dataSource.createQuery("From Semestres").list();
+		return "/pages/nuramecole/absence.xhtml";
+	}
+
+	@SuppressWarnings("unchecked")
+	public void saisieAbsence() {
+		listeEleves = new ArrayList<Eleve>();
+		
+		ParamInscription p = (ParamInscription) dataSource
+				.createQuery("From ParamInscription p inner join fetch p.classe c inner join fetch p.annee pa "
+						+ " where c =:pc and pa =:pa ")
+				.setParameter("pc", classe).setParameter("pa", annee).uniqueResult();
+		
+		if (p != null) {
+
+			List<Inscription> liste = dataSource
+					.createQuery(
+							"FRom Inscription i inner join fetch i.eleve inner join fetch i.paramins p where p =:pp")
+					.setParameter("pp", p).list();
+
+			listeEleves = new ArrayList<Eleve>();
+			
+			
+			
+			for (Inscription in : liste) {
+				in.getEleve().setDateAbsence(dateAbsence);
+				listeEleves.add(in.getEleve());
+			}
+		}
+	}
+
+	public void chargerMatieres() {
+		listeMatiere = new ArrayList<Matiere>();
+		listeMatiereClasse = dataSource.createQuery(
+				"from MatiereClasse mc inner join fetch mc.matiere inner join fetch mc.classe where mc.classe =:pc and mc.annee_scol =:pan "
+						+ " ")
+				.setParameter("pc", classe).setParameter("pan", annee.getAnneeScolaire()).list();
+
+		
+		for (MatiereClasse mc : listeMatiereClasse) {
+			listeMatiere.add(mc.getMatiere());
+		}
+	}
+
+	public void ajouterAbsence() {
+		if (classe == null) {
+			FacesMessages.instance().addToControlFromResourceBundle("erreurGenerique", "Classe Obligatoire");
+			return;
+		}
+		if (note.getMatiere() == null) {
+			FacesMessages.instance().addToControlFromResourceBundle("erreurGenerique", "Matière Obligatoire");
+			return;
+		}
+		if (dateAbsence == null) {
+			FacesMessages.instance().addToControlFromResourceBundle("erreurGenerique", "Date  Obligatoire");
+			return;
+		}
+		
+		if (semestre == null) {
+			FacesMessages.instance().addToControlFromResourceBundle("erreurGenerique", "Semestre obligatoire ");
+			return;
+		}
+
+		for (Eleve eleve : listeEleves) {
+			if (eleve.getNbheure() > 0) {
+				Absence ab = new Absence();
+				ab.setEleve(eleve);
+				ab.setHeure(eleve.getNbheure());
+				ab.setMatiere(note.getMatiere());
+				ab.setDateAbsence(dateAbsence);
+				ab.setSemestre(semestre);
+				ab.setAnnee(annee);
+				dataSource.save(ab);
+			}
+		}
+		FacesMessages.instance().addToControlFromResourceBundle("infoGenerique", "Données sauvegardées");
+		listeEleves = new ArrayList<Eleve>();
+	}
+	
+	public void ajouterRetard() {
+		if (classe == null) {
+			FacesMessages.instance().addToControlFromResourceBundle("erreurGenerique", "Classe Obligatoire");
+			return;
+		}
+		if (note.getMatiere() == null) {
+			FacesMessages.instance().addToControlFromResourceBundle("erreurGenerique", "Matière Obligatoire");
+			return;
+		}
+		if (dateAbsence == null) {
+			FacesMessages.instance().addToControlFromResourceBundle("erreurGenerique", "Date  Obligatoire");
+			return;
+		}
+		
+		if (semestre == null) {
+			FacesMessages.instance().addToControlFromResourceBundle("erreurGenerique", "Semestre obligatoire ");
+			return;
+		}
+
+		for (Eleve eleve : listeEleves) {
+			if (eleve.getNbheure() > 0) {
+				Retard ab = new Retard();
+				ab.setEleve(eleve);
+				ab.setHeures(eleve.getNbheure());
+				ab.setMatiere(note.getMatiere());
+				ab.setDateRetard(dateAbsence);
+				ab.setSemestre(semestre);
+				ab.setAnnee(annee);
+				dataSource.save(ab);
+			}
+		}
+		FacesMessages.instance().addToControlFromResourceBundle("infoGenerique", "Données sauvegardées");
+		listeEleves = new ArrayList<Eleve>();
+	}
+
+	@SuppressWarnings("unchecked")
+	public void chargerRetard() {
+		listeRetard = new ArrayList<Retard>();
+		setListeClasse(new ArrayList<Classe>());
+		setListeClasse(dataSource
+				.createQuery(" From Classe c inner join fetch c.niveau n where n.code <>:pn and n.code <>:pn1 ")
+				.setParameter("pn", "PRE").setParameter("pn1", "ELE").list());
+		listeRetard = dataSource.createQuery(
+				"From Retard r inner join fetch r.eleve inner join fetch r.annee an inner join fetch r.matiere where an =:pan")
+				.setParameter("pan", annee).list();
+	}
+
+	@SuppressWarnings("unchecked")
+	public void chargerAbsence() {
+		listeAbsence = new ArrayList<Absence>();
+		listeAbsence = dataSource.createQuery(
+				"From Absence r inner join fetch r.eleve inner join fetch r.annee an inner join fetch r.matiere where an =:pan")
+				.setParameter("pan", annee).list();
 	}
 
 	@SuppressWarnings("unchecked")
@@ -577,6 +766,62 @@ public class NoteService implements Serializable {
 
 	public void setListeNotess(List<Notes> listeNotess) {
 		this.listeNotess = listeNotess;
+	}
+
+	public Semestres getSs() {
+		return ss;
+	}
+
+	public void setSs(Semestres ss) {
+		this.ss = ss;
+	}
+
+	public TypeNote getTypeNotes() {
+		return typeNotes;
+	}
+
+	public void setTypeNotes(TypeNote typeNotes) {
+		this.typeNotes = typeNotes;
+	}
+
+	public List<Absence> getListeAbsence() {
+		return listeAbsence;
+	}
+
+	public void setListeAbsence(List<Absence> listeAbsence) {
+		this.listeAbsence = listeAbsence;
+	}
+
+	public List<Retard> getListeRetard() {
+		return listeRetard;
+	}
+
+	public void setListeRetard(List<Retard> listeRetard) {
+		this.listeRetard = listeRetard;
+	}
+
+	public Absence getAbsence() {
+		return absence;
+	}
+
+	public void setAbsence(Absence absence) {
+		this.absence = absence;
+	}
+
+	public Retard getRetard() {
+		return retard;
+	}
+
+	public void setRetard(Retard retard) {
+		this.retard = retard;
+	}
+
+	public Date getDateAbsence() {
+		return dateAbsence;
+	}
+
+	public void setDateAbsence(Date dateAbsence) {
+		this.dateAbsence = dateAbsence;
 	}
 
 }

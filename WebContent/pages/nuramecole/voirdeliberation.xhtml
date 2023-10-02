@@ -124,7 +124,7 @@
 
 														<a:support event="onchange"
 															action="#{dService.chargerListeClasse()}"
-															ajaxSingle="true" reRender="classe" status="waitStatus"></a:support>
+															ajaxSingle="true" reRender="liste" status="waitStatus"></a:support>
 													</h:selectOneMenu></td>
 
 												<td><h:outputLabel styleClass="grey" value="Classe" /></td>
@@ -138,18 +138,34 @@
 													</h:selectOneMenu></td>
 											</tr>
 											<tr>
+												<a:outputPanel rendered="#{dService.typenote eq '1'}">
+													<td><h:outputLabel styleClass="grey"
+															value="Evaluation" /></td>
 
-												<td><h:outputLabel styleClass="grey" value="Evaluation" /></td>
+													<td><h:selectOneMenu class="form-control"
+															value="#{dService.evaluation}"
+															converter="#{evaluationConverter}" id="matiere"
+															noSelectionLabel="--- Selectionnez ---">
+															<s:selectItems value="#{dService.listeEval}" var="type"
+																label="#{type.libelle}"
+																noSelectionLabel="--- Selectionnez ---" />
 
-												<td><h:selectOneMenu class="form-control"
-														value="#{dService.evaluation}"
-														converter="#{evaluationConverter}" id="matiere"
-														noSelectionLabel="--- Selectionnez ---">
-														<s:selectItems value="#{dService.listeEval}" var="type"
-															label="#{type.libelle}"
-															noSelectionLabel="--- Selectionnez ---" />
+														</h:selectOneMenu></td>
+												</a:outputPanel>
 
-													</h:selectOneMenu></td>
+												<a:outputPanel rendered="#{dService.typenote eq '2'}">
+													<td><h:outputLabel styleClass="grey" value="Semestre" /></td>
+													<td><h:selectOneMenu class="form-control"
+															value="#{dService.ss}" converter="#{semestreConverter}"
+															id="sem" noSelectionLabel="--- Selectionnez ---">
+															<s:selectItems value="#{dService.listeSemestre}"
+																var="type" label="#{type.libelle}"
+																noSelectionLabel="--- Selectionnez ---" />
+															<a:support event="onchange"
+																action="#{dService.getSemestre1()}" ajaxSingle="true"
+																status="waitStatus"></a:support>
+														</h:selectOneMenu></td>
+												</a:outputPanel>
 
 											</tr>
 											<tr>
@@ -271,6 +287,82 @@
 												rendered="#{not empty dService.listeDeliberationF}" />
 										</a:outputPanel>
 
+										<a:outputPanel
+											rendered="#{dService.listeDeliberationMSF1.size > 0}">
+											<rich:dataTable value="#{dService.listeDeliberationMSF1}"
+												var="mat" id="delise" style="width:100%;" rows="8"
+												rowClasses="row1,row2">
+												<f:facet name="header">
+													<rich:columnGroup>
+														<rich:column>
+															<h:outputLabel value="Eleve"
+																style="color:white;font-size:12px;font-family: Arial;text-align:center;" />
+														</rich:column>
+
+														<rich:column>
+															<h:outputLabel value="Total"
+																style="color:white;font-size:12px;font-family: Arial;text-align:center;" />
+														</rich:column>
+														<rich:column>
+															<h:outputLabel value="Moyenne"
+																style="color:white;font-size:12px;font-family: Arial;text-align:center;" />
+														</rich:column>
+														<rich:column>
+															<h:outputLabel value="Rang"
+																style="color:white;font-size:12px;font-family: Arial;text-align:center;" />
+														</rich:column>
+														<rich:column>
+															<h:outputLabel value="Appréciation"
+																style="color:white;font-size:12px;font-family: Arial;text-align:center;" />
+														</rich:column>
+														<rich:column>
+															<h:outputLabel value="Details"
+																style="color:white;font-size:12px;font-family: Arial;text-align:center;" />
+														</rich:column>
+													</rich:columnGroup>
+												</f:facet>
+												<rich:column filterBy="#{mat.eleve.nom}"
+													filterEvent="onkeyup">
+													<h:outputLabel value="#{mat.eleve.nom} #{mat.eleve.prenom}"
+														styleClass="grey"></h:outputLabel>
+												</rich:column>
+
+												<rich:column>
+													<h:outputLabel value="#{mat.total}" styleClass="grey">
+													</h:outputLabel>
+												</rich:column>
+
+												<rich:column>
+													<h:outputLabel value="#{mat.moyenne}" styleClass="grey">
+														<f:convertNumber type="number" minFractionDigits="2"
+															maxFractionDigits="2" />
+													</h:outputLabel>
+												</rich:column>
+
+												<rich:column>
+													<h:outputLabel value="#{mat.ranggen}" styleClass="grey"></h:outputLabel>
+												</rich:column>
+
+												<rich:column>
+													<h:outputLabel value="#{mat.apgen}" styleClass="grey"></h:outputLabel>
+												</rich:column>
+
+												<rich:column style="width:8%;">
+													<a:commandLink value="" status="waitStatus"
+														action="#{dService.detailsDeliberation(mat)}"
+														oncomplete="javascript:Richfaces.showModalPanel('dtms',{width:700, height:600})"
+														reRender="fdtms" title="Details">
+														<s:graphicImage fileName="info.png" style="border:0px;"
+															value="/picto/info.png" width="16" height="16" alt="" />
+													</a:commandLink>
+												</rich:column>
+
+											</rich:dataTable>
+											<rich:datascroller status="waitStatus" stepControls="auto"
+												style="width:100%" for="delise" ajaxSingle="false"
+												rendered="#{not empty dService.listeDeliberationMSF1}" />
+										</a:outputPanel>
+
 									</div>
 								</div>
 							</div>
@@ -357,7 +449,107 @@
 
 					</h:form>
 				</rich:modalPanel>
+				<rich:modalPanel id="dtms"
+					style="background:url('../img2/fond.jpg') repeat-x scroll 0 0 #FFF;height:210; width:300"
+					moveable="true" styleClass="popupAttente">
+					<f:facet name="controls">
 
+						<a:commandLink value="" status="waitStatus" title="Fermer "
+							onclick="javascript:Richfaces.hideModalPanel('dtms')">
+							<s:graphicImage fileName="cross.png" style="border:0px;"
+								value="/picto/cross.png" width="16" height="16" alt="" />
+						</a:commandLink>
+					</f:facet>
+					<f:facet name="header">
+			DETAILS POUR #{dService.eleve.nom} #{dService.eleve.prenom}
+			</f:facet>
+					<rich:spacer height="10px" />
+					<h:form class="note-form" id="fdtms">
+						<div class="row">
+							<div class="col-md-12">
+								<div class="panel panel-success">
+									<div class="panel-body">
+										
+										<h5 style="color: green;">Semestre:
+											#{dService.semestre.libelle} Moyenne: #{dService.moyenneGen}
+											Rang: #{dService.rangGen}</h5>
+										<rich:dataTable value="#{dService.listeDeliberationMSVIEW}"
+											var="mat" id="deliv" style="width:100%;" rows="20"
+											rowClasses="row1,row2">
+											<f:facet name="header">
+												<rich:columnGroup>
+													<rich:column>
+														<h:outputLabel value="DISCIPLINE"
+															style="color:white;font-size:12px;font-family: Arial;text-align:center;" />
+													</rich:column>
+
+													<rich:column>
+														<h:outputLabel value="Devoir"
+															style="color:white;font-size:12px;font-family: Arial;text-align:center;" />
+													</rich:column>
+													<rich:column>
+														<h:outputLabel value="Comp"
+															style="color:white;font-size:12px;font-family: Arial;text-align:center;" />
+													</rich:column>
+													<rich:column>
+														<h:outputLabel value="Moy/20"
+															style="color:white;font-size:12px;font-family: Arial;text-align:center;" />
+													</rich:column>
+													<rich:column>
+														<h:outputLabel value="Coef"
+															style="color:white;font-size:12px;font-family: Arial;text-align:center;" />
+													</rich:column>
+													<rich:column>
+														<h:outputLabel value="Appréciation"
+															style="color:white;font-size:12px;font-family: Arial;text-align:center;" />
+													</rich:column>
+												</rich:columnGroup>
+											</f:facet>
+											<rich:column>
+												<h:outputLabel value="#{mat.matiere.libelle}"
+													styleClass="grey"></h:outputLabel>
+											</rich:column>
+
+											<rich:column>
+												<h:outputLabel value="#{mat.moyenneD}" styleClass="grey">
+												</h:outputLabel>
+											</rich:column>
+
+											<rich:column rendered="#{mat.moyenneC ne 'NO'}">
+												<h:outputLabel value="#{mat.moyenneC}" styleClass="grey">
+
+												</h:outputLabel>
+											</rich:column>
+
+											<rich:column rendered="#{mat.moyenneC eq 'NO'}">
+												<h:outputLabel value="-" styleClass="grey">
+
+												</h:outputLabel>
+											</rich:column>
+
+											<rich:column>
+												<h:outputLabel value="#{mat.cumuls}" styleClass="grey"></h:outputLabel>
+											</rich:column>
+
+											<rich:column>
+												<h:outputLabel value="#{mat.coef}" styleClass="grey"></h:outputLabel>
+											</rich:column>
+
+											<rich:column style="width:8%;">
+												<h:outputLabel value="#{mat.appreciation.libelle}"
+													styleClass="grey"></h:outputLabel>
+											</rich:column>
+
+										</rich:dataTable>
+										<rich:datascroller status="waitStatus" stepControls="auto"
+											style="width:100%" for="deliv" ajaxSingle="false"
+											rendered="#{not empty dService.listeDeliberationMSVIEW}" />
+									</div>
+								</div>
+							</div>
+						</div>
+					</h:form>
+				</rich:modalPanel>
 			</div>
 
 

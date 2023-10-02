@@ -27,6 +27,8 @@ public class Decision implements Serializable{
 	
 	private float moy;
 	
+	private String code;
+	
     @Id
     @GeneratedValue
 	public Long getId() {
@@ -44,6 +46,14 @@ public class Decision implements Serializable{
 
 	public void setMoy(float moy) {
 		this.moy = moy;
+	}
+
+	public String getCode() {
+		return code;
+	}
+
+	public void setCode(String code) {
+		this.code = code;
 	}
 
 	

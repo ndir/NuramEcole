@@ -114,50 +114,49 @@
 
 								<div class="table-responsive">
 									<h:form id="liste">
-										<FIELDSET>
-											<LEGEND> LISTE ELEVE DE LA CLASSE
-												#{eleveService.classe.libelle}
-												#{eleveService.anneeScolaire.anneeScolaire} </LEGEND>
-											<TABLE class="table">
-												<tr>
-													<td><h:outputLabel styleClass="grey" value="Niveau" /></td>
-													<td><h:selectOneMenu class="form-control"
-															value="#{eleveService.niveau}"
-															converter="#{niveauConverter}" id="cont"
-															noSelectionLabel="--- Selectionnez ---">
+										<h6>LISTE ELEVE DE LA CLASSE
+											#{eleveService.classe.libelle}
+											#{eleveService.anneeScolaire.anneeScolaire}</h6>
+										<TABLE class="table">
+											<tr>
+												<td><h:outputLabel styleClass="grey" value="Niveau" /></td>
+												<td><h:selectOneMenu class="form-control"
+														value="#{eleveService.niveau}"
+														converter="#{niveauConverter}" id="cont"
+														noSelectionLabel="--- Selectionnez ---">
 
-															<s:selectItems value="#{eleveService.listeNiveau}"
-																var="type" label="#{type.libelle}"
-																noSelectionLabel="--- Selectionnez ---" />
+														<s:selectItems value="#{eleveService.listeNiveau}"
+															var="type" label="#{type.libelle}"
+															noSelectionLabel="--- Selectionnez ---" />
 
-															<a:support event="onchange"
-																action="#{eleveService.chargerListeClasse()}"
-																ajaxSingle="true" reRender="classe" status="waitStatus"></a:support>
-														</h:selectOneMenu></td>
+														<a:support event="onchange"
+															action="#{eleveService.chargerListeClasse()}"
+															ajaxSingle="true" reRender="classe" status="waitStatus"></a:support>
+													</h:selectOneMenu></td>
 
-													<td><h:outputLabel styleClass="grey" value="Classe" /></td>
-													<td><h:selectOneMenu class="form-control"
-															value="#{eleveService.classe}"
-															converter="#{classeConverter}" id="classe"
-															noSelectionLabel="--- Selectionnez ---">
+												<td><h:outputLabel styleClass="grey" value="Classe" /></td>
+												<td><h:selectOneMenu class="form-control"
+														value="#{eleveService.classe}"
+														converter="#{classeConverter}" id="classe"
+														noSelectionLabel="--- Selectionnez ---">
 
-															<s:selectItems value="#{eleveService.listeClasse}"
-																var="type" label="#{type.libelle}" />
+														<s:selectItems value="#{eleveService.listeClasse}"
+															var="type" label="#{type.libelle}" />
 
-														</h:selectOneMenu></td>
-
-
-													<td><h:outputLabel styleClass="grey"
-															value="Année Scolaire" /></td>
-													<td><h:inputText
-															value="#{eleveService.anneeScolaire.anneeScolaire}"
-															class="form-control" disabled="true" /></td>
-
-												</tr>
+													</h:selectOneMenu></td>
 
 
-											</TABLE>
-										</FIELDSET>
+												<td><h:outputLabel styleClass="grey"
+														value="Année Scolaire" /></td>
+												<td><h:inputText
+														value="#{eleveService.anneeScolaire.anneeScolaire}"
+														class="form-control" disabled="true" /></td>
+
+											</tr>
+
+
+										</TABLE>
+
 										<p align="center">
 
 
@@ -211,6 +210,18 @@
 													</rich:column>
 
 													<rich:column>
+														<h:outputLabel value="Absences"
+															style="color:white;font-size:12px;font-family: Arial;text-align:center;" />
+													</rich:column>
+													
+													
+													<rich:column>
+														<h:outputLabel value="Retards"
+															style="color:white;font-size:12px;font-family: Arial;text-align:center;" />
+													</rich:column>
+													
+
+													<rich:column>
 														<h:outputLabel value="Action"
 															style="color:white;font-size:12px;font-family: Arial;text-align:center;" />
 													</rich:column>
@@ -238,6 +249,25 @@
 											<rich:column>
 												<h:outputLabel
 													value="#{mat.eleve.titeur} #{mat.eleve.telephone}"></h:outputLabel>
+											</rich:column>
+											<rich:column>
+												<h:outputLabel value="#{eleveService.getHeuresAbsence(mat)}"></h:outputLabel>
+												<a:commandLink value="" status="waitStatus"
+													onclick="javascript:Richfaces.showModalPanel('absences',{width:700, height:600})"
+													reRender="fab" title="Details">
+													<s:graphicImage fileName="info.png" style="border:0px;"
+														value="/picto/info.png" width="16" height="16" alt="" />
+												</a:commandLink>
+											</rich:column>
+											
+											<rich:column>
+												<h:outputLabel value="#{eleveService.getRetard(mat)}"></h:outputLabel>
+												<a:commandLink value="" status="waitStatus"
+													onclick="javascript:Richfaces.showModalPanel('retard',{width:700, height:600})"
+													reRender="fre" title="Details">
+													<s:graphicImage fileName="info.png" style="border:0px;"
+														value="/picto/info.png" width="16" height="16" alt="" />
+												</a:commandLink>
 											</rich:column>
 											<rich:column>
 												<a:commandLink value="" status="waitStatus"
@@ -297,30 +327,30 @@
 													<td><h:inputText
 															value="#{eleveService.eleve.nationalite}"
 															class="form-control" /></td>
-															
-															<td><h:outputLabel styleClass="grey"
+
+													<td><h:outputLabel styleClass="grey"
 															value="Date de naissance" /></td>
 													<td><rich:calendar
 															value="#{eleveService.eleve.dateNaissance}"
 															cellWidth="0px" cellHeight="20px"
 															datePattern="dd/MM/yyyy"
 															buttonIcon="/img2/calendrier.png"></rich:calendar></td>
-															
+
 												</tr>
 												<tr>
-													
+
 
 													<td><h:outputLabel styleClass="grey" value="Titeur" /></td>
 													<td><h:inputText value="#{eleveService.eleve.titeur}"
 															styleClass="form-control" /></td>
-															
-												<td><h:outputLabel styleClass="grey" value="Contact" /></td>
+
+													<td><h:outputLabel styleClass="grey" value="Contact" /></td>
 													<td><h:inputText
 															value="#{eleveService.eleve.telephone}"
 															styleClass="form-control" /></td>
 												</tr>
 												<tr>
-													
+
 													<td><h:outputLabel styleClass="grey" value="Réduction" /></td>
 													<td><h:inputText
 															value="#{eleveService.inscription.reduction}"
@@ -343,7 +373,7 @@
 															<f:selectItem itemValue="F" itemLabel="Féminin" />
 														</h:selectOneMenu></td>
 												</tr>
-											
+
 												<tr>
 													<td><h:outputLabel styleClass="grey" value="Adresse" /></td>
 													<td><h:inputTextarea
@@ -363,8 +393,7 @@
 												<a:commandLink styleClass="btn btn-success" value=""
 													action="#{eleveService.modifierEleves()}"
 													oncomplete="javascript:Richfaces.hideModalPanel('eleves',{width:500, height:300})"
-													reRender="liste" status="waitStatus"
-													>
+													reRender="liste" status="waitStatus">
 																		VALIDER			
 																				</a:commandLink>
 											</p>
@@ -375,6 +404,177 @@
 						</div>
 					</h:form>
 				</rich:modalPanel>
+
+
+
+				<rich:modalPanel id="absences"
+					style="background:url('../img2/fond.jpg') repeat-x scroll 0 0 #FFF;height:210; width:300"
+					moveable="true" styleClass="popupAttente">
+					<f:facet name="controls">
+
+						<a:commandLink value="" status="waitStatus" title="Fermer "
+							onclick="javascript:Richfaces.hideModalPanel('absences')">
+							<s:graphicImage fileName="cross.png" style="border:0px;"
+								value="/picto/cross.png" width="16" height="16" alt="" />
+						</a:commandLink>
+					</f:facet>
+					<f:facet name="header">
+			DETAILS ABSENCES  
+			</f:facet>
+					<rich:spacer height="10px" />
+					<h:form class="note-form" id="fab">
+						<div class="row">
+							<div class="col-md-12">
+								<div class="panel panel-success">
+									<div class="panel-body">
+										<div class="form-group has-success">
+
+											<rich:dataTable value="#{eleveService.listeAbsence}"
+												var="mat" id="dab" style="width:100%;" rows="10"
+												rowClasses="row1,row2">
+												<f:facet name="header">
+													<rich:columnGroup>
+
+														<rich:column>
+															<h:outputLabel value="Elève"
+																style="color:white;font-size:12px;font-family: Arial;text-align:center;" />
+														</rich:column>
+														<rich:column>
+															<h:outputLabel value="Date"
+																style="color:white;font-size:12px;font-family: Arial;text-align:center;" />
+														</rich:column>
+														<rich:column>
+															<h:outputLabel value="Semestre"
+																style="color:white;font-size:12px;font-family: Arial;text-align:center;" />
+														</rich:column>
+														<rich:column>
+															<h:outputLabel value="Matière"
+																style="color:white;font-size:12px;font-family: Arial;text-align:center;" />
+														</rich:column>
+														<rich:column>
+															<h:outputLabel value="Nombre d'heure"
+																style="color:white;font-size:12px;font-family: Arial;text-align:center;" />
+														</rich:column>
+
+													</rich:columnGroup>
+												</f:facet>
+
+												<rich:column>
+													<h:outputLabel value="#{mat.eleve.prenom} #{mat.eleve.nom}"></h:outputLabel>
+												</rich:column>
+
+												<rich:column>
+													<h:outputLabel value="#{mat.dateAbsence}">
+														<f:convertDateTime pattern="dd/MM/yyyy" />
+													</h:outputLabel>
+												</rich:column>
+												
+												<rich:column>
+													<h:outputLabel value="#{mat.semestre.libelle}"></h:outputLabel>
+												</rich:column>
+												<rich:column>
+													<h:outputLabel value="#{mat.matiere.libelle}"></h:outputLabel>
+												</rich:column>
+												<rich:column>
+													<h:outputLabel value="#{mat.heure}"></h:outputLabel>
+												</rich:column>
+
+											</rich:dataTable>
+											<rich:datascroller status="waitStatus" stepControls="auto"
+												style="width:100%" for="dab" ajaxSingle="false"
+												rendered="#{not empty eleveService.listeAbsence}" />
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</h:form>
+				</rich:modalPanel>
+				
+				<rich:modalPanel id="retard"
+					style="background:url('../img2/fond.jpg') repeat-x scroll 0 0 #FFF;height:210; width:300"
+					moveable="true" styleClass="popupAttente">
+					<f:facet name="controls">
+
+						<a:commandLink value="" status="waitStatus" title="Fermer "
+							onclick="javascript:Richfaces.hideModalPanel('retard')">
+							<s:graphicImage fileName="cross.png" style="border:0px;"
+								value="/picto/cross.png" width="16" height="16" alt="" />
+						</a:commandLink>
+					</f:facet>
+					<f:facet name="header">
+			DETAILS RETARD  
+			</f:facet>
+					<rich:spacer height="10px" />
+					<h:form class="note-form" id="fre">
+						<div class="row">
+							<div class="col-md-12">
+								<div class="panel panel-success">
+									<div class="panel-body">
+										<div class="form-group has-success">
+
+											<rich:dataTable value="#{eleveService.listeRetard}"
+												var="mat" id="dre" style="width:100%;" rows="10"
+												rowClasses="row1,row2">
+												<f:facet name="header">
+													<rich:columnGroup>
+
+														<rich:column>
+															<h:outputLabel value="Elève"
+																style="color:white;font-size:12px;font-family: Arial;text-align:center;" />
+														</rich:column>
+														<rich:column>
+															<h:outputLabel value="Date"
+																style="color:white;font-size:12px;font-family: Arial;text-align:center;" />
+														</rich:column>
+														<rich:column>
+															<h:outputLabel value="Semestre"
+																style="color:white;font-size:12px;font-family: Arial;text-align:center;" />
+														</rich:column>
+														<rich:column>
+															<h:outputLabel value="Matière"
+																style="color:white;font-size:12px;font-family: Arial;text-align:center;" />
+														</rich:column>
+														<rich:column>
+															<h:outputLabel value="Nombre d'heure"
+																style="color:white;font-size:12px;font-family: Arial;text-align:center;" />
+														</rich:column>
+
+													</rich:columnGroup>
+												</f:facet>
+
+												<rich:column>
+													<h:outputLabel value="#{mat.eleve.prenom} #{mat.eleve.nom}"></h:outputLabel>
+												</rich:column>
+
+												<rich:column>
+													<h:outputLabel value="#{mat.dateRetard}">
+														<f:convertDateTime pattern="dd/MM/yyyy" />
+													</h:outputLabel>
+												</rich:column>
+												
+												<rich:column>
+													<h:outputLabel value="#{mat.semestre.libelle}"></h:outputLabel>
+												</rich:column>
+												<rich:column>
+													<h:outputLabel value="#{mat.matiere.libelle}"></h:outputLabel>
+												</rich:column>
+												<rich:column>
+													<h:outputLabel value="#{mat.heures}"></h:outputLabel>
+												</rich:column>
+
+											</rich:dataTable>
+											<rich:datascroller status="waitStatus" stepControls="auto"
+												style="width:100%" for="dre" ajaxSingle="false"
+												rendered="#{not empty eleveService.listeRetard}" />
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</h:form>
+				</rich:modalPanel>
+
 			</div>
 		</div>
 	</div>

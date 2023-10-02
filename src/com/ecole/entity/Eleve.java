@@ -67,6 +67,10 @@ public class Eleve implements Serializable {
 	
 	private int coef;
 	
+	private int nbheure;
+	
+	private Date dateAbsence;
+	
 	@Id
 	@GeneratedValue
 	public Long getIdeleve() {
@@ -246,6 +250,24 @@ public class Eleve implements Serializable {
 
 	public void setCoef(int coef) {
 		this.coef = coef;
+	}
+
+	@Transient
+	public int getNbheure() {
+		return nbheure;
+	}
+
+	public void setNbheure(int nbheure) {
+		this.nbheure = nbheure;
+	}
+
+	@Transient
+	public Date getDateAbsence() {
+		return dateAbsence;
+	}
+
+	public void setDateAbsence(Date dateAbsence) {
+		this.dateAbsence = dateAbsence;
 	}
 
 }

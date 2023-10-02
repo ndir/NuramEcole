@@ -130,7 +130,7 @@ public class AppreciationService implements Serializable {
 	}
 
 	public void versmodifierAps(AppreciationMS ap) {
-		this.setApms(apms);
+		this.setApms(ap);
 	}
 
 	public Appreciation getAp() {

@@ -15,8 +15,8 @@ import javax.persistence.Table;
  *
  */
 @Entity
-@Table(name = "typenote")
-public class TypeNote implements Serializable{
+@Table(name = "appreciations")
+public class Appreciations implements Serializable{
 
 	/**
 	 * 
@@ -25,9 +25,11 @@ public class TypeNote implements Serializable{
 	
 	private Long id;
 	
-	private String libelle;
+	private float inf;
 	
-	private String code;
+	private float sup;
+	
+	private String libelle;
 
 	@Id
 	@GeneratedValue
@@ -37,6 +39,22 @@ public class TypeNote implements Serializable{
 
 	public void setId(Long id) {
 		this.id = id;
+	}
+
+	public float getInf() {
+		return inf;
+	}
+
+	public void setInf(float inf) {
+		this.inf = inf;
+	}
+
+	public float getSup() {
+		return sup;
+	}
+
+	public void setSup(float sup) {
+		this.sup = sup;
 	}
 
 	public String getLibelle() {
@@ -63,21 +81,13 @@ public class TypeNote implements Serializable{
 			return false;
 		if (getClass() != obj.getClass())
 			return false;
-		TypeNote other = (TypeNote) obj;
+		Appreciations other = (Appreciations) obj;
 		if (id == null) {
 			if (other.id != null)
 				return false;
 		} else if (!id.equals(other.id))
 			return false;
 		return true;
-	}
-
-	public String getCode() {
-		return code;
-	}
-
-	public void setCode(String code) {
-		this.code = code;
 	}
 
 }
