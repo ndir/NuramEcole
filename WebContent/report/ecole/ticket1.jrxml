@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="facture" language="groovy" pageWidth="226" pageHeight="400" columnWidth="186" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="6546e48c-413e-42a1-8176-bf24124a789d">
+	<property name="ireport.zoom" value="2.0"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<parameter name="nom_asufor" class="java.lang.String"/>
+	<parameter name="adresse" class="java.lang.String"/>
+	<parameter name="tel" class="java.lang.String"/>
+	<parameter name="logo" class="java.io.InputStream"/>
+	<parameter name="nom" class="java.lang.String"/>
+	<parameter name="SUBREPORT_DIR" class="java.lang.String" isForPrompting="false">
+		<defaultValueExpression><![CDATA["C:\\Worksapace\\asufor_cayar\\ASUFOR\\WebContent\\report\\asufor\\"]]></defaultValueExpression>
+	</parameter>
+	<parameter name="enable" class="java.lang.String"/>
+	<parameter name="p1" class="java.lang.String"/>
+	<parameter name="p2" class="java.lang.String"/>
+	<parameter name="p3" class="java.lang.String"/>
+	<parameter name="p4" class="java.lang.String"/>
+	<parameter name="pecole" class="java.lang.String"/>
+	<parameter name="nom2" class="java.lang.String"/>
+	<parameter name="ptel" class="java.lang.String"/>
+	<parameter name="psologan" class="java.lang.String"/>
+	<parameter name="pclasse" class="java.lang.String"/>
+	<parameter name="pd" class="java.lang.Double"/>
+	<parameter name="pa" class="java.lang.Double"/>
+	<parameter name="pr" class="java.lang.Double"/>
+	<queryString language="hql">
+		<![CDATA[From Recette]]>
+	</queryString>
+	<field name="annee" class="com.ecole.entity.AnneeScolaire"/>
+	<field name="avoirUtilise" class="java.lang.Double"/>
+	<field name="commentaire" class="java.lang.String"/>
+	<field name="datePaiment" class="java.util.Date"/>
+	<field name="editable" class="java.lang.Boolean"/>
+	<field name="idRecette" class="java.lang.Long"/>
+	<field name="inscription" class="com.ecole.entity.Inscription"/>
+	<field name="moisPaye" class="java.lang.Integer"/>
+	<field name="montant" class="java.lang.Double"/>
+	<field name="montantPaye" class="java.lang.Double"/>
+	<field name="typeRecette" class="com.ecole.entity.TypeRecette"/>
+	<field name="utilisateur" class="com.chaka.projet.entity.Utilisateur"/>
+	<variable name="tt" class="java.lang.Double" calculation="Sum">
+		<variableExpression><![CDATA[]]></variableExpression>
+	</variable>
+	<variable name="tt_1" class="java.lang.Double" calculation="Sum">
+		<variableExpression><![CDATA[]]></variableExpression>
+	</variable>
+	<variable name="tt_1_2" class="java.lang.Double" calculation="Sum">
+		<variableExpression><![CDATA[]]></variableExpression>
+	</variable>
+	<variable name="tt_1_2_3" class="java.lang.Double" calculation="Sum">
+		<variableExpression><![CDATA[]]></variableExpression>
+	</variable>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="158" splitType="Stretch">
+			<staticText>
+				<reportElement x="0" y="1" width="186" height="16" uuid="30b09885-2164-495b-baa8-6472650373f0"/>
+				<textElement textAlignment="Center"/>
+				<text><![CDATA[]]></text>
+			</staticText>
+			<textField pattern="#,##0">
+				<reportElement x="55" y="106" width="76" height="18" uuid="b06dab07-ccc9-48ad-b50c-0f9c16c29382"/>
+				<textFieldExpression><![CDATA[$F{montantPaye}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="0" y="34" width="186" height="15" uuid="77cd35fd-0c55-4bb6-905c-cc84dc118a04"/>
+				<textFieldExpression><![CDATA["Elève " +$F{inscription}.getEleve().getPrenom() + " " +$F{inscription}.getEleve().getNom()]]></textFieldExpression>
+			</textField>
+			<textField pattern="dd/MM/yyyy">
+				<reportElement x="0" y="17" width="186" height="13" uuid="ad89fba4-be93-4de7-a8da-d98056467eeb"/>
+				<textFieldExpression><![CDATA[new java.util.Date()]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="0" y="1" width="186" height="16" uuid="b7082155-85a7-4d57-8655-944ed56d7277"/>
+				<textFieldExpression><![CDATA[$P{pecole}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="0" y="49" width="186" height="17" uuid="ded93a30-e22c-4e81-bbe1-e7583b85e17a"/>
+				<textFieldExpression><![CDATA[$P{pclasse}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0">
+				<reportElement x="55" y="85" width="145" height="18" uuid="ca995e9f-e27f-43b0-b646-150ec668c794"/>
+				<textFieldExpression><![CDATA[$P{pd}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0">
+				<reportElement x="55" y="123" width="60" height="18" uuid="7ec701d7-042c-4ce6-a6aa-28bd3f2534b5"/>
+				<textFieldExpression><![CDATA[$P{pa}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0">
+				<reportElement x="55" y="138" width="60" height="18" uuid="3b0e8790-6c61-4957-8894-3ce0e9d39ee1"/>
+				<textFieldExpression><![CDATA[$P{pr}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="0" y="66" width="31" height="18" uuid="23793ccc-a51e-48d6-be20-bacdd5765bce"/>
+				<text><![CDATA[Mois]]></text>
+			</staticText>
+			<textField pattern="#,##0">
+				<reportElement x="55" y="66" width="79" height="18" uuid="dbc4f017-9e57-477e-919a-66dd49d01fc4"/>
+				<textFieldExpression><![CDATA[$P{nom2}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="0" y="85" width="60" height="20" uuid="2e62577c-aaad-4075-9220-757d165dea04"/>
+				<text><![CDATA[Montant DU]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="0" y="106" width="31" height="17" uuid="15b1ec5b-802e-442f-b971-de5dcc98a9ba"/>
+				<text><![CDATA[Payer]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="0" y="123" width="34" height="14" uuid="13ef5762-2477-4c1a-893c-6e51ceb6403a"/>
+				<text><![CDATA[Avoir]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="0" y="138" width="41" height="20" uuid="3c5acc9c-b09b-4e6f-8ef1-ccd268aec4bd"/>
+				<text><![CDATA[Reliquat]]></text>
+			</staticText>
+		</band>
+	</title>
+</jasperReport>

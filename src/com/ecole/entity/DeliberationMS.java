@@ -3,6 +3,7 @@
  */
 package com.ecole.entity;
 
+import java.io.InputStream;
 import java.io.Serializable;
 
 import javax.persistence.Entity;
@@ -12,6 +13,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 /**
  * @author A626257
@@ -55,8 +57,7 @@ public class DeliberationMS implements Serializable {
 	private int totalcoef;
 
 	private String ranggen;
-	
-	
+
 	private String ranggan;
 
 	private int absence;
@@ -88,10 +89,27 @@ public class DeliberationMS implements Serializable {
 	private Double moyenne1;
 
 	private String moyenne1s;
-	
+
 	private String decision;
-	
+
 	private Appreciations appreciationan;
+
+	private String moyx;
+
+	private String ecole;
+	private String tel;
+	private String slogan;
+	private String eff;
+	private String ia;
+	private String ief;
+	private InputStream logo;
+	private String d1;
+	private String d2;
+	private String d3;
+	
+	private String ranga;
+	private String use;
+	private String usean;
 
 	@Id
 	@GeneratedValue
@@ -373,6 +391,126 @@ public class DeliberationMS implements Serializable {
 
 	public void setRanggan(String ranggan) {
 		this.ranggan = ranggan;
+	}
+
+	public String getMoyx() {
+		return moyx;
+	}
+
+	public void setMoyx(String moyx) {
+		this.moyx = moyx;
+	}
+
+	@Transient
+	public String getEcole() {
+		return ecole;
+	}
+
+	public void setEcole(String ecole) {
+		this.ecole = ecole;
+	}
+
+	@Transient
+	public String getTel() {
+		return tel;
+	}
+
+	public void setTel(String tel) {
+		this.tel = tel;
+	}
+
+	@Transient
+	public String getSlogan() {
+		return slogan;
+	}
+
+	public void setSlogan(String slogan) {
+		this.slogan = slogan;
+	}
+
+	@Transient
+	public String getEff() {
+		return eff;
+	}
+
+	public void setEff(String eff) {
+		this.eff = eff;
+	}
+
+	@Transient
+	public String getIa() {
+		return ia;
+	}
+
+	public void setIa(String ia) {
+		this.ia = ia;
+	}
+
+	@Transient
+	public String getIef() {
+		return ief;
+	}
+
+	public void setIef(String ief) {
+		this.ief = ief;
+	}
+	@Transient
+	public InputStream getLogo() {
+		return logo;
+	}
+
+	public void setLogo(InputStream logo) {
+		this.logo = logo;
+	}
+
+	public String getD1() {
+		return d1;
+	}
+
+	public void setD1(String d1) {
+		this.d1 = d1;
+	}
+
+	public String getD2() {
+		return d2;
+	}
+
+	public void setD2(String d2) {
+		this.d2 = d2;
+	}
+
+	public String getD3() {
+		return d3;
+	}
+
+	public void setD3(String d3) {
+		this.d3 = d3;
+	}
+
+	@Transient
+	public String getRanga() {
+		return ranga;
+	}
+
+	public void setRanga(String ranga) {
+		this.ranga = ranga;
+	}
+
+	@Transient
+	public String getUse() {
+		return use;
+	}
+
+	public void setUse(String use) {
+		this.use = use;
+	}
+
+	public String getUsean() {
+		return usean;
+	}
+	@Transient
+	public void setUsean(String usean) {
+		this.usean = usean;
 	}
 
 }

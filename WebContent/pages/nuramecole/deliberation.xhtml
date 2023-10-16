@@ -31,7 +31,7 @@
 	content="Responsive Bootstrap 4 Dashboard Template"></meta>
 <meta name="author" content="BootstrapDash"></meta>
 
-<title>E-SCHOOL</title>
+<title>NURAMECOLE</title>
 
 <!-- vendor css -->
 <link href="lib/fontawesome-free/css/all.min.css" rel="stylesheet"></link>
@@ -52,6 +52,23 @@
 
 			<ui:include src="/template/include/header2.xhtml" />
 
+			<ui:insert name="impression">
+				<rich:modalPanel id="modalPdf" autosized="false" width="980"
+					height="620" moveable="true" resizeable="true">
+
+					<f:facet name="controls">
+						<a onclick="Richfaces.hideModalPanel('modalPdf');"
+							style="cursor: pointer" href="#">Fermer</a>
+					</f:facet>
+					<h:form id="frmPdf">
+						<a:mediaOutput element="object" id="id" cacheable="false"
+							session="true" createContent="#{fileUploadService.paintPdf}"
+							type="application/pdf" mimeType="application/pdf"
+							style="width:90%; height:600px;" value="#{filePrintService.id}" />
+
+					</h:form>
+				</rich:modalPanel>
+			</ui:insert>
 
 		</div>
 	</div>
@@ -229,6 +246,10 @@
 																style="color:white;font-size:12px;font-family: Arial;text-align:center;" />
 														</rich:column>
 														<rich:column>
+															<h:outputLabel value="Total Coef"
+																style="color:white;font-size:12px;font-family: Arial;text-align:center;" />
+														</rich:column>
+														<rich:column>
 															<h:outputLabel value="Moyenne"
 																style="color:white;font-size:12px;font-family: Arial;text-align:center;" />
 														</rich:column>
@@ -254,6 +275,12 @@
 
 												<rich:column>
 													<h:outputLabel value="#{mat.cumul}" styleClass="grey">
+													</h:outputLabel>
+												</rich:column>
+												
+												<rich:column>
+													<h:outputLabel value="#{mat.totalcoef}" styleClass="grey">
+
 													</h:outputLabel>
 												</rich:column>
 
@@ -286,6 +313,16 @@
 
 										<a:outputPanel
 											rendered="#{dService.listeDeliberationMSFF.size > 0 and dService.semestre.code eq '1'}">
+											<p align="right">
+
+												<a:commandLink styleClass="btn btn-success" value=""
+													action="#{dService.imprimerToutMS()}"
+													oncomplete="#{dService.showModal}" status="waitStatus">
+																		
+																		Impimer Tout			
+																				</a:commandLink>
+
+											</p>
 											<rich:dataTable value="#{dService.listeDeliberationMSFF}"
 												var="mat" id="delise" style="width:100%;" rows="8"
 												rowClasses="row1,row2">
@@ -325,14 +362,13 @@
 												</rich:column>
 
 												<rich:column>
-													<h:outputLabel value="#{mat.total}" styleClass="grey">
+													<h:outputLabel value="#{mat.totals}" styleClass="grey">
 													</h:outputLabel>
 												</rich:column>
 
 												<rich:column>
-													<h:outputLabel value="#{mat.moyenne}" styleClass="grey">
-														<f:convertNumber type="number" minFractionDigits="2"
-															maxFractionDigits="2" />
+													<h:outputLabel value="#{mat.moyennes}" styleClass="grey">
+														
 													</h:outputLabel>
 												</rich:column>
 
@@ -352,6 +388,13 @@
 														<s:graphicImage fileName="info.png" style="border:0px;"
 															value="/picto/info.png" width="16" height="16" alt="" />
 													</a:commandLink>
+													<a:commandLink value="" status="waitStatus"
+														action="#{dService.imprimerBulletinMS(mat)}"
+														oncomplete="#{dService.showModal}"
+														title="Imprimer Bulletin">
+														<s:graphicImage fileName="printer.png" style="border:0px;"
+															value="/picto/printer.png" width="16" height="16" alt="" />
+													</a:commandLink>
 												</rich:column>
 
 											</rich:dataTable>
@@ -364,6 +407,16 @@
 										
 										<a:outputPanel
 											rendered="#{dService.listeDeliberationMSFF.size > 0 and dService.semestre.code eq '2'}">
+											<p align="right">
+
+												<a:commandLink styleClass="btn btn-success" value=""
+													action="#{dService.imprimerToutMS()}"
+													oncomplete="#{dService.showModal}" status="waitStatus">
+																		
+																		Impimer Tout			
+																				</a:commandLink>
+
+											</p>
 											<rich:dataTable value="#{dService.listeDeliberationMSFF}"
 												var="mat" id="delise2" style="width:100%;" rows="8"
 												rowClasses="row1,row2">
@@ -375,11 +428,11 @@
 														</rich:column>
 
 														<rich:column>
-															<h:outputLabel value="Moy. Semestre 1"
+															<h:outputLabel value="Moy. Sem. 1"
 																style="color:white;font-size:12px;font-family: Arial;text-align:center;" />
 														</rich:column>
 														<rich:column>
-															<h:outputLabel value="Moy. Semestre 2"
+															<h:outputLabel value="Moy. Sem. 2"
 																style="color:white;font-size:12px;font-family: Arial;text-align:center;" />
 														</rich:column>
 														<rich:column>
@@ -416,23 +469,20 @@
 												</rich:column>
 
 												<rich:column>
-													<h:outputLabel value="#{mat.moyenne1}" styleClass="grey">
-														<f:convertNumber type="number" minFractionDigits="2"
-															maxFractionDigits="2" />
+													<h:outputLabel value="#{mat.moyenne1s}" styleClass="grey">
+														
 													</h:outputLabel>
 												</rich:column>
 
 												<rich:column>
-													<h:outputLabel value="#{mat.moyenne}" styleClass="grey">
-														<f:convertNumber type="number" minFractionDigits="2"
-															maxFractionDigits="2" />
+													<h:outputLabel value="#{mat.moyennes}" styleClass="grey">
+														
 													</h:outputLabel>
 												</rich:column>
 
 												<rich:column>
-													<h:outputLabel value="#{mat.moyenneAn}" styleClass="grey">
-														<f:convertNumber type="number" minFractionDigits="2"
-															maxFractionDigits="2" />
+													<h:outputLabel value="#{mat.moyenneAns}" styleClass="grey">
+														
 													</h:outputLabel>
 												</rich:column>
 												
@@ -454,14 +504,30 @@
 												<rich:column>
 													<h:outputLabel value="#{mat.decision}" styleClass="grey"></h:outputLabel>
 												</rich:column>
-
+                                                
 												<rich:column style="width:8%;">
+												<h:selectOneMenu id="shippingOption" required="true"
+														value="#{dService.decision}" class="form-control">
+														<f:selectItem itemValue="Passe en classe supérieure"
+															itemLabel="Passe en classe supérieure" />
+														<f:selectItem itemValue="Redouble" itemLabel="Redouble" />
+														<f:selectItem itemValue="Exclu(e)" itemLabel="Exclu(e)" />
+														<a:support event="onchange" ajaxSingle="true"
+															action="#{dService.changerDecision(mat)}" reRender="delise2"></a:support>
+													</h:selectOneMenu>
 													<a:commandLink value="" status="waitStatus"
 														action="#{dService.detailsDeliberation(mat)}"
 														oncomplete="javascript:Richfaces.showModalPanel('dtms',{width:700, height:600})"
 														reRender="fdtms" title="Details">
 														<s:graphicImage fileName="info.png" style="border:0px;"
 															value="/picto/info.png" width="16" height="16" alt="" />
+													</a:commandLink>
+													<a:commandLink value="" status="waitStatus"
+														action="#{dService.imprimerBulletinMS(mat)}"
+														oncomplete="#{dService.showModal}"
+														title="Imprimer Bulletin">
+														<s:graphicImage fileName="printer.png" style="border:0px;"
+															value="/picto/printer.png" width="16" height="16" alt="" />
 													</a:commandLink>
 												</rich:column>
 
@@ -549,13 +615,13 @@
 												</h:outputLabel>
 											</rich:column>
 
-											<rich:column rendered="#{mat.moyenneC ne 'NO'}">
+											<rich:column rendered="#{mat.moyenneC ne '-'}">
 												<h:outputLabel value="#{mat.moyenneC}" styleClass="grey">
 
 												</h:outputLabel>
 											</rich:column>
 
-											<rich:column rendered="#{mat.moyenneC eq 'NO'}">
+											<rich:column rendered="#{mat.moyenneC eq '-'}">
 												<h:outputLabel value="-" styleClass="grey">
 
 												</h:outputLabel>

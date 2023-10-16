@@ -130,8 +130,10 @@ public class NoteService implements Serializable {
 	}
 
 	public void getSemestre1() {
+	
 		semestre = new Semestres();
 		semestre = (Semestres) dataSource.get(Semestres.class, ss.getId());
+		
 	}
 
 	public void annulerAjoutNote() {
@@ -387,14 +389,14 @@ public class NoteService implements Serializable {
 	@SuppressWarnings("unchecked")
 	public void saisieAbsence() {
 		listeEleves = new ArrayList<Eleve>();
-		
+		System.out.println("LISTE 1");
 		ParamInscription p = (ParamInscription) dataSource
 				.createQuery("From ParamInscription p inner join fetch p.classe c inner join fetch p.annee pa "
 						+ " where c =:pc and pa =:pa ")
 				.setParameter("pc", classe).setParameter("pa", annee).uniqueResult();
 		
 		if (p != null) {
-
+			System.out.println("LISTE 2");
 			List<Inscription> liste = dataSource
 					.createQuery(
 							"FRom Inscription i inner join fetch i.eleve inner join fetch i.paramins p where p =:pp")
@@ -402,13 +404,14 @@ public class NoteService implements Serializable {
 
 			listeEleves = new ArrayList<Eleve>();
 			
-			
+			System.out.println("LISTE 1"+liste.size());
 			
 			for (Inscription in : liste) {
 				in.getEleve().setDateAbsence(dateAbsence);
 				listeEleves.add(in.getEleve());
 			}
 		}
+		System.out.println("LISTE 1"+listeEleves.size());
 	}
 
 	public void chargerMatieres() {

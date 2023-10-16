@@ -11,7 +11,8 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
-
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 
 import com.chaka.projet.entity.Utilisateur;
 
@@ -57,6 +58,8 @@ public class Depense implements Serializable{
 	public void setTypeDepense(TypeDepense typeDepense) {
 		this.typeDepense = typeDepense;
 	}
+	
+	@Temporal(TemporalType.DATE)
 	public Date getDateDepense() {
 		return dateDepense;
 	}

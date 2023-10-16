@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="facture" language="groovy" pageWidth="226" pageHeight="400" columnWidth="186" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="6546e48c-413e-42a1-8176-bf24124a789d">
+	<property name="ireport.zoom" value="2.0"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<parameter name="nom_asufor" class="java.lang.String"/>
+	<parameter name="adresse" class="java.lang.String"/>
+	<parameter name="tel" class="java.lang.String"/>
+	<parameter name="logo" class="java.io.InputStream"/>
+	<parameter name="nom" class="java.lang.String"/>
+	<parameter name="SUBREPORT_DIR" class="java.lang.String" isForPrompting="false">
+		<defaultValueExpression><![CDATA["C:\\Worksapace\\asufor_cayar\\ASUFOR\\WebContent\\report\\asufor\\"]]></defaultValueExpression>
+	</parameter>
+	<parameter name="enable" class="java.lang.String"/>
+	<parameter name="p1" class="java.lang.String"/>
+	<parameter name="p2" class="java.lang.String"/>
+	<parameter name="p3" class="java.lang.String"/>
+	<parameter name="p4" class="java.lang.String"/>
+	<parameter name="pecole" class="java.lang.String"/>
+	<parameter name="nom2" class="java.lang.String"/>
+	<parameter name="ptel" class="java.lang.String"/>
+	<parameter name="psologan" class="java.lang.String"/>
+	<parameter name="pclasse" class="java.lang.String"/>
+	<queryString language="hql">
+		<![CDATA[From Inscription]]>
+	</queryString>
+	<field name="aPayer" class="java.lang.Double"/>
+	<field name="avoirEleve" class="java.lang.Double"/>
+	<field name="commentaire" class="java.lang.String"/>
+	<field name="doitPayer" class="java.lang.Double"/>
+	<field name="eleve" class="com.ecole.entity.Eleve"/>
+	<field name="id" class="java.lang.Long"/>
+	<field name="mois1" class="java.lang.Boolean"/>
+	<field name="mois10" class="java.lang.Boolean"/>
+	<field name="mois11" class="java.lang.Boolean"/>
+	<field name="mois12" class="java.lang.Boolean"/>
+	<field name="mois2" class="java.lang.Boolean"/>
+	<field name="mois3" class="java.lang.Boolean"/>
+	<field name="mois4" class="java.lang.Boolean"/>
+	<field name="mois5" class="java.lang.Boolean"/>
+	<field name="mois6" class="java.lang.Boolean"/>
+	<field name="mois7" class="java.lang.Boolean"/>
+	<field name="moisenCours" class="java.lang.Integer"/>
+	<field name="montantInscriptionPaye" class="java.lang.Double"/>
+	<field name="nbreMoisPaye" class="java.lang.Integer"/>
+	<field name="paramins" class="com.ecole.entity.ParamInscription"/>
+	<field name="reduction" class="java.lang.Double"/>
+	<field name="reliquat" class="java.lang.Double"/>
+	<field name="reliquat_ins" class="java.lang.Double"/>
+	<field name="resteApayer" class="java.lang.Double"/>
+	<variable name="tt" class="java.lang.Double" calculation="Sum">
+		<variableExpression><![CDATA[]]></variableExpression>
+	</variable>
+	<variable name="tt_1" class="java.lang.Double" calculation="Sum">
+		<variableExpression><![CDATA[]]></variableExpression>
+	</variable>
+	<variable name="tt_1_2" class="java.lang.Double" calculation="Sum">
+		<variableExpression><![CDATA[]]></variableExpression>
+	</variable>
+	<variable name="tt_1_2_3" class="java.lang.Double" calculation="Sum">
+		<variableExpression><![CDATA[]]></variableExpression>
+	</variable>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="196" splitType="Stretch">
+			<staticText>
+				<reportElement x="0" y="1" width="186" height="16" uuid="30b09885-2164-495b-baa8-6472650373f0"/>
+				<textElement textAlignment="Center"/>
+				<text><![CDATA[]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="0" y="80" width="56" height="20" uuid="825fd687-1cb2-404b-8848-9bbf51a55968"/>
+				<text><![CDATA[Inscription]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="0" y="123" width="42" height="20" uuid="62e0d865-b8be-48e5-a8da-ad6c46495193"/>
+				<text><![CDATA[Avoir]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="0" y="103" width="42" height="20" uuid="3a9049fa-9470-4005-9898-8a6d1a331a48"/>
+				<text><![CDATA[Réglé(FCFA)]]></text>
+			</staticText>
+			<textField pattern="###0">
+				<reportElement x="59" y="80" width="103" height="20" uuid="3cdd443e-6335-4516-a745-b60d92d79441"/>
+				<textFieldExpression><![CDATA[$F{paramins}.getDroit_ins()]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="59" y="123" width="84" height="20" uuid="c89583cd-7a68-4d39-aa83-f5ad337d5a44"/>
+				<textFieldExpression><![CDATA[$F{avoirEleve}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0">
+				<reportElement x="59" y="103" width="89" height="20" uuid="b06dab07-ccc9-48ad-b50c-0f9c16c29382"/>
+				<textFieldExpression><![CDATA[$F{montantInscriptionPaye}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="0" y="37" width="186" height="15" uuid="77cd35fd-0c55-4bb6-905c-cc84dc118a04"/>
+				<textFieldExpression><![CDATA[$F{eleve}.getPrenom() + " " +$F{eleve}.getNom()]]></textFieldExpression>
+			</textField>
+			<textField pattern="dd/MM/yyyy">
+				<reportElement x="-1" y="17" width="187" height="13" uuid="ad89fba4-be93-4de7-a8da-d98056467eeb"/>
+				<textFieldExpression><![CDATA[new java.util.Date()]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="-1" y="1" width="182" height="16" uuid="b7082155-85a7-4d57-8655-944ed56d7277"/>
+				<textFieldExpression><![CDATA[$P{pecole}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0">
+				<reportElement x="59" y="145" width="84" height="20" uuid="da4f4fc0-ea82-4cd9-8eb4-7010f9ca1308"/>
+				<textFieldExpression><![CDATA[$F{reliquat_ins}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="0" y="145" width="42" height="20" uuid="08936545-0ab6-415c-a0bb-4f5e84f015f5"/>
+				<text><![CDATA[Reliquat]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="0" y="55" width="186" height="17" uuid="ded93a30-e22c-4e81-bbe1-e7583b85e17a"/>
+				<textFieldExpression><![CDATA[$P{pclasse}]]></textFieldExpression>
+			</textField>
+		</band>
+	</title>
+</jasperReport>

@@ -9,7 +9,7 @@ import javax.persistence.Table;
 import javax.persistence.Transient;
 
 @Entity
-@Table(name="typeDepense")
+@Table(name="typedepense")
 public class TypeDepense implements Serializable {
 
 	/**

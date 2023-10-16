@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="etats_subreport1" language="groovy" pageWidth="555" pageHeight="802" columnWidth="555" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0" uuid="5e9da028-b21d-498f-9ecf-7ad20528ce43">
+	<property name="ireport.zoom" value="1.0"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<queryString language="hql">
+		<![CDATA[From TypeDepense]]>
+	</queryString>
+	<field name="code" class="java.lang.String"/>
+	<field name="id" class="java.lang.Long"/>
+	<field name="libelle" class="java.lang.String"/>
+	<field name="montant" class="java.lang.Double"/>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<detail>
+		<band height="23" splitType="Stretch">
+			<rectangle>
+				<reportElement x="175" y="2" width="153" height="20" uuid="50a4c582-3dae-451b-887a-2a526cd99996"/>
+			</rectangle>
+			<rectangle>
+				<reportElement x="1" y="2" width="174" height="20" uuid="e4625abf-ebeb-497f-ac98-c1bd640d4104"/>
+			</rectangle>
+			<textField>
+				<reportElement x="2" y="2" width="173" height="20" uuid="7dd036fe-eaf5-48a8-8475-f8d0cfb18648"/>
+				<textElement textAlignment="Center">
+					<font size="14"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{libelle}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0">
+				<reportElement x="176" y="2" width="152" height="20" uuid="404ea99e-744b-426f-8a67-fd0a13abbb22"/>
+				<textElement textAlignment="Center">
+					<font size="12"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{montant}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+</jasperReport>

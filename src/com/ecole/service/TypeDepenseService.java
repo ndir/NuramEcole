@@ -47,7 +47,7 @@ public class TypeDepenseService implements Serializable {
 	public String versTypeDepense() {
 		this.setTypeDepense(new TypeDepense());
 		chargerListeTypeDepense();
-		return "/pages/ecole/comptabilite/TypeDepense.xhtml";
+		return "/pages/nuramecole/TypeDepense.xhtml";
 	}
 
 	public void annulerAjout() {

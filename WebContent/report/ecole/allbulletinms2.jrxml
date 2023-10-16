@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="allbulletin" language="groovy" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="fd73ed90-4fae-4518-9d71-b498d64016fe">
+	<property name="ireport.zoom" value="1.0"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<parameter name="SUBREPORT_DIR" class="java.lang.String" isForPrompting="false">
+		<defaultValueExpression><![CDATA["C:\\Users\\A626257\\git\\ecole\\NuramEcole\\WebContent\\report\\ecole\\"]]></defaultValueExpression>
+	</parameter>
+	<queryString language="hql">
+		<![CDATA[From Eleve]]>
+	</queryString>
+	<field name="adresse" class="java.lang.String"/>
+	<field name="age" class="java.lang.Integer"/>
+	<field name="autre_info" class="java.lang.String"/>
+	<field name="choix" class="java.lang.Boolean"/>
+	<field name="coef" class="java.lang.Integer"/>
+	<field name="dateAbsence" class="java.util.Date"/>
+	<field name="dateNaissance" class="java.util.Date"/>
+	<field name="ecole" class="java.lang.String"/>
+	<field name="eff" class="java.lang.String"/>
+	<field name="existe" class="java.lang.Boolean"/>
+	<field name="ia" class="java.lang.String"/>
+	<field name="idMat" class="java.lang.Long"/>
+	<field name="idNote" class="java.lang.Long"/>
+	<field name="ideleve" class="java.lang.Long"/>
+	<field name="ief" class="java.lang.String"/>
+	<field name="listeDeli" class="java.util.List"/>
+	<field name="logo" class="java.io.InputStream"/>
+	<field name="nationalite" class="java.lang.String"/>
+	<field name="nbheure" class="java.lang.Integer"/>
+	<field name="nom" class="java.lang.String"/>
+	<field name="note" class="java.lang.Float"/>
+	<field name="numero" class="java.lang.String"/>
+	<field name="prenom" class="java.lang.String"/>
+	<field name="sexe" class="java.lang.String"/>
+	<field name="slogan" class="java.lang.String"/>
+	<field name="tel" class="java.lang.String"/>
+	<field name="telephone" class="java.lang.String"/>
+	<field name="titeur" class="java.lang.String"/>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<detail>
+		<band height="26" splitType="Stretch">
+			<subreport>
+				<reportElement x="-4" y="0" width="555" height="25" uuid="8319ccf1-71b5-4a46-9d18-d6346b541d06"/>
+				<subreportParameter name="logo"/>
+				<subreportParameter name="ecole"/>
+				<subreportParameter name="slogan"/>
+				<subreportParameter name="tel"/>
+				<subreportParameter name="total"/>
+				<subreportParameter name="moy"/>
+				<subreportParameter name="rang"/>
+				<subreportParameter name="app"/>
+				<subreportParameter name="eff"/>
+				<dataSourceExpression><![CDATA[new net.sf.jasperreports.engine.data.JRBeanCollectionDataSource($F{listeDeli})]]></dataSourceExpression>
+				<subreportExpression><![CDATA[$P{SUBREPORT_DIR} + "bulletinmssup.jasper"]]></subreportExpression>
+			</subreport>
+		</band>
+	</detail>
+</jasperReport>

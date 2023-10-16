@@ -31,7 +31,7 @@
 	content="Responsive Bootstrap 4 Dashboard Template"></meta>
 <meta name="author" content="BootstrapDash"></meta>
 
-<title>E-SCHOOL</title>
+<title>NURAMECOLE</title>
 
 <!-- vendor css -->
 <link href="lib/fontawesome-free/css/all.min.css" rel="stylesheet"></link>
@@ -51,7 +51,23 @@
 			<div class="az-header-center"></div>
 
 			<ui:include src="/template/include/header2.xhtml" />
+			<ui:insert name="impression">
+				<rich:modalPanel id="modalPdf" autosized="false" width="980"
+					height="620" moveable="true" resizeable="true">
 
+					<f:facet name="controls">
+						<a onclick="Richfaces.hideModalPanel('modalPdf');"
+							style="cursor: pointer" href="#">Fermer</a>
+					</f:facet>
+					<h:form id="frmPdf">
+						<a:mediaOutput element="object" id="id" cacheable="false"
+							session="true" createContent="#{fileUploadService.paintPdf}"
+							type="application/pdf" mimeType="application/pdf"
+							style="width:90%; height:600px;" value="#{filePrintService.id}" />
+
+					</h:form>
+				</rich:modalPanel>
+			</ui:insert>
 
 		</div>
 	</div>
@@ -178,14 +194,17 @@
 														disabled="#{recetteService.inscription.mois6 and recetteService.inscription.moisenCours ne '6'}">
 													</h:selectBooleanCheckbox></td>
 
-												<td><h:outputLabel styleClass="grey" rendered="#{recetteService.inscription.reliquat_ins > 0 and recetteService.inscription.moisenCours ==0}"
+												<td><h:outputLabel styleClass="grey"
+														rendered="#{recetteService.inscription.reliquat_ins > 0 and recetteService.inscription.moisenCours ==0}"
 														value="Reliquat inscription : " style="color: red">
-														<h:outputText styleClass="grey" id="idRlqIns" style="color: red"
+														<h:outputText styleClass="grey" id="idRlqIns"
+															style="color: red"
 															value="#{recetteService.inscription.reliquat_ins}">
 															<f:convertNumber pattern="#,##0" />
 														</h:outputText>
 
-													</h:outputLabel> <h:outputLabel styleClass="grey" value="  F CFA " rendered="#{recetteService.inscription.reliquat_ins > 0 and recetteService.inscription.moisenCours ==0}"/></td>
+													</h:outputLabel> <h:outputLabel styleClass="grey" value="  F CFA "
+														rendered="#{recetteService.inscription.reliquat_ins > 0 and recetteService.inscription.moisenCours ==0}" /></td>
 
 											</tr>
 										</TABLE>
@@ -284,6 +303,7 @@
 																				</a:commandLink> <rich:spacer width="10px;"></rich:spacer> <a:commandLink
 																			styleClass="btn btn-success" value=""
 																			action="#{recetteService.ajouterRecette()}"
+																			oncomplete="#{recetteService.showModal}"
 																			reRender="liste" status="waitStatus">
 																		
 																		Valider			

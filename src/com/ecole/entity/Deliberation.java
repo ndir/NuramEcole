@@ -67,6 +67,10 @@ public class Deliberation implements Serializable {
 	private String cumul;
 	
 	private String dec;
+	
+	private String use;
+	
+	private String totalcoef;
 
 	@Id
 	@GeneratedValue
@@ -268,6 +272,23 @@ public class Deliberation implements Serializable {
 
 	public void setDec(String dec) {
 		this.dec = dec;
+	}
+
+	@Transient
+	public String getUse() {
+		return use;
+	}
+
+	public void setUse(String use) {
+		this.use = use;
+	}
+
+	public String getTotalcoef() {
+		return totalcoef;
+	}
+
+	public void setTotalcoef(String totalcoef) {
+		this.totalcoef = totalcoef;
 	}
 
 

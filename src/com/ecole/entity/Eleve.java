@@ -3,8 +3,10 @@
  */
 package com.ecole.entity;
 
+import java.io.InputStream;
 import java.io.Serializable;
 import java.util.Date;
+import java.util.List;
 
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -12,6 +14,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
@@ -70,6 +73,16 @@ public class Eleve implements Serializable {
 	private int nbheure;
 	
 	private Date dateAbsence;
+	
+	private List<DeliberationMS> listeDeli;
+	
+	private String ecole;
+	private String tel;
+	private String slogan;
+	private String eff;
+	private String ia;
+	private String ief;
+	private InputStream logo;
 	
 	@Id
 	@GeneratedValue
@@ -268,6 +281,80 @@ public class Eleve implements Serializable {
 
 	public void setDateAbsence(Date dateAbsence) {
 		this.dateAbsence = dateAbsence;
+	}
+
+	@Transient
+	@OneToMany(fetch = FetchType.EAGER)
+	@JoinColumn(name = "ideleve")
+	public List<DeliberationMS> getListeDeli() {
+		return listeDeli;
+	}
+
+	public void setListeDeli(List<DeliberationMS> listeDeli) {
+		this.listeDeli = listeDeli;
+	}
+
+	@Transient
+	public String getEcole() {
+		return ecole;
+	}
+
+	public void setEcole(String ecole) {
+		this.ecole = ecole;
+	}
+
+	@Transient
+	public String getTel() {
+		return tel;
+	}
+
+	public void setTel(String tel) {
+		this.tel = tel;
+	}
+
+	@Transient
+	public String getSlogan() {
+		return slogan;
+	}
+
+	public void setSlogan(String slogan) {
+		this.slogan = slogan;
+	}
+
+	@Transient
+	public String getEff() {
+		return eff;
+	}
+
+	public void setEff(String eff) {
+		this.eff = eff;
+	}
+
+	@Transient
+	public String getIa() {
+		return ia;
+	}
+
+	public void setIa(String ia) {
+		this.ia = ia;
+	}
+
+	@Transient
+	public String getIef() {
+		return ief;
+	}
+
+	public void setIef(String ief) {
+		this.ief = ief;
+	}
+
+	@Transient
+	public InputStream getLogo() {
+		return logo;
+	}
+
+	public void setLogo(InputStream logo) {
+		this.logo = logo;
 	}
 
 }

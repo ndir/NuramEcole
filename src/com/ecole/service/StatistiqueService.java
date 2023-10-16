@@ -34,6 +34,7 @@ import com.ecole.entity.AnneeScolaire;
 import com.ecole.entity.Classe;
 import com.ecole.entity.Depense;
 import com.ecole.entity.Eleve;
+import com.ecole.entity.Etats;
 import com.ecole.entity.Inscription;
 import com.ecole.entity.Institution;
 import com.ecole.entity.ParamInscription;
@@ -275,9 +276,9 @@ public class StatistiqueService implements Serializable {
 			if (recette.getInscription().getId().equals(ins.getId())) {
 				mnt = mnt + recette.getMontantPaye();
 			}
-			if(recette.getAvoirUtilise() > 0) {
-				mnt = mnt + recette.getAvoirUtilise();
-			}
+//			if(recette.getAvoirUtilise() > 0) {
+//				mnt = mnt + recette.getAvoirUtilise();
+//			}
 		}
 		return mnt;
 	}
@@ -363,34 +364,34 @@ public class StatistiqueService implements Serializable {
 
 	public Double getTotalMontantPayer() {
 		Double mnt = 0d;
-		for (ParamInscription param : listeParm) {
-			for (Recette in : listeRecettes) {
-				if (in.getInscription().getParamins().getId().equals(param.getId()) && in.getInscription().isPaiemens()) {
-					mnt = (mnt + in.getMontantPaye() + in.getAvoirUtilise()) - in.getInscription().getAvoirEleve();
+		// for (ParamInscription param : listeParm) {
+		for (Recette in : listeRecettes) {
+			// if (in.getInscription().getParamins().getId().equals(param.getId())
+			// && in.getInscription().isPaiemens()) {
+			// mnt = (mnt + in.getMontantPaye() + in.getAvoirUtilise()) -
+			// in.getInscription().getAvoirEleve();
+//			System.out.println("RECETTE "+in.getMontantPaye() + "AVOIR "+in.getInscription().getAvoirEleve());
+			mnt = (mnt + in.getMontantPaye());// - in.getInscription().getAvoirEleve();
 
-				}
+		}
 //				if(in.getAvoirUtilise() > 0) {
 //					mnt = mnt + in.getAvoirUtilise();
 //				}
-			}
-		}
+		// }
+		// }
 		return mnt;
 	}
 
 	public Double getMontantPayer(ParamInscription param) {
 		Double mnt = 0d;
 		for (Recette in : listeRecettes) {
-			if (in.getInscription().getParamins().getId().equals(param.getId())) {
-				System.out.print("+ in.getAvoirUtilise() " + in.getAvoirUtilise());
-				mnt = (mnt + in.getMontantPaye()) - (in.getInscription().getAvoirEleve());
-				if (in.getMontantPaye() > in.getInscription().getParamins().getMensualite()
-						&& in.getInscription().getAvoirEleve() <= 0) {
-					mnt = mnt - (in.getMontantPaye() - in.getInscription().getParamins().getMensualite());
-				}
-				if (in.getAvoirUtilise() > 0) {
-					mnt = mnt + in.getAvoirUtilise();
-				}
 
+			if (in.getInscription().getParamins().getId().equals(param.getId())) {
+				mnt = (mnt + in.getMontantPaye()); // - (in.getInscription().getAvoirEleve());
+//				if (in.getMontantPaye() > in.getInscription().getParamins().getMensualite()
+//						&& in.getInscription().getAvoirEleve() <= 0) {
+//					mnt = mnt - (in.getMontantPaye() - in.getInscription().getParamins().getMensualite());
+//				}
 			}
 		}
 		return mnt;
@@ -399,18 +400,24 @@ public class StatistiqueService implements Serializable {
 	public Double getMontantTotalResteAPayer() {
 		Double apayer = 0d, payer = 0d, reste = 0d;
 		for (ParamInscription param : listeParm) {
-			apayer = apayer + getMontantAPayer(param);
-			payer = payer + getMontantPayer(param);
+			//apayer = apayer + getMontantAPayer(param);
+			//payer = payer + getMontantPayer(param);
+			reste = reste +getMontantResteAPayer(param);
 		}
-		reste = apayer - payer;
+		//reste = apayer - payer;
 		return reste;
 	}
+	
 
 	public Double getMontantResteAPayer(ParamInscription param) {
-		Double apayer = 0d, payer = 0d;
+		Double apayer = 0d, payer = 0d, res = 0d;
 		apayer = getMontantAPayer(param);
 		payer = getMontantPayer(param);
-		return apayer - payer;
+		res = apayer - payer;
+		if (res < 0d)
+			res = 0d;
+
+		return res;
 	}
 
 	public float getTauxRecouvrement(ParamInscription param) {
@@ -422,6 +429,9 @@ public class StatistiqueService implements Serializable {
 			taux = (float) ((payer * 100) / apayer);
 		else
 			taux = 0;
+		if (taux > 100)
+			taux = 100;
+
 		return taux;
 	}
 
@@ -451,6 +461,7 @@ public class StatistiqueService implements Serializable {
 
 		depense = 0d;
 		recette = 0d;
+		System.out.println("Taille liste Recette " + listeRecette.size());
 		for (Depense d : listeDepense) {
 			depense = depense + d.getMontantPaye();
 		}
@@ -498,6 +509,40 @@ public class StatistiqueService implements Serializable {
 				listeTypeDepense.add(dep);
 			}
 		}
+	}
+
+	public void imprimerEtats() {
+		Institution in = (Institution) dataSource.createQuery("From Institution").uniqueResult();
+		List<Etats> listeEtats = new ArrayList<Etats>();
+		int taille = 0;
+		for (TypeRecette ty : listeTypeRecette) {
+			Etats etat = new Etats();
+			etat.setLibelle(ty.getLibelle());
+			etat.setMontant(ty.getMontant());
+			listeEtats.add(etat);
+		}
+		if (listeEtats.size() > 0 && listeTypeDepense.size() > 0) {
+			taille = listeEtats.size() - 1;
+			listeEtats.get(taille).setListeDep(listeTypeDepense);
+		} else {
+			for (TypeDepense ty : listeTypeDepense) {
+				Etats etat = new Etats();
+				etat.setLibelle(ty.getLibelle());
+				etat.setMontant(ty.getMontant());
+				listeEtats.add(etat);
+			}
+		}
+		Map<String, Object> param = new HashMap<String, Object>();
+		param.put("ecole", in.getNom());
+		param.put("slogan", in.getSologan());
+		param.put("tel", in.getTelephone());
+		param.put("etat", "DU: " + ChakaUtils.formateDate(dateDeb, "dd/MM/yyyy") + "AU"
+				+ ChakaUtils.formateDate(dateFin, "dd/MM/yyyy"));
+		param.put("en", recette);
+		param.put("st", depense);
+		param.put("sd", solde);
+		getFilePrintService().imprimer("ecole", "etats", param, listeEtats, utilisateur, ExportOption.PDF);
+		this.setShowModal("javascript:Richfaces.showModalPanel('modalPdf')");
 	}
 
 	public void zoomRecette(TypeRecette typeRecette) {

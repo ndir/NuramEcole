@@ -8,6 +8,7 @@ import java.io.Serializable;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -49,6 +50,9 @@ import com.ecole.entity.Retard;
 import com.ecole.entity.Semestres;
 import com.ecole.entity.TypeNote;
 import com.rhospi.commons.ChakaUtils.ExportOption;
+
+import jdk.nashorn.internal.codegen.ClassEmitter;
+
 import com.rhospi.commons.FileUploadService;
 
 /**
@@ -75,7 +79,14 @@ public class DeliberationService implements Serializable {
 	private Evaluation evaluation = new Evaluation();
 	private String rangs;
 	private int rang;
+	private int itter;
+	private int itter1;
+	private int ccoef;
+	private String cnote;
+	private String ccf;
 	private List<Deliberation> listeDeliberation = new ArrayList<Deliberation>();
+	private List<Deliberation> listeDeliberationS = new ArrayList<Deliberation>();
+	private List<Deliberation> listeDeliberationSS = new ArrayList<Deliberation>();
 	private List<Deliberation> listeDeliberationF = new ArrayList<Deliberation>();
 	private List<Note> listeNote = new ArrayList<Note>();
 	private String chaine;
@@ -83,6 +94,8 @@ public class DeliberationService implements Serializable {
 	private boolean choix;
 	private Eleve eleve;
 	private List<DeliberationFinal> listeDeliF = new ArrayList<DeliberationFinal>();
+	private List<DeliberationFinal> listeDeliFS = new ArrayList<DeliberationFinal>();
+	private List<DeliberationFinal> listeDeliFSS = new ArrayList<DeliberationFinal>();
 	private List<DeliberationFinal> listeDeliAn = new ArrayList<DeliberationFinal>();
 	private String decision;
 	List<Deliberation> listeDeli = new ArrayList<Deliberation>();
@@ -106,6 +119,10 @@ public class DeliberationService implements Serializable {
 	private List<DeliberationMS> listeDeliberationMSF1 = new ArrayList<DeliberationMS>();
 
 	private List<DeliberationMS> listeDeliberationMSFF = new ArrayList<DeliberationMS>();
+
+	private List<DeliberationMS> listeDeliberationMSFFS = new ArrayList<DeliberationMS>();
+
+	private List<DeliberationMS> listeDeliberationMSFFSS = new ArrayList<DeliberationMS>();
 
 	private List<DeliberationMS> listeDeliberationMSFF2 = new ArrayList<DeliberationMS>();
 
@@ -248,10 +265,12 @@ public class DeliberationService implements Serializable {
 				moyenneAn = moyenne / 3;
 				df.setEleve(eleve);
 				moyennes = "" + moyenneAn;
-				df.setMoyan(Double.parseDouble(moyennes));
 				df.setAnnee(annee);
 				df.setClasse(classe);
-				df.setMoyans(moyennes.substring(0, 4));
+				df.setMoyans(moyennes);
+				df.setUse("Y");
+				splitMoyenAn(df);
+				df.setMoyan(Double.parseDouble(df.getMoyans()));
 				for (Evaluation ev : listeEval) {
 					alimenterDeliberation(df, ev, eleve);
 				}
@@ -260,11 +279,14 @@ public class DeliberationService implements Serializable {
 
 			listeDeliAn = new ArrayList<DeliberationFinal>();
 			rang = 1;
-			while (listeDeliF.size() > 0) {
+			itter = listeDeliF.size();
+			itter1 = 0;
+			while (itter > itter1) {
 				DeliberationFinal deli = gererSupAn();
+				deli.setUse("X");
 				List<DeliberationFinal> liste = new ArrayList<DeliberationFinal>();
 				liste = getMoyenEqualFinal(deli);
-				if (liste.size() > 0) {
+				if (liste.size() > 1) {
 					if (rang == 1) {
 						rangs = rang + "er ex æquo";
 					} else {
@@ -277,18 +299,33 @@ public class DeliberationService implements Serializable {
 						rangs = rang + "eme";
 					}
 				}
+
 				deli.setRangan(rangs);
-				listeDeliAn.add(deli);
 				if (liste.size() > 0) {
 					for (DeliberationFinal d : liste) {
 						d.setRangan(rangs);
+						d.setUse("X");
 						listeDeliAn.add(d);
-						listeDeliF.remove(d);
+						listeDeliFS.add(d);
 						rang = rang + 1;
 					}
-					rang = rang + 1;
 				} else {
 					rang = rang + 1;
+
+				}
+
+				listeDeliFSS = new ArrayList<DeliberationFinal>();
+				listeDeliFSS = listeDeliF;
+				listeDeliF = new ArrayList<DeliberationFinal>();
+				;
+				for (DeliberationFinal dddd : listeDeliFSS) {
+
+					if (dddd.getUse().equalsIgnoreCase("X")) {
+						itter1++;
+					} else {
+						listeDeliF.add(dddd);
+					}
+
 				}
 
 			}
@@ -319,6 +356,19 @@ public class DeliberationService implements Serializable {
 	public void changerDecision(DeliberationFinal deli) {
 		deli.setDecision(decision);
 		dataSource.update(deli);
+	}
+
+	public void changerDecision(DeliberationMS deli) {
+		List<DeliberationMS> liste = new ArrayList<DeliberationMS>();
+		liste = dataSource.createQuery(
+				"From DeliberationMS  d inner join fetch d.semestre s inner join fetch d.annee an inner join fetch d.eleve ev where   "
+						+ " s=:ps and an =:pan and ev=:pev")
+				.setParameter("ps", semestre).setParameter("pan", annee).setParameter("pev", deli.getEleve()).list();
+		for (DeliberationMS d : liste) {
+			d.setDecision(decision);
+			dataSource.update(d);
+		}
+		deli.setDecision(decision);
 	}
 
 	public Double getCumulMoyenne(Eleve eleve) {
@@ -414,7 +464,7 @@ public class DeliberationService implements Serializable {
 				}
 			}
 		} else {
-			System.out.println("ENTRER VOIR DELI");
+
 			if (semestre == null || semestre.getId() == null) {
 				FacesMessages.instance().addToControlFromResourceBundle("erreurGenerique", "Semestre obligatoire");
 				return;
@@ -428,10 +478,11 @@ public class DeliberationService implements Serializable {
 							+ " where c =:pc and pa =:pa ")
 					.setParameter("pc", classe).setParameter("pa", annee).uniqueResult();
 			listeDeliberationMS = new ArrayList<DeliberationMS>();
+			listeDeliberationMSF1 = new ArrayList<DeliberationMS>();
 			listeDeliberationMS = dataSource
 					.createQuery("From DeliberationMS d inner join fetch d.classe c inner join fetch d.annee an"
 							+ " inner join fetch d.semestre ev inner join fetch d.eleve inner join fetch d.appreciation"
-							+ " inner join fetch d.appreciationgen inner join fetch d.matiere where c =:pc and an =:pan and ev =:pev")
+							+ " inner join fetch d.appreciationgen inner join fetch d.matiere where c =:pc and an =:pan and ev =:pev order by d.total desc")
 					.setParameter("pc", classe).setParameter("pan", annee).setParameter("pev", semestre).list();
 
 			if (listeDeliberationMS.size() == 0) {
@@ -440,12 +491,22 @@ public class DeliberationService implements Serializable {
 				return;
 			}
 			for (DeliberationMS d : listeDeliberationMS) {
+
 				if (!donneesExiste(d.getEleve())) {
 					listeDeliberationMSF1.add(d);
 				}
 			}
 		}
 
+	}
+
+	public String getRangAnnuel(DeliberationMS deli) {
+		List<DeliberationMS> listedeli = dataSource
+				.createQuery("From DeliberationMS d inner join fetch d.eleve e inner join fetch d.annee a  "
+						+ " inner join fetch d.semestre s where e=:pe and a=:pa and s=:ps and d.ranggan IS NOT NULL ")
+				.setParameter("pe", deli.getEleve()).setParameter("pa", annee).setParameter("ps", semestre).list();
+
+		return listedeli.get(0).getRanggan();
 	}
 
 	@SuppressWarnings("unchecked")
@@ -478,15 +539,15 @@ public class DeliberationService implements Serializable {
 						+ " where c =:pc and an =:pan and ev =:pev and e =:pe").setParameter("pc", classe)
 						.setParameter("pan", annee).setParameter("pev", evaluation).setParameter("pe", d.getEleve())
 						.list();
-				for (Note n : listeNote) {
-					total = total + n.getNote();
-				}
+//				for (Note n : listeNote) {
+//					total = total + n.getNote();
+//				}
 				for (Note n : listeNote) {
 					n.setEcole(in.getNom());
 					n.setEff("" + liste.size());
 					n.setSlogan(in.getSologan());
 					n.setTel(in.getTelephone());
-					n.setTotal(total);
+					n.setTotal1(d.getCumul());
 					n.setMoy(d.getMoy());
 					n.setAp(d.getAp());
 					n.setRang(d.getRang());
@@ -503,6 +564,96 @@ public class DeliberationService implements Serializable {
 		}
 
 		getFilePrintService().imprimer("ecole", "allbulletin", param, listeDeli, utilisateur, ExportOption.PDF);
+		this.setShowModal("javascript:Richfaces.showModalPanel('modalPdf')");
+	}
+
+	@SuppressWarnings("unchecked")
+	public void imprimerToutMS() {
+		Institution in = (Institution) dataSource.createQuery("From Institution").uniqueResult();
+		ParamInscription p = (ParamInscription) dataSource
+				.createQuery("From ParamInscription p inner join fetch p.classe c inner join fetch p.annee pa "
+						+ " where c =:pc and pa =:pa ")
+				.setParameter("pc", classe).setParameter("pa", annee).uniqueResult();
+
+		List<Inscription> liste = new ArrayList<Inscription>();
+		if (p != null) {
+			liste = dataSource
+					.createQuery(
+							"From Inscription i inner join fetch i.eleve inner join fetch i.paramins p where p =:pp")
+					.setParameter("pp", p).list();
+
+			listeEleves = new ArrayList<Eleve>();
+
+			for (Inscription ins : liste) {
+				listeEleves.add(ins.getEleve());
+			}
+
+		}
+		Map<String, Object> param = new HashMap<String, Object>();
+		for (Eleve eleve : listeEleves) {
+			listeDeliberationMS = new ArrayList<DeliberationMS>();
+			listeDeliberationMS = dataSource
+					.createQuery("From DeliberationMS d inner join fetch d.classe c inner join fetch d.annee an"
+							+ " inner join fetch d.semestre ev inner join fetch d.eleve inner join fetch d.appreciation"
+							+ " inner join fetch d.appreciationgen inner join fetch d.matiere inner join fetch d.eleve el where  an =:pan and ev =:pev "
+							+ " and el=:pel ")
+					.setParameter("pan", annee).setParameter("pev", semestre).setParameter("pel", eleve).list();
+
+			ExternalContext ec = FacesContext.getCurrentInstance().getExternalContext();
+			ServletContext sc = (ServletContext) ec.getContext();
+			InputStream is = sc.getResourceAsStream("/css2/logogstock.jpg");
+
+			listeDeliberationMS.get(0).setEcole(in.getNom());
+			listeDeliberationMS.get(0).setEff("" + liste.size());
+			listeDeliberationMS.get(0).setSlogan(in.getSologan());
+			listeDeliberationMS.get(0).setTel(in.getTelephone());
+			listeDeliberationMS.get(0).setIa(in.getIa());
+			listeDeliberationMS.get(0).setIef(in.getIef());
+			listeDeliberationMS.get(0).setLogo(is);
+
+			// System.out.println("dec " +
+			// listeDeliberationMS.get(listeDeliberationMS.size() - 1).getDecision());
+			if (semestre.getCode().equalsIgnoreCase("2")) {
+
+				if (listeDeliberationMS.get(listeDeliberationMS.size() - 1).getDecision()
+						.equalsIgnoreCase("Passe en classe supérieure")) {
+					listeDeliberationMS.get(listeDeliberationMS.size() - 1).setD1("X");
+				} else {
+					listeDeliberationMS.get(listeDeliberationMS.size() - 1).setD1(" ");
+				}
+				if (listeDeliberationMS.get(listeDeliberationMS.size() - 1).getDecision()
+						.equalsIgnoreCase("Redouble")) {
+					listeDeliberationMS.get(listeDeliberationMS.size() - 1).setD2("X");
+				} else {
+					listeDeliberationMS.get(listeDeliberationMS.size() - 1).setD2("");
+				}
+				if (listeDeliberationMS.get(listeDeliberationMS.size() - 1).getDecision()
+						.equalsIgnoreCase("Exclu(e)")) {
+					listeDeliberationMS.get(listeDeliberationMS.size() - 1).setD3("X");
+				} else {
+					listeDeliberationMS.get(listeDeliberationMS.size() - 1).setD3("");
+				}
+				listeDeliberationMS.get(listeDeliberationMS.size() - 1)
+						.setRanga(getRangAnnuel(listeDeliberationMS.get(0)));
+			}
+			// param.put("prang", getRangAnnuel(deli));
+			// getFilePrintService().imprimer("ecole", "bulletinms2", param,
+			// listeDeliberationMS, utilisateur,
+			// ExportOption.PDF);
+
+			// listeDeliberationMS.get(0).seta
+			eleve.setListeDeli(listeDeliberationMS);
+		}
+		System.out.println("semenstre " + semestre.getCode());
+		if (semestre.getCode().equalsIgnoreCase("1"))
+
+		{
+			getFilePrintService().imprimer("ecole", "allbulletinms", param, listeEleves, utilisateur, ExportOption.PDF);
+		} else {
+			getFilePrintService().imprimer("ecole", "allbulletinms2", param, listeEleves, utilisateur,
+					ExportOption.PDF);
+		}
+
 		this.setShowModal("javascript:Richfaces.showModalPanel('modalPdf')");
 	}
 
@@ -941,9 +1092,9 @@ public class DeliberationService implements Serializable {
 
 		Double total = 0.0;
 
-		for (Note n : listeNote) {
-			total = total + n.getNote();
-		}
+//		for (Note n : listeNote) {
+//			total = total + n.getNote();
+//		}
 
 		ParamInscription p = (ParamInscription) dataSource
 				.createQuery("From ParamInscription p inner join fetch p.classe c inner join fetch p.annee pa "
@@ -964,11 +1115,108 @@ public class DeliberationService implements Serializable {
 		param.put("tel", in.getTelephone());
 		param.put("moy", deli.getMoy());
 		param.put("rang", deli.getRang());
-		param.put("total", total);
+
+		param.put("total", deli.getCumul());
 		param.put("app", deli.getAp());
 		param.put("eff", liste.size());
 		getFilePrintService().imprimer("ecole", "bulletin", param, listeNote, utilisateur, ExportOption.PDF);
 		this.setShowModal("javascript:Richfaces.showModalPanel('modalPdf')");
+	}
+
+	@SuppressWarnings("unchecked")
+	public void imprimerBulletinMS(DeliberationMS deli) {
+		Institution in = (Institution) dataSource.createQuery("From Institution").uniqueResult();
+		Map<String, Object> param = new HashMap<String, Object>();
+		param.put("ecole", in.getNom());
+		param.put("slogan", in.getSologan());
+		param.put("tel", in.getTelephone());
+		param.put("ia", in.getIa());
+		param.put("ief", in.getIef());
+		ParamInscription p = (ParamInscription) dataSource
+				.createQuery("From ParamInscription p inner join fetch p.classe c inner join fetch p.annee pa "
+						+ " where c =:pc and pa =:pa ")
+				.setParameter("pc", classe).setParameter("pa", annee).uniqueResult();
+
+		List<Inscription> liste = new ArrayList<Inscription>();
+		if (p != null) {
+			liste = dataSource
+					.createQuery(
+							"From Inscription i inner join fetch i.eleve inner join fetch i.paramins p where p =:pp")
+					.setParameter("pp", p).list();
+
+		}
+		param.put("eff", liste.size());
+		param.put("pa", getHeuresAbsence(deli.getEleve()));
+		param.put("pr", getRetard(deli.getEleve()));
+		List<Appreciations> listeAp = new ArrayList<Appreciations>();
+		listeAp = dataSource.createQuery("From Appreciations").list();
+		List<DeliberationMS> listeDeli = new ArrayList<DeliberationMS>();
+
+		// listeDeli.add(deli);
+		listeDeliberationMS = new ArrayList<DeliberationMS>();
+		listeDeliberationMS = dataSource
+				.createQuery("From DeliberationMS d inner join fetch d.classe c inner join fetch d.annee an"
+						+ " inner join fetch d.semestre ev inner join fetch d.eleve inner join fetch d.appreciation"
+						+ " inner join fetch d.appreciationgen inner join fetch d.matiere inner join fetch d.eleve el where  an =:pan and ev =:pev "
+						+ " and el=:pel ")
+				.setParameter("pan", annee).setParameter("pev", semestre).setParameter("pel", deli.getEleve()).list();
+		if (semestre.getCode().equalsIgnoreCase("1")) {
+			getFilePrintService().imprimer("ecole", "bulletinms", param, listeDeliberationMS, utilisateur,
+					ExportOption.PDF);
+		} else {
+			if (deli.getDecision().equalsIgnoreCase("Passe en classe supérieure")) {
+				param.put("d1", "X");
+			} else {
+				param.put("d1", " ");
+			}
+			if (deli.getDecision().equalsIgnoreCase("Redouble")) {
+				param.put("d2", "X");
+			} else {
+				param.put("d2", "");
+			}
+			if (deli.getDecision().equalsIgnoreCase("Exclu(e)")) {
+				param.put("d3", "X");
+			} else {
+				param.put("d3", "");
+			}
+			param.put("prang", getRangAnnuel(deli));
+			getFilePrintService().imprimer("ecole", "bulletinms2", param, listeDeliberationMS, utilisateur,
+					ExportOption.PDF);
+		}
+		this.setShowModal("javascript:Richfaces.showModalPanel('modalPdf')");
+	}
+
+	@SuppressWarnings("unchecked")
+	public int getHeuresAbsence(Eleve eleve) {
+		int heures = 0;
+		List<Absence> listeAbsence = new ArrayList<Absence>();
+		listeAbsence = dataSource.createQuery(
+				"From Absence ab inner join fetch ab.eleve ev inner join fetch ab.matiere inner join fetch ab.semestre inner join fetch ab.annee an where an=:pan and ev=:pev")
+				.setParameter("pan", annee).setParameter("pev", eleve).list();
+		for (Absence ab : listeAbsence) {
+			heures = heures + ab.getHeure();
+		}
+		return heures;
+	}
+
+	public int getRetard(Eleve eleve) {
+		int heures = 0;
+		List<Retard> listeRetard = new ArrayList<Retard>();
+		listeRetard = dataSource.createQuery(
+				"From Retard ab inner join fetch ab.eleve ev inner join fetch ab.matiere inner join fetch ab.semestre inner join fetch ab.annee an where an=:pan and ev=:pev")
+				.setParameter("pan", annee).setParameter("pev", eleve).list();
+		for (Retard ab : listeRetard) {
+			heures = heures + ab.getHeures();
+		}
+		return heures;
+	}
+
+	public void delibereMSSemestre1() {
+
+	}
+
+	public void delibereMSSemestre2() {
+
 	}
 
 	@SuppressWarnings("unchecked")
@@ -1039,6 +1287,8 @@ public class DeliberationService implements Serializable {
 			}
 
 			if (listeElevesNonNote.size() == 0) {
+				listeDeliberationF = new ArrayList<Deliberation>();
+				listeDeliberation = new ArrayList<Deliberation>();
 				// Délibartion de la classe
 				Double cumulnote;
 				Double cumulcoef;
@@ -1052,22 +1302,35 @@ public class DeliberationService implements Serializable {
 					moyens = "" + moyen;
 					Deliberation d = new Deliberation();
 					d.setAnnee(annee);
-					d.setCumul("" + cumulnote + "/" + cumulcoef);
+					cnote = "" + cumulnote;
+					ccf = "" + cumulcoef;
+					d.setMoy(moyens);
+
+					splitMoyenE(d);
+					d.setCumul("" + cnote);
+					d.setTotalcoef("" + ccoef);
 					d.setClasse(classe);
 					d.setEleve(ev);
-					d.setMoy(moyens.substring(0, 4));
 					d.setEvaluation(evaluation);
+					d.setUse("Y");
 					d.setMoyenne(Double.valueOf(d.getMoy()));
 					d.setUser(utilisateur);
 					listeDeliberation.add(d);
 				}
-				rang = 1;
 
-				while (listeDeliberation.size() > 0) {
+				rang = 1;
+				itter = listeDeliberation.size();
+				itter1 = 0;
+				while (itter > itter1) {
+
+					// listeDeliberationS = new ArrayList<Deliberation>();
 					Deliberation deli = gererSup();
+					// if (!eleveExiste(deli.getEleve())) {
+
 					List<Deliberation> liste = new ArrayList<Deliberation>();
 					liste = getMoyenEqual(deli);
-					if (liste.size() > 0) {
+
+					if (liste.size() > 1) {
 						if (rang == 1) {
 							rangs = rang + "er ex æquo";
 						} else {
@@ -1081,18 +1344,33 @@ public class DeliberationService implements Serializable {
 						}
 					}
 					deli.setRang(rangs);
-					listeDeliberationF.add(deli);
+
 					if (liste.size() > 0) {
+
 						for (Deliberation d : liste) {
 							d.setRang(rangs);
-
 							listeDeliberationF.add(d);
-							listeDeliberation.remove(d);
+
+							listeDeliberationS.add(d);
+
 							rang = rang + 1;
 						}
-						rang = rang + 1;
+
 					} else {
 						rang = rang + 1;
+
+					}
+
+					listeDeliberationSS = new ArrayList<Deliberation>();
+					listeDeliberationSS = listeDeliberation;
+					listeDeliberation = new ArrayList<Deliberation>();
+					for (Deliberation dddd : listeDeliberationSS) {
+						if (dddd.getUse().equalsIgnoreCase("X")) {
+							itter1++;
+						} else {
+							listeDeliberation.add(dddd);
+						}
+
 					}
 
 				}
@@ -1103,6 +1381,7 @@ public class DeliberationService implements Serializable {
 					df.setAp(ap.getLibelle());
 					dataSource.save(df);
 				}
+
 			}
 		} else {
 			if (semestre == null || semestre.getId() == null) {
@@ -1135,6 +1414,7 @@ public class DeliberationService implements Serializable {
 				FacesMessages.instance().addToControlFromResourceBundle("erreurGenerique",
 						"Classe " + classe.getLibelle() + " déja délibérée pour  " + semestre.getLibelle());
 				return;
+				// voirdeliberer();
 			}
 
 			if (semestre.getCode().equalsIgnoreCase("2")) {
@@ -1167,6 +1447,12 @@ public class DeliberationService implements Serializable {
 					.setParameter("ps", semestre).list();
 
 			listeDeliberationMSFF = new ArrayList<DeliberationMS>();
+			listeDeliberationMS = new ArrayList<DeliberationMS>();
+			listeDeliberationMSF = new ArrayList<DeliberationMS>();
+			listeDeliberationMSF1 = new ArrayList<DeliberationMS>();
+			listeDeliberationMSFF2 = new ArrayList<DeliberationMS>();
+			listeDeliberationMSFFS = new ArrayList<DeliberationMS>();
+			listeDeliberationMSVIEW = new ArrayList<DeliberationMS>();
 			// Délibartion de la classe
 			Double cumulnote;
 			Double cumulcoef = 0d;
@@ -1177,6 +1463,7 @@ public class DeliberationService implements Serializable {
 			Double total = 0d;
 			// cumulcoef = CumulCeof();
 			for (Eleve ev : listeEleves) {
+				System.out.println("listeEleves" + listeEleves.size());
 				total = 0d;
 				listeDeliberationMS = new ArrayList<DeliberationMS>();
 				for (MatiereClasse mc : listeMatClasse) {
@@ -1193,12 +1480,14 @@ public class DeliberationService implements Serializable {
 					d.setMoyC(noteComp);
 					d.setCoef(mc.getCoef());
 					d.setCumul(moyen * mc.getCoef());
-					d.setCumuls(moyens.substring(0, 4));
+					d.setCumuls(moyens);
+					moyens = "" + d.getCumul();
+					d.setMoyx(moyens);
 					if (notecomp) {
 						moyens = "" + noteComp;
 						d.setMoyenneC(moyens);
 					} else {
-						d.setMoyenneC("NO");
+						d.setMoyenneC("-");
 					}
 					moyens = "" + cumulnote;
 					d.setMoyenneD(moyens);
@@ -1206,6 +1495,7 @@ public class DeliberationService implements Serializable {
 					d.setClasse(classe);
 					d.setEleve(ev);
 					d.setSemestre(semestre);
+					d.setUse("Y");
 					total = total + d.getCumul();
 					listeDeliberationMS.add(d);
 				}
@@ -1235,33 +1525,48 @@ public class DeliberationService implements Serializable {
 					deli.setRetard(getRetard(deli.getEleve(), listeRetard));
 					deli.setAbsence(getAbsence(deli.getEleve(), listeAbsence));
 					deli.setApgen(deli.getAppreciationgen().getLibelle());
+					deli.setUse("Y");
 					if (semestre.getCode().equalsIgnoreCase("2")) {
 						deli.setMoyenne1(getMoyenneSemestre1(deli));
 						moyens = "" + deli.getMoyenne1();
-						deli.setMoyenne1s("" + moyens.substring(0, 5));
+						deli.setMoyenne1s(moyens);
 						deli.setMoyenneAn((deli.getMoyenne1() + deli.getMoyenne()) / 2);
 						moyens = "" + deli.getMoyenneAn();
-						deli.setMoyenneAns("" + moyens.substring(0, 5));
+						deli.setMoyenneAns(moyens);
+						deli.setUsean("Y");
+						System.out.println("moyenne annuel " + deli.getMoyenneAn());
 					}
 					listeDeliberationMSF.add(deli);
 				}
 			}
-			rang = 1;
+			// rang = 1;
+			listeDeliberationMSFF = new ArrayList<DeliberationMS>();
+			listeDeliberationMSFFS = new ArrayList<DeliberationMS>();
 			listeDeliberationMS = listeDeliberationMSF;
+
+			boolean b = false;
 			listeDeliberationMSF1 = new ArrayList<DeliberationMS>();
+
 			listeDeliberationMSF1.add(listeDeliberationMSF.get(0));
 			for (DeliberationMS d : listeDeliberationMSF) {
+				b = false;
+				b = donneesExiste(d.getEleve());
 
-				if (!donneesExiste(d.getEleve())) {
+				if (b == false) {
 					listeDeliberationMSF1.add(d);
 				}
 			}
-
-			while (listeDeliberationMSF1.size() > 0) {
+			rang = 1;
+			itter = listeDeliberationMSF1.size();
+			itter1 = 0;
+			while (itter > itter1) {
 				DeliberationMS deli = gererSupMS();
 				List<DeliberationMS> liste = new ArrayList<DeliberationMS>();
+				deli.setUse("X");
+				System.out.println("RANG SUP SEMESTRE 2 " + deli.getRanggen());
 				liste = getMoyenEqualMS(deli);
-				if (liste.size() > 0) {
+				System.out.println("RANG EQUL SEMESTRE 2 " + liste.size());
+				if (liste.size() > 1) {
 					if (rang == 1) {
 						rangs = rang + "er ex æquo";
 					} else {
@@ -1275,116 +1580,321 @@ public class DeliberationService implements Serializable {
 					}
 				}
 				deli.setRanggen(rangs);
-				listeDeliberationMSFF.add(deli);
 				if (liste.size() > 0) {
 					for (DeliberationMS d : liste) {
+						d.setUse("X");
 						d.setRanggen(rangs);
+						System.out.println("RANG SEMESTRE 2 " + d.getRanggen());
 						listeDeliberationMSFF.add(d);
-						listeDeliberationMSF1.remove(d);
+						listeDeliberationMSFFS.add(d);
 						rang = rang + 1;
 					}
-					rang = rang + 1;
 				} else {
 					rang = rang + 1;
+
+				}
+				listeDeliberationMSFFSS = new ArrayList<DeliberationMS>();
+				listeDeliberationMSFFSS = listeDeliberationMSF1;
+				listeDeliberationMSF1 = new ArrayList<DeliberationMS>();
+				for (DeliberationMS dddd : listeDeliberationMSFFSS) {
+					System.out.println("USE RANG SEMESTRE 2 " + dddd.getUse());
+					if (dddd.getUse().equalsIgnoreCase("X")) {
+						itter1++;
+					} else {
+						listeDeliberationMSF1.add(dddd);
+					}
 				}
 
 			}
-//			for (DeliberationMS deli : listeDeliberationMSFF) {
-//				System.out.println("Eleve " + deli.getEleve().getPrenom() + "devoir " + deli.getMoyenneD() + "comp "
-//						+ deli.getMoyenneC() + "cumul " + deli.getCumuls() + "total coef " + deli.getTotalcoef()
-//						+ "Total " + deli.getTotals() + "moyenne " + deli.getMoyennes() + "rang " + deli.getRanggen());
-//			}
 
-			for (DeliberationMS deli : listeDeliberationMS) {
-				for (DeliberationMS d : listeDeliberationMSFF) {
+			System.out.println("RANG SEMESTRE 2 TAILLE LISTE 1 " + listeDeliberationMS.size());
+			System.out.println("RANG SEMESTRE 2 TAILLE LISTE 2 " + listeDeliberationMSFF.size());
+			for (DeliberationMS d : listeDeliberationMSFF) {
+				for (DeliberationMS deli : listeDeliberationMS) {
 					if (deli.getEleve().getIdeleve().equals(d.getEleve().getIdeleve())) {
 						deli.setRanggen(d.getRanggen());
-						break;
+						System.out.println("RANG " + deli.getEleve().getPrenom() + " " + deli.getRanggen());
 					}
 				}
 			}
-			Decision decision = (Decision) dataSource.createQuery("From Decision where code =:pcode ")
-					.setParameter("pcode", "MS").uniqueResult();
-			rang = 1;
-			listeDeliberationMSF1 = new ArrayList<DeliberationMS>();
-			listeDeliberationMSFF = new ArrayList<DeliberationMS>();
-			for (DeliberationMS d : listeDeliberationMS) {
-				if (!donneesExiste(d.getEleve())) {
-					listeDeliberationMSF1.add(d);
-				}
+			System.out.println("***************************RANG*****************************************");
+			for (DeliberationMS deli : listeDeliberationMS) {
+				System.out.println("RANG " + deli.getEleve().getPrenom() + " " + deli.getRanggen());
+
 			}
-			listeDeliberationMSFF2 = new ArrayList<DeliberationMS>();
-			System.out.println("TAILLE POUR RAN AN " + listeDeliberationMSF1.size());
-			while (listeDeliberationMSF1.size() > 0) {
-				DeliberationMS deli = gererSupMSAn();
-				List<DeliberationMS> liste = new ArrayList<DeliberationMS>();
-				liste = getMoyenEqualMSAn(deli);
-				if (liste.size() > 0) {
-					if (rang == 1) {
-						rangs = rang + "er ex æquo";
-					} else {
-						rangs = rang + "eme ex æquo";
-					}
-				} else {
-					if (rang == 1) {
-						rangs = rang + "er";
-					} else {
-						rangs = rang + "eme";
+
+			if (semestre.getCode().equalsIgnoreCase("2")) {
+				listeDeliberationMSFF = new ArrayList<DeliberationMS>();
+				listeDeliberationMSFFS = new ArrayList<DeliberationMS>();
+				b = false;
+				listeDeliberationMSF1 = new ArrayList<DeliberationMS>();
+				listeDeliberationMSF1.add(listeDeliberationMSF.get(0));
+				for (DeliberationMS d : listeDeliberationMSF) {
+					b = false;
+					b = donneesExiste(d.getEleve());
+					if (b == false) {
+						listeDeliberationMSF1.add(d);
 					}
 				}
-				deli.setRanggan(rangs);
-				System.out.println("RANG AN " + deli.getRanggan() + "eleve " + deli.getEleve());
-				listeDeliberationMSFF.add(deli);
-				if (liste.size() > 0) {
-					for (DeliberationMS d : liste) {
-						d.setRanggen(rangs);
-						listeDeliberationMSFF2.add(d);
-						listeDeliberationMSF1.remove(d);
+				rang = 1;
+				itter = listeDeliberationMSF1.size();
+				System.out.println("TAILL POUR RANG AN " + listeDeliberationMSF1.size());
+				for (DeliberationMS yy : listeDeliberationMSF) {
+					System.out.println(
+							"TAILL POUR RANG AN MOY " + yy.getMoyenneAn() + "ELEVE " + yy.getEleve().getPrenom());
+				}
+				itter1 = 0;
+
+				while (itter > itter1) {
+					DeliberationMS deli = gererSupMSAn();
+					List<DeliberationMS> liste = new ArrayList<DeliberationMS>();
+					deli.setUsean("X");
+					System.out.println("SUP RANG AN " + deli.getEleve().getPrenom());
+					liste = getMoyenEqualMSAn(deli);
+					System.out.println("TAILLE LISTE EQUL ANN " + liste.size());
+					if (liste.size() > 1) {
+						if (rang == 1) {
+							rangs = rang + "er ex æquo";
+						} else {
+							rangs = rang + "eme ex æquo";
+						}
+					} else {
+						if (rang == 1) {
+							rangs = rang + "er";
+						} else {
+							rangs = rang + "eme";
+						}
+					}
+					deli.setRanggan(rangs);
+					if (liste.size() > 0) {
+						for (DeliberationMS d : liste) {
+							d.setUsean("X");
+							d.setRanggan(rangs);
+							System.out.println("AJOUT EQUL ANN " + d.getEleve().getPrenom());
+							listeDeliberationMSFF.add(d);
+							listeDeliberationMSFFS.add(d);
+							rang = rang + 1;
+						}
+					} else {
 						rang = rang + 1;
+
 					}
-					rang = rang + 1;
-				} else {
-					rang = rang + 1;
+					listeDeliberationMSFFSS = new ArrayList<DeliberationMS>();
+					listeDeliberationMSFFSS = listeDeliberationMSF1;
+					listeDeliberationMSF1 = new ArrayList<DeliberationMS>();
+					for (DeliberationMS dddd : listeDeliberationMSFFSS) {
+						System.out.println("USE AN " + dddd.getEleve().getPrenom() + " use " + dddd.getUsean());
+						if (dddd.getUsean().equalsIgnoreCase("X")) {
+							itter1++;
+						} else {
+							listeDeliberationMSF1.add(dddd);
+						}
+					}
+
+				}
+				for (DeliberationMS d : listeDeliberationMSF1) {
+					for (DeliberationMS deli : listeDeliberationMS) {
+						if (deli.getEleve().getIdeleve().equals(d.getEleve().getIdeleve())) {
+							deli.setRanggan(d.getRanggan());
+
+						}
+					}
 				}
 
-			}
-
-			for (DeliberationMS deli : listeDeliberationMSFF) {
-
-				if (deli.getMoyenneAn() < decision.getMoy()) {
-					deli.setDecision("Redouble");
-				} else {
-					deli.setDecision("Passe en classe supérieure");
+				Decision decision = (Decision) dataSource.createQuery("From Decision where code =:pcode ")
+						.setParameter("pcode", "MS").uniqueResult();
+				for (DeliberationMS deli : listeDeliberationMS) {
+					if (deli.getMoyenneAn() < decision.getMoy()) {
+						deli.setDecision("Redouble");
+					} else {
+						deli.setDecision("Passe en classe supérieure");
+					}
 				}
-				// dataSource.save(df);
 			}
-
-			for (DeliberationMS deli : listeDeliberationMSFF) {
-				System.out.println("Eleve " + deli.getEleve().getPrenom() + "devoir " + deli.getMoyenneD() + "comp "
-						+ deli.getMoyenneC() + "cumul " + deli.getCumuls() + "total coef " + deli.getTotalcoef()
-						+ "Total " + deli.getTotals() + "moyenne " + deli.getMoyennes() + "rang " + deli.getRanggan()
-						+ "rand " + deli.getRanggen());
-			}
-
-			System.out.println("***********************************************************************************");
 
 			for (DeliberationMS deli : listeDeliberationMS) {
-
-				if (deli.getMoyenneAn() < decision.getMoy()) {
-					deli.setDecision("Redouble");
-				} else {
-					deli.setDecision("Passe en classe supérieure");
-				}
-				// dataSource.save(df);
-			}
-			for (DeliberationMS deli : listeDeliberationMS) {
+				splitMoyen(deli);
 				System.out.println("Eleve " + deli.getEleve().getPrenom() + "devoir " + deli.getMoyenneD() + "comp "
 						+ deli.getMoyenneC() + "cumul " + deli.getCumuls() + "total coef " + deli.getTotalcoef()
 						+ "Total " + deli.getTotals() + "moyenne " + deli.getMoyennes() + "rang " + deli.getRanggen()
 						+ "Appréciation " + deli.getAppreciation().getLibelle() + "Retard " + deli.getRetard()
 						+ "absence " + deli.getAbsence() + "AP GEN " + deli.getAppreciationgen().getLibelle()
-						+ "moyenne 1" + deli.getMoyenne1s() + "Moyenne Ann " + deli.getMoyenneAns());
-				// dataSource.save(deli);
+						+ "moyenne 1" + deli.getMoyenne1s() + "Moyenne Ann " + deli.getMoyenneAns() + "Rang An"
+						+ deli.getRanggan());
+				dataSource.save(deli);
+			}
+
+		}
+
+	}
+
+	public boolean eleveExiste(Eleve eleve) {
+		boolean res = false;
+		for (Deliberation d : listeDeliberationF) {
+			if (d.getEleve().getIdeleve().equals(eleve.getIdeleve())) {
+				res = true;
+			}
+		}
+		System.out.println("RESR " + res);
+		return res;
+	}
+
+	public void splitMoyenE(Deliberation deli) {
+		String[] arrSplit3 = deli.getMoy().split("\\.");
+		for (int i = 0; i < arrSplit3.length; i++) {
+			if (i == 1) {
+				if (arrSplit3[i].equalsIgnoreCase("00") || arrSplit3[i].equalsIgnoreCase("0")) {
+					deli.setMoy(arrSplit3[0]);
+				} else {
+					if (arrSplit3[i].length() >= 2) {
+						deli.setMoy(arrSplit3[0] + "." + arrSplit3[i].substring(0, 2));
+					} else {
+						deli.setMoy(arrSplit3[0] + "." + arrSplit3[i].substring(0, 1));
+					}
+				}
+			}
+		}
+
+		String[] arrSplit1 = cnote.split("\\.");
+		for (int i = 0; i < arrSplit1.length; i++) {
+			if (i == 1) {
+				if (arrSplit1[i].equalsIgnoreCase("00") || arrSplit1[i].equalsIgnoreCase("0")) {
+					cnote = arrSplit1[0];
+				} else {
+					if (arrSplit1[i].length() >= 2) {
+						cnote = arrSplit1[0] + "." + arrSplit1[i].substring(0, 2);
+					} else {
+						cnote = arrSplit1[0] + "." + arrSplit1[i].substring(0, 1);
+					}
+				}
+			}
+		}
+
+	}
+
+	public void splitMoyenAn(DeliberationFinal deli) {
+		String[] arrSplit3 = deli.getMoyans().split("\\.");
+		for (int i = 0; i < arrSplit3.length; i++) {
+			if (i == 1) {
+				if (arrSplit3[i].equalsIgnoreCase("00") || arrSplit3[i].equalsIgnoreCase("0")) {
+					deli.setMoyans(arrSplit3[0]);
+				} else {
+					if (arrSplit3[i].length() >= 2) {
+						deli.setMoyans(arrSplit3[0] + "." + arrSplit3[i].substring(0, 2));
+					} else {
+						deli.setMoyans(arrSplit3[0] + "." + arrSplit3[i].substring(0, 1));
+					}
+				}
+			}
+		}
+	}
+
+	public void splitMoyen(DeliberationMS deli) {
+
+		String[] arrSplit = deli.getMoyenneC().split("\\.");
+		for (int i = 0; i < arrSplit.length; i++) {
+
+			if (i == 1) {
+				if (arrSplit[i].equalsIgnoreCase("00") || arrSplit[i].equalsIgnoreCase("0"))
+					deli.setMoyenneC(arrSplit[0]);
+			}
+
+		}
+		String[] arrSplit1 = deli.getMoyenneD().split("\\.");
+		for (int i = 0; i < arrSplit1.length; i++) {
+
+			if (i == 1) {
+				if (arrSplit1[i].equalsIgnoreCase("00") || arrSplit1[i].equalsIgnoreCase("0")) {
+
+					deli.setMoyenneD(arrSplit1[0]);
+				}
+			}
+		}
+
+		if (semestre.getCode().equalsIgnoreCase("2")) {
+			String[] arrSplit3 = deli.getMoyenneAns().split("\\.");
+			for (int i = 0; i < arrSplit3.length; i++) {
+
+				if (i == 1) {
+					if (arrSplit3[i].equalsIgnoreCase("00") || arrSplit3[i].equalsIgnoreCase("0")) {
+						deli.setMoyenneAns(arrSplit[0]);
+					} else {
+						if (arrSplit3[i].length() >= 2) {
+							deli.setMoyenneAns(arrSplit3[0] + "." + arrSplit3[i].substring(0, 2));
+						} else {
+							deli.setMoyenneAns(arrSplit3[0] + "." + arrSplit3[i].substring(0, 1));
+						}
+					}
+				}
+
+			}
+			String[] arrSplit5 = deli.getMoyenne1s().split("\\.");
+			for (int i = 0; i < arrSplit5.length; i++) {
+
+				if (i == 1) {
+					if (arrSplit5[i].equalsIgnoreCase("00") || arrSplit5[i].equalsIgnoreCase("0")) {
+						deli.setMoyenne1s(arrSplit5[0]);
+					} else {
+						if (arrSplit5[i].length() >= 2) {
+							deli.setMoyenne1s(arrSplit5[0] + "." + arrSplit5[i].substring(0, 2));
+						} else {
+							deli.setMoyenne1s(arrSplit5[0] + "." + arrSplit5[i].substring(0, 1));
+						}
+					}
+
+				}
+			}
+
+		}
+		String[] arrSplit4 = deli.getCumuls().split("\\.");
+		for (int i = 0; i < arrSplit4.length; i++) {
+
+			if (i == 1) {
+				if (arrSplit4[i].equalsIgnoreCase("00") || arrSplit4[i].equalsIgnoreCase("0"))
+					deli.setCumuls(arrSplit4[0]);
+			}
+		}
+
+		String[] arrSplit6 = deli.getTotals().split("\\.");
+		for (int i = 0; i < arrSplit6.length; i++) {
+
+			if (i == 1) {
+				if (arrSplit6[i].equalsIgnoreCase("00") || arrSplit6[i].equalsIgnoreCase("0"))
+					deli.setTotals(arrSplit6[0]);
+			}
+		}
+
+		String[] arrSplit7 = deli.getMoyennes().split("\\.");
+		// System.out.println("MOYENNE SSS " + deli.getMoyennes() + deli.getMoyenne());
+		for (int i = 0; i < arrSplit7.length; i++) {
+			if (i == 1) {
+				if (arrSplit7[i].equalsIgnoreCase("00") || arrSplit7[i].equalsIgnoreCase("0")) {
+					deli.setMoyennes(arrSplit7[0]);
+				} else {
+					if (arrSplit7[i].length() >= 2) {
+						deli.setMoyennes(arrSplit7[0] + "." + arrSplit7[i].substring(0, 2));
+						System.out.println("DANS SPLIT " + arrSplit7[0] + "SUITE " + arrSplit7[i] + "  "
+								+ arrSplit7[i].substring(0, 2));
+					} else {
+						deli.setMoyennes(arrSplit7[0] + "." + arrSplit7[i].substring(0, 1));
+					}
+				}
+			}
+		}
+		// System.out.println("MOYENNE SSSF " + deli.getMoyennes());
+		String[] arrSplit8 = deli.getMoyx().split("\\.");
+
+		for (int i = 0; i < arrSplit8.length; i++) {
+			if (i == 1) {
+				if (arrSplit8[i].equalsIgnoreCase("00") || arrSplit8[i].equalsIgnoreCase("0")) {
+					deli.setMoyx(arrSplit8[0]);
+				} else {
+					if (arrSplit8[i].length() >= 2) {
+						deli.setMoyx(arrSplit8[0] + "." + arrSplit8[i].substring(0, 2));
+					} else {
+						deli.setMoyx(arrSplit8[0] + "." + arrSplit8[i].substring(0, 1));
+					}
+				}
 			}
 
 		}
@@ -1417,10 +1927,13 @@ public class DeliberationService implements Serializable {
 	public boolean donneesExiste(Eleve eleve) {
 		boolean existe = false;
 		for (DeliberationMS d : listeDeliberationMSF1) {
-
+			System.out.println("e1 " + d.getEleve().getIdeleve() + "e2 " + eleve.getIdeleve());
 			if (d.getEleve().getIdeleve().equals(eleve.getIdeleve())) {
+				System.out.println("exitse " + existe);
 				existe = true;
+				System.out.println("exitse " + existe);
 				break;
+
 			}
 		}
 		return existe;
@@ -1487,48 +2000,98 @@ public class DeliberationService implements Serializable {
 		for (int i = 1; i < listeDeliberation.size(); i++) {
 			if (d.getMoyenne() < listeDeliberation.get(i).getMoyenne()) {
 				d = listeDeliberation.get(i);
+				d.setUse("X");
 			}
 		}
 
-		listeDeliberation.remove(d);
+		// itter = itter - 1;
 
 		return d;
+
 	}
+
+//	public boolean eleveexisteDeja() {
+//		boolean res = false;
+//		for(Deliberation d:listeDeliberationS) {
+//			if(d.get)
+//		}
+//		
+//		return res;
+//	}
 
 	public DeliberationMS gererSupMS() {
 		DeliberationMS d = listeDeliberationMSF1.get(0);
 		for (int i = 1; i < listeDeliberationMSF1.size(); i++) {
 			if (d.getMoyenne() < listeDeliberationMSF1.get(i).getMoyenne()) {
 				d = listeDeliberationMSF1.get(i);
+				d.setUse("X");
 			}
 		}
-		listeDeliberationMSF1.remove(d);
+
+//		DeliberationMS d = listeDeliberationMSF1.get(0);
+//		for (int i = 1; i < listeDeliberationMSF1.size(); i++) {
+//			if (d.getMoyenne() < listeDeliberationMSF1.get(i).getMoyenne()) {
+//			}
+//				d = listeDeliberationMSF1.get(i);
+//		}
+//		listeDeliberationMSF1.remove(d);
 
 		return d;
 	}
 
 	public DeliberationMS gererSupMSAn() {
+
 		DeliberationMS d = listeDeliberationMSF1.get(0);
 		for (int i = 1; i < listeDeliberationMSF1.size(); i++) {
+			System.out.println("d " + d.getMoyenneAn());
+			System.out.println("listeDeliberationMSF1 " + listeDeliberationMSF1.get(i).getMoyenneAn());
 			if (d.getMoyenneAn() < listeDeliberationMSF1.get(i).getMoyenneAn()) {
 				d = listeDeliberationMSF1.get(i);
+				d.setUsean("X");
 			}
 		}
-		listeDeliberationMSF1.remove(d);
-		System.out.println("SUP " + d.getEleve().getPrenom());
+
+//		DeliberationMS d = listeDeliberationMSF1.get(0);
+//		for (int i = 1; i < listeDeliberationMSF1.size(); i++) {
+//			if (d.getMoyenneAn() < listeDeliberationMSF1.get(i).getMoyenneAn()) {
+//				d = listeDeliberationMSF1.get(i);
+//			}
+//		}
+//		listeDeliberationMSF1.remove(d);
+
 		return d;
 	}
 
 	public DeliberationFinal gererSupAn() {
+
 		DeliberationFinal d = listeDeliF.get(0);
 		for (int i = 1; i < listeDeliF.size(); i++) {
 			if (d.getMoyan() < listeDeliF.get(i).getMoyan()) {
 				d = listeDeliF.get(i);
+				d.setUse("X");
 			}
 		}
-		listeDeliF.remove(d);
+
+//		System.out.println("SUP " + d.getEleve().getPrenom() + " " + d.getMoyan());
+//
+//		for (DeliberationFinal deli : listeDeliF) {
+//			System.out.println("USE DANS SUP " + deli.getUse());
+//		}
+		// itter = itter - 1;
 
 		return d;
+
+//		
+//		DeliberationFinal d = listeDeliF.get(0);
+//		for (int i = 1; i < listeDeliF.size(); i++) {
+//			if (d.getMoyan() < listeDeliF.get(i).getMoyan()) {
+//				d = listeDeliF.get(i);
+//			}
+//		}
+//		listeDeliF.remove(d);
+//
+//		return d;
+
 	}
 
 	public List<Deliberation> getMoyenEqual(Deliberation d) {
@@ -1537,8 +2100,9 @@ public class DeliberationService implements Serializable {
 		for (int i = 0; i < listeDeliberation.size(); i++) {
 
 			if (d.getMoyenne().equals(listeDeliberation.get(i).getMoyenne())) {
-
+				listeDeliberation.get(i).setUse("X");
 				liste.add(listeDeliberation.get(i));
+
 			}
 		}
 
@@ -1569,10 +2133,7 @@ public class DeliberationService implements Serializable {
 				liste.add(listeDeliberationMSF1.get(i));
 			}
 		}
-		System.out.println("equal ");
-		for (int i = 0; i < liste.size(); i++) {
-			System.out.println("equal " + liste.get(i).getEleve().getPrenom());
-		}
+
 		return liste;
 	}
 
@@ -1588,6 +2149,7 @@ public class DeliberationService implements Serializable {
 		}
 
 		return liste;
+
 	}
 
 	public Double cumulNote(Eleve e, List<Note> listeNote) {
@@ -1635,18 +2197,19 @@ public class DeliberationService implements Serializable {
 	@SuppressWarnings("unchecked")
 	public Double CumulCeof() {
 		Double cumul = 0.0;
-
+		ccoef = 0;
 		List<MatiereClasse> listeMc = dataSource
 				.createQuery("From MatiereClasse mc inner join fetch mc.classe c inner join fetch mc.matiere m "
 						+ " inner join  fetch mc.eval ev   where c =:pc and mc.annee_scol =:pan and ev =:pev")
 				.setParameter("pc", classe).setParameter("pan", annee.getAnneeScolaire())
 				.setParameter("pev", evaluation).list();
 		for (MatiereClasse n : listeMc) {
-			System.out.println("Matiere " + n.getMatiere().getLibelle() + "coef " + n.getMatiere().getCoef());
+
 			cumul = cumul + n.getCoef();
+			ccoef = ccoef + n.getCoef();
 
 		}
-
+		// ccoef = cumul;
 		return (cumul * 10) / 100;
 	}
 

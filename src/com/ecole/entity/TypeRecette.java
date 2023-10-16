@@ -9,7 +9,7 @@ import javax.persistence.Table;
 import javax.persistence.Transient;
 
 @Entity
-@Table(name="typeRecette")
+@Table(name="typerecette")
 public class TypeRecette implements Serializable {
 
 	/**

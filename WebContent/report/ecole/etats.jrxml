@@ -1,0 +1,168 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="bulletin" language="groovy" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="89af52a8-d2ec-4f35-8f4d-da069730ec92">
+	<property name="ireport.zoom" value="1.5"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<parameter name="logo" class="java.io.InputStream"/>
+	<parameter name="ecole" class="java.lang.String"/>
+	<parameter name="slogan" class="java.lang.String"/>
+	<parameter name="tel" class="java.lang.String"/>
+	<parameter name="en" class="java.lang.Double"/>
+	<parameter name="moy" class="java.lang.String"/>
+	<parameter name="sd" class="java.lang.Double"/>
+	<parameter name="st" class="java.lang.Double"/>
+	<parameter name="eff" class="java.lang.String"/>
+	<parameter name="etat" class="java.lang.String"/>
+	<parameter name="SUBREPORT_DIR" class="java.lang.String" isForPrompting="false">
+		<defaultValueExpression><![CDATA["C:\\Users\\A626257\\git\\eschool\\NuramEcole\\WebContent\\report\\ecole\\"]]></defaultValueExpression>
+	</parameter>
+	<queryString language="hql">
+		<![CDATA[from Etats]]>
+	</queryString>
+	<field name="id" class="java.lang.Long"/>
+	<field name="libelle" class="java.lang.String"/>
+	<field name="listeDep" class="java.util.List"/>
+	<field name="montant" class="java.lang.Double"/>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="214" splitType="Stretch">
+			<image>
+				<reportElement x="3" y="5" width="100" height="50" uuid="2e970148-b146-41b9-99cd-da53529800c5"/>
+				<imageExpression><![CDATA[$P{logo}]]></imageExpression>
+			</image>
+			<textField>
+				<reportElement x="0" y="59" width="543" height="20" uuid="9fb14f85-97f4-4793-bb0f-8ac3e9db9c6a"/>
+				<textElement>
+					<font size="12" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{ecole}]]></textFieldExpression>
+			</textField>
+			<textField pattern="EEEEE dd MMMMM yyyy">
+				<reportElement x="302" y="0" width="251" height="20" uuid="3086e59e-a433-440c-9699-cbffcfb1be00"/>
+				<textElement textAlignment="Right">
+					<font size="12" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[new java.util.Date()]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="0" y="87" width="543" height="20" uuid="ce9ce57f-d4fe-4dc5-9065-91d0d5bb4177"/>
+				<textElement>
+					<font size="12" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{tel}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="0" y="73" width="543" height="20" uuid="4471c004-3592-4e61-8586-75c8ad4a0948"/>
+				<textElement>
+					<font size="12" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{slogan}]]></textFieldExpression>
+			</textField>
+			<rectangle>
+				<reportElement x="1" y="125" width="552" height="43" backcolor="#CCCCCC" uuid="7f03130e-676c-4102-9af2-63d7f354af7b"/>
+			</rectangle>
+			<textField>
+				<reportElement x="3" y="126" width="550" height="43" uuid="970fc8d1-d1b8-48cb-af90-d367677a26bd"/>
+				<textElement textAlignment="Center">
+					<font size="24" isBold="true" isUnderline="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{etat}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="0" y="188" width="73" height="20" uuid="b54497ab-bbd9-4f96-935e-e784a30db4b0"/>
+				<textElement>
+					<font size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[RECETTES:]]></text>
+			</staticText>
+			<textField pattern="#,##0">
+				<reportElement x="74" y="188" width="100" height="20" forecolor="#33CC00" uuid="a1e6f2b8-f9b2-4196-83e9-06f046b342b5"/>
+				<textElement>
+					<font size="12" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{en}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0">
+				<reportElement x="260" y="188" width="100" height="20" forecolor="#FF0000" uuid="2606f2fe-2df6-41b6-a5af-0f9d11cd07d3"/>
+				<textElement>
+					<font size="12" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{st}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="186" y="188" width="73" height="20" uuid="116b2591-b84f-4367-a9e7-4323db1fa6d5"/>
+				<textElement>
+					<font size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[DEPENSES:]]></text>
+			</staticText>
+			<textField pattern="#,##0">
+				<reportElement x="469" y="188" width="84" height="20" forecolor="#000000" uuid="40404d24-5bb4-4f71-8a52-303329e68633"/>
+				<textElement>
+					<font size="12" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{sd}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="367" y="188" width="102" height="20" uuid="cc3ff443-82e1-4716-acbd-80f9a4ab8428"/>
+				<textElement>
+					<font size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[SOLDE CAISSE:]]></text>
+			</staticText>
+		</band>
+	</title>
+	<columnHeader>
+		<band height="36" splitType="Stretch">
+			<staticText>
+				<reportElement x="1" y="16" width="73" height="20" forecolor="#009900" uuid="f1ac3168-bf1f-4808-a7a6-e572d300c033"/>
+				<textElement>
+					<font size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[RECETTES:]]></text>
+			</staticText>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="21" splitType="Stretch">
+			<rectangle>
+				<reportElement x="0" y="0" width="174" height="20" uuid="782281fc-402c-4de7-bca0-6977e01b5273"/>
+			</rectangle>
+			<rectangle>
+				<reportElement x="174" y="0" width="153" height="20" uuid="53a51994-bc06-49b5-a0bf-099ea7130c18"/>
+			</rectangle>
+			<textField>
+				<reportElement x="1" y="1" width="173" height="20" uuid="b6c46979-630f-465f-9900-03c693de9960"/>
+				<textElement textAlignment="Center">
+					<font size="14"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{libelle}]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0">
+				<reportElement x="175" y="1" width="152" height="20" uuid="4e7bc3d8-3db8-4f26-ae51-a41c714d4ed6"/>
+				<textElement textAlignment="Center">
+					<font size="12"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{montant}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<summary>
+		<band height="33">
+			<subreport>
+				<reportElement x="-3" y="19" width="550" height="14" uuid="8f5851a4-07f3-4a0a-8705-77a10d34d756"/>
+				<dataSourceExpression><![CDATA[new net.sf.jasperreports.engine.data.JRBeanCollectionDataSource($F{listeDep})]]></dataSourceExpression>
+				<subreportExpression><![CDATA[$P{SUBREPORT_DIR} + "etats_subreport1.jasper"]]></subreportExpression>
+			</subreport>
+			<staticText>
+				<reportElement x="3" y="5" width="73" height="20" forecolor="#FF0033" uuid="59d5c0b0-26da-43cf-9cf9-f39862eb1590"/>
+				<textElement>
+					<font size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[DEPENSES:]]></text>
+			</staticText>
+		</band>
+	</summary>
+</jasperReport>

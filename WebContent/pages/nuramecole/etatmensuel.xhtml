@@ -31,7 +31,7 @@
 	content="Responsive Bootstrap 4 Dashboard Template"></meta>
 <meta name="author" content="BootstrapDash"></meta>
 
-<title>E-SCHOOL</title>
+<title>NURAMECOLE</title>
 
 <!-- vendor css -->
 <link href="lib/fontawesome-free/css/all.min.css" rel="stylesheet"></link>
@@ -251,17 +251,17 @@
 										</rich:dataTable>
 										<rich:datascroller status="waitStatus" stepControls="auto"
 											style="width:100%" for="lstdemande"
-											rendered="#{not empty statService.listeParm}" />
-										<p align="left">
-											<a:commandLink styleClass="btn btn-success" value=""
-												action="#{statService.imprimerEtatsMensuel()}"
-												reRender="liste" status="waitStatus"
-												oncomplete="#{statService.showModal}"
-												rendered="#{statService.listeRecettes.size > 0}">
+											rendered="#{not empty statService.listeParm}" /> 
+<!-- 										<p align="left"> -->
+<!-- 											<a:commandLink styleClass="btn btn-success" value="" -->
+<!-- 												action="#{statService.imprimerEtatsMensuel()}" -->
+<!-- 												reRender="liste" status="waitStatus" -->
+<!-- 												oncomplete="#{statService.showModal}" -->
+<!-- 												rendered="#{statService.listeRecettes.size > 0}"> -->
 																		
-																		Imprimer			
-																				</a:commandLink>
-										</p>
+<!-- 																		Imprimer			 -->
+<!-- 																				</a:commandLink> -->
+<!-- 										</p> -->
 										<p align="left">
 											<a:mediaOutput element="img" cacheable="false" session="true"
 												createContent="#{statService.montantParClasse}"

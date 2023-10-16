@@ -6,11 +6,14 @@ package com.ecole.service;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.hibernate.HibernateException;
 import org.hibernate.Query;
 import org.hibernate.Session;
+import org.jboss.seam.Component;
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
@@ -25,10 +28,14 @@ import com.ecole.entity.Classe;
 import com.ecole.entity.Depense;
 import com.ecole.entity.Eleve;
 import com.ecole.entity.Inscription;
+import com.ecole.entity.Institution;
 import com.ecole.entity.Niveau;
 import com.ecole.entity.ParamInscription;
 import com.ecole.entity.Recette;
 import com.ecole.entity.TypeRecette;
+import com.rhospi.commons.ChakaUtils;
+import com.rhospi.commons.FileUploadService;
+import com.rhospi.commons.ChakaUtils.ExportOption;
 
 import sun.nio.cs.ext.ISCII91;
 import java.text.DateFormatSymbols;
@@ -96,6 +103,10 @@ public class RecetteService implements Serializable {
 	private double montantPayeFinial = 0d;
 
 	private Recette theLastRecette;
+	
+	FileUploadService filePrintService;
+	
+	private String showModal = "";
 
 	@SuppressWarnings("unchecked")
 	public void chargerListeRecette(String codeRecette) {
@@ -307,15 +318,14 @@ public class RecetteService implements Serializable {
 			// System.out.println("### recetteEnCreation = " +
 			// recetteEnCreation.getIdRecette());
 			if (recetteEnCreation.getIdRecette() == null) {
-				System.out.println("**1111** " + inscription.getReliquat());
-
+				
 				recetteEnCreation.setInscription(inscription);
 				recetteEnCreation.setTypeRecette(getTypeRecetteByCode(this.codeRecette));
 				// recetteEnCreation.setMoisPaye(moisEnChiffre()>0?moisEnChiffre()+1:10);
 				// // Si
 				// 1er enregistrement mettre le mois de novembre
 				// moisConcerne(moisEncoursDePaiement());
-				System.out.println("**montant paye** " + recetteEnCreation.getMontantPaye());
+			
 
 				recetteEnCreation.setMontantPaye(montantPayeFinial);
 				recetteEnCreation.setEditable(true);
@@ -328,7 +338,7 @@ public class RecetteService implements Serializable {
 				dataSource.flush();
 			} else {
 
-				System.out.println("**2222** " + inscription.getReliquat());
+				
 				recetteEnCreation.setMontantPaye(montantPayeFinial);
 				dataSource.merge(recetteEnCreation);
 			}
@@ -337,9 +347,27 @@ public class RecetteService implements Serializable {
 			// suivant
 			dataSource.merge(inscription);
 			chargerListeRecette("MENS");
+			Institution in = (Institution) dataSource.createQuery("From Institution").uniqueResult();
+			Map<String, Object> param = new HashMap<String, Object>();
+			param.put("pecole", in.getImp());
+			param.put("pd", montantPayerGenere);
+			param.put("pr", recetteEnCreation.getInscription().getReliquat());
+			param.put("pa", recetteEnCreation.getInscription().getAvoirEleve());
+			param.put("pclasse", classe.getLibelle());
+			param.put("nom2", retreiveMonthByInt(recetteEnCreation.getMoisPaye()));
+			List<Recette> listeRecette = new ArrayList<Recette>();
+			listeRecette.add(recetteEnCreation);
+			
+			
 			retreiveInfoIncription();
 			this.setRecetteEnCreation(new Recette());
-			FacesMessages.instance().addToControlFromResourceBundle("infoGenerique", "Paiement effectué avec succés");
+			//FacesMessages.instance().addToControlFromResourceBundle("infoGenerique", "Paiement effectué avec succés");
+			
+			getFilePrintService().imprimer("ecole", "ticket1", param, listeRecette, utilisateur, ExportOption.PDF);
+			this.setShowModal("javascript:Richfaces.showModalPanel('modalPdf')");
+		
+
+			
 		} catch (HibernateException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -614,6 +642,25 @@ public class RecetteService implements Serializable {
 
 	public void setListeRecettes(List<Recette> listeRecettes) {
 		this.listeRecettes = listeRecettes;
+	}
+	public FileUploadService getFilePrintService() {
+		if (filePrintService == null) {
+			filePrintService = (FileUploadService) Component.getInstance(FileUploadService.class);
+
+		}
+		return filePrintService;
+	}
+
+	public void setFilePrintService(FileUploadService filePrintService) {
+		this.filePrintService = filePrintService;
+	}
+
+	public String getShowModal() {
+		return showModal;
+	}
+
+	public void setShowModal(String showModal) {
+		this.showModal = showModal;
 	}
 
 }

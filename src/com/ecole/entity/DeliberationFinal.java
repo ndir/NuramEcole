@@ -12,6 +12,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 /**
  * @author A626257
@@ -65,6 +66,8 @@ public class DeliberationFinal implements Serializable {
 	private String decision;
 	
 	private Classe classe;
+	
+	private String use;
 
 	@Id
 	@GeneratedValue
@@ -240,6 +243,15 @@ public class DeliberationFinal implements Serializable {
 
 	public void setClasse(Classe classe) {
 		this.classe = classe;
+	}
+
+	@Transient
+	public String getUse() {
+		return use;
+	}
+
+	public void setUse(String use) {
+		this.use = use;
 	}
 
 }

@@ -47,7 +47,7 @@ public class TypeRecetteService implements Serializable {
 	public String versTypeRecette() {
 		this.setTypeRecette(new TypeRecette());
 		chargerListeTypeRecette();
-		return "/pages/ecole/comptabilite/TypeRecette.xhtml";
+		return "/pages/nuramecole/TypeRecette.xhtml";
 	}
 
 	public void annulerAjout() {

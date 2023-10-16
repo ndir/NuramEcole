@@ -31,7 +31,7 @@
 	content="Responsive Bootstrap 4 Dashboard Template"></meta>
 <meta name="author" content="BootstrapDash"></meta>
 
-<title>E-SCHOOL</title>
+<title>NURAMECOLE</title>
 
 <!-- vendor css -->
 <link href="lib/fontawesome-free/css/all.min.css" rel="stylesheet"></link>
@@ -52,7 +52,23 @@
 
 			<ui:include src="/template/include/header2.xhtml" />
 
+<ui:insert name="impression">
+				<rich:modalPanel id="modalPdf" autosized="false" width="980"
+					height="620" moveable="true" resizeable="true">
 
+					<f:facet name="controls">
+						<a onclick="Richfaces.hideModalPanel('modalPdf');"
+							style="cursor: pointer" href="#">Fermer</a>
+					</f:facet>
+					<h:form id="frmPdf">
+						<a:mediaOutput element="object" id="id" cacheable="false"
+							session="true" createContent="#{fileUploadService.paintPdf}"
+							type="application/pdf" mimeType="application/pdf"
+							style="width:90%; height:600px;" value="#{filePrintService.id}" />
+
+					</h:form>
+				</rich:modalPanel>
+			</ui:insert>
 		</div>
 	</div>
 	<a:status id="waitStatusHaut" forceId="true"
@@ -239,6 +255,7 @@
 
 											<a:commandLink styleClass="btn btn-success" value=""
 												action="#{eleveService.ajouterInscription()}"
+												oncomplete="#{eleveService.showModal}"
 												reRender="liste" status="waitStatus">
 																		
 																		Valider			

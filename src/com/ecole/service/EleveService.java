@@ -10,6 +10,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.poi.util.SystemOutLogger;
 import org.hibernate.Session;
 import org.hibernate.annotations.ForceDiscriminator;
 import org.jboss.seam.Component;
@@ -298,15 +299,34 @@ public class EleveService implements Serializable {
 
 			}
 			this.setEleve(new Eleve());
-			this.setInscription(new Inscription());
-			this.setClasse(new Classe());
+
+			
 			mntIns = paramins.getDroit_ins();
-			this.setPaiemens(true);
+			
 			mntIns = 0d;
 			mntPaye = 0d;
 			this.setListeClasse(new ArrayList<Classe>());
 			this.setNiveau(new Niveau());
-			FacesMessages.instance().addToControlFromResourceBundle("infoGenerique", "Evaluation ajoutée avec succés");
+			//FacesMessages.instance().addToControlFromResourceBundle("infoGenerique", "Evaluation ajoutée avec succés");
+			Institution in = (Institution) dataSource.createQuery("From Institution").uniqueResult();
+			Map<String, Object> param = new HashMap<String, Object>();
+			param.put("pecole", in.getImp());
+			param.put("slogan", in.getSologan());
+			param.put("tel", in.getTelephone());
+			param.put("pclasse", classe.getLibelle());
+			this.setClasse(new Classe());
+			List<Inscription> listeIns = new ArrayList<Inscription>();
+			listeIns.add(inscription);
+			this.setInscription(new Inscription());
+			System.out.println("paiemens "+paiemens);
+			if (paiemens) {
+				getFilePrintService().imprimer("ecole", "ticket", param, listeIns, utilisateur, ExportOption.PDF);
+				this.setShowModal("javascript:Richfaces.showModalPanel('modalPdf')");
+			}else {
+				getFilePrintService().imprimer("ecole", "ticket1", param, listeIns, utilisateur, ExportOption.PDF);
+				this.setShowModal("javascript:Richfaces.showModalPanel('modalPdf')");
+			}
+			this.setPaiemens(true);
 		}
 	}
 

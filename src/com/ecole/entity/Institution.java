@@ -39,7 +39,12 @@ public class Institution implements Serializable {
 	private boolean actif;
 	
 	private String nom;
-
+	
+	private String ia;
+	
+	private String ief;
+	
+   private String imp;
 	@Id
 	@GeneratedValue
 	public Long getId() {
@@ -98,6 +103,30 @@ public class Institution implements Serializable {
 
 	public void setNom(String nom) {
 		this.nom = nom;
+	}
+
+	public String getIa() {
+		return ia;
+	}
+
+	public void setIa(String ia) {
+		this.ia = ia;
+	}
+
+	public String getIef() {
+		return ief;
+	}
+
+	public void setIef(String ief) {
+		this.ief = ief;
+	}
+
+	public String getImp() {
+		return imp;
+	}
+
+	public void setImp(String imp) {
+		this.imp = imp;
 	}
 	
 	

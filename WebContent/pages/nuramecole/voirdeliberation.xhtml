@@ -31,7 +31,7 @@
 	content="Responsive Bootstrap 4 Dashboard Template"></meta>
 <meta name="author" content="BootstrapDash"></meta>
 
-<title>E-SCHOOL</title>
+<title>NURAMECOLE</title>
 
 <!-- vendor css -->
 <link href="lib/fontawesome-free/css/all.min.css" rel="stylesheet"></link>
@@ -213,6 +213,10 @@
 																style="color:white;font-size:12px;font-family: Arial;text-align:center;" />
 														</rich:column>
 														<rich:column>
+															<h:outputLabel value="Total Coef"
+																style="color:white;font-size:12px;font-family: Arial;text-align:center;" />
+														</rich:column>
+														<rich:column>
 															<h:outputLabel value="Moyenne"
 																style="color:white;font-size:12px;font-family: Arial;text-align:center;" />
 														</rich:column>
@@ -243,6 +247,11 @@
 												</rich:column>
 												<rich:column>
 													<h:outputLabel value="#{mat.cumul}" styleClass="grey">
+
+													</h:outputLabel>
+												</rich:column>
+												<rich:column>
+													<h:outputLabel value="#{mat.totalcoef}" styleClass="grey">
 
 													</h:outputLabel>
 												</rich:column>
@@ -288,7 +297,17 @@
 										</a:outputPanel>
 
 										<a:outputPanel
-											rendered="#{dService.listeDeliberationMSF1.size > 0}">
+											rendered="#{dService.listeDeliberationMSF1.size > 0  and dService.semestre.code eq '1' }">
+											<p align="right">
+
+												<a:commandLink styleClass="btn btn-success" value=""
+													action="#{dService.imprimerToutMS()}"
+													oncomplete="#{dService.showModal}" status="waitStatus">
+																		
+																		Impimer Tout			
+																				</a:commandLink>
+
+											</p>
 											<rich:dataTable value="#{dService.listeDeliberationMSF1}"
 												var="mat" id="delise" style="width:100%;" rows="8"
 												rowClasses="row1,row2">
@@ -328,14 +347,13 @@
 												</rich:column>
 
 												<rich:column>
-													<h:outputLabel value="#{mat.total}" styleClass="grey">
+													<h:outputLabel value="#{mat.totals}" styleClass="grey">
 													</h:outputLabel>
 												</rich:column>
 
 												<rich:column>
-													<h:outputLabel value="#{mat.moyenne}" styleClass="grey">
-														<f:convertNumber type="number" minFractionDigits="2"
-															maxFractionDigits="2" />
+													<h:outputLabel value="#{mat.moyennes}" styleClass="grey">
+														
 													</h:outputLabel>
 												</rich:column>
 
@@ -355,12 +373,144 @@
 														<s:graphicImage fileName="info.png" style="border:0px;"
 															value="/picto/info.png" width="16" height="16" alt="" />
 													</a:commandLink>
+													<a:commandLink value="" status="waitStatus"
+														action="#{dService.imprimerBulletinMS(mat)}"
+														oncomplete="#{dService.showModal}"
+														title="Imprimer Bulletin">
+														<s:graphicImage fileName="printer.png" style="border:0px;"
+															value="/picto/printer.png" width="16" height="16" alt="" />
+													</a:commandLink>
 												</rich:column>
 
 											</rich:dataTable>
 											<rich:datascroller status="waitStatus" stepControls="auto"
 												style="width:100%" for="delise" ajaxSingle="false"
 												rendered="#{not empty dService.listeDeliberationMSF1}" />
+										</a:outputPanel>
+										
+										<a:outputPanel
+											rendered="#{dService.listeDeliberationMSF1.size > 0 and dService.semestre.code eq '2'}">
+											<p align="right">
+
+												<a:commandLink styleClass="btn btn-success" value=""
+													action="#{dService.imprimerToutMS()}"
+													oncomplete="#{dService.showModal}" status="waitStatus">
+																		
+																		Impimer Tout			
+																				</a:commandLink>
+
+											</p>
+											<rich:dataTable value="#{dService.listeDeliberationMSF1}"
+												var="mat" id="delise2" style="width:100%;" rows="8"
+												rowClasses="row1,row2">
+												<f:facet name="header">
+													<rich:columnGroup>
+														<rich:column>
+															<h:outputLabel value="Eleve"
+																style="color:white;font-size:12px;font-family: Arial;text-align:center;" />
+														</rich:column>
+
+														<rich:column>
+															<h:outputLabel value="Moy. Semestre 1"
+																style="color:white;font-size:12px;font-family: Arial;text-align:center;" />
+														</rich:column>
+														<rich:column>
+															<h:outputLabel value="Moy. Semestre 2"
+																style="color:white;font-size:12px;font-family: Arial;text-align:center;" />
+														</rich:column>
+														<rich:column>
+															<h:outputLabel value="Moy. Annuelle"
+																style="color:white;font-size:12px;font-family: Arial;text-align:center;" />
+														</rich:column>
+														<rich:column>
+															<h:outputLabel value="Rang"
+																style="color:white;font-size:12px;font-family: Arial;text-align:center;" />
+														</rich:column>
+														
+														<rich:column>
+															<h:outputLabel value="Rang An"
+																style="color:white;font-size:12px;font-family: Arial;text-align:center;" />
+														</rich:column>
+														<rich:column>
+															<h:outputLabel value="Appréciation"
+																style="color:white;font-size:12px;font-family: Arial;text-align:center;" />
+														</rich:column>
+														<rich:column>
+															<h:outputLabel value="Décision"
+																style="color:white;font-size:12px;font-family: Arial;text-align:center;" />
+														</rich:column>
+														<rich:column>
+															<h:outputLabel value="Details"
+																style="color:white;font-size:12px;font-family: Arial;text-align:center;" />
+														</rich:column>
+													</rich:columnGroup>
+												</f:facet>
+												<rich:column filterBy="#{mat.eleve.nom}"
+													filterEvent="onkeyup">
+													<h:outputLabel value="#{mat.eleve.nom} #{mat.eleve.prenom}"
+														styleClass="grey"></h:outputLabel>
+												</rich:column>
+
+												<rich:column>
+													<h:outputLabel value="#{mat.moyenne1s}" styleClass="grey">
+														
+													</h:outputLabel>
+												</rich:column>
+
+												<rich:column>
+													<h:outputLabel value="#{mat.moyennes}" styleClass="grey">
+														
+													</h:outputLabel>
+												</rich:column>
+
+												<rich:column>
+													<h:outputLabel value="#{mat.moyenneAns}" styleClass="grey">
+														
+													</h:outputLabel>
+												</rich:column>
+												
+												
+												<rich:column>
+													<h:outputLabel value="#{mat.ranggen}" styleClass="grey"></h:outputLabel>
+													
+												</rich:column>
+												
+												<rich:column>
+													
+													<h:outputLabel value="#{dService.getRangAnnuel(mat)}" styleClass="grey"></h:outputLabel>
+												</rich:column>
+												
+
+												<rich:column>
+													<h:outputLabel value="#{mat.apgen}" styleClass="grey"></h:outputLabel>
+												</rich:column>
+												
+												
+												<rich:column>
+													<h:outputLabel value="#{mat.decision}" styleClass="grey"></h:outputLabel>
+												</rich:column>
+
+												<rich:column style="width:8%;">
+													<a:commandLink value="" status="waitStatus"
+														action="#{dService.detailsDeliberation(mat)}"
+														oncomplete="javascript:Richfaces.showModalPanel('dtms',{width:700, height:600})"
+														reRender="fdtms" title="Details">
+														<s:graphicImage fileName="info.png" style="border:0px;"
+															value="/picto/info.png" width="16" height="16" alt="" />
+													</a:commandLink>
+													<a:commandLink value="" status="waitStatus"
+														action="#{dService.imprimerBulletinMS(mat)}"
+														oncomplete="#{dService.showModal}"
+														title="Imprimer Bulletin">
+														<s:graphicImage fileName="printer.png" style="border:0px;"
+															value="/picto/printer.png" width="16" height="16" alt="" />
+													</a:commandLink>
+												</rich:column>
+
+											</rich:dataTable>
+											<rich:datascroller status="waitStatus" stepControls="auto"
+												style="width:100%" for="delise2" ajaxSingle="false"
+												rendered="#{not empty dServicelisteDeliberationMSF1}" />
 										</a:outputPanel>
 
 									</div>
@@ -515,13 +665,13 @@
 												</h:outputLabel>
 											</rich:column>
 
-											<rich:column rendered="#{mat.moyenneC ne 'NO'}">
+											<rich:column rendered="#{mat.moyenneC ne '-'}">
 												<h:outputLabel value="#{mat.moyenneC}" styleClass="grey">
 
 												</h:outputLabel>
 											</rich:column>
 
-											<rich:column rendered="#{mat.moyenneC eq 'NO'}">
+											<rich:column rendered="#{mat.moyenneC eq '-'}">
 												<h:outputLabel value="-" styleClass="grey">
 
 												</h:outputLabel>

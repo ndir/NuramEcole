@@ -13,6 +13,8 @@
 	<field name="ap" class="java.lang.String"/>
 	<field name="choix" class="java.lang.Boolean"/>
 	<field name="classe" class="com.ecole.entity.Classe"/>
+	<field name="cumul" class="java.lang.String"/>
+	<field name="dec" class="java.lang.String"/>
 	<field name="ecole" class="java.lang.String"/>
 	<field name="eff" class="java.lang.String"/>
 	<field name="eleve" class="com.ecole.entity.Eleve"/>
