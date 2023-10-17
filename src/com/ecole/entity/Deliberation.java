@@ -71,6 +71,8 @@ public class Deliberation implements Serializable {
 	private String use;
 	
 	private String totalcoef;
+	
+	private Institution institution;
 
 	@Id
 	@GeneratedValue
@@ -289,6 +291,16 @@ public class Deliberation implements Serializable {
 
 	public void setTotalcoef(String totalcoef) {
 		this.totalcoef = totalcoef;
+	}
+
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "idinstitution")
+	public Institution getInstitution() {
+		return institution;
+	}
+
+	public void setInstitution(Institution institution) {
+		this.institution = institution;
 	}
 
 

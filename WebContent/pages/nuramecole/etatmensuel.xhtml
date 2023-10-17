@@ -143,7 +143,7 @@
 										</table>
 
 										<rich:dataTable value="#{statService.listeParm}" var="dep"
-											style="width:100%;" rows="8" rowClasses="row1,row2"
+											style="width:100%;" rows="12" rowClasses="row1,row2"
 											id="lstdemande">
 											<f:facet name="header">
 												<rich:columnGroup>
@@ -252,6 +252,15 @@
 										<rich:datascroller status="waitStatus" stepControls="auto"
 											style="width:100%" for="lstdemande"
 											rendered="#{not empty statService.listeParm}" /> 
+											<p align="left">
+												<a:commandLink styleClass="btn btn-success" value=""
+													action="#{statService.imprimerDetailsEtatsMensuel()}"
+													reRender="liste" status="waitStatus"
+													oncomplete="#{statService.showModal}">
+																		
+																		Imprimer			
+																				</a:commandLink>
+											</p>
 <!-- 										<p align="left"> -->
 <!-- 											<a:commandLink styleClass="btn btn-success" value="" -->
 <!-- 												action="#{statService.imprimerEtatsMensuel()}" -->
@@ -352,15 +361,7 @@
 											<rich:datascroller status="waitStatus" stepControls="auto"
 												style="width:100%" for="led" ajaxSingle="false"
 												rendered="#{not empty statService.listeEleves}" />
-											<p align="left">
-												<a:commandLink styleClass="btn btn-success" value=""
-													action="#{statService.imprimerDetailsEtatsMensuel()}"
-													reRender="liste" status="waitStatus"
-													oncomplete="#{statService.showModal}">
-																		
-																		Imprimer			
-																				</a:commandLink>
-											</p>
+											
 										</div>
 									</div>
 								</div>

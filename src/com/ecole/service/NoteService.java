@@ -13,9 +13,11 @@ import org.hibernate.Session;
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
+import org.jboss.seam.annotations.Out;
 import org.jboss.seam.annotations.Scope;
 import org.jboss.seam.faces.FacesMessages;
 
+import com.chaka.projet.entity.Utilisateur;
 import com.ecole.entity.Absence;
 import com.ecole.entity.AnneeScolaire;
 import com.ecole.entity.Classe;
@@ -87,26 +89,33 @@ public class NoteService implements Serializable {
 
 	private Retard retard = new Retard();
 
+	@In(required = false)
+	@Out(required = false)
+	private Utilisateur utilisateur;
+
 	@SuppressWarnings("unchecked")
 	public void chargerListeMatClasse() {
 		listeMatiereClasse = new ArrayList<MatiereClasse>();
 		if (typenote.equalsIgnoreCase("1")) {
 			if (ev.getIdEvaluation() != null) {
-				listeMatiereClasse = dataSource.createQuery(
-						"From MatiereClasse m inner join fetch m.classe c inner join fetch m.matiere inner join fetch m.eval ev where c=:pc and m.annee_scol=:pannee "
-								+ " and ev =:pev")
+				listeMatiereClasse = dataSource
+						.createQuery("From MatiereClasse m inner join fetch m.classe c inner join "
+								+ " fetch m.matiere inner join fetch m.eval ev inner join fetch m.institution i"
+								+ "  where c=:pc and m.annee_scol=:pannee " + " and ev =:pev and i =:pi")
 						.setParameter("pc", note.getCl()).setParameter("pannee", annee.getAnneeScolaire())
-						.setParameter("pev", ev).list();
+						.setParameter("pev", ev).setParameter("pi", utilisateur.getInstitution()).list();
 			} else {
 				FacesMessages.instance().addToControlFromResourceBundle("erreurGenerique", "Evaluation Obligatoire");
 				return;
 			}
 		} else {
 
-			listeMatiereClasse = dataSource.createQuery(
-					"From MatiereClasse m inner join fetch m.classe c inner join fetch m.matiere  where c=:pc and m.annee_scol=:pannee "
-							+ " ")
-					.setParameter("pc", note.getCl()).setParameter("pannee", annee.getAnneeScolaire()).list();
+			listeMatiereClasse = dataSource
+					.createQuery("From MatiereClasse m inner join fetch"
+							+ " m.classe c inner join fetch m.matiere inner join fetch m.institution i"
+							+ " where c=:pc and m.annee_scol=:pannee and i =:pi " + " ")
+					.setParameter("pc", note.getCl()).setParameter("pannee", annee.getAnneeScolaire())
+					.setParameter("pi", utilisateur.getInstitution()).list();
 		}
 		listeMatiere = new ArrayList<Matiere>();
 
@@ -130,10 +139,10 @@ public class NoteService implements Serializable {
 	}
 
 	public void getSemestre1() {
-	
+
 		semestre = new Semestres();
 		semestre = (Semestres) dataSource.get(Semestres.class, ss.getId());
-		
+
 	}
 
 	public void annulerAjoutNote() {
@@ -178,9 +187,9 @@ public class NoteService implements Serializable {
 					n.setEleve(eleve);
 					n.setEvaluation(note.getEvaluation());
 					n.setMatiere(note.getMatiere());
+					n.setInstitution(utilisateur.getInstitution());
 					n.setNote(eleve.getNote());
 					n.setCoef(getCof(note.getMatiere()));
-
 					dataSource.save(n);
 				}
 				if (eleve.isChoix() & eleve.isExiste()) {
@@ -208,6 +217,7 @@ public class NoteService implements Serializable {
 					n.setEleve(eleve);
 					n.setMatiere(note.getMatiere());
 					n.setNote(eleve.getNote());
+					n.setInstitution(utilisateur.getInstitution());
 					n.setTypeNote(typeNote);
 					n.setCoef(getCof(note.getMatiere()));
 					dataSource.save(n);
@@ -234,8 +244,10 @@ public class NoteService implements Serializable {
 	@SuppressWarnings("unchecked")
 	public void chargerListeClasse() {
 		setListeClasse(new ArrayList<Classe>());
-		setListeClasse(dataSource.createQuery(" From Classe c inner join fetch c.niveau n where n=:pn")
-				.setParameter("pn", niveau).list());
+		setListeClasse(dataSource
+				.createQuery(" From Classe c inner join fetch c.niveau n inner join fetch c.institution i"
+						+ "  where n=:pn and i =:pi ")
+				.setParameter("pn", niveau).setParameter("pi", utilisateur.getInstitution()).list());
 		listeEval = new ArrayList<Evaluation>();
 		listeEval = dataSource.createQuery("From  Evaluation ").list();
 		if (niveau.getCode().equalsIgnoreCase("ELE") || niveau.getCode().equalsIgnoreCase("PRE")) {
@@ -253,33 +265,37 @@ public class NoteService implements Serializable {
 	@SuppressWarnings("unchecked")
 	public void chargerListeEleve() {
 		MatiereClasse mc = new MatiereClasse();
-		ParamInscription p = (ParamInscription) dataSource
-				.createQuery("From ParamInscription p inner join fetch p.classe c inner join fetch p.annee pa "
-						+ " where c =:pc and pa =:pa ")
-				.setParameter("pc", note.getCl()).setParameter("pa", annee).uniqueResult();
+		ParamInscription p = (ParamInscription) dataSource.createQuery(
+				"From ParamInscription p inner join fetch p.classe c inner join fetch p.annee pa inner join fetch p.institution i "
+						+ " where c =:pc and pa =:pa and i =:pi ")
+				.setParameter("pc", note.getCl()).setParameter("pa", annee)
+				.setParameter("pi", utilisateur.getInstitution()).uniqueResult();
 
 		if (p != null) {
 
 			this.setChoix(true);
-			List<Inscription> liste = dataSource
-					.createQuery(
-							"FRom Inscription i inner join fetch i.eleve inner join fetch i.paramins p where p =:pp")
-					.setParameter("pp", p).list();
+			List<Inscription> liste = dataSource.createQuery(
+					"From Inscription i inner join fetch i.eleve inner join fetch i.paramins p inner join fetch i.institution "
+							+ "s where p =:pp and s =:ps")
+					.setParameter("pp", p).setParameter("ps", utilisateur.getInstitution()).list();
 
 			listeEleves = new ArrayList<Eleve>();
 			if (typenote.equalsIgnoreCase("1")) {
 				mc = (MatiereClasse) dataSource
 						.createQuery("From MatiereClasse mc inner join fetch mc.classe c inner join fetch mc.matiere m "
-								+ " inner join fetch mc.eval ev where c=:pc and m=:pm and ev=:pev and mc.annee_scol =:pan")
+								+ " inner join fetch mc.eval ev inner join fetch mc.institution i "
+								+ " where c=:pc and m=:pm and ev=:pev and mc.annee_scol =:pan and i =:pi")
 						.setParameter("pc", note.getCl()).setParameter("pm", note.getMatiere())
 						.setParameter("pev", note.getEvaluation()).setParameter("pan", annee.getAnneeScolaire())
-						.uniqueResult();
+						.setParameter("pi", utilisateur.getInstitution()).uniqueResult();
 			} else {
 				mc = (MatiereClasse) dataSource
 						.createQuery("From MatiereClasse mc inner join fetch mc.classe c inner join fetch mc.matiere m "
-								+ " where c=:pc and m=:pm  and mc.annee_scol =:pan")
+								+ " inner join fetch mc.institution i "
+								+ " where c=:pc and m=:pm  and mc.annee_scol =:pan and i =:pi")
 						.setParameter("pc", note.getCl()).setParameter("pm", note.getMatiere())
-						.setParameter("pan", annee.getAnneeScolaire()).uniqueResult();
+						.setParameter("pan", annee.getAnneeScolaire()).setParameter("pi", utilisateur.getInstitution())
+						.uniqueResult();
 			}
 			for (Inscription in : liste) {
 				in.getEleve().setChoix(true);
@@ -292,10 +308,13 @@ public class NoteService implements Serializable {
 
 	public void noteExiste(Eleve e) {
 		if (typenote.equalsIgnoreCase("1")) {
-			Note n = (Note) dataSource.createQuery("From Note n inner join fetch n.cl c inner join fetch n.matiere m "
-					+ " inner join fetch n.eleve e inner join fetch n.annee an inner join fetch n.evaluation ev where c=:pc and m=:pm and an=:pan and e=:pe and ev =:pev ")
+			Note n = (Note) dataSource.createQuery(
+					"From Note n inner join fetch n.cl c inner join fetch n.matiere m inner join fetch n.institution i "
+							+ " inner join fetch n.eleve e inner join fetch n.annee an inner join fetch n.evaluation "
+							+ " ev where c=:pc and m=:pm and an=:pan and e=:pe and ev =:pev and i =:pi ")
 					.setParameter("pc", note.getCl()).setParameter("pm", note.getMatiere()).setParameter("pan", annee)
-					.setParameter("pe", e).setParameter("pev", note.getEvaluation()).uniqueResult();
+					.setParameter("pe", e).setParameter("pev", note.getEvaluation())
+					.setParameter("pi", utilisateur.getInstitution()).uniqueResult();
 
 			if (n != null) {
 				e.setExiste(true);
@@ -335,21 +354,23 @@ public class NoteService implements Serializable {
 		listeNotess = new ArrayList<Notes>();
 		if (typenote.equalsIgnoreCase("1")) {
 			listeNotes = dataSource.createQuery("From Note n inner join fetch n.cl c inner join fetch n.matiere m "
-					+ "  inner join fetch n.eleve e inner join fetch n.evaluation ev inner join fetch n.annee an "
-					+ "  where c=:pc and ev=:pev and an=:pan and m=:pm").setParameter("pc", note.getCl())
-					.setParameter("pev", ev).setParameter("pan", annee).setParameter("pm", note.getMatiere()).list();
+					+ "  inner join fetch n.eleve e inner join fetch n.evaluation ev inner join fetch n.annee an inner join fetch n.institution i "
+					+ "  where c=:pc and ev=:pev and an=:pan and m=:pm and i =:pi").setParameter("pc", note.getCl())
+					.setParameter("pev", ev).setParameter("pan", annee).setParameter("pm", note.getMatiere())
+					.setParameter("pi", utilisateur.getInstitution()).list();
 			if (listeNotes.size() == 0) {
 				FacesMessages.instance().addToControlFromResourceBundle("erreurGenerique",
 						"Aucune(s) Note(s) pour la matière " + note.getMatiere().getLibelle() + " pour  "
 								+ ev.getLibelle());
 			}
 		} else {
-			listeNotess = dataSource
-					.createQuery("From Notes n inner join fetch n.classe c inner join fetch n.matiere m "
+			listeNotess = dataSource.createQuery(
+					"From Notes n inner join fetch n.classe c inner join fetch n.matiere m inner join fetch n.institution i"
 							+ "  inner join fetch n.eleve e inner join fetch n.semestre ev inner join fetch n.annee an inner join fetch n.typeNote ty "
-							+ "  where c=:pc and ev=:pev and an=:pan and m=:pm and ty=:pty")
+							+ "  where c=:pc and ev=:pev and an=:pan and m=:pm and ty=:pty and i =:pi")
 					.setParameter("pc", note.getCl()).setParameter("pev", semestre).setParameter("pan", annee)
-					.setParameter("pm", note.getMatiere()).setParameter("pty", typeNote).list();
+					.setParameter("pm", note.getMatiere()).setParameter("pty", typeNote)
+					.setParameter("pi", utilisateur.getInstitution()).list();
 			if (listeNotess.size() == 0) {
 				FacesMessages.instance().addToControlFromResourceBundle("erreurGenerique",
 						"Aucune(s) Note(s) pour la matière " + note.getMatiere().getLibelle() + " pour  "
@@ -379,8 +400,10 @@ public class NoteService implements Serializable {
 		absence = new Absence();
 		setListeClasse(new ArrayList<Classe>());
 		setListeClasse(dataSource
-				.createQuery(" From Classe c inner join fetch c.niveau n where n.code <>:pn and n.code <>:pn1 ")
-				.setParameter("pn", "PRE").setParameter("pn1", "ELE").list());
+				.createQuery(" From Classe c inner join fetch c.niveau n inner join fetch c.institution i "
+						+ " where n.code <>:pn and n.code <>:pn1 and i =:pi")
+				.setParameter("pn", "PRE").setParameter("pn1", "ELE").setParameter("pi", utilisateur.getInstitution())
+				.list());
 		listeSemestre = new ArrayList<Semestres>();
 		listeSemestre = dataSource.createQuery("From Semestres").list();
 		return "/pages/nuramecole/absence.xhtml";
@@ -389,39 +412,38 @@ public class NoteService implements Serializable {
 	@SuppressWarnings("unchecked")
 	public void saisieAbsence() {
 		listeEleves = new ArrayList<Eleve>();
-		System.out.println("LISTE 1");
-		ParamInscription p = (ParamInscription) dataSource
-				.createQuery("From ParamInscription p inner join fetch p.classe c inner join fetch p.annee pa "
-						+ " where c =:pc and pa =:pa ")
-				.setParameter("pc", classe).setParameter("pa", annee).uniqueResult();
-		
+		ParamInscription p = (ParamInscription) dataSource.createQuery(
+				"From ParamInscription p inner join fetch p.classe c inner join fetch p.annee pa inner join fetch p.institution i "
+						+ " where c =:pc and pa =:pa and i =:pi")
+				.setParameter("pc", classe).setParameter("pa", annee).setParameter("pi", utilisateur.getInstitution())
+				.uniqueResult();
+
 		if (p != null) {
-			System.out.println("LISTE 2");
-			List<Inscription> liste = dataSource
-					.createQuery(
-							"FRom Inscription i inner join fetch i.eleve inner join fetch i.paramins p where p =:pp")
-					.setParameter("pp", p).list();
+			List<Inscription> liste = dataSource.createQuery(
+					"From Inscription i inner join fetch i.eleve inner join fetch i.paramins p inner join fetch i.institution s"
+							+ " where p =:pp and s =:ps")
+					.setParameter("pp", p).setParameter("ps", utilisateur.getInstitution()).list();
 
 			listeEleves = new ArrayList<Eleve>();
-			
-			System.out.println("LISTE 1"+liste.size());
-			
+
 			for (Inscription in : liste) {
 				in.getEleve().setDateAbsence(dateAbsence);
 				listeEleves.add(in.getEleve());
 			}
 		}
-		System.out.println("LISTE 1"+listeEleves.size());
+
 	}
 
+	@SuppressWarnings("unchecked")
 	public void chargerMatieres() {
 		listeMatiere = new ArrayList<Matiere>();
-		listeMatiereClasse = dataSource.createQuery(
-				"from MatiereClasse mc inner join fetch mc.matiere inner join fetch mc.classe where mc.classe =:pc and mc.annee_scol =:pan "
+		listeMatiereClasse = dataSource
+				.createQuery("from MatiereClasse mc inner join fetch mc.matiere inner join fetch mc.classe "
+						+ " inner join fetch mc.institution i where mc.classe =:pc and mc.annee_scol =:pan and i =:pi"
 						+ " ")
-				.setParameter("pc", classe).setParameter("pan", annee.getAnneeScolaire()).list();
+				.setParameter("pc", classe).setParameter("pan", annee.getAnneeScolaire())
+				.setParameter("pi", utilisateur.getInstitution()).list();
 
-		
 		for (MatiereClasse mc : listeMatiereClasse) {
 			listeMatiere.add(mc.getMatiere());
 		}
@@ -440,7 +462,7 @@ public class NoteService implements Serializable {
 			FacesMessages.instance().addToControlFromResourceBundle("erreurGenerique", "Date  Obligatoire");
 			return;
 		}
-		
+
 		if (semestre == null) {
 			FacesMessages.instance().addToControlFromResourceBundle("erreurGenerique", "Semestre obligatoire ");
 			return;
@@ -455,13 +477,14 @@ public class NoteService implements Serializable {
 				ab.setDateAbsence(dateAbsence);
 				ab.setSemestre(semestre);
 				ab.setAnnee(annee);
+				ab.setInstitution(utilisateur.getInstitution());
 				dataSource.save(ab);
 			}
 		}
 		FacesMessages.instance().addToControlFromResourceBundle("infoGenerique", "Données sauvegardées");
 		listeEleves = new ArrayList<Eleve>();
 	}
-	
+
 	public void ajouterRetard() {
 		if (classe == null) {
 			FacesMessages.instance().addToControlFromResourceBundle("erreurGenerique", "Classe Obligatoire");
@@ -475,7 +498,7 @@ public class NoteService implements Serializable {
 			FacesMessages.instance().addToControlFromResourceBundle("erreurGenerique", "Date  Obligatoire");
 			return;
 		}
-		
+
 		if (semestre == null) {
 			FacesMessages.instance().addToControlFromResourceBundle("erreurGenerique", "Semestre obligatoire ");
 			return;
@@ -490,6 +513,7 @@ public class NoteService implements Serializable {
 				ab.setDateRetard(dateAbsence);
 				ab.setSemestre(semestre);
 				ab.setAnnee(annee);
+				ab.setInstitution(utilisateur.getInstitution());
 				dataSource.save(ab);
 			}
 		}
@@ -502,19 +526,23 @@ public class NoteService implements Serializable {
 		listeRetard = new ArrayList<Retard>();
 		setListeClasse(new ArrayList<Classe>());
 		setListeClasse(dataSource
-				.createQuery(" From Classe c inner join fetch c.niveau n where n.code <>:pn and n.code <>:pn1 ")
-				.setParameter("pn", "PRE").setParameter("pn1", "ELE").list());
+				.createQuery(" From Classe c inner join fetch c.niveau n inner join fetch c.institution i"
+						+ " where n.code <>:pn and n.code <>:pn1 and i =:pi ")
+				.setParameter("pn", "PRE").setParameter("pn1", "ELE").setParameter("pi", utilisateur.getInstitution())
+				.list());
 		listeRetard = dataSource.createQuery(
-				"From Retard r inner join fetch r.eleve inner join fetch r.annee an inner join fetch r.matiere where an =:pan")
-				.setParameter("pan", annee).list();
+				"From Retard r inner join fetch r.eleve inner join fetch r.annee an inner join fetch r.matiere inner join fetch r.institution i "
+						+ " where an =:pan and i =:pi")
+				.setParameter("pan", annee).setParameter("pi", utilisateur.getInstitution()).list();
 	}
 
 	@SuppressWarnings("unchecked")
 	public void chargerAbsence() {
 		listeAbsence = new ArrayList<Absence>();
 		listeAbsence = dataSource.createQuery(
-				"From Absence r inner join fetch r.eleve inner join fetch r.annee an inner join fetch r.matiere where an =:pan")
-				.setParameter("pan", annee).list();
+				"From Absence r inner join fetch r.eleve inner join fetch r.annee an inner join fetch r.matiere "
+						+ " r.institution i where an =:pan and i =:pi")
+				.setParameter("pan", annee).setParameter("pi", utilisateur.getInstitution()).list();
 	}
 
 	@SuppressWarnings("unchecked")

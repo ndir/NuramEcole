@@ -61,9 +61,10 @@ public class DepenseService implements Serializable {
 	@SuppressWarnings("unchecked")
 	public void chargerListeDepense() {
 		listeDepense = new ArrayList<Depense>();
-		listeDepense = dataSource.createQuery(
-				"From Depense d inner join fetch d.typeDepense inner join fetch d.utilisateur inner join fetch d.annee an where an =:pan ")
-				.setParameter("pan", annee).list();
+		listeDepense = dataSource
+				.createQuery("From Depense d inner join fetch d.typeDepense inner join fetch d.utilisateur "
+						+ " inner join fetch d.annee an inner join fetch d.institution i where an =:pan and i =:pi ")
+				.setParameter("pan", annee).setParameter("pi", utilisateur.getInstitution()).list();
 	}
 
 	public void ajouterDepense() {
@@ -84,6 +85,7 @@ public class DepenseService implements Serializable {
 		depense.setAnnee(annee);
 		depense.setUtilisateur(utilisateur);
 		if (depense.getIdDepense() == null) {
+			depense.setInstitution(utilisateur.getInstitution());
 			dataSource.save(depense);
 		} else {
 			dataSource.update(depense);

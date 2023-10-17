@@ -40,6 +40,8 @@ public class Depense implements Serializable{
 	 */
 	private Utilisateur utilisateur;
 	
+	private Institution institution;
+	
 	
 	@Id
 	@GeneratedValue
@@ -116,6 +118,15 @@ public class Depense implements Serializable{
 	}
 	public void setCommentaire(String commentaire) {
 		this.commentaire = commentaire;
+	}
+	
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "idinstitution")
+	public Institution getInstitution() {
+		return institution;
+	}
+	public void setInstitution(Institution institution) {
+		this.institution = institution;
 	}
 
 	

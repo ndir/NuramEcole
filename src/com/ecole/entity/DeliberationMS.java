@@ -110,6 +110,7 @@ public class DeliberationMS implements Serializable {
 	private String ranga;
 	private String use;
 	private String usean;
+	private Institution institution;
 
 	@Id
 	@GeneratedValue
@@ -511,6 +512,16 @@ public class DeliberationMS implements Serializable {
 	@Transient
 	public void setUsean(String usean) {
 		this.usean = usean;
+	}
+
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "idinstitution")
+	public Institution getInstitution() {
+		return institution;
+	}
+
+	public void setInstitution(Institution institution) {
+		this.institution = institution;
 	}
 
 }

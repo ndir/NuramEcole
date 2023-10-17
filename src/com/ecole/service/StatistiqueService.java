@@ -43,6 +43,9 @@ import com.ecole.entity.TypeDepense;
 import com.ecole.entity.TypeRecette;
 import com.rhospi.commons.ChakaUtils;
 import com.rhospi.commons.FileUploadService;
+
+import asposewobfuscated.ut;
+
 import com.rhospi.commons.ChakaUtils.ExportOption;
 
 /**
@@ -137,7 +140,7 @@ public class StatistiqueService implements Serializable {
 	}
 
 	public void imprimerEtatsMensuel() {
-		Institution in = (Institution) dataSource.createQuery("From Institution").uniqueResult();
+		Institution in = (Institution) dataSource.get(Institution.class, utilisateur.getInstitution().getId());
 
 		for (ParamInscription p : listeParm) {
 			p.setApayer(getMontantAPayer(p));
@@ -157,56 +160,57 @@ public class StatistiqueService implements Serializable {
 	}
 
 	public void retreiveMonthByString(String month) {
+		if (month != null) {
+			if (month.equals("10")) {
+				lemois = 10;
+				nbjour = 31;
+				moisch = "OCTOBRE";
+			}
+			if (month.equals("11")) {
+				lemois = 11;
+				nbjour = 31;
+				moisch = "NOVEMBRE";
+			}
+			if (month.equals("12")) {
+				lemois = 12;
+				nbjour = 31;
+				moisch = "DECEMBRE";
+			}
+			if (month.equals("1")) {
+				lemois = 1;
+				nbjour = 31;
+				moisch = "JANVIER";
+			}
+			if (month.equals("2")) {
+				lemois = 02;
+				moisch = "FEVRIER";
+			}
+			if (month.equals("3")) {
+				lemois = 3;
+				nbjour = 31;
+				moisch = "MARS";
+			}
+			if (month.equals("4")) {
+				lemois = 4;
+				nbjour = 30;
+				moisch = "AVRIL";
+			}
+			if (month.equals("5")) {
+				lemois = 5;
+				nbjour = 31;
+				moisch = "MAI";
+			}
 
-		if (month.equals("10")) {
-			lemois = 10;
-			nbjour = 31;
-			moisch = "OCTOBRE";
-		}
-		if (month.equals("11")) {
-			lemois = 11;
-			nbjour = 31;
-			moisch = "NOVEMBRE";
-		}
-		if (month.equals("12")) {
-			lemois = 12;
-			nbjour = 31;
-			moisch = "DECEMBRE";
-		}
-		if (month.equals("1")) {
-			lemois = 1;
-			nbjour = 31;
-			moisch = "JANVIER";
-		}
-		if (month.equals("2")) {
-			lemois = 02;
-			moisch = "FEVRIER";
-		}
-		if (month.equals("3")) {
-			lemois = 3;
-			nbjour = 31;
-			moisch = "MARS";
-		}
-		if (month.equals("4")) {
-			lemois = 4;
-			nbjour = 30;
-			moisch = "AVRIL";
-		}
-		if (month.equals("5")) {
-			lemois = 5;
-			nbjour = 31;
-			moisch = "MAI";
-		}
-
-		if (month.equals("6")) {
-			lemois = 6;
-			nbjour = 30;
-			moisch = "JUIN";
-		}
-		if (month.equals("7")) {
-			lemois = 7;
-			nbjour = 31;
-			moisch = "JUILLET";
+			if (month.equals("6")) {
+				lemois = 6;
+				nbjour = 30;
+				moisch = "JUIN";
+			}
+			if (month.equals("7")) {
+				lemois = 7;
+				nbjour = 31;
+				moisch = "JUILLET";
+			}
 		}
 
 	}
@@ -234,22 +238,22 @@ public class StatistiqueService implements Serializable {
 	public void etatsMensuel() {
 		int month = 0;
 		listeParm = new ArrayList<ParamInscription>();
-		listeParm = dataSource
-				.createQuery(
-						"From ParamInscription p inner join fetch p.classe inner join fetch p.annee an where an =:pan ")
-				.setParameter("pan", annee).list();
+		listeParm = dataSource.createQuery(
+				"From ParamInscription p inner join fetch p.classe inner join fetch p.annee an inner join fetch p.institution i where an =:pan and i =:pi ")
+				.setParameter("pan", annee).setParameter("pi", utilisateur.getInstitution()).list();
 		listeIns = new ArrayList<Inscription>();
 		listeIns = dataSource
-				.createQuery("From Inscription i inner join fetch i.paramins p "
-						+ " inner join fetch p.annee an inner join fetch i.eleve where an =:pan ")
-				.setParameter("pan", annee).list();
+				.createQuery("From Inscription i inner join fetch i.paramins p inner join fetch i.institution s "
+						+ " inner join fetch p.annee an inner join fetch i.eleve where an =:pan and s=:ps ")
+				.setParameter("pan", annee).setParameter("ps", utilisateur.getInstitution()).list();
 		listeRecettes = new ArrayList<Recette>();
 		listeRecette = new ArrayList<Recette>();
 		retreiveMonthByString(mois);
 
 		listeRecettes = dataSource.createQuery("From Recette d inner join fetch d.typeRecette ty inner join fetch "
-				+ " d.inscription i  inner join fetch i.paramins p inner join fetch p.annee an inner join fetch i.eleve where an =:pan and ty.code =:pcode "
-				+ " and d.moisPaye =:pmois ").setParameter("pan", annee).setParameter("pcode", "MENS")
+				+ " d.inscription i  inner join fetch i.paramins p inner join fetch p.annee an inner join fetch i.eleve inner join fetch d.institution s where an =:pan and ty.code =:pcode and s=:ps"
+				+ " and d.moisPaye =:pmois ").setParameter("pan", annee)
+				.setParameter("ps", utilisateur.getInstitution()).setParameter("pcode", "MENS")
 				.setParameter("pmois", lemois).list();
 
 	}
@@ -260,8 +264,9 @@ public class StatistiqueService implements Serializable {
 		listeEleves = new ArrayList<Eleve>();
 
 		listeInscrption = dataSource.createQuery(
-				"From Inscription i inner join fetch i.paramins p inner join fetch i.eleve  where p=:pp and i.paiemens =:pm")
-				.setParameter("pp", param).setParameter("pm", true).list();
+				"From Inscription i inner join fetch i.paramins p inner join fetch i.eleve inner join fetch i.institution s  where p=:pp and i.paiemens =:pm and s =:ps")
+				.setParameter("pp", param).setParameter("pm", true).setParameter("ps", utilisateur.getInstitution())
+				.list();
 
 		for (Recette recette : listeRecettes) {
 			if (recette.getInscription().getParamins().getId().equals(param.getId())) {
@@ -289,7 +294,7 @@ public class StatistiqueService implements Serializable {
 			eleve.setDoitPayer(montantApayer(eleve));
 			eleve.setResteApayer(resteApayer(eleve));
 		}
-		Institution in = (Institution) dataSource.createQuery("From Institution").uniqueResult();
+		Institution in = (Institution) dataSource.get(Institution.class, utilisateur.getInstitution().getId());
 		Map<String, Object> param = new HashMap<String, Object>();
 		param.put("ecole", in.getNom());
 		param.put("slogan", in.getSologan());
@@ -400,14 +405,13 @@ public class StatistiqueService implements Serializable {
 	public Double getMontantTotalResteAPayer() {
 		Double apayer = 0d, payer = 0d, reste = 0d;
 		for (ParamInscription param : listeParm) {
-			//apayer = apayer + getMontantAPayer(param);
-			//payer = payer + getMontantPayer(param);
-			reste = reste +getMontantResteAPayer(param);
+			// apayer = apayer + getMontantAPayer(param);
+			// payer = payer + getMontantPayer(param);
+			reste = reste + getMontantResteAPayer(param);
 		}
-		//reste = apayer - payer;
+		// reste = apayer - payer;
 		return reste;
 	}
-	
 
 	public Double getMontantResteAPayer(ParamInscription param) {
 		Double apayer = 0d, payer = 0d, res = 0d;
@@ -452,16 +456,18 @@ public class StatistiqueService implements Serializable {
 		}
 
 		listeDepense = dataSource.createQuery(
-				"From Depense d inner join fetch d.typeDepense inner join fetch d.utilisateur u where d.dateDepense between :p1 and :p2 ")
-				.setParameter("p1", dateDeb).setParameter("p2", dateFin).list();
+				"From Depense d inner join fetch d.typeDepense inner join fetch d.utilisateur u inner join fetch d.institution i where d.dateDepense between :p1 and :p2 and i=:pi")
+				.setParameter("p1", dateDeb).setParameter("p2", dateFin)
+				.setParameter("pi", utilisateur.getInstitution()).list();
 		listeRecette = dataSource.createQuery(
 				"From Recette d inner join fetch d.typeRecette inner join fetch d.utilisateur  u left outer join fetch"
-						+ " d.inscription where d.datePaiment between :p1 and :p2 ")
-				.setParameter("p1", dateDeb).setParameter("p2", dateFin).list();
+						+ " d.inscription inner join fetch d.institution i where d.datePaiment between :p1 and :p2 and i =:pi ")
+				.setParameter("p1", dateDeb).setParameter("p2", dateFin)
+				.setParameter("pi", utilisateur.getInstitution()).list();
 
 		depense = 0d;
 		recette = 0d;
-		System.out.println("Taille liste Recette " + listeRecette.size());
+
 		for (Depense d : listeDepense) {
 			depense = depense + d.getMontantPaye();
 		}
@@ -476,8 +482,12 @@ public class StatistiqueService implements Serializable {
 		solde = recette - depense;
 		listeTypeRecette = new ArrayList<TypeRecette>();
 		listeTypeDepense = new ArrayList<TypeDepense>();
-		List<TypeRecette> listeTypeRecette1 = dataSource.createQuery("From TypeRecette").list();
-		List<TypeDepense> listeTypeDepense1 = dataSource.createQuery("From TypeDepense ").list();
+		List<TypeRecette> listeTypeRecette1 = dataSource
+				.createQuery("From TypeRecette t inner join fetch t.institution i where i =:pi")
+				.setParameter("pi", utilisateur.getInstitution()).list();
+		List<TypeDepense> listeTypeDepense1 = dataSource
+				.createQuery("From TypeDepense t inner join fetch t.institution i where i =:pi ")
+				.setParameter("pi", utilisateur.getInstitution()).list();
 
 		Double recette = 0.0;
 		Double depense = 0.0;
@@ -512,7 +522,7 @@ public class StatistiqueService implements Serializable {
 	}
 
 	public void imprimerEtats() {
-		Institution in = (Institution) dataSource.createQuery("From Institution").uniqueResult();
+		Institution in = (Institution) dataSource.get(Institution.class, utilisateur.getInstitution().getId());
 		List<Etats> listeEtats = new ArrayList<Etats>();
 		int taille = 0;
 		for (TypeRecette ty : listeTypeRecette) {
@@ -542,6 +552,21 @@ public class StatistiqueService implements Serializable {
 		param.put("st", depense);
 		param.put("sd", solde);
 		getFilePrintService().imprimer("ecole", "etats", param, listeEtats, utilisateur, ExportOption.PDF);
+		this.setShowModal("javascript:Richfaces.showModalPanel('modalPdf')");
+	}
+
+	public void imprimerEffectif() {
+		Institution in = (Institution) dataSource.get(Institution.class, utilisateur.getInstitution().getId());
+
+		Map<String, Object> param = new HashMap<String, Object>();
+		param.put("ecole", in.getNom());
+		param.put("slogan", in.getSologan());
+		param.put("tel", in.getTelephone());
+
+		param.put("eff", "EFFECTIF TOTAL      " + nbeleve);
+		param.put("etat", "NOMBRE DE FILLE    " + nbfille);
+		param.put("e", "EFFECTIF GARÇON      " + nbgarcon);
+		getFilePrintService().imprimer("ecole", "recap", param, listeClasse, utilisateur, ExportOption.PDF);
 		this.setShowModal("javascript:Richfaces.showModalPanel('modalPdf')");
 	}
 
@@ -604,10 +629,10 @@ public class StatistiqueService implements Serializable {
 	@SuppressWarnings({ "unused", "unchecked" })
 	public void effectifarClasse(OutputStream out, Object data) {
 
-		List<ParamInscription> listeParam = dataSource
-				.createQuery("from ParamInscription p inner join fetch p.annee inner join fetch p.classe"
-						+ " where p.annee =:pannee ")
-				.setParameter("pannee", annee).list();
+		List<ParamInscription> listeParam = dataSource.createQuery(
+				"from ParamInscription p inner join fetch p.annee inner join fetch p.classe inner join fetch p.institution i "
+						+ " where p.annee =:pannee and i =:pi ")
+				.setParameter("pannee", annee).setParameter("pi", utilisateur.getInstitution()).list();
 		DefaultCategoryDataset dataset = new DefaultCategoryDataset();
 
 		if (listeParam.size() > 0) {
@@ -636,9 +661,9 @@ public class StatistiqueService implements Serializable {
 	@SuppressWarnings("unchecked")
 	public int getNombreEleve(ParamInscription param) {
 		List<Inscription> liste = dataSource
-				.createQuery(
-						"From Inscription i inner join fetch i.eleve" + "  inner join fetch i.paramins p where p =:pp")
-				.setParameter("pp", param).list();
+				.createQuery("From Inscription i inner join fetch i.eleve"
+						+ "  inner join fetch i.paramins p inner join fetch i.institution s where p =:pp and s=:ps")
+				.setParameter("pp", param).setParameter("ps", utilisateur.getInstitution()).list();
 		return liste.size();
 	}
 
@@ -670,16 +695,17 @@ public class StatistiqueService implements Serializable {
 	public void getEffectifClasses() {
 		listeUser = new ArrayList<Utilisateur>();
 		listeUser = dataSource.createQuery(
-				"From Utilisateur u inner join fetch u.profile p where p.libelle_court =:plib1 or p.libelle_court =:plib2 ")
-				.setParameter("plib1", "ENS").setParameter("plib2", "SEC").list();
-		ins = (Institution) dataSource.createQuery("From Institution").uniqueResult();
+				"From Utilisateur u inner join fetch u.profile p inner join fetch u.institution i where p.libelle_court =:plib1 or p.libelle_court =:plib2 and i=:pi ")
+				.setParameter("plib1", "ENS").setParameter("plib2", "SEC")
+				.setParameter("pi", utilisateur.getInstitution()).list();
+		ins = (Institution) dataSource.get(Institution.class, utilisateur.getInstitution().getId());
 		listeClasse = new ArrayList<Classe>();
 		listeClasse = dataSource.createQuery("From Classe ").list();
 
-		List<ParamInscription> listeParam = dataSource
-				.createQuery("from ParamInscription p inner join fetch p.annee inner join fetch p.classe"
-						+ " where p.annee =:pannee ")
-				.setParameter("pannee", annee).list();
+		List<ParamInscription> listeParam = dataSource.createQuery(
+				"from ParamInscription p inner join fetch p.annee inner join fetch p.classe inner join fetch p.institution s"
+						+ " where p.annee =:pannee and s =:ps")
+				.setParameter("pannee", annee).setParameter("ps", utilisateur.getInstitution()).list();
 
 		if (listeParam.size() > 0) {
 			nbeleve = 0;
@@ -692,10 +718,9 @@ public class StatistiqueService implements Serializable {
 
 		}
 		listeIns = new ArrayList<Inscription>();
-		listeIns = dataSource
-				.createQuery("From Inscription i inner join fetch i.eleve"
-						+ "  inner join fetch i.paramins p inner join fetch p.annee an where an =:pp")
-				.setParameter("pp", annee).list();
+		listeIns = dataSource.createQuery("From Inscription i inner join fetch i.eleve"
+				+ "  inner join fetch i.paramins p inner join fetch p.annee an inner join fetch i.institution s where an =:pp and s=:ps")
+				.setParameter("pp", annee).setParameter("ps", utilisateur.getInstitution()).list();
 		for (Classe cl : listeClasse) {
 			getNombreFilleGarcon(listeIns, cl);
 		}
@@ -708,9 +733,9 @@ public class StatistiqueService implements Serializable {
 	public void effectifClasse(ParamInscription param) {
 		listeIns = new ArrayList<Inscription>();
 		listeIns = dataSource
-				.createQuery(
-						"From Inscription i inner join fetch i.eleve" + "  inner join fetch i.paramins p where p =:pp")
-				.setParameter("pp", param).list();
+				.createQuery("From Inscription i inner join fetch i.eleve"
+						+ "  inner join fetch i.paramins p  inner join fetch i.institution s where p =:pp and s=:ps")
+				.setParameter("pp", param).setParameter("ps", utilisateur.getInstitution()).list();
 		for (Classe cl : listeClasse) {
 			if (cl.getIdclasse().equals(param.getClasse().getIdclasse())) {
 				cl.setNombre(listeIns.size());

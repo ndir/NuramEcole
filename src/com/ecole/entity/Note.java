@@ -60,6 +60,7 @@ public class Note implements Serializable {
 	private String dec1;
 	private String dec2;
 	private String dec3;
+	private Institution institution;
 
 	@Id
 	@GeneratedValue
@@ -420,6 +421,16 @@ public class Note implements Serializable {
 
 	public void setDec3(String dec3) {
 		this.dec3 = dec3;
+	}
+
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "idinstitution")
+	public Institution getInstitution() {
+		return institution;
+	}
+
+	public void setInstitution(Institution institution) {
+		this.institution = institution;
 	}
 
 }

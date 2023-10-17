@@ -235,20 +235,23 @@ public class DeliberationService implements Serializable {
 		listeDeliAn = new ArrayList<DeliberationFinal>();
 
 		listeDeliAn = dataSource.createQuery(
-				"From DeliberationFinal d inner join fetch d.classe c inner join fetch d.annee inner join fetch d.eleve "
-						+ " where c =:pc and d.annee =:pan")
-				.setParameter("pc", classe).setParameter("pan", annee).list();
+				"From DeliberationFinal d inner join fetch d.classe c inner join fetch d.annee inner join fetch d.eleve inner join fetch d.institution i"
+						+ " where c =:pc and d.annee =:pan and i =:pi")
+				.setParameter("pc", classe).setParameter("pan", annee).setParameter("pi", utilisateur.getInstitution())
+				.list();
 
 		if (listeDeliAn.size() == 0) {
-			ParamInscription p = (ParamInscription) dataSource
-					.createQuery("From ParamInscription p inner join fetch p.classe c inner join fetch p.annee pa "
-							+ " where c =:pc and pa =:pa ")
-					.setParameter("pc", classe).setParameter("pa", annee).uniqueResult();
+			ParamInscription p = (ParamInscription) dataSource.createQuery(
+					"From ParamInscription p inner join fetch p.classe c inner join fetch p.annee pa  inner join fetch p.institution i"
+							+ " where c =:pc and pa =:pa and i =:pi ")
+					.setParameter("pc", classe).setParameter("pa", annee)
+					.setParameter("pi", utilisateur.getInstitution()).uniqueResult();
 
 			if (p != null) {
 				List<Inscription> liste = dataSource.createQuery(
-						"From Inscription i inner join fetch i.eleve inner join fetch i.paramins p where p =:pp")
-						.setParameter("pp", p).list();
+						"From Inscription i inner join fetch i.eleve inner join fetch i.paramins p inner join fetch i.institution s"
+								+ " where p =:pp and s =:ps")
+						.setParameter("pp", p).setParameter("ps", utilisateur.getInstitution()).list();
 				listeEleves = new ArrayList<Eleve>();
 
 				for (Inscription in : liste) {
@@ -299,7 +302,6 @@ public class DeliberationService implements Serializable {
 						rangs = rang + "eme";
 					}
 				}
-
 				deli.setRangan(rangs);
 				if (liste.size() > 0) {
 					for (DeliberationFinal d : liste) {
@@ -311,27 +313,25 @@ public class DeliberationService implements Serializable {
 					}
 				} else {
 					rang = rang + 1;
-
 				}
 
 				listeDeliFSS = new ArrayList<DeliberationFinal>();
 				listeDeliFSS = listeDeliF;
 				listeDeliF = new ArrayList<DeliberationFinal>();
-				;
 				for (DeliberationFinal dddd : listeDeliFSS) {
-
 					if (dddd.getUse().equalsIgnoreCase("X")) {
 						itter1++;
 					} else {
 						listeDeliF.add(dddd);
 					}
-
 				}
 
 			}
 			List<Appreciation> listeAp = new ArrayList<Appreciation>();
-			listeAp = dataSource.createQuery("From Appreciation ").list();
-			Decision decision = (Decision) dataSource.createQuery("From Decision where code =:pcode ")
+			listeAp = dataSource.createQuery("From Appreciation a inner join fetch a.institution i where i =:pi ")
+					.setParameter("pi", utilisateur.getInstitution()).list();
+			Decision decision = (Decision) dataSource
+					.createQuery("From Decision d  where d.code =:pcode  ")
 					.setParameter("pcode", "ELE").uniqueResult();
 			for (DeliberationFinal df : listeDeliAn) {
 				Appreciation ap = getAp(listeAp, df.getMoyan());
@@ -341,11 +341,10 @@ public class DeliberationService implements Serializable {
 				} else {
 					df.setDecision("Passe en classe supérieure");
 				}
+				df.setInstitution(utilisateur.getInstitution());
 				dataSource.save(df);
 			}
-
 		}
-
 	}
 
 	public void getSemestre1() {
@@ -358,12 +357,14 @@ public class DeliberationService implements Serializable {
 		dataSource.update(deli);
 	}
 
+	@SuppressWarnings("unchecked")
 	public void changerDecision(DeliberationMS deli) {
 		List<DeliberationMS> liste = new ArrayList<DeliberationMS>();
 		liste = dataSource.createQuery(
-				"From DeliberationMS  d inner join fetch d.semestre s inner join fetch d.annee an inner join fetch d.eleve ev where   "
-						+ " s=:ps and an =:pan and ev=:pev")
-				.setParameter("ps", semestre).setParameter("pan", annee).setParameter("pev", deli.getEleve()).list();
+				"From DeliberationMS  d inner join fetch d.semestre s inner join fetch d.annee an inner join fetch d.eleve ev "
+						+ " inner join fetch d.institution i  where   " + " s=:ps and an =:pan and ev=:pev and i =:pi")
+				.setParameter("ps", semestre).setParameter("pan", annee).setParameter("pev", deli.getEleve())
+				.setParameter("pi", utilisateur.getInstitution()).list();
 		for (DeliberationMS d : liste) {
 			d.setDecision(decision);
 			dataSource.update(d);
@@ -412,8 +413,9 @@ public class DeliberationService implements Serializable {
 	@SuppressWarnings("unchecked")
 	public void chargerListeClasse() {
 		listeClasse = new ArrayList<Classe>();
-		listeClasse = dataSource.createQuery(" From Classe c inner join fetch c.niveau n where n=:pn")
-				.setParameter("pn", niveau).list();
+		listeClasse = dataSource.createQuery(
+				" From Classe c inner join fetch c.niveau n inner join fetch c.institution i where n=:pn and i =:pi")
+				.setParameter("pn", niveau).setParameter("pi", utilisateur.getInstitution()).list();
 		if (niveau.getCode().equalsIgnoreCase("ELE") || niveau.getCode().equalsIgnoreCase("PRE")) {
 			typenote = "1";
 		} else {
@@ -442,16 +444,18 @@ public class DeliberationService implements Serializable {
 				FacesMessages.instance().addToControlFromResourceBundle("erreurGenerique", "Classe obligatoire");
 				return;
 			}
-			ParamInscription p = (ParamInscription) dataSource
-					.createQuery("From ParamInscription p inner join fetch p.classe c inner join fetch p.annee pa "
-							+ " where c =:pc and pa =:pa ")
-					.setParameter("pc", classe).setParameter("pa", annee).uniqueResult();
+			ParamInscription p = (ParamInscription) dataSource.createQuery(
+					"From ParamInscription p inner join fetch p.classe c inner join fetch p.annee pa inner join fetch p.institution i "
+							+ " where c =:pc and pa =:pa and i =:pi")
+					.setParameter("pc", classe).setParameter("pa", annee)
+					.setParameter("pi", utilisateur.getInstitution()).uniqueResult();
 
 			listeDeliberationF = new ArrayList<Deliberation>();
 			listeDeliberationF = dataSource
 					.createQuery("From Deliberation d inner join fetch d.classe c inner join fetch d.evaluation ev "
-							+ " inner join fetch d.annee an where c =:pc and an =:pan and ev =:pev")
-					.setParameter("pc", classe).setParameter("pan", annee).setParameter("pev", evaluation).list();
+							+ " inner join fetch d.annee an inner join fetch d.institution i where c =:pc and an =:pan and ev =:pev and i =:pi")
+					.setParameter("pc", classe).setParameter("pan", annee).setParameter("pev", evaluation)
+					.setParameter("pi", utilisateur.getInstitution()).list();
 
 			if (listeDeliberationF.size() == 0) {
 				FacesMessages.instance().addToControlFromResourceBundle("erreurGenerique",
@@ -473,17 +477,19 @@ public class DeliberationService implements Serializable {
 				FacesMessages.instance().addToControlFromResourceBundle("erreurGenerique", "Classe obligatoire");
 				return;
 			}
-			ParamInscription p = (ParamInscription) dataSource
-					.createQuery("From ParamInscription p inner join fetch p.classe c inner join fetch p.annee pa "
-							+ " where c =:pc and pa =:pa ")
-					.setParameter("pc", classe).setParameter("pa", annee).uniqueResult();
+			ParamInscription p = (ParamInscription) dataSource.createQuery(
+					"From ParamInscription p inner join fetch p.classe c inner join fetch p.annee pa inner join fetch p.institution i "
+							+ " where c =:pc and pa =:pa and i =:pi")
+					.setParameter("pc", classe).setParameter("pa", annee)
+					.setParameter("pi", utilisateur.getInstitution()).uniqueResult();
 			listeDeliberationMS = new ArrayList<DeliberationMS>();
 			listeDeliberationMSF1 = new ArrayList<DeliberationMS>();
 			listeDeliberationMS = dataSource
 					.createQuery("From DeliberationMS d inner join fetch d.classe c inner join fetch d.annee an"
-							+ " inner join fetch d.semestre ev inner join fetch d.eleve inner join fetch d.appreciation"
-							+ " inner join fetch d.appreciationgen inner join fetch d.matiere where c =:pc and an =:pan and ev =:pev order by d.total desc")
-					.setParameter("pc", classe).setParameter("pan", annee).setParameter("pev", semestre).list();
+							+ " inner join fetch d.semestre ev inner join fetch d.eleve inner join fetch d.appreciation inner join fetch d.institution i"
+							+ " inner join fetch d.appreciationgen inner join fetch d.matiere where c =:pc and an =:pan and ev =:pev and i =:pi order by d.total desc")
+					.setParameter("pc", classe).setParameter("pan", annee).setParameter("pev", semestre)
+					.setParameter("pi", utilisateur.getInstitution()).list();
 
 			if (listeDeliberationMS.size() == 0) {
 				FacesMessages.instance().addToControlFromResourceBundle("erreurGenerique",
@@ -500,29 +506,31 @@ public class DeliberationService implements Serializable {
 
 	}
 
+	@SuppressWarnings("unchecked")
 	public String getRangAnnuel(DeliberationMS deli) {
-		List<DeliberationMS> listedeli = dataSource
-				.createQuery("From DeliberationMS d inner join fetch d.eleve e inner join fetch d.annee a  "
-						+ " inner join fetch d.semestre s where e=:pe and a=:pa and s=:ps and d.ranggan IS NOT NULL ")
-				.setParameter("pe", deli.getEleve()).setParameter("pa", annee).setParameter("ps", semestre).list();
+		List<DeliberationMS> listedeli = dataSource.createQuery(
+				"From DeliberationMS d inner join fetch d.eleve e inner join fetch d.annee a inner join fetch d.institution i "
+						+ " inner join fetch d.semestre s where e=:pe and a=:pa and s=:ps and i =:pi and d.ranggan IS NOT NULL ")
+				.setParameter("pe", deli.getEleve()).setParameter("pa", annee).setParameter("ps", semestre)
+				.setParameter("pi", utilisateur.getInstitution()).list();
 
 		return listedeli.get(0).getRanggan();
 	}
 
 	@SuppressWarnings("unchecked")
 	public void imprimerTout() {
-		Institution in = (Institution) dataSource.createQuery("From Institution").uniqueResult();
-		ParamInscription p = (ParamInscription) dataSource
-				.createQuery("From ParamInscription p inner join fetch p.classe c inner join fetch p.annee pa "
-						+ " where c =:pc and pa =:pa ")
-				.setParameter("pc", classe).setParameter("pa", annee).uniqueResult();
+		Institution in = (Institution) dataSource.get(Institution.class, utilisateur.getInstitution().getId());
+		ParamInscription p = (ParamInscription) dataSource.createQuery(
+				"From ParamInscription p inner join fetch p.classe c inner join fetch p.annee pa inner join fetch p.institution i "
+						+ " where c =:pc and pa =:pa and i =:pi ")
+				.setParameter("pc", classe).setParameter("pa", annee).setParameter("pi", utilisateur.getInstitution())
+				.uniqueResult();
 
 		List<Inscription> liste = new ArrayList<Inscription>();
 		if (p != null) {
-			liste = dataSource
-					.createQuery(
-							"From Inscription i inner join fetch i.eleve inner join fetch i.paramins p where p =:pp")
-					.setParameter("pp", p).list();
+			liste = dataSource.createQuery(
+					"From Inscription i inner join fetch i.eleve inner join fetch i.paramins p inner join fetch i.institution i where p =:pp and i =:pi")
+					.setParameter("pp", p).setParameter("pi", utilisateur.getInstitution()).list();
 
 		}
 		Map<String, Object> param = new HashMap<String, Object>();
@@ -535,10 +543,11 @@ public class DeliberationService implements Serializable {
 
 				listeNote = new ArrayList<Note>();
 				listeNote = dataSource.createQuery("From Note n inner join fetch n.cl c inner join fetch n.eleve e "
-						+ " inner join fetch n.evaluation ev inner join fetch n.annee an inner join fetch n.matiere "
-						+ " where c =:pc and an =:pan and ev =:pev and e =:pe").setParameter("pc", classe)
+						+ " inner join fetch n.evaluation ev inner join fetch n.annee an inner join fetch n.matiere  "
+						+ " inner join fetch n.institution i"
+						+ " where c =:pc and an =:pan and ev =:pev and e =:pe and i =:pi").setParameter("pc", classe)
 						.setParameter("pan", annee).setParameter("pev", evaluation).setParameter("pe", d.getEleve())
-						.list();
+						.setParameter("pi", utilisateur.getInstitution()).list();
 //				for (Note n : listeNote) {
 //					total = total + n.getNote();
 //				}
@@ -551,7 +560,6 @@ public class DeliberationService implements Serializable {
 					n.setMoy(d.getMoy());
 					n.setAp(d.getAp());
 					n.setRang(d.getRang());
-
 					ExternalContext ec = FacesContext.getCurrentInstance().getExternalContext();
 					ServletContext sc = (ServletContext) ec.getContext();
 					InputStream is = sc.getResourceAsStream("/css2/logogstock.jpg");
@@ -570,20 +578,19 @@ public class DeliberationService implements Serializable {
 	@SuppressWarnings("unchecked")
 	public void imprimerToutMS() {
 		Institution in = (Institution) dataSource.createQuery("From Institution").uniqueResult();
-		ParamInscription p = (ParamInscription) dataSource
-				.createQuery("From ParamInscription p inner join fetch p.classe c inner join fetch p.annee pa "
-						+ " where c =:pc and pa =:pa ")
-				.setParameter("pc", classe).setParameter("pa", annee).uniqueResult();
+		ParamInscription p = (ParamInscription) dataSource.createQuery(
+				"From ParamInscription p inner join fetch p.classe c inner join fetch p.annee pa inner join fetch p.institution i"
+						+ " where c =:pc and pa =:pa and i =:pi")
+				.setParameter("pc", classe).setParameter("pa", annee).setParameter("pi", utilisateur.getInstitution())
+				.uniqueResult();
 
 		List<Inscription> liste = new ArrayList<Inscription>();
 		if (p != null) {
-			liste = dataSource
-					.createQuery(
-							"From Inscription i inner join fetch i.eleve inner join fetch i.paramins p where p =:pp")
-					.setParameter("pp", p).list();
+			liste = dataSource.createQuery(
+					"From Inscription i inner join fetch i.eleve inner join fetch i.paramins p inner join fetch i.institution s where p =:pp and s =:ps")
+					.setParameter("pp", p).setParameter("ps", utilisateur.getInstitution()).list();
 
 			listeEleves = new ArrayList<Eleve>();
-
 			for (Inscription ins : liste) {
 				listeEleves.add(ins.getEleve());
 			}
@@ -594,10 +601,12 @@ public class DeliberationService implements Serializable {
 			listeDeliberationMS = new ArrayList<DeliberationMS>();
 			listeDeliberationMS = dataSource
 					.createQuery("From DeliberationMS d inner join fetch d.classe c inner join fetch d.annee an"
-							+ " inner join fetch d.semestre ev inner join fetch d.eleve inner join fetch d.appreciation"
+							+ " inner join fetch d.semestre ev inner join fetch d.eleve inner join fetch d.appreciation "
+							+ " inner join fetch d.institution i"
 							+ " inner join fetch d.appreciationgen inner join fetch d.matiere inner join fetch d.eleve el where  an =:pan and ev =:pev "
-							+ " and el=:pel ")
-					.setParameter("pan", annee).setParameter("pev", semestre).setParameter("pel", eleve).list();
+							+ " and el=:pel and i =:pi ")
+					.setParameter("pan", annee).setParameter("pev", semestre).setParameter("pel", eleve)
+					.setParameter("pi", utilisateur.getInstitution()).list();
 
 			ExternalContext ec = FacesContext.getCurrentInstance().getExternalContext();
 			ServletContext sc = (ServletContext) ec.getContext();
@@ -636,15 +645,10 @@ public class DeliberationService implements Serializable {
 				listeDeliberationMS.get(listeDeliberationMS.size() - 1)
 						.setRanga(getRangAnnuel(listeDeliberationMS.get(0)));
 			}
-			// param.put("prang", getRangAnnuel(deli));
-			// getFilePrintService().imprimer("ecole", "bulletinms2", param,
-			// listeDeliberationMS, utilisateur,
-			// ExportOption.PDF);
 
-			// listeDeliberationMS.get(0).seta
 			eleve.setListeDeli(listeDeliberationMS);
 		}
-		System.out.println("semenstre " + semestre.getCode());
+
 		if (semestre.getCode().equalsIgnoreCase("1"))
 
 		{
@@ -661,26 +665,29 @@ public class DeliberationService implements Serializable {
 	public void imprimerToutAn() {
 		listeEval = new ArrayList<Evaluation>();
 		listeEval = dataSource.createQuery("From Evaluation ").list();
-		Institution in = (Institution) dataSource.createQuery("From Institution").uniqueResult();
+		Institution in = (Institution) dataSource.get(Institution.class, utilisateur.getInstitution());
 		listeNote = new ArrayList<Note>();
 		listeNote = new ArrayList<Note>();
 
-		ParamInscription p = (ParamInscription) dataSource
-				.createQuery("From ParamInscription p inner join fetch p.classe c inner join fetch p.annee pa "
-						+ " where c =:pc and pa =:pa ")
-				.setParameter("pc", classe).setParameter("pa", annee).uniqueResult();
+		ParamInscription p = (ParamInscription) dataSource.createQuery(
+				"From ParamInscription p inner join fetch p.classe c inner join fetch p.annee pa inner join fetch p.institution i "
+						+ " where c =:pc and pa =:pa and i =:pi")
+				.setParameter("pc", classe).setParameter("pa", annee).setParameter("pi", utilisateur.getInstitution())
+				.uniqueResult();
 
 		List<Inscription> liste = new ArrayList<Inscription>();
 		if (p != null) {
-			liste = dataSource
-					.createQuery(
-							"From Inscription i inner join fetch i.eleve inner join fetch i.paramins p where p =:pp")
-					.setParameter("pp", p).list();
+			liste = dataSource.createQuery(
+					"From Inscription i inner join fetch i.eleve inner join fetch i.paramins p inner join fetch i.institution s where p =:pp and s =:ps")
+					.setParameter("pp", p).setParameter("ps", utilisateur.getInstitution()).list();
 
 		}
-		listeNote = dataSource.createQuery("From Note n inner join fetch n.cl c inner join fetch n.eleve e "
-				+ " inner join fetch n.evaluation ev inner join fetch n.annee an inner join fetch n.matiere "
-				+ " where c =:pc and an =:pan ").setParameter("pc", classe).setParameter("pan", annee).list();
+		listeNote = dataSource
+				.createQuery("From Note n inner join fetch n.cl c inner join fetch n.eleve e "
+						+ " inner join fetch n.evaluation ev inner join fetch n.annee an inner join fetch n.matiere "
+						+ " inner join feth n.institution i" + " where c =:pc and an =:pan and i :=pi")
+				.setParameter("pc", classe).setParameter("pan", annee).setParameter("pi", utilisateur.getInstitution())
+				.list();
 		List<Deliberation> listeD = new ArrayList<Deliberation>();
 		for (DeliberationFinal d : listeDeliAn) {
 			Deliberation deli = new Deliberation();
@@ -696,7 +703,7 @@ public class DeliberationService implements Serializable {
 			ServletContext sc = (ServletContext) ec.getContext();
 			InputStream is = sc.getResourceAsStream("/css2/logogstock.jpg");
 			deli.getListeNote().get(0).setLogo(is);
-			System.out.println("dec " + d.getDecision());
+			
 			if (d.getDecision().equalsIgnoreCase("Passe en classe supérieure")) {
 				deli.getListeNote().get(deli.getListeNote().size() - 1).setDec1("X  Passe en classe supérieure");
 			} else {
@@ -880,14 +887,15 @@ public class DeliberationService implements Serializable {
 		List<Note> listeNoteD = new ArrayList<Note>();
 		listeEval = new ArrayList<Evaluation>();
 		listeEval = dataSource.createQuery("From Evaluation ").list();
-		Institution in = (Institution) dataSource.createQuery("From Institution").uniqueResult();
+		Institution in = (Institution) dataSource.get(Institution.class, utilisateur.getInstitution().getId());
 		listeNote = new ArrayList<Note>();
 		listeNote = new ArrayList<Note>();
 		listeNote = dataSource
 				.createQuery("From Note n inner join fetch n.cl c inner join fetch n.eleve e "
 						+ " inner join fetch n.evaluation ev inner join fetch n.annee an inner join fetch n.matiere "
-						+ " where c =:pc and an =:pan  and e =:pe")
-				.setParameter("pc", classe).setParameter("pan", annee).setParameter("pe", deli.getEleve()).list();
+						+ " inner join fetch n.institution i" + " where c =:pc and an =:pan  and e =:pe and i =:pi")
+				.setParameter("pc", classe).setParameter("pan", annee).setParameter("pe", deli.getEleve())
+				.setParameter("pi", utilisateur.getInstitution()).list();
 		Double total = 0.0;
 		Double total2 = 0.0;
 		Double total3 = 0.0;
@@ -1037,17 +1045,17 @@ public class DeliberationService implements Serializable {
 			}
 			i++;
 		}
-		ParamInscription p = (ParamInscription) dataSource
-				.createQuery("From ParamInscription p inner join fetch p.classe c inner join fetch p.annee pa "
-						+ " where c =:pc and pa =:pa ")
-				.setParameter("pc", classe).setParameter("pa", annee).uniqueResult();
+		ParamInscription p = (ParamInscription) dataSource.createQuery(
+				"From ParamInscription p inner join fetch p.classe c inner join fetch p.annee pa inner join fetch p.institution i "
+						+ " where c =:pc and pa =:pa and i =:pi")
+				.setParameter("pc", classe).setParameter("pa", annee).setParameter("pi", utilisateur.getInstitution())
+				.uniqueResult();
 
 		List<Inscription> liste = new ArrayList<Inscription>();
 		if (p != null) {
-			liste = dataSource
-					.createQuery(
-							"From Inscription i inner join fetch i.eleve inner join fetch i.paramins p where p =:pp")
-					.setParameter("pp", p).list();
+			liste = dataSource.createQuery(
+					"From Inscription i inner join fetch i.eleve inner join fetch i.paramins p inner join fetch i.institution s where p =:pp and s =:ps")
+					.setParameter("pp", p).setParameter("ps", utilisateur.getInstitution()).list();
 
 		}
 		Map<String, Object> param = new HashMap<String, Object>();
@@ -1086,9 +1094,10 @@ public class DeliberationService implements Serializable {
 		listeNote = dataSource
 				.createQuery("From Note n inner join fetch n.cl c inner join fetch n.eleve e "
 						+ " inner join fetch n.evaluation ev inner join fetch n.annee an inner join fetch n.matiere "
-						+ " where c =:pc and an =:pan and ev =:pev and e =:pe")
+						+ " inner join fetch n.institution i"
+						+ " where c =:pc and an =:pan and ev =:pev and e =:pe and i =:pi")
 				.setParameter("pc", classe).setParameter("pan", annee).setParameter("pev", evaluation)
-				.setParameter("pe", deli.getEleve()).list();
+				.setParameter("pe", deli.getEleve()).setParameter("pi", utilisateur.getInstitution()).list();
 
 		Double total = 0.0;
 
@@ -1096,17 +1105,17 @@ public class DeliberationService implements Serializable {
 //			total = total + n.getNote();
 //		}
 
-		ParamInscription p = (ParamInscription) dataSource
-				.createQuery("From ParamInscription p inner join fetch p.classe c inner join fetch p.annee pa "
-						+ " where c =:pc and pa =:pa ")
-				.setParameter("pc", classe).setParameter("pa", annee).uniqueResult();
+		ParamInscription p = (ParamInscription) dataSource.createQuery(
+				"From ParamInscription p inner join fetch p.classe c inner join fetch p.annee pa inner join fetch p.institution i"
+						+ " where c =:pc and pa =:pa and i =:pi ")
+				.setParameter("pc", classe).setParameter("pa", annee).setParameter("pi", utilisateur.getInstitution())
+				.uniqueResult();
 
 		List<Inscription> liste = new ArrayList<Inscription>();
 		if (p != null) {
-			liste = dataSource
-					.createQuery(
-							"From Inscription i inner join fetch i.eleve inner join fetch i.paramins p where p =:pp")
-					.setParameter("pp", p).list();
+			liste = dataSource.createQuery(
+					"From Inscription i inner join fetch i.eleve inner join fetch i.paramins p inner join fetch i.institution s where p =:pp and s =:ps")
+					.setParameter("pp", p).setParameter("ps", utilisateur.getInstitution()).list();
 
 		}
 		Map<String, Object> param = new HashMap<String, Object>();
@@ -1125,31 +1134,32 @@ public class DeliberationService implements Serializable {
 
 	@SuppressWarnings("unchecked")
 	public void imprimerBulletinMS(DeliberationMS deli) {
-		Institution in = (Institution) dataSource.createQuery("From Institution").uniqueResult();
+		Institution in = (Institution) dataSource.get(Institution.class, utilisateur.getInstitution().getId());
 		Map<String, Object> param = new HashMap<String, Object>();
 		param.put("ecole", in.getNom());
 		param.put("slogan", in.getSologan());
 		param.put("tel", in.getTelephone());
 		param.put("ia", in.getIa());
 		param.put("ief", in.getIef());
-		ParamInscription p = (ParamInscription) dataSource
-				.createQuery("From ParamInscription p inner join fetch p.classe c inner join fetch p.annee pa "
-						+ " where c =:pc and pa =:pa ")
-				.setParameter("pc", classe).setParameter("pa", annee).uniqueResult();
+		ParamInscription p = (ParamInscription) dataSource.createQuery(
+				"From ParamInscription p inner join fetch p.classe c inner join fetch p.annee pa inner join fetch p.institution i"
+						+ " where c =:pc and pa =:pa and i =:pi ")
+				.setParameter("pc", classe).setParameter("pa", annee).setParameter("pi", utilisateur.getInstitution())
+				.uniqueResult();
 
 		List<Inscription> liste = new ArrayList<Inscription>();
 		if (p != null) {
-			liste = dataSource
-					.createQuery(
-							"From Inscription i inner join fetch i.eleve inner join fetch i.paramins p where p =:pp")
-					.setParameter("pp", p).list();
+			liste = dataSource.createQuery(
+					"From Inscription i inner join fetch i.eleve inner join fetch i.paramins p inner join fetch i.institution s where p =:pp and s =:ps")
+					.setParameter("pp", p).setParameter("pi", utilisateur.getInstitution()).list();
 
 		}
 		param.put("eff", liste.size());
 		param.put("pa", getHeuresAbsence(deli.getEleve()));
 		param.put("pr", getRetard(deli.getEleve()));
 		List<Appreciations> listeAp = new ArrayList<Appreciations>();
-		listeAp = dataSource.createQuery("From Appreciations").list();
+		listeAp = dataSource.createQuery("From Appreciations s inner join fetch s.institution i where i =:pi")
+				.setParameter("pi", utilisateur.getInstitution()).list();
 		List<DeliberationMS> listeDeli = new ArrayList<DeliberationMS>();
 
 		// listeDeli.add(deli);
@@ -1157,9 +1167,11 @@ public class DeliberationService implements Serializable {
 		listeDeliberationMS = dataSource
 				.createQuery("From DeliberationMS d inner join fetch d.classe c inner join fetch d.annee an"
 						+ " inner join fetch d.semestre ev inner join fetch d.eleve inner join fetch d.appreciation"
+						+ " inner join fetch d.institution i"
 						+ " inner join fetch d.appreciationgen inner join fetch d.matiere inner join fetch d.eleve el where  an =:pan and ev =:pev "
-						+ " and el=:pel ")
-				.setParameter("pan", annee).setParameter("pev", semestre).setParameter("pel", deli.getEleve()).list();
+						+ " and el=:pel and i =:pi ")
+				.setParameter("pan", annee).setParameter("pev", semestre).setParameter("pel", deli.getEleve())
+				.setParameter("pi", utilisateur.getInstitution()).list();
 		if (semestre.getCode().equalsIgnoreCase("1")) {
 			getFilePrintService().imprimer("ecole", "bulletinms", param, listeDeliberationMS, utilisateur,
 					ExportOption.PDF);
@@ -1191,20 +1203,25 @@ public class DeliberationService implements Serializable {
 		int heures = 0;
 		List<Absence> listeAbsence = new ArrayList<Absence>();
 		listeAbsence = dataSource.createQuery(
-				"From Absence ab inner join fetch ab.eleve ev inner join fetch ab.matiere inner join fetch ab.semestre inner join fetch ab.annee an where an=:pan and ev=:pev")
-				.setParameter("pan", annee).setParameter("pev", eleve).list();
+				"From Absence ab inner join fetch ab.eleve ev inner join fetch ab.matiere inner join fetch "
+						+ " ab.semestre inner join fetch ab.annee an inner join fetch ab.institution i where an=:pan and ev=:pev and i =:pi")
+				.setParameter("pan", annee).setParameter("pev", eleve).setParameter("pi", utilisateur.getInstitution())
+				.list();
 		for (Absence ab : listeAbsence) {
 			heures = heures + ab.getHeure();
 		}
 		return heures;
 	}
 
+	@SuppressWarnings("unchecked")
 	public int getRetard(Eleve eleve) {
 		int heures = 0;
 		List<Retard> listeRetard = new ArrayList<Retard>();
 		listeRetard = dataSource.createQuery(
-				"From Retard ab inner join fetch ab.eleve ev inner join fetch ab.matiere inner join fetch ab.semestre inner join fetch ab.annee an where an=:pan and ev=:pev")
-				.setParameter("pan", annee).setParameter("pev", eleve).list();
+				"From Retard ab inner join fetch ab.eleve ev inner join fetch ab.matiere inner join fetch ab.semestre "
+						+ " inner join fetch ab.annee an inner join fetch ab.institution i where an=:pan and ev=:pev and i =:pi")
+				.setParameter("pan", annee).setParameter("pev", eleve).setParameter("pi", utilisateur.getInstitution())
+				.list();
 		for (Retard ab : listeRetard) {
 			heures = heures + ab.getHeures();
 		}
@@ -1230,10 +1247,11 @@ public class DeliberationService implements Serializable {
 				FacesMessages.instance().addToControlFromResourceBundle("erreurGenerique", "Classe obligatoire");
 				return;
 			}
-			ParamInscription p = (ParamInscription) dataSource
-					.createQuery("From ParamInscription p inner join fetch p.classe c inner join fetch p.annee pa "
-							+ " where c =:pc and pa =:pa ")
-					.setParameter("pc", classe).setParameter("pa", annee).uniqueResult();
+			ParamInscription p = (ParamInscription) dataSource.createQuery(
+					"From ParamInscription p inner join fetch p.classe c inner join fetch p.annee pa inner join fetch p.institution i "
+							+ " where c =:pc and pa =:pa and i =:pi ")
+					.setParameter("pc", classe).setParameter("pa", annee)
+					.setParameter("pi", utilisateur.getInstitution()).uniqueResult();
 
 			if (p != null) {
 				List<Inscription> liste = dataSource.createQuery(
@@ -1247,8 +1265,9 @@ public class DeliberationService implements Serializable {
 			}
 			List<Deliberation> deliexiste = dataSource
 					.createQuery("From Deliberation d inner join fetch d.classe c inner join fetch d.annee an"
-							+ " inner join fetch d.evaluation ev where c =:pc and an =:pan and ev =:pev")
-					.setParameter("pc", classe).setParameter("pan", annee).setParameter("pev", evaluation).list();
+							+ " inner join fetch d.evaluation ev inner join fetch d.institution i where c =:pc and an =:pan and ev =:pev and i =:pi")
+					.setParameter("pc", classe).setParameter("pan", annee).setParameter("pev", evaluation)
+					.setParameter("pi", utilisateur.getInstitution()).list();
 			if (deliexiste.size() > 0) {
 				FacesMessages.instance().addToControlFromResourceBundle("erreurGenerique",
 						"Classe " + classe.getLibelle() + " déja délibérée pour  " + evaluation.getLibelle());
@@ -1256,15 +1275,17 @@ public class DeliberationService implements Serializable {
 			}
 			listeMatiere = dataSource
 					.createQuery("Select mc.matiere from MatiereClasse mc where mc.classe =:pc and mc.annee_scol =:pan "
-							+ " and mc.eval =:peval")
+							+ " and mc.eval =:peval and mc.institution =:pi")
 					.setParameter("pc", classe).setParameter("pan", annee.getAnneeScolaire())
-					.setParameter("peval", evaluation).list();
+					.setParameter("peval", evaluation).setParameter("pi", utilisateur.getInstitution()).list();
 
 			List<Note> listeNote = dataSource
 					.createQuery("From Note n inner join fetch n.cl c inner join fetch n.annee an "
-							+ " inner join fetch n.evaluation ev inner join fetch n.eleve "
-							+ " where c =:pc and an =:pan and ev =:pev")
-					.setParameter("pc", classe).setParameter("pan", annee).setParameter("pev", evaluation).list();
+							+ " inner join fetch n.evaluation ev inner join fetch n.eleve"
+							+ " inner join fetch n.institution i "
+							+ " where c =:pc and an =:pan and ev =:pev and i =:pi")
+					.setParameter("pc", classe).setParameter("pan", annee).setParameter("pev", evaluation)
+					.setParameter("pi", utilisateur.getInstitution()).list();
 
 			boolean existe = false;
 			listeElevesNonNote = new ArrayList<Eleve>();
@@ -1375,10 +1396,12 @@ public class DeliberationService implements Serializable {
 
 				}
 				List<Appreciation> listeAp = new ArrayList<Appreciation>();
-				listeAp = dataSource.createQuery("From Appreciation ").list();
+				listeAp = dataSource.createQuery("From Appreciation a inner join fetch a.institution i where i =:pi")
+						.setParameter("pi", utilisateur.getInstitution()).list();
 				for (Deliberation df : listeDeliberationF) {
 					Appreciation ap = getAp(listeAp, df.getMoyenne());
 					df.setAp(ap.getLibelle());
+					df.setInstitution(utilisateur.getInstitution());
 					dataSource.save(df);
 				}
 
@@ -1392,14 +1415,15 @@ public class DeliberationService implements Serializable {
 				FacesMessages.instance().addToControlFromResourceBundle("erreurGenerique", "Classe obligatoire");
 				return;
 			}
-			ParamInscription p = (ParamInscription) dataSource
-					.createQuery("From ParamInscription p inner join fetch p.classe c inner join fetch p.annee pa "
-							+ " where c =:pc and pa =:pa ")
-					.setParameter("pc", classe).setParameter("pa", annee).uniqueResult();
+			ParamInscription p = (ParamInscription) dataSource.createQuery(
+					"From ParamInscription p inner join fetch p.classe c inner join fetch p.annee pa inner join fetch p.institution i "
+							+ " where c =:pc and pa =:pa and i =:pi ")
+					.setParameter("pc", classe).setParameter("pa", annee)
+					.setParameter("pi", utilisateur.getInstitution()).uniqueResult();
 			if (p != null) {
 				List<Inscription> liste = dataSource.createQuery(
-						"From Inscription i inner join fetch i.eleve inner join fetch i.paramins p where p =:pp")
-						.setParameter("pp", p).list();
+						"From Inscription i inner join fetch i.eleve inner join fetch i.paramins p inner join fetch p.institution i where p =:pp and i =:pi")
+						.setParameter("pp", p).setParameter("pi", utilisateur.getInstitution()).list();
 				listeEleves = new ArrayList<Eleve>();
 
 				for (Inscription in : liste) {
@@ -1408,8 +1432,9 @@ public class DeliberationService implements Serializable {
 			}
 			List<Deliberation> deliexiste = dataSource
 					.createQuery("From DeliberationMS d inner join fetch d.classe c inner join fetch d.annee an"
-							+ " inner join fetch d.semestre ev where c =:pc and an =:pan and ev =:pev")
-					.setParameter("pc", classe).setParameter("pan", annee).setParameter("pev", semestre).list();
+							+ " inner join fetch d.semestre ev inner join fetch d.institution i where c =:pc and an =:pan and ev =:pev and i =:pi")
+					.setParameter("pc", classe).setParameter("pan", annee).setParameter("pev", semestre)
+					.setParameter("pi", utilisateur.getInstitution()).list();
 			if (deliexiste.size() > 0) {
 				FacesMessages.instance().addToControlFromResourceBundle("erreurGenerique",
 						"Classe " + classe.getLibelle() + " déja délibérée pour  " + semestre.getLibelle());
@@ -1422,29 +1447,35 @@ public class DeliberationService implements Serializable {
 				listeDeliberationS1 = dataSource
 						.createQuery("From DeliberationMS d inner join fetch d.classe c inner join fetch d.annee an"
 								+ " inner join fetch d.semestre ev inner join fetch d.eleve inner join fetch d.appreciation"
-								+ " inner join fetch d.appreciationgen inner join fetch d.matiere where c =:pc and an =:pan and ev.code =:pev")
-						.setParameter("pc", classe).setParameter("pan", annee).setParameter("pev", "1").list();
+								+ " inner join fetch d.institution i"
+								+ " inner join fetch d.appreciationgen inner join fetch d.matiere where c =:pc and an =:pan and ev.code =:pev and i =:pi")
+						.setParameter("pc", classe).setParameter("pan", annee).setParameter("pev", "1")
+						.setParameter("pi", utilisateur.getInstitution()).list();
 
 			}
 
-			listeMatClasse = dataSource.createQuery(
-					"from MatiereClasse mc inner join fetch mc.matiere inner join fetch mc.classe where mc.classe =:pc and mc.annee_scol =:pan "
+			listeMatClasse = dataSource
+					.createQuery("from MatiereClasse mc inner join fetch mc.matiere inner join fetch mc.classe"
+							+ "  inner join fetch mc.institution i where mc.classe =:pc and mc.annee_scol =:pan and i =:pi"
 							+ " ")
-					.setParameter("pc", classe).setParameter("pan", annee.getAnneeScolaire()).list();
+					.setParameter("pc", classe).setParameter("pan", annee.getAnneeScolaire())
+					.setParameter("pi", utilisateur.getInstitution()).list();
 
 			List<Notes> listeNotes = dataSource
 					.createQuery("From Notes n inner join fetch n.classe c inner join fetch n.annee an "
-							+ " inner join fetch n.typeNote ev inner join fetch n.eleve inner join fetch n.semestre s "
-							+ " where c =:pc and an =:pan and ev.code <>:pev and s=:ps")
+							+ " inner join fetch n.typeNote ev inner join fetch n.eleve inner join fetch n.semestre s"
+							+ " inner join fetch n.institution i "
+							+ " where c =:pc and an =:pan and ev.code <>:pev and s=:ps and i =:pi")
 					.setParameter("pc", classe).setParameter("pan", annee).setParameter("pev", "COMP")
-					.setParameter("ps", semestre).list();
+					.setParameter("ps", semestre).setParameter("pi", utilisateur.getInstitution()).list();
 
 			List<Notes> listeNotesComp = dataSource
 					.createQuery("From Notes n inner join fetch n.classe c inner join fetch n.annee an "
-							+ " inner join fetch n.typeNote ev inner join fetch n.eleve inner join fetch n.semestre s "
-							+ " where c =:pc and an =:pan and ev.code =:pev and s=:ps")
+							+ " inner join fetch n.typeNote ev inner join fetch n.eleve inner join fetch n.semestre s"
+							+ " inner join fetch n.institution i "
+							+ " where c =:pc and an =:pan and ev.code =:pev and s=:ps and i =:pi")
 					.setParameter("pc", classe).setParameter("pan", annee).setParameter("pev", "COMP")
-					.setParameter("ps", semestre).list();
+					.setParameter("ps", semestre).setParameter("pi", utilisateur.getInstitution()).list();
 
 			listeDeliberationMSFF = new ArrayList<DeliberationMS>();
 			listeDeliberationMS = new ArrayList<DeliberationMS>();
@@ -1463,7 +1494,6 @@ public class DeliberationService implements Serializable {
 			Double total = 0d;
 			// cumulcoef = CumulCeof();
 			for (Eleve ev : listeEleves) {
-				System.out.println("listeEleves" + listeEleves.size());
 				total = 0d;
 				listeDeliberationMS = new ArrayList<DeliberationMS>();
 				for (MatiereClasse mc : listeMatClasse) {
@@ -1500,17 +1530,16 @@ public class DeliberationService implements Serializable {
 					listeDeliberationMS.add(d);
 				}
 				List<Appreciations> listeAp = new ArrayList<Appreciations>();
-				listeAp = dataSource.createQuery("From Appreciations ").list();
+				listeAp = dataSource.createQuery("From Appreciations a inner join fetch a.institution i where i =:pi ")
+						.setParameter("pi", utilisateur.getInstitution()).list();
 				List<Retard> listeRetard = new ArrayList<Retard>();
 				List<Absence> listeAbsence = new ArrayList<Absence>();
-				listeRetard = dataSource
-						.createQuery(
-								"From Retard r inner join fetch r.eleve inner join fetch r.annee an   where an =:pan")
-						.setParameter("pan", annee).list();
-				listeAbsence = dataSource
-						.createQuery(
-								"From Absence r inner join fetch r.eleve inner join fetch r.annee an  where an =:pan")
-						.setParameter("pan", annee).list();
+				listeRetard = dataSource.createQuery(
+						"From Retard r inner join fetch r.eleve inner join fetch r.annee an inner join fetch r.institution i where an =:pan and i =:pi")
+						.setParameter("pan", annee).setParameter("pi", utilisateur.getInstitution()).list();
+				listeAbsence = dataSource.createQuery(
+						"From Absence r inner join fetch r.eleve inner join fetch r.annee an inner join fetch r.institution i  where an =:pan and i =:pi")
+						.setParameter("pan", annee).setParameter("pi", utilisateur.getInstitution()).list();
 				for (DeliberationMS deli : listeDeliberationMS) {
 					deli.setTotal(total);
 					moyens = "" + total;
@@ -1563,9 +1592,9 @@ public class DeliberationService implements Serializable {
 				DeliberationMS deli = gererSupMS();
 				List<DeliberationMS> liste = new ArrayList<DeliberationMS>();
 				deli.setUse("X");
-				System.out.println("RANG SUP SEMESTRE 2 " + deli.getRanggen());
+
 				liste = getMoyenEqualMS(deli);
-				System.out.println("RANG EQUL SEMESTRE 2 " + liste.size());
+
 				if (liste.size() > 1) {
 					if (rang == 1) {
 						rangs = rang + "er ex æquo";
@@ -1584,7 +1613,7 @@ public class DeliberationService implements Serializable {
 					for (DeliberationMS d : liste) {
 						d.setUse("X");
 						d.setRanggen(rangs);
-						System.out.println("RANG SEMESTRE 2 " + d.getRanggen());
+
 						listeDeliberationMSFF.add(d);
 						listeDeliberationMSFFS.add(d);
 						rang = rang + 1;
@@ -1597,7 +1626,7 @@ public class DeliberationService implements Serializable {
 				listeDeliberationMSFFSS = listeDeliberationMSF1;
 				listeDeliberationMSF1 = new ArrayList<DeliberationMS>();
 				for (DeliberationMS dddd : listeDeliberationMSFFSS) {
-					System.out.println("USE RANG SEMESTRE 2 " + dddd.getUse());
+
 					if (dddd.getUse().equalsIgnoreCase("X")) {
 						itter1++;
 					} else {
@@ -1607,21 +1636,19 @@ public class DeliberationService implements Serializable {
 
 			}
 
-			System.out.println("RANG SEMESTRE 2 TAILLE LISTE 1 " + listeDeliberationMS.size());
-			System.out.println("RANG SEMESTRE 2 TAILLE LISTE 2 " + listeDeliberationMSFF.size());
 			for (DeliberationMS d : listeDeliberationMSFF) {
 				for (DeliberationMS deli : listeDeliberationMS) {
 					if (deli.getEleve().getIdeleve().equals(d.getEleve().getIdeleve())) {
 						deli.setRanggen(d.getRanggen());
-						System.out.println("RANG " + deli.getEleve().getPrenom() + " " + deli.getRanggen());
+
 					}
 				}
 			}
-			System.out.println("***************************RANG*****************************************");
-			for (DeliberationMS deli : listeDeliberationMS) {
-				System.out.println("RANG " + deli.getEleve().getPrenom() + " " + deli.getRanggen());
 
-			}
+//			for (DeliberationMS deli : listeDeliberationMS) {
+//				System.out.println("RANG " + deli.getEleve().getPrenom() + " " + deli.getRanggen());
+//
+//			}
 
 			if (semestre.getCode().equalsIgnoreCase("2")) {
 				listeDeliberationMSFF = new ArrayList<DeliberationMS>();
@@ -1638,20 +1665,20 @@ public class DeliberationService implements Serializable {
 				}
 				rang = 1;
 				itter = listeDeliberationMSF1.size();
-				System.out.println("TAILL POUR RANG AN " + listeDeliberationMSF1.size());
-				for (DeliberationMS yy : listeDeliberationMSF) {
-					System.out.println(
-							"TAILL POUR RANG AN MOY " + yy.getMoyenneAn() + "ELEVE " + yy.getEleve().getPrenom());
-				}
+//				System.out.println("TAILL POUR RANG AN " + listeDeliberationMSF1.size());
+//				for (DeliberationMS yy : listeDeliberationMSF) {
+//					System.out.println(
+//							"TAILL POUR RANG AN MOY " + yy.getMoyenneAn() + "ELEVE " + yy.getEleve().getPrenom());
+//				}
 				itter1 = 0;
 
 				while (itter > itter1) {
 					DeliberationMS deli = gererSupMSAn();
 					List<DeliberationMS> liste = new ArrayList<DeliberationMS>();
 					deli.setUsean("X");
-					System.out.println("SUP RANG AN " + deli.getEleve().getPrenom());
+					// System.out.println("SUP RANG AN " + deli.getEleve().getPrenom());
 					liste = getMoyenEqualMSAn(deli);
-					System.out.println("TAILLE LISTE EQUL ANN " + liste.size());
+					// System.out.println("TAILLE LISTE EQUL ANN " + liste.size());
 					if (liste.size() > 1) {
 						if (rang == 1) {
 							rangs = rang + "er ex æquo";
@@ -1670,7 +1697,7 @@ public class DeliberationService implements Serializable {
 						for (DeliberationMS d : liste) {
 							d.setUsean("X");
 							d.setRanggan(rangs);
-							System.out.println("AJOUT EQUL ANN " + d.getEleve().getPrenom());
+							// System.out.println("AJOUT EQUL ANN " + d.getEleve().getPrenom());
 							listeDeliberationMSFF.add(d);
 							listeDeliberationMSFFS.add(d);
 							rang = rang + 1;
@@ -1683,7 +1710,8 @@ public class DeliberationService implements Serializable {
 					listeDeliberationMSFFSS = listeDeliberationMSF1;
 					listeDeliberationMSF1 = new ArrayList<DeliberationMS>();
 					for (DeliberationMS dddd : listeDeliberationMSFFSS) {
-						System.out.println("USE AN " + dddd.getEleve().getPrenom() + " use " + dddd.getUsean());
+						// System.out.println("USE AN " + dddd.getEleve().getPrenom() + " use " +
+						// dddd.getUsean());
 						if (dddd.getUsean().equalsIgnoreCase("X")) {
 							itter1++;
 						} else {
@@ -1701,7 +1729,9 @@ public class DeliberationService implements Serializable {
 					}
 				}
 
-				Decision decision = (Decision) dataSource.createQuery("From Decision where code =:pcode ")
+				Decision decision = (Decision) dataSource
+						.createQuery(
+								"From Decision d  where d.code =:pcode ")
 						.setParameter("pcode", "MS").uniqueResult();
 				for (DeliberationMS deli : listeDeliberationMS) {
 					if (deli.getMoyenneAn() < decision.getMoy()) {
@@ -1714,13 +1744,14 @@ public class DeliberationService implements Serializable {
 
 			for (DeliberationMS deli : listeDeliberationMS) {
 				splitMoyen(deli);
-				System.out.println("Eleve " + deli.getEleve().getPrenom() + "devoir " + deli.getMoyenneD() + "comp "
-						+ deli.getMoyenneC() + "cumul " + deli.getCumuls() + "total coef " + deli.getTotalcoef()
-						+ "Total " + deli.getTotals() + "moyenne " + deli.getMoyennes() + "rang " + deli.getRanggen()
-						+ "Appréciation " + deli.getAppreciation().getLibelle() + "Retard " + deli.getRetard()
-						+ "absence " + deli.getAbsence() + "AP GEN " + deli.getAppreciationgen().getLibelle()
-						+ "moyenne 1" + deli.getMoyenne1s() + "Moyenne Ann " + deli.getMoyenneAns() + "Rang An"
-						+ deli.getRanggan());
+//				System.out.println("Eleve " + deli.getEleve().getPrenom() + "devoir " + deli.getMoyenneD() + "comp "
+//						+ deli.getMoyenneC() + "cumul " + deli.getCumuls() + "total coef " + deli.getTotalcoef()
+//						+ "Total " + deli.getTotals() + "moyenne " + deli.getMoyennes() + "rang " + deli.getRanggen()
+//						+ "Appréciation " + deli.getAppreciation().getLibelle() + "Retard " + deli.getRetard()
+//						+ "absence " + deli.getAbsence() + "AP GEN " + deli.getAppreciationgen().getLibelle()
+//						+ "moyenne 1" + deli.getMoyenne1s() + "Moyenne Ann " + deli.getMoyenneAns() + "Rang An"
+//						+ deli.getRanggan());
+				deli.setInstitution(utilisateur.getInstitution());
 				dataSource.save(deli);
 			}
 
@@ -1735,7 +1766,7 @@ public class DeliberationService implements Serializable {
 				res = true;
 			}
 		}
-		System.out.println("RESR " + res);
+
 		return res;
 	}
 
@@ -1865,7 +1896,7 @@ public class DeliberationService implements Serializable {
 		}
 
 		String[] arrSplit7 = deli.getMoyennes().split("\\.");
-		// System.out.println("MOYENNE SSS " + deli.getMoyennes() + deli.getMoyenne());
+
 		for (int i = 0; i < arrSplit7.length; i++) {
 			if (i == 1) {
 				if (arrSplit7[i].equalsIgnoreCase("00") || arrSplit7[i].equalsIgnoreCase("0")) {
@@ -1873,8 +1904,7 @@ public class DeliberationService implements Serializable {
 				} else {
 					if (arrSplit7[i].length() >= 2) {
 						deli.setMoyennes(arrSplit7[0] + "." + arrSplit7[i].substring(0, 2));
-						System.out.println("DANS SPLIT " + arrSplit7[0] + "SUITE " + arrSplit7[i] + "  "
-								+ arrSplit7[i].substring(0, 2));
+
 					} else {
 						deli.setMoyennes(arrSplit7[0] + "." + arrSplit7[i].substring(0, 1));
 					}
@@ -1927,11 +1957,11 @@ public class DeliberationService implements Serializable {
 	public boolean donneesExiste(Eleve eleve) {
 		boolean existe = false;
 		for (DeliberationMS d : listeDeliberationMSF1) {
-			System.out.println("e1 " + d.getEleve().getIdeleve() + "e2 " + eleve.getIdeleve());
+
 			if (d.getEleve().getIdeleve().equals(eleve.getIdeleve())) {
-				System.out.println("exitse " + existe);
+
 				existe = true;
-				System.out.println("exitse " + existe);
+
 				break;
 
 			}
@@ -2043,8 +2073,7 @@ public class DeliberationService implements Serializable {
 
 		DeliberationMS d = listeDeliberationMSF1.get(0);
 		for (int i = 1; i < listeDeliberationMSF1.size(); i++) {
-			System.out.println("d " + d.getMoyenneAn());
-			System.out.println("listeDeliberationMSF1 " + listeDeliberationMSF1.get(i).getMoyenneAn());
+
 			if (d.getMoyenneAn() < listeDeliberationMSF1.get(i).getMoyenneAn()) {
 				d = listeDeliberationMSF1.get(i);
 				d.setUsean("X");
@@ -2200,9 +2229,9 @@ public class DeliberationService implements Serializable {
 		ccoef = 0;
 		List<MatiereClasse> listeMc = dataSource
 				.createQuery("From MatiereClasse mc inner join fetch mc.classe c inner join fetch mc.matiere m "
-						+ " inner join  fetch mc.eval ev   where c =:pc and mc.annee_scol =:pan and ev =:pev")
+						+ " inner join  fetch mc.eval ev inner join fetch mc.institution i  where c =:pc and mc.annee_scol =:pan and ev =:pev and i =:pi")
 				.setParameter("pc", classe).setParameter("pan", annee.getAnneeScolaire())
-				.setParameter("pev", evaluation).list();
+				.setParameter("pev", evaluation).setParameter("pi", utilisateur.getInstitution()).list();
 		for (MatiereClasse n : listeMc) {
 
 			cumul = cumul + n.getCoef();
@@ -2227,10 +2256,11 @@ public class DeliberationService implements Serializable {
 		listeNote = new ArrayList<Note>();
 		listeNote = dataSource
 				.createQuery("From Note n inner join fetch n.cl c inner join fetch n.eleve e "
-						+ " inner join fetch n.evaluation ev inner join fetch n.annee an inner join fetch n.matiere "
-						+ " where c =:pc and an =:pan and ev =:pev and e =:pe")
+						+ " inner join fetch n.evaluation ev inner join fetch n.annee an inner join fetch n.matiere"
+						+ " inner join fetch n.institution i "
+						+ " where c =:pc and an =:pan and ev =:pev and e =:pe and i =:pi")
 				.setParameter("pc", classe).setParameter("pan", annee).setParameter("pev", evaluation)
-				.setParameter("pe", deli.getEleve()).list();
+				.setParameter("pe", deli.getEleve()).setParameter("pi", utilisateur.getInstitution()).list();
 
 	}
 

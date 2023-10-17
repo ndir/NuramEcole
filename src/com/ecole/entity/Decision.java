@@ -6,8 +6,11 @@ package com.ecole.entity;
 import java.io.Serializable;
 
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 /**
@@ -28,6 +31,8 @@ public class Decision implements Serializable{
 	private float moy;
 	
 	private String code;
+	
+	private Institution institution;
 	
     @Id
     @GeneratedValue
@@ -54,6 +59,16 @@ public class Decision implements Serializable{
 
 	public void setCode(String code) {
 		this.code = code;
+	}
+
+	@ManyToOne(fetch=FetchType.LAZY)
+	@JoinColumn(name="idinstitution")
+	public Institution getInstitution() {
+		return institution;
+	}
+
+	public void setInstitution(Institution institution) {
+		this.institution = institution;
 	}
 
 	

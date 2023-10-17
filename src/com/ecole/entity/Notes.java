@@ -42,6 +42,8 @@ public class Notes implements Serializable {
 	private Classe classe;
 	
 	private int coef;
+	
+	private Institution institution;
 
 	@Id
 	@GeneratedValue
@@ -127,6 +129,16 @@ public class Notes implements Serializable {
 
 	public void setCoef(int coef) {
 		this.coef = coef;
+	}
+
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "idinstitution")
+	public Institution getInstitution() {
+		return institution;
+	}
+
+	public void setInstitution(Institution institution) {
+		this.institution = institution;
 	}
 
 }

@@ -11,9 +11,11 @@ import org.hibernate.Session;
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
+import org.jboss.seam.annotations.Out;
 import org.jboss.seam.annotations.Scope;
 import org.jboss.seam.faces.FacesMessages;
 
+import com.chaka.projet.entity.Utilisateur;
 import com.ecole.entity.Appreciation;
 import com.ecole.entity.AppreciationMS;
 
@@ -41,6 +43,10 @@ public class AppreciationService implements Serializable {
 
 	private List<AppreciationMS> listeAps = new ArrayList<AppreciationMS>();
 
+	@In(required = false)
+	@Out(required = false)
+	private Utilisateur utilisateur;
+
 	public String versAp() {
 		this.setAp(new Appreciation());
 		chargerListeAp();
@@ -56,13 +62,15 @@ public class AppreciationService implements Serializable {
 	@SuppressWarnings("unchecked")
 	public void chargerListeAp() {
 		listeAp = new ArrayList<Appreciation>();
-		listeAp = dataSource.createQuery("From Appreciation ").list();
+		listeAp = dataSource.createQuery("From Appreciation a inner join fetch a.institution i where i =:pi ")
+				.setParameter("pi", utilisateur.getInstitution()).list();
 	}
 
 	@SuppressWarnings("unchecked")
 	public void chargerListeAps() {
 		listeAps = new ArrayList<AppreciationMS>();
-		listeAps = dataSource.createQuery("From AppreciationMS ").list();
+		listeAps = dataSource.createQuery("From AppreciationMS a inner join fetch a.institution i where i =:pi ")
+				.setParameter("pi", utilisateur.getInstitution()).list();
 	}
 
 	public void ajouterAp() {
@@ -82,6 +90,7 @@ public class AppreciationService implements Serializable {
 			return;
 		}
 		if (ap.getId() == null) {
+			ap.setInstitution(utilisateur.getInstitution());
 			dataSource.save(ap);
 		} else {
 			dataSource.update(ap);
@@ -108,6 +117,7 @@ public class AppreciationService implements Serializable {
 			return;
 		}
 		if (apms.getId() == null) {
+			apms.setInstitution(utilisateur.getInstitution());
 			dataSource.save(apms);
 		} else {
 			dataSource.update(apms);

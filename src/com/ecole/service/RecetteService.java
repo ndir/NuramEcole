@@ -103,25 +103,27 @@ public class RecetteService implements Serializable {
 	private double montantPayeFinial = 0d;
 
 	private Recette theLastRecette;
-	
+
 	FileUploadService filePrintService;
-	
+
 	private String showModal = "";
 
 	@SuppressWarnings("unchecked")
 	public void chargerListeRecette(String codeRecette) {
 		listeRecette = new ArrayList<Recette>();
-		listeRecette = dataSource
-				.createQuery(
-						" From Recette  where inscription.eleve=:pe and typeRecette.code=:pt order by idRecette desc")
-				.setParameter("pe", this.eleve).setParameter("pt", codeRecette).list();
+		listeRecette = dataSource.createQuery(
+				" From Recette  where inscription.eleve=:pe and typeRecette.code=:pt  and institution =:pi order by idRecette desc")
+				.setParameter("pe", this.eleve).setParameter("pt", codeRecette)
+				.setParameter("pi", utilisateur.getInstitution()).list();
 	}
 
 	@SuppressWarnings("unchecked")
 	public String versRecette() {
 		listeTypeRecette = new ArrayList<TypeRecette>();
-		listeTypeRecette = dataSource.createQuery("From TypeRecette where code <>:pcode1 and code <>:pcode2")
-				.setParameter("pcode1", "INS").setParameter("pcode2", "MENS").list();
+		listeTypeRecette = dataSource.createQuery(
+				"From TypeRecette r inner join fetch r.institution i where r.code <>:pcode1 and r.code <>:pcode2 and i =:pi")
+				.setParameter("pcode1", "INS").setParameter("pcode2", "MENS")
+				.setParameter("pi", utilisateur.getInstitution()).list();
 		chargerListeRecette();
 		return "/pages/nuramecole/creerrecette.xhtml";
 	}
@@ -144,6 +146,7 @@ public class RecetteService implements Serializable {
 		recetteEnCreation.setAnnee(annee);
 		recetteEnCreation.setUtilisateur(utilisateur);
 		if (recetteEnCreation.getIdRecette() == null) {
+			recetteEnCreation.setInstitution(utilisateur.getInstitution());
 			dataSource.save(recetteEnCreation);
 		} else {
 			dataSource.update(recetteEnCreation);
@@ -162,15 +165,16 @@ public class RecetteService implements Serializable {
 		listeRecettes = new ArrayList<Recette>();
 		listeRecettes = dataSource
 				.createQuery("From Recette r inner join fetch r.annee an inner join fetch r.typeRecette "
-						+ " inner join fetch r.utilisateur where an =:pan ")
-				.setParameter("pan", annee).list();
+						+ " inner join fetch r.utilisateur inner join fetch r.institution i  where an =:pan and i =:pi ")
+				.setParameter("pan", annee).setParameter("pi", utilisateur.getInstitution()).list();
 	}
 
 	public void getLasRecette() {
-		theLastRecette = (Recette) dataSource
-				.createQuery("From Recette r where  r.typeRecette.code=:ptr order by idRecette desc ")
+		theLastRecette = (Recette) dataSource.createQuery(
+				"From Recette r inner join fetch r.institution i  inner join fetch r.typeRecette t where  t.code=:ptr and i =:pi order by idRecette desc ")
 				// .setParameter("pan", annee)
-				.setParameter("ptr", "MENS").setMaxResults(1).uniqueResult();
+				.setParameter("ptr", "MENS").setParameter("pi", utilisateur.getInstitution()).setMaxResults(1)
+				.uniqueResult();
 		// theLastRecette=(Recette) theLastRecetteQuery;
 		// System.out.println("--theLastRecette-- "+theLastRecette.getIdRecette());
 	}
@@ -200,8 +204,9 @@ public class RecetteService implements Serializable {
 
 	public void chargerListeClasse() {
 		setListeClasse(new ArrayList<Classe>());
-		setListeClasse(dataSource.createQuery(" From Classe c inner join fetch c.niveau n where n=:pn")
-				.setParameter("pn", niveau).list());
+		setListeClasse(dataSource.createQuery(
+				" From Classe c inner join fetch c.niveau n inner join fetch c.institution i where n=:pn and i =:pi")
+				.setParameter("pn", niveau).setParameter("pi", utilisateur.getInstitution()).list());
 	}
 
 	public void annulerAjout() {
@@ -213,8 +218,10 @@ public class RecetteService implements Serializable {
 		try {
 			listeEleve = new ArrayList<Eleve>();
 			listeEleve = dataSource.createQuery(
-					"Select i.eleve From Inscription i where i.paramins.classe=:pc and i.paramins.annee=:pa and i.paiemens =:pm order by i.eleve.nom")
-					.setParameter("pc", classe).setParameter("pa", annee).setParameter("pm", true).list();
+					"Select i.eleve From Inscription i where i.paramins.classe=:pc and i.paramins.annee=:pa and i.paiemens =:pm  "
+							+ " and i.institution=:pi order by i.eleve.nom")
+					.setParameter("pc", classe).setParameter("pa", annee)
+					.setParameter("pi", utilisateur.getInstitution()).setParameter("pm", true).list();
 
 			// retreiveInfoIncription();
 		} catch (HibernateException e) {
@@ -226,8 +233,8 @@ public class RecetteService implements Serializable {
 	public void retreiveInfoIncription() {
 		try {
 			inscription = (Inscription) dataSource
-					.createQuery(" From Inscription i where i.eleve=:pe and i.paramins.annee=:pa ")
-					.setParameter("pe", this.eleve).setParameter("pa", annee).uniqueResult();
+					.createQuery(" From Inscription i where i.eleve=:pe and i.paramins.annee=:pa and i.institution=:pi ")
+					.setParameter("pe", this.eleve).setParameter("pa", annee).setParameter("pi", utilisateur.getInstitution()).uniqueResult();
 
 			codeRecette = "MENS";
 			chargerListeRecette(codeRecette);
@@ -280,7 +287,7 @@ public class RecetteService implements Serializable {
 						"Veuillez saisir un montant");
 				return;
 			}
-
+			recetteEnCreation.setInstitution(utilisateur.getInstitution());
 			recetteEnCreation.setDatePaiment(new Date());
 			recetteEnCreation.setUtilisateur(utilisateur);
 			/** Mise à jour d'inscription **/
@@ -318,27 +325,26 @@ public class RecetteService implements Serializable {
 			// System.out.println("### recetteEnCreation = " +
 			// recetteEnCreation.getIdRecette());
 			if (recetteEnCreation.getIdRecette() == null) {
-				
+
 				recetteEnCreation.setInscription(inscription);
 				recetteEnCreation.setTypeRecette(getTypeRecetteByCode(this.codeRecette));
 				// recetteEnCreation.setMoisPaye(moisEnChiffre()>0?moisEnChiffre()+1:10);
 				// // Si
 				// 1er enregistrement mettre le mois de novembre
 				// moisConcerne(moisEncoursDePaiement());
-			
 
 				recetteEnCreation.setMontantPaye(montantPayeFinial);
 				recetteEnCreation.setEditable(true);
 				dataSource.save(recetteEnCreation);
 				if (theLastRecette != null) {
 					theLastRecette.setEditable(false);
+					theLastRecette.setInstitution(utilisateur.getInstitution());
 					dataSource.merge(theLastRecette);
 				}
 
 				dataSource.flush();
 			} else {
-
-				
+				recetteEnCreation.setInstitution(utilisateur.getInstitution());
 				recetteEnCreation.setMontantPaye(montantPayeFinial);
 				dataSource.merge(recetteEnCreation);
 			}
@@ -347,7 +353,7 @@ public class RecetteService implements Serializable {
 			// suivant
 			dataSource.merge(inscription);
 			chargerListeRecette("MENS");
-			Institution in = (Institution) dataSource.createQuery("From Institution").uniqueResult();
+			Institution in = (Institution) dataSource.get(Institution.class, utilisateur.getInstitution().getId());
 			Map<String, Object> param = new HashMap<String, Object>();
 			param.put("pecole", in.getImp());
 			param.put("pd", montantPayerGenere);
@@ -357,17 +363,15 @@ public class RecetteService implements Serializable {
 			param.put("nom2", retreiveMonthByInt(recetteEnCreation.getMoisPaye()));
 			List<Recette> listeRecette = new ArrayList<Recette>();
 			listeRecette.add(recetteEnCreation);
-			
-			
+
 			retreiveInfoIncription();
 			this.setRecetteEnCreation(new Recette());
-			//FacesMessages.instance().addToControlFromResourceBundle("infoGenerique", "Paiement effectué avec succés");
-			
+			// FacesMessages.instance().addToControlFromResourceBundle("infoGenerique",
+			// "Paiement effectué avec succés");
+
 			getFilePrintService().imprimer("ecole", "ticket1", param, listeRecette, utilisateur, ExportOption.PDF);
 			this.setShowModal("javascript:Richfaces.showModalPanel('modalPdf')");
-		
 
-			
 		} catch (HibernateException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -643,6 +647,7 @@ public class RecetteService implements Serializable {
 	public void setListeRecettes(List<Recette> listeRecettes) {
 		this.listeRecettes = listeRecettes;
 	}
+
 	public FileUploadService getFilePrintService() {
 		if (filePrintService == null) {
 			filePrintService = (FileUploadService) Component.getInstance(FileUploadService.class);

@@ -31,7 +31,7 @@
 	content="Responsive Bootstrap 4 Dashboard Template"></meta>
 <meta name="author" content="BootstrapDash"></meta>
 
-<title>GEDE</title>
+<title>NURAMECOLE</title>
 
 <!-- vendor css -->
 <link href="../lib/fontawesome-free/css/all.min.css" rel="stylesheet"></link>
@@ -121,6 +121,16 @@
 										<span styleClass="grey"> TOTAL SECRETAIRES:
 											#{statService.getNombreSecreataire()} </span>
 									</h5>
+									<p align="left">
+
+												<a:commandLink styleClass="btn btn-success" value=""
+													action="#{statService.imprimerEffectif()}"
+													oncomplete="#{statService.showModal}" status="waitStatus">
+																		
+																		Impimer 			
+																				</a:commandLink>
+
+											</p>
 									<rich:dataTable value="#{statService.listeClasse}" var="classe"
 										id="lstdemande" style="width:100%;" rows="8"
 										rowClasses="row1,row2">

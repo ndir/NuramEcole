@@ -11,12 +11,12 @@ import org.hibernate.Session;
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
+import org.jboss.seam.annotations.Out;
 import org.jboss.seam.annotations.Scope;
 import org.jboss.seam.faces.FacesMessages;
 
+import com.chaka.projet.entity.Utilisateur;
 import com.ecole.entity.TypeRecette;
-
-
 
 /**
  * @author a626257
@@ -34,6 +34,10 @@ public class TypeRecetteService implements Serializable {
 	@In
 	private Session dataSource;
 
+	@In(required = false)
+	@Out(required = false)
+	private Utilisateur utilisateur;
+
 	private List<TypeRecette> listeTypeRecette = new ArrayList<TypeRecette>();
 
 	private TypeRecette typeRecette = new TypeRecette();
@@ -41,7 +45,8 @@ public class TypeRecetteService implements Serializable {
 	@SuppressWarnings("unchecked")
 	public void chargerListeTypeRecette() {
 		listeTypeRecette = new ArrayList<TypeRecette>();
-		listeTypeRecette = dataSource.createQuery(" From TypeRecette ").list();
+		listeTypeRecette = dataSource.createQuery(" From TypeRecette t inner join fetch t.institution i where i =:pi  ")
+				.setParameter("pi", utilisateur.getInstitution()).list();
 	}
 
 	public String versTypeRecette() {
@@ -56,34 +61,35 @@ public class TypeRecetteService implements Serializable {
 
 	public TypeRecette getTypeRecetteFrom() {
 		return (TypeRecette) dataSource
-				.createQuery("From TypeRecette where libelle=:pl")
-				.setParameter("pl", typeRecette.getLibelle()).uniqueResult();
+				.createQuery("From TypeRecette t inner join fetch t.institution i " + " where t.libelle=:pl and i =:pi")
+				.setParameter("pl", typeRecette.getLibelle()).setParameter("pi", utilisateur.getInstitution())
+				.uniqueResult();
 	}
 
 	public void ajouterTypeRecette() {
 		if (this.typeRecette.getLibelle().isEmpty()) {
-			FacesMessages.instance().addToControlFromResourceBundle(
-					"erreurGenerique", "Veuillez renseigner le libellé");
+			FacesMessages.instance().addToControlFromResourceBundle("erreurGenerique",
+					"Veuillez renseigner le libellé");
 			return;
 		}
 
 		TypeRecette m = getTypeRecetteFrom();
 
 		if (m != null) {
-			FacesMessages.instance().addToControlFromResourceBundle(
-					"erreurGenerique", "la matière "+typeRecette.getLibelle() +" existe déja");
+			FacesMessages.instance().addToControlFromResourceBundle("erreurGenerique",
+					"la matière " + typeRecette.getLibelle() + " existe déja");
 			return;
 		}
 
 		if (typeRecette.getId() == null) {
+			typeRecette.setInstitution(utilisateur.getInstitution());
 			dataSource.save(typeRecette);
 		} else {
 			dataSource.update(typeRecette);
 		}
 		chargerListeTypeRecette();
 		this.setTypeRecette(new TypeRecette());
-		FacesMessages.instance().addToControlFromResourceBundle(
-				"infoGenerique", "Type de Recette ajoutée avec succés");
+		FacesMessages.instance().addToControlFromResourceBundle("infoGenerique", "Type de Recette ajoutée avec succés");
 	}
 
 	public void versModifierTypeRecette(TypeRecette typeRecette) {
@@ -106,5 +112,4 @@ public class TypeRecetteService implements Serializable {
 		this.typeRecette = typeRecette;
 	}
 
-	
 }

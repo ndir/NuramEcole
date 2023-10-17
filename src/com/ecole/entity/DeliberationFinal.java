@@ -68,6 +68,8 @@ public class DeliberationFinal implements Serializable {
 	private Classe classe;
 	
 	private String use;
+	
+	private Institution institution;
 
 	@Id
 	@GeneratedValue
@@ -252,6 +254,16 @@ public class DeliberationFinal implements Serializable {
 
 	public void setUse(String use) {
 		this.use = use;
+	}
+
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "idinstitution")
+	public Institution getInstitution() {
+		return institution;
+	}
+
+	public void setInstitution(Institution institution) {
+		this.institution = institution;
 	}
 
 }

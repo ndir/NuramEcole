@@ -110,18 +110,6 @@ public class EleveService implements Serializable {
 		return "/pages/nuramecole/creereleve.xhtml";
 	}
 
-//	public String versListeEleve() {
-//		this.setEleve(new Eleve());
-//		List<AnneeScolaire> listeAnnee = dataSource.createQuery("From AnneeScolaire order by idannee desc ").list();
-//		if (listeAnnee.size() > 0) {
-//			anneeScolaire = listeAnnee.get(0);
-//		}
-//		listeNiveau = new ArrayList<Niveau>();
-//		listeNiveau = dataSource.createQuery("From Niveau ").list();
-//
-//		return "/pages/nuramecole/creereleve.xhtml";
-//	}
-
 	@SuppressWarnings("unchecked")
 	public String versListeEleve() {
 		List<AnneeScolaire> listeAnnee = dataSource.createQuery("From AnneeScolaire order by idannee desc ").list();
@@ -137,21 +125,28 @@ public class EleveService implements Serializable {
 	public int getHeuresAbsence(Inscription in) {
 		int heures = 0;
 		listeAbsence = new ArrayList<Absence>();
-		listeAbsence = dataSource.createQuery(
-				"From Absence ab inner join fetch ab.eleve ev inner join fetch ab.matiere inner join fetch ab.semestre inner join fetch ab.annee an where an=:pan and ev=:pev")
-				.setParameter("pan", annee).setParameter("pev", in.getEleve()).list();
+		listeAbsence = dataSource
+				.createQuery("From Absence ab inner join fetch ab.eleve ev inner join fetch ab.matiere"
+						+ " inner join fetch ab.semestre inner join fetch ab.annee an inner join fetch ab.institution i"
+						+ " where an=:pan and ev=:pev and i =:pi")
+				.setParameter("pan", annee).setParameter("pev", in.getEleve())
+				.setParameter("pi", utilisateur.getInstitution()).list();
 		for (Absence ab : listeAbsence) {
 			heures = heures + ab.getHeure();
 		}
 		return heures;
 	}
 
+	@SuppressWarnings("unchecked")
 	public int getRetard(Inscription in) {
 		int heures = 0;
 		listeRetard = new ArrayList<Retard>();
-		listeRetard = dataSource.createQuery(
-				"From Retard ab inner join fetch ab.eleve ev inner join fetch ab.matiere inner join fetch ab.semestre inner join fetch ab.annee an where an=:pan and ev=:pev")
-				.setParameter("pan", annee).setParameter("pev", in.getEleve()).list();
+		listeRetard = dataSource
+				.createQuery("From Retard ab inner join fetch ab.eleve ev inner join fetch ab.matiere"
+						+ " inner join fetch ab.semestre inner join fetch ab.annee an inner join fetch ab.institution i"
+						+ " where an=:pan and ev=:pev and i =:pi")
+				.setParameter("pan", annee).setParameter("pev", in.getEleve())
+				.setParameter("pi", utilisateur.getInstitution()).list();
 		for (Retard ab : listeRetard) {
 			heures = heures + ab.getHeures();
 		}
@@ -163,21 +158,22 @@ public class EleveService implements Serializable {
 		listeIns = new ArrayList<Inscription>();
 		ParamInscription p = (ParamInscription) dataSource
 				.createQuery("From ParamInscription p inner join fetch p.classe c inner join fetch p.annee pa "
-						+ " where c =:pc and pa =:pa ")
-				.setParameter("pc", classe).setParameter("pa", annee).uniqueResult();
+						+ " inner join fetch p.institution i " + " where c =:pc and pa =:pa and i =:pi")
+				.setParameter("pc", classe).setParameter("pa", annee).setParameter("pi", utilisateur.getInstitution())
+				.uniqueResult();
 
 		if (p != null) {
 			listeIns = dataSource
-					.createQuery(
-							"From Inscription i inner join fetch i.eleve inner join fetch i.paramins p where p =:pp")
-					.setParameter("pp", p).list();
+					.createQuery("From Inscription i inner join fetch i.eleve inner join fetch i.paramins p"
+							+ " inner join fetch i.institution s where p =:pp and s =:pin")
+					.setParameter("pp", p).setParameter("pin", utilisateur.getInstitution()).list();
 
 		}
 
 	}
 
 	public void imprimerListeEleves() {
-		Institution in = (Institution) dataSource.createQuery("From Institution").uniqueResult();
+		Institution in = (Institution) dataSource.get(Institution.class, utilisateur.getInstitution().getId());
 		Map<String, Object> param = new HashMap<String, Object>();
 		param.put("ecole", in.getNom());
 		param.put("slogan", in.getSologan());
@@ -190,15 +186,18 @@ public class EleveService implements Serializable {
 	@SuppressWarnings("unchecked")
 	public void chargerListeClasse() {
 		listeClasse = new ArrayList<Classe>();
-		listeClasse = dataSource.createQuery(" From Classe c inner join fetch c.niveau n where n=:pn")
-				.setParameter("pn", niveau).list();
+		listeClasse = dataSource
+				.createQuery(" From Classe c inner join fetch c.niveau n inner join fetch"
+						+ " c.institution i where n=:pn and i =:pi")
+				.setParameter("pn", niveau).setParameter("pi", utilisateur.getInstitution()).list();
 
 		if (listeClasse.size() > 0) {
 			mntIns = 0d;
-			ParamInscription paramins = (ParamInscription) dataSource
-					.createQuery("From ParamInscription p inner join fetch p.annee inner join fetch p.classe"
-							+ " where p.annee =:pannee and p.classe =:pclasse")
-					.setParameter("pannee", annee).setParameter("pclasse", listeClasse.get(0)).uniqueResult();
+			ParamInscription paramins = (ParamInscription) dataSource.createQuery(
+					"From ParamInscription p inner join fetch p.annee inner join fetch p.classe inner join fetch p.institution i"
+							+ " where p.annee =:pannee and p.classe =:pclasse and i =:pi")
+					.setParameter("pannee", annee).setParameter("pclasse", listeClasse.get(0))
+					.setParameter("pi", utilisateur.getInstitution()).uniqueResult();
 
 			if (paramins != null) {
 				mntIns = paramins.getDroit_ins();
@@ -213,27 +212,25 @@ public class EleveService implements Serializable {
 	}
 
 	public void ajouterEleve() {
-
 		int year = ChakaUtils.getCurrentYear(ChakaUtils.sysDate());
 		int year1 = ChakaUtils.getCurrentYear(eleve.getDateNaissance());
 		eleve.setAge(year - year1);
-		// eleve.setAnnee_ins(anneeScolaire.getAnneeScolaire());
 		if (eleve.getIdeleve() == null) {
 			dataSource.save(eleve);
 		} else {
 			dataSource.update(eleve);
 		}
-
 		this.setEleve(new Eleve());
 		FacesMessages.instance().addToControlFromResourceBundle("infoGenerique", "Evaluation ajoutée avec succés");
 	}
 
 	public void getMntInscription() {
 		mntIns = 0d;
-		ParamInscription paramins = (ParamInscription) dataSource
-				.createQuery("From ParamInscription p inner join fetch p.annee inner join fetch p.classe"
-						+ " where p.annee =:pannee and p.classe =:pclasse")
-				.setParameter("pannee", annee).setParameter("pclasse", classe).uniqueResult();
+		ParamInscription paramins = (ParamInscription) dataSource.createQuery(
+				"From ParamInscription p inner join fetch p.annee inner join fetch p.classe inner join fetch p.institution i"
+						+ " where p.annee =:pannee and p.classe =:pclasse and i =:pi")
+				.setParameter("pannee", annee).setParameter("pclasse", classe)
+				.setParameter("pi", utilisateur.getInstitution()).uniqueResult();
 
 		if (paramins != null) {
 			mntIns = paramins.getDroit_ins();
@@ -242,28 +239,25 @@ public class EleveService implements Serializable {
 	}
 
 	public void ajouterInscription() {
-
 		if (this.eleve.getNom().isEmpty() || this.eleve.getPrenom().isEmpty()) {
 			FacesMessages.instance().addToControlFromResourceBundle("erreurGenerique",
 					"Veuillez renseigner le nom et le prénom de l'éléve");
 			return;
 		}
-
 		if (this.eleve.getDateNaissance() == null) {
 			FacesMessages.instance().addToControlFromResourceBundle("erreurGenerique",
 					"Veuillez renseigner la date de naissance");
 			return;
 		}
-
 		if (this.classe == null) {
 			FacesMessages.instance().addToControlFromResourceBundle("erreurGenerique", "Veuillez chosir une classe");
 			return;
 		}
-
-		ParamInscription paramins = (ParamInscription) dataSource
-				.createQuery("From ParamInscription p inner join fetch p.annee inner join fetch p.classe"
-						+ " where p.annee =:pannee and p.classe =:pclasse")
-				.setParameter("pannee", annee).setParameter("pclasse", classe).uniqueResult();
+		ParamInscription paramins = (ParamInscription) dataSource.createQuery(
+				"From ParamInscription p inner join fetch p.annee inner join fetch p.classe inner join fetch p.institution i"
+						+ " where p.annee =:pannee and p.classe =:pclasse and i =:pi")
+				.setParameter("pannee", annee).setParameter("pclasse", classe)
+				.setParameter("pi", utilisateur.getInstitution()).uniqueResult();
 		if (paramins != null) {
 			int year = ChakaUtils.getCurrentYear(ChakaUtils.sysDate());
 			int year1 = ChakaUtils.getCurrentYear(eleve.getDateNaissance());
@@ -271,6 +265,7 @@ public class EleveService implements Serializable {
 			dataSource.save(eleve);
 			inscription.setParamins(paramins);
 			inscription.setEleve(eleve);
+			inscription.setInstitution(utilisateur.getInstitution());
 			inscription.setPaiemens(paiemens);
 			if (mntPaye > 0) {
 				inscription.setMontantInscriptionPaye(mntPaye);
@@ -294,21 +289,17 @@ public class EleveService implements Serializable {
 				recette.setTypeRecette(getTypeRecetteByCode("INS"));
 				recette.setDatePaiment(ChakaUtils.sysDate());
 				recette.setMontantPaye(mntPaye);
+				recette.setInstitution(utilisateur.getInstitution());
 				recette.setUtilisateur(utilisateur);
 				dataSource.save(recette);
-
 			}
 			this.setEleve(new Eleve());
-
-			
 			mntIns = paramins.getDroit_ins();
-			
 			mntIns = 0d;
 			mntPaye = 0d;
 			this.setListeClasse(new ArrayList<Classe>());
 			this.setNiveau(new Niveau());
-			//FacesMessages.instance().addToControlFromResourceBundle("infoGenerique", "Evaluation ajoutée avec succés");
-			Institution in = (Institution) dataSource.createQuery("From Institution").uniqueResult();
+			Institution in = (Institution) dataSource.get(Institution.class, utilisateur.getInstitution().getId());
 			Map<String, Object> param = new HashMap<String, Object>();
 			param.put("pecole", in.getImp());
 			param.put("slogan", in.getSologan());
@@ -318,11 +309,11 @@ public class EleveService implements Serializable {
 			List<Inscription> listeIns = new ArrayList<Inscription>();
 			listeIns.add(inscription);
 			this.setInscription(new Inscription());
-			System.out.println("paiemens "+paiemens);
+
 			if (paiemens) {
 				getFilePrintService().imprimer("ecole", "ticket", param, listeIns, utilisateur, ExportOption.PDF);
 				this.setShowModal("javascript:Richfaces.showModalPanel('modalPdf')");
-			}else {
+			} else {
 				getFilePrintService().imprimer("ecole", "ticket1", param, listeIns, utilisateur, ExportOption.PDF);
 				this.setShowModal("javascript:Richfaces.showModalPanel('modalPdf')");
 			}
@@ -331,8 +322,10 @@ public class EleveService implements Serializable {
 	}
 
 	public TypeRecette getTypeRecetteByCode(String codeRecette) {
-		return (TypeRecette) dataSource.createQuery(" From TypeRecette where code=:pc").setParameter("pc", codeRecette)
-				.uniqueResult();
+		return (TypeRecette) dataSource
+				.createQuery(
+						" From TypeRecette t inner join " + " fetch t.institution ti where t.code=:pc and ti =:pti ")
+				.setParameter("pc", codeRecette).setParameter("pti", utilisateur.getInstitution()).uniqueResult();
 	}
 
 	public AnneeScolaire getAnnee() {
@@ -345,16 +338,16 @@ public class EleveService implements Serializable {
 
 	@SuppressWarnings("unchecked")
 	public void listeEleves(Classe classe) {
-		// this.eleve.setClasse(classe);
-		p = (ParamInscription) dataSource
-				.createQuery("From ParamInscription p inner join fetch p.classe c inner join fetch p.annee pa "
-						+ " where c =:pc and pa =:pa ")
-				.setParameter("pc", classe).setParameter("pa", annee).uniqueResult();
+		p = (ParamInscription) dataSource.createQuery(
+				"From ParamInscription p inner join fetch p.classe c inner join fetch p.annee pa inner join fetch p.institution i "
+						+ " where c =:pc and pa =:pa and i =:pi")
+				.setParameter("pc", classe).setParameter("pa", annee).setParameter("pi", utilisateur.getInstitution())
+				.uniqueResult();
 		if (p != null) {
 
-			List<Inscription> liste = dataSource.createQuery(
-					"FRom Inscription i inner join fetch i.eleve" + "  inner join fetch i.paramins p where p =:pp")
-					.setParameter("pp", p).list();
+			List<Inscription> liste = dataSource.createQuery("FRom Inscription i inner join fetch i.eleve"
+					+ "  inner join fetch i.paramins p inner join fetch i.institution ii" + " where p =:pp and ii =:pi")
+					.setParameter("pp", p).setParameter("pi", utilisateur.getInstitution()).list();
 			listeEleves = new ArrayList<Eleve>();
 			for (Inscription in : liste) {
 				listeEleves.add(in.getEleve());
@@ -375,10 +368,11 @@ public class EleveService implements Serializable {
 
 	public Double versGetReduction(Eleve eleve) {
 		double resul = 0.0;
-		Inscription ins = (Inscription) dataSource
-				.createQuery("From Inscription i inner join fetch i.paramins p inner join fetch i.eleve e "
-						+ " where p =:pp and e =:pi")
-				.setParameter("pp", p).setParameter("pi", eleve).uniqueResult();
+		Inscription ins = (Inscription) dataSource.createQuery(
+				"From Inscription i inner join fetch i.paramins p inner join fetch i.eleve e inner join fetch i.institution ii "
+						+ " where p =:pp and e =:pi and ii =:pii")
+				.setParameter("pp", p).setParameter("pi", eleve).setParameter("pii", utilisateur.getInstitution())
+				.uniqueResult();
 		if (ins != null && ins.getReduction() != 0d) {
 			resul = ins.getReduction();
 		}

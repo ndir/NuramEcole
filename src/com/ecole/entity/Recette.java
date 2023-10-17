@@ -47,6 +47,8 @@ public class Recette implements Serializable {
 	
 	
 	private Double avoirUtilise;
+	
+	private Institution institution;
 
 	@Id
 	@GeneratedValue
@@ -222,6 +224,16 @@ public class Recette implements Serializable {
 
 	public void setAvoirUtilise(Double avoirUtilise) {
 		this.avoirUtilise = avoirUtilise;
+	}
+
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "idinstitution")
+	public Institution getInstitution() {
+		return institution;
+	}
+
+	public void setInstitution(Institution institution) {
+		this.institution = institution;
 	}
 
 	
