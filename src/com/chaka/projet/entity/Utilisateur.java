@@ -88,6 +88,8 @@ public class Utilisateur implements Serializable {
 	
 	private String diplome_p;
 	
+	private Institution institution;
+	
 	
 	
 	/**
@@ -333,6 +335,16 @@ public class Utilisateur implements Serializable {
 
 	public void setDiplome_p(String diplome_p) {
 		this.diplome_p = diplome_p;
+	}
+
+	@ManyToOne
+	@JoinColumn(name = "idinstitution")
+	public Institution getInstitution() {
+		return institution;
+	}
+
+	public void setInstitution(Institution institution) {
+		this.institution = institution;
 	}
 
 	

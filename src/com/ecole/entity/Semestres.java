@@ -47,6 +47,16 @@ public class Semestres implements Serializable {
 		this.libelle = libelle;
 	}
 
+
+
+	public String getCode() {
+		return code;
+	}
+
+	public void setCode(String code) {
+		this.code = code;
+	}
+
 	@Override
 	public int hashCode() {
 		final int prime = 31;
@@ -70,14 +80,6 @@ public class Semestres implements Serializable {
 		} else if (!id.equals(other.id))
 			return false;
 		return true;
-	}
-
-	public String getCode() {
-		return code;
-	}
-
-	public void setCode(String code) {
-		this.code = code;
 	}
 
 }

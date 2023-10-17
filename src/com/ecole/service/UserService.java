@@ -122,7 +122,7 @@ public class UserService implements Serializable {
 	@SuppressWarnings("unchecked")
 	public void chargerListeUser() {
 		listeUser = new ArrayList<Utilisateur>();
-		listeUser = dataSource.createQuery(" from Utilisateur u  ").list();
+		listeUser = dataSource.createQuery(" from Utilisateur u inner join fetch u.institution i where i=:pi ").setParameter("pi", utilisateur.getInstitution()).list();
 	}
 
 	public Boolean verifiePwd() {
@@ -219,6 +219,7 @@ public class UserService implements Serializable {
 			this.user.setActif(true);
 			// this.user.setBloquer(false);
 			user.setInitPass(true);
+			user.setInstitution(utilisateur.getInstitution());
 			dataSource.save(this.user);
 			dataSource.flush();
 			FacesMessages.instance().addToControlFromResourceBundle("infoGenerique", "Opération Effectué avec succès");

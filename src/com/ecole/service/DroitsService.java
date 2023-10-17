@@ -175,8 +175,9 @@ public class DroitsService implements Serializable {
 		listeDroitsP = new ArrayList<DroitsProfile>();
 		listeDroitsP = dataSource
 				.createQuery(
-						"From DroitsProfile d inner join fetch d.profile p inner join fetch d.menu  where p=:pp")
-				.setParameter("pp", profile).list();
+						"From DroitsProfile d inner join fetch d.profile p inner join fetch d.menu inner join fetch d.institution i "
+						+ " where p=:pp and i=:pi")
+				.setParameter("pp", profile).setParameter("pi", utilisateur.getInstitution()).list();
 
 		if (listeDroitsP.size() > 0) {
 			for (DroitsProfile d : listeDroitsP) {
@@ -308,6 +309,7 @@ public class DroitsService implements Serializable {
 			if (m.isChoix()) {
 				DroitsProfile d = new DroitsProfile();
 				d.setMenu(m);
+				d.setInstitution(utilisateur.getInstitution());
 				d.setProfile(profile);
 				dataSource.saveOrUpdate(d);
 			}

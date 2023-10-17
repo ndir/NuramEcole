@@ -39,6 +39,7 @@ public class DroitsProfile implements Serializable {
 	
 	private Profile profile;
 	
+	private Institution institution;
 	
 	
 
@@ -70,6 +71,16 @@ public class DroitsProfile implements Serializable {
 
 	public void setProfile(Profile profile) {
 		this.profile = profile;
+	}
+
+	@ManyToOne(fetch=FetchType.LAZY)
+	@JoinColumn(name="idinstitution")
+	public Institution getInstitution() {
+		return institution;
+	}
+
+	public void setInstitution(Institution institution) {
+		this.institution = institution;
 	}
 
 
