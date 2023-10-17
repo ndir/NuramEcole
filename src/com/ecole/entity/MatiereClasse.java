@@ -37,6 +37,8 @@ public class MatiereClasse implements Serializable {
 	private String annee_scol;
 	
 	private Evaluation eval;
+	
+	private Institution institution;
 
 	@Id
 	@GeneratedValue
@@ -117,6 +119,16 @@ public class MatiereClasse implements Serializable {
 
 	public void setEval(Evaluation eval) {
 		this.eval = eval;
+	}
+
+	@ManyToOne(fetch=FetchType.LAZY)
+	@JoinColumn(name="idinstitution")
+	public Institution getInstitution() {
+		return institution;
+	}
+
+	public void setInstitution(Institution institution) {
+		this.institution = institution;
 	}
 	
 

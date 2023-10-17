@@ -11,9 +11,11 @@ import org.hibernate.Session;
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
+import org.jboss.seam.annotations.Out;
 import org.jboss.seam.annotations.Scope;
 import org.jboss.seam.faces.FacesMessages;
 
+import com.chaka.projet.entity.Utilisateur;
 import com.ecole.entity.AnneeScolaire;
 import com.ecole.entity.Classe;
 import com.ecole.entity.MatiereClasse;
@@ -40,8 +42,15 @@ public class ClasseService implements Serializable {
 	private List<MatiereClasse> listeMatClasse = new ArrayList<MatiereClasse>();
 
 	private String niv;
-	
+
 	private String typeNote;
+
+	/**
+	 * Utilisateur loggué
+	 */
+	@In(required = false)
+	@Out(required = false)
+	private Utilisateur utilisateur;
 
 	@In
 	private Session dataSource;
@@ -52,7 +61,8 @@ public class ClasseService implements Serializable {
 	@SuppressWarnings("unchecked")
 	public void chargerListeClasse() {
 		listeClasse = new ArrayList<Classe>();
-		listeClasse = dataSource.createQuery(" From Classe ").list();
+		listeClasse = dataSource.createQuery(" From Classe c inner join fetch c.institution i where i=:pi  ")
+				.setParameter("pi", utilisateur.getInstitution()).list();
 	}
 
 	public String versClasse() {
@@ -74,7 +84,7 @@ public class ClasseService implements Serializable {
 	public void annulerAjout() {
 		this.setClasse(new Classe());
 	}
-	
+
 	public void chargerListeNiveau() {
 		if (classe.getNiveau().getCode().equalsIgnoreCase("ELE")) {
 			setTypeNote("1");
@@ -104,6 +114,7 @@ public class ClasseService implements Serializable {
 			return;
 		}
 		if (classe.getIdclasse() == null) {
+			classe.setInstitution(utilisateur.getInstitution());
 			dataSource.save(classe);
 		} else {
 

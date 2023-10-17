@@ -87,8 +87,9 @@ public class ParamInscripionService implements Serializable {
 		liste = new ArrayList<ParamInscription>();
 		liste = dataSource
 				.createQuery(
-						"From ParamInscription p inner join fetch p.classe inner join fetch p.annee where p.annee =:pa")
-				.setParameter("pa", annee).list();
+						"From ParamInscription p inner join fetch p.classe inner join fetch p.annee "
+						+ " inner join fetch p.institution i where p.annee =:pa and i=:pi")
+				.setParameter("pa", annee).setParameter("pi", utilisateur.getInstitution()).list();
 
 	}
 
@@ -155,6 +156,7 @@ public class ParamInscripionService implements Serializable {
 			ParamInscription p = new ParamInscription();
 			p.setAnnee(annee);
 			p.setClasse(cl);
+			p.setInstitution(utilisateur.getInstitution());
 			p.setMensualite(param.getMensualite());
 			p.setDroit_ins(param.getDroit_ins());
 			dataSource.merge(p);

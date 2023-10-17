@@ -11,13 +11,11 @@ import org.hibernate.Session;
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
+import org.jboss.seam.annotations.Out;
 import org.jboss.seam.annotations.Scope;
 import org.jboss.seam.faces.FacesMessages;
 
-
-
-
-
+import com.chaka.projet.entity.Utilisateur;
 import com.ecole.entity.Matiere;
 import com.ecole.entity.Niveau;
 
@@ -40,18 +38,23 @@ public class MatiereService implements Serializable {
 	private List<Matiere> listeMatiere = new ArrayList<Matiere>();
 
 	private Matiere matiere = new Matiere();
-	
+
 	private Niveau niveau = new Niveau();
-	
+
 	private List<Niveau> listeNiveau = new ArrayList<Niveau>();
-	
+
 	private String typenote;
+
+	@In(required = false)
+	@Out(required = false)
+	private Utilisateur utilisateur;
 
 	@SuppressWarnings("unchecked")
 	public void chargerListeMat() {
 		listeMatiere = new ArrayList<Matiere>();
-		listeMatiere = dataSource.createQuery(" From Matiere ").list();
-		
+		listeMatiere = dataSource.createQuery(" From Matiere m inner join fetch m.institution i where i=:pi")
+				.setParameter("pi", utilisateur.getInstitution()).list();
+
 	}
 
 	public String versMatieres() {
@@ -65,41 +68,39 @@ public class MatiereService implements Serializable {
 	}
 
 	public Matiere getMatiereFrom() {
-		return (Matiere) dataSource
-				.createQuery("From Matiere where libelle=:pl")
+		return (Matiere) dataSource.createQuery("From Matiere where libelle=:pl")
 				.setParameter("pl", matiere.getLibelle()).uniqueResult();
 	}
 
 	public void ajouterMat() {
-		System.out.println("Ajout matiere");
 		if (this.matiere.getLibelle().isEmpty()) {
-			FacesMessages.instance().addToControlFromResourceBundle(
-					"erreurGenerique", "Veuillez renseigner le libellé");
+			FacesMessages.instance().addToControlFromResourceBundle("erreurGenerique",
+					"Veuillez renseigner le libellé");
 			return;
 		}
-		
-		if(niveau.getId() == null) {
+
+		if (niveau.getId() == null) {
 			return;
 		}
 
 		Matiere m = getMatiereFrom();
 
 		if (m != null) {
-			FacesMessages.instance().addToControlFromResourceBundle(
-					"erreurGenerique", "la matière "+matiere.getLibelle() +" existe déja");
+			FacesMessages.instance().addToControlFromResourceBundle("erreurGenerique",
+					"la matière " + matiere.getLibelle() + " existe déja");
 			return;
 		}
 
 		if (matiere.getIdmatiere() == null) {
 			matiere.setNiveau(niveau);
+			matiere.setInstitution(utilisateur.getInstitution());
 			dataSource.save(matiere);
 		} else {
 			dataSource.update(matiere);
 		}
 		chargerListeMat();
 		this.setMatiere(new Matiere());
-		FacesMessages.instance().addToControlFromResourceBundle(
-				"infoGenerique", "matiere ajoutée avec succés");
+		FacesMessages.instance().addToControlFromResourceBundle("infoGenerique", "matiere ajoutée avec succés");
 	}
 
 	public void versModifierMat(Matiere matiere) {

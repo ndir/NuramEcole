@@ -45,6 +45,8 @@ public class ParamInscription implements Serializable {
 	private Double Rpayer;
 
 	private float taux;
+	
+	private Institution institution;
 
 	@Id
 	@GeneratedValue
@@ -151,6 +153,16 @@ public class ParamInscription implements Serializable {
 
 	public void setTaux(float taux) {
 		this.taux = taux;
+	}
+
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "idinstitution")
+	public Institution getInstitution() {
+		return institution;
+	}
+
+	public void setInstitution(Institution institution) {
+		this.institution = institution;
 	}
 
 }

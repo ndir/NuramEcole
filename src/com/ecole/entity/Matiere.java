@@ -37,6 +37,7 @@ public class Matiere implements Serializable {
 	
 	private Niveau niveau;
 	
+	private Institution institution;
 	
 
 	@Id
@@ -112,6 +113,16 @@ public class Matiere implements Serializable {
 
 	public void setNiveau(Niveau niveau) {
 		this.niveau = niveau;
+	}
+
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "idinstitution")
+	public Institution getInstitution() {
+		return institution;
+	}
+
+	public void setInstitution(Institution institution) {
+		this.institution = institution;
 	}
 
 }

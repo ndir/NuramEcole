@@ -50,6 +50,8 @@ public class Inscription  implements Serializable {
 	private Double resteApayer;
 	
 	private boolean paiemens;
+	
+	private Institution institution;
 
 	@Id
 	@GeneratedValue
@@ -351,6 +353,16 @@ public class Inscription  implements Serializable {
 
 	public void setPaiemens(boolean paiemens) {
 		this.paiemens = paiemens;
+	}
+
+	@ManyToOne(fetch=FetchType.LAZY)
+	@JoinColumn(name="idinstitution")
+	public Institution getInstitution() {
+		return institution;
+	}
+
+	public void setInstitution(Institution institution) {
+		this.institution = institution;
 	}
 	
 

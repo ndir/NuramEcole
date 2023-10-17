@@ -11,9 +11,11 @@ import org.hibernate.Session;
 import org.jboss.seam.ScopeType;
 import org.jboss.seam.annotations.In;
 import org.jboss.seam.annotations.Name;
+import org.jboss.seam.annotations.Out;
 import org.jboss.seam.annotations.Scope;
 import org.jboss.seam.faces.FacesMessages;
 
+import com.chaka.projet.entity.Utilisateur;
 import com.ecole.entity.AnneeScolaire;
 import com.ecole.entity.Classe;
 import com.ecole.entity.Evaluation;
@@ -54,6 +56,10 @@ public class MatiereClasseService implements Serializable {
 	private String typenote;
 
 	private String niv;
+	
+	@In(required = false)
+	@Out(required = false)
+	private Utilisateur utilisateur;
 
 	public Niveau getNiveau() {
 		return niveau;
@@ -80,19 +86,19 @@ public class MatiereClasseService implements Serializable {
 	@SuppressWarnings("unchecked")
 	public void chargerMatieres() {
 		listeMatiere = new ArrayList<Matiere>();
-		listeMatiere = dataSource.createQuery(" From Matiere m inner join fetch m.niveau n where n =:pn")
-				.setParameter("pn", niveau).list();
+		listeMatiere = dataSource.createQuery(" From Matiere m inner join fetch m.niveau n inner join fetch m.institution i "
+				+ " where n =:pn and i=:pi ")
+				.setParameter("pn", niveau).setParameter("pi", utilisateur.getInstitution()).list();
 
 	}
 
 	@SuppressWarnings("unchecked")
 	public void voirMatiereClasse() {
-
 		listeMatClasse = new ArrayList<MatiereClasse>();
 		listeMatClasse = dataSource.createQuery(
-				"From MatiereClasse m inner join fetch m.matiere ma inner join fetch m.classe c inner join fetch m.eval ev"
-						+ " where  m.annee_scol =:pan  ")
-				.setParameter("pan", anneeScolaire.getAnneeScolaire()).list();
+				"From MatiereClasse m inner join fetch m.matiere ma inner join fetch m.classe c left outer join fetch m.eval ev inner join fetch m.institution i"
+						+ " where  m.annee_scol =:pan and i =:pi")
+				.setParameter("pan", anneeScolaire.getAnneeScolaire()).setParameter("pi", utilisateur.getInstitution()).list();
 
 	}
 
@@ -106,8 +112,9 @@ public class MatiereClasseService implements Serializable {
 	@SuppressWarnings("unchecked")
 	public void chargerListeClasse() {
 		listeClasse = new ArrayList<Classe>();
-		listeClasse = dataSource.createQuery(" From Classe c inner join fetch c.niveau n where n=:pn")
-				.setParameter("pn", niveau).list();
+		listeClasse = dataSource.createQuery(" From Classe c inner join fetch c.niveau n inner join "
+				+ " fetch c.institution i where n=:pn and i=:pi")
+				.setParameter("pn", niveau).setParameter("pi", utilisateur.getInstitution()).list();
 		if (niveau.getCode().equalsIgnoreCase("ELE")) {
 			typenote = "1";
 		}
@@ -122,27 +129,26 @@ public class MatiereClasseService implements Serializable {
 
 	@SuppressWarnings("unchecked")
 	public void ajouterClasseMatiere() {
-
 		List<Classe> listeClasse = dataSource.createQuery("From Classe c where niv =:pniv").setParameter("pniv", niv)
 				.list();
 		for (Classe cl : listeClasse) {
-			
 			MatiereClasse m = new MatiereClasse();
 			for (Matiere mat : listeMatiere) {
 				if (mat.getCoef() > 0) {
 					if (typenote.equalsIgnoreCase("1")) {
 						m = (MatiereClasse) dataSource.createQuery(
-								"From MatiereClasse m inner join fetch m.matiere ma inner join fetch m.classe c inner join fetch m.eval ev"
-										+ " where ma =:pma and c =:pc and m.annee_scol =:pan and ev =:pev ")
+								"From MatiereClasse m inner join fetch m.matiere ma inner join fetch m.classe c inner join fetch m.eval ev "
+								+ " inner join fetch m.institution i "
+										+ " where ma =:pma and c =:pc and m.annee_scol =:pan and ev =:pev and i=:pi")
 								.setParameter("pma", mat).setParameter("pc", matClasse.getClasse())
 								.setParameter("pan", anneeScolaire.getAnneeScolaire())
-								.setParameter("pev", matClasse.getEval()).uniqueResult();
+								.setParameter("pev", matClasse.getEval()).setParameter("pi", utilisateur.getInstitution()).uniqueResult();
 					} else {
 						m = (MatiereClasse) dataSource.createQuery(
-								"From MatiereClasse m inner join fetch m.matiere ma inner join fetch m.classe c "
-										+ " where ma =:pma and c =:pc and m.annee_scol =:pan  ")
+								"From MatiereClasse m inner join fetch m.matiere ma inner join fetch m.classe c  inner join fetch m.institution i"
+										+ " where ma =:pma and c =:pc and m.annee_scol =:pan and i=:pi  ")
 								.setParameter("pma", mat).setParameter("pc", matClasse.getClasse())
-								.setParameter("pan", anneeScolaire.getAnneeScolaire()).uniqueResult();
+								.setParameter("pan", anneeScolaire.getAnneeScolaire()).setParameter("pi", utilisateur.getInstitution()).uniqueResult();
 					}
 					if (m == null) {
 						MatiereClasse mc = new MatiereClasse();
@@ -150,6 +156,7 @@ public class MatiereClasseService implements Serializable {
 						mc.setClasse(cl);
 						mc.setCoef(mat.getCoef());
 						mc.setMatiere(mat);
+						mc.setInstitution(utilisateur.getInstitution());
 						if (typenote.equalsIgnoreCase("1"))
 							mc.setEval(matClasse.getEval());
 						dataSource.save(mc);
