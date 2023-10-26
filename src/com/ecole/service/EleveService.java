@@ -244,11 +244,11 @@ public class EleveService implements Serializable {
 					"Veuillez renseigner le nom et le prénom de l'éléve");
 			return;
 		}
-		if (this.eleve.getDateNaissance() == null) {
-			FacesMessages.instance().addToControlFromResourceBundle("erreurGenerique",
-					"Veuillez renseigner la date de naissance");
-			return;
-		}
+//		if (this.eleve.getDateNaissance() == null) {
+//			FacesMessages.instance().addToControlFromResourceBundle("erreurGenerique",
+//					"Veuillez renseigner la date de naissance");
+//			return;
+//		}
 		if (this.classe == null) {
 			FacesMessages.instance().addToControlFromResourceBundle("erreurGenerique", "Veuillez chosir une classe");
 			return;
@@ -259,9 +259,11 @@ public class EleveService implements Serializable {
 				.setParameter("pannee", annee).setParameter("pclasse", classe)
 				.setParameter("pi", utilisateur.getInstitution()).uniqueResult();
 		if (paramins != null) {
-			int year = ChakaUtils.getCurrentYear(ChakaUtils.sysDate());
-			int year1 = ChakaUtils.getCurrentYear(eleve.getDateNaissance());
-			eleve.setAge(year - year1);
+			if (this.eleve.getDateNaissance() != null) {
+				int year = ChakaUtils.getCurrentYear(ChakaUtils.sysDate());
+				int year1 = ChakaUtils.getCurrentYear(eleve.getDateNaissance());
+				eleve.setAge(year - year1);
+			}
 			dataSource.save(eleve);
 			inscription.setParamins(paramins);
 			inscription.setEleve(eleve);

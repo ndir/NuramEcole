@@ -108,8 +108,10 @@ public class DeliberationMS implements Serializable {
 	private String d3;
 	
 	private String ranga;
+	private String rangm;
 	private String use;
 	private String usean;
+	private String userang;
 	private Institution institution;
 
 	@Id
@@ -522,6 +524,22 @@ public class DeliberationMS implements Serializable {
 
 	public void setInstitution(Institution institution) {
 		this.institution = institution;
+	}
+
+	public String getUserang() {
+		return userang;
+	}
+
+	public void setUserang(String userang) {
+		this.userang = userang;
+	}
+
+	public String getRangm() {
+		return rangm;
+	}
+
+	public void setRangm(String rangm) {
+		this.rangm = rangm;
 	}
 
 }
