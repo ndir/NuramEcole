@@ -2,7 +2,7 @@
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="bulletin" language="groovy" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="89af52a8-d2ec-4f35-8f4d-da069730ec92">
 	<property name="ireport.zoom" value="1.5"/>
 	<property name="ireport.x" value="0"/>
-	<property name="ireport.y" value="273"/>
+	<property name="ireport.y" value="0"/>
 	<parameter name="logo" class="java.io.InputStream"/>
 	<parameter name="ecole" class="java.lang.String"/>
 	<parameter name="slogan" class="java.lang.String"/>
@@ -86,7 +86,7 @@
 		<band height="263" splitType="Stretch">
 			<image>
 				<reportElement x="227" y="49" width="88" height="50" uuid="2e970148-b146-41b9-99cd-da53529800c5"/>
-				<imageExpression><![CDATA[$P{logo}]]></imageExpression>
+				<imageExpression><![CDATA[$F{logo}]]></imageExpression>
 			</image>
 			<textField>
 				<reportElement x="0" y="29" width="203" height="20" uuid="9fb14f85-97f4-4793-bb0f-8ac3e9db9c6a"/>

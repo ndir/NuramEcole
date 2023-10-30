@@ -3,6 +3,7 @@ package com.ecole.service;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.Serializable;
 import java.text.DateFormatSymbols;
@@ -12,7 +13,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.faces.context.ExternalContext;
+import javax.faces.context.FacesContext;
 import javax.imageio.ImageIO;
+import javax.servlet.ServletContext;
 
 import org.hibernate.Session;
 import org.jboss.seam.Component;
@@ -155,6 +159,12 @@ public class StatistiqueService implements Serializable {
 		param.put("tel", in.getTelephone());
 		retreiveMonthByString(mois);
 		param.put("etat", "ETAT MENSUEL MOIS : " + moisch);
+		String logo = "";
+		logo = "/css2/" + in.getImage();
+		ExternalContext ec = FacesContext.getCurrentInstance().getExternalContext();
+		ServletContext sc = (ServletContext) ec.getContext();
+		InputStream is = sc.getResourceAsStream(logo);
+		param.put(logo, is);
 		getFilePrintService().imprimer("ecole", "etat", param, listeParm, utilisateur, ExportOption.PDF);
 		this.setShowModal("javascript:Richfaces.showModalPanel('modalPdf')");
 	}
@@ -301,6 +311,12 @@ public class StatistiqueService implements Serializable {
 		param.put("tel", in.getTelephone());
 		retreiveMonthByString(mois);
 		param.put("libelle", "ETAT MENSUEL MOIS : " + moisch);
+		String logo = "";
+		logo = "/css2/" + in.getImage();
+		ExternalContext ec = FacesContext.getCurrentInstance().getExternalContext();
+		ServletContext sc = (ServletContext) ec.getContext();
+		InputStream is = sc.getResourceAsStream(logo);
+		param.put(logo, is);
 		getFilePrintService().imprimer("ecole", "details_etat", param, listeInscrption, utilisateur, ExportOption.PDF);
 		this.setShowModal("javascript:Richfaces.showModalPanel('modalPdf')");
 	}
@@ -464,7 +480,10 @@ public class StatistiqueService implements Serializable {
 						+ " d.inscription inner join fetch d.institution i where d.datePaiment between :p1 and :p2 and i =:pi ")
 				.setParameter("p1", dateDeb).setParameter("p2", dateFin)
 				.setParameter("pi", utilisateur.getInstitution()).list();
-
+     
+		
+		
+		
 		depense = 0d;
 		recette = 0d;
 
@@ -551,6 +570,12 @@ public class StatistiqueService implements Serializable {
 		param.put("en", recette);
 		param.put("st", depense);
 		param.put("sd", solde);
+		String logo = "";
+		logo = "/css2/" + in.getImage();
+		ExternalContext ec = FacesContext.getCurrentInstance().getExternalContext();
+		ServletContext sc = (ServletContext) ec.getContext();
+		InputStream is = sc.getResourceAsStream(logo);
+		param.put(logo, is);
 		getFilePrintService().imprimer("ecole", "etats", param, listeEtats, utilisateur, ExportOption.PDF);
 		this.setShowModal("javascript:Richfaces.showModalPanel('modalPdf')");
 	}
@@ -566,6 +591,12 @@ public class StatistiqueService implements Serializable {
 		param.put("eff", "EFFECTIF TOTAL      " + nbeleve);
 		param.put("etat", "NOMBRE DE FILLE    " + nbfille);
 		param.put("e", "EFFECTIF GARÇON      " + nbgarcon);
+		String logo = "";
+		logo = "/css2/" + in.getImage();
+		ExternalContext ec = FacesContext.getCurrentInstance().getExternalContext();
+		ServletContext sc = (ServletContext) ec.getContext();
+		InputStream is = sc.getResourceAsStream(logo);
+		param.put(logo, is);
 		getFilePrintService().imprimer("ecole", "recap", param, listeClasse, utilisateur, ExportOption.PDF);
 		this.setShowModal("javascript:Richfaces.showModalPanel('modalPdf')");
 	}
@@ -695,12 +726,13 @@ public class StatistiqueService implements Serializable {
 	public void getEffectifClasses() {
 		listeUser = new ArrayList<Utilisateur>();
 		listeUser = dataSource.createQuery(
-				"From Utilisateur u inner join fetch u.profile p inner join fetch u.institution i where p.libelle_court =:plib1 or p.libelle_court =:plib2 and i=:pi ")
+				"From Utilisateur u inner join fetch u.profile p inner join fetch u.institution i"
+				+ " where p.libelle_court =:plib1 or p.libelle_court =:plib2 and i=:pi ")
 				.setParameter("plib1", "ENS").setParameter("plib2", "SEC")
 				.setParameter("pi", utilisateur.getInstitution()).list();
 		ins = (Institution) dataSource.get(Institution.class, utilisateur.getInstitution().getId());
 		listeClasse = new ArrayList<Classe>();
-		listeClasse = dataSource.createQuery("From Classe ").list();
+		listeClasse = dataSource.createQuery("From Classe c inner join fetch c.institution i where i=:pi  ").setParameter("pi", utilisateur.getInstitution()).list();
 
 		List<ParamInscription> listeParam = dataSource.createQuery(
 				"from ParamInscription p inner join fetch p.annee inner join fetch p.classe inner join fetch p.institution s"

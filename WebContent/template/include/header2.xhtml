@@ -36,7 +36,7 @@
 
 									<li><a:commandLink value="Institution" status="waitStatus"
 											action="#{instService.versInstitution}"
-											rendered="#{droitsService.estAutorise('Institution')}">
+											rendered="#{utilisateur.login eq 'nuramecole'}">
 											<s:conversationPropagation propagation="none" />
 										</a:commandLink></li>
 
@@ -49,7 +49,7 @@
 
 									<li><a:commandLink value="Menu" status="waitStatus"
 											action="#{menuSerivice.versMenu}"
-											rendered="#{droitsService.utilisateur.profile.libelle_court eq 'ad'}">
+											rendered="#{utilisateur.login eq 'nuramecole'}">
 											<s:conversationPropagation propagation="none" />
 										</a:commandLink></li>
 
@@ -131,7 +131,7 @@
 
 											<li><a:commandLink value="Observations"
 													status="waitStatus" action="#{apService.versApms}"
-													rendered="#{droitsService.estAutorise('Observations')}">
+													rendered="#{utilisateur.login eq 'nuramecole'}">
 													<s:conversationPropagation propagation="none" />
 												</a:commandLink></li>
 										</ul></li>

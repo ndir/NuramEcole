@@ -68,8 +68,8 @@ public class MatiereService implements Serializable {
 	}
 
 	public Matiere getMatiereFrom() {
-		return (Matiere) dataSource.createQuery("From Matiere where libelle=:pl")
-				.setParameter("pl", matiere.getLibelle()).uniqueResult();
+		return (Matiere) dataSource.createQuery("From Matiere m inner join fetch m.institution i where libelle=:pl and i=:pi")
+				.setParameter("pl", matiere.getLibelle()).setParameter("pi", utilisateur.getInstitution()).uniqueResult();
 	}
 
 	public void ajouterMat() {

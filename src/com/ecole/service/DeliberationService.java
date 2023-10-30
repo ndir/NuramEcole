@@ -292,7 +292,7 @@ public class DeliberationService implements Serializable {
 			rang = 1;
 			itter = listeDeliF.size();
 			itter1 = 0;
-			while (itter > itter1) {
+			while (listeDeliF.size() > 0) {
 				DeliberationFinal deli = gererSupAn();
 				deli.setUse("X");
 				List<DeliberationFinal> liste = new ArrayList<DeliberationFinal>();
@@ -527,6 +527,8 @@ public class DeliberationService implements Serializable {
 	@SuppressWarnings("unchecked")
 	public void imprimerTout() {
 		Institution in = (Institution) dataSource.get(Institution.class, utilisateur.getInstitution().getId());
+		String logo = "";
+		logo = "/css2/" + in.getImage();
 		ParamInscription p = (ParamInscription) dataSource.createQuery(
 				"From ParamInscription p inner join fetch p.classe c inner join fetch p.annee pa inner join fetch p.institution i "
 						+ " where c =:pc and pa =:pa and i =:pi ")
@@ -545,37 +547,36 @@ public class DeliberationService implements Serializable {
 		Double total = 0.0;
 		listeDeli = new ArrayList<Deliberation>();
 		for (Deliberation d : listeDeliberationF) {
-			if (d.isChoix()) {
-				total = 0.0;
-
-				listeNote = new ArrayList<Note>();
-				listeNote = dataSource.createQuery("From Note n inner join fetch n.cl c inner join fetch n.eleve e "
-						+ " inner join fetch n.evaluation ev inner join fetch n.annee an inner join fetch n.matiere  "
-						+ " inner join fetch n.institution i"
-						+ " where c =:pc and an =:pan and ev =:pev and e =:pe and i =:pi").setParameter("pc", classe)
-						.setParameter("pan", annee).setParameter("pev", evaluation).setParameter("pe", d.getEleve())
-						.setParameter("pi", utilisateur.getInstitution()).list();
+			// if (d.isChoix()) {
+			total = 0.0;
+			listeNote = new ArrayList<Note>();
+			listeNote = dataSource.createQuery("From Note n inner join fetch n.cl c inner join fetch n.eleve e "
+					+ " inner join fetch n.evaluation ev inner join fetch n.annee an inner join fetch n.matiere  "
+					+ " inner join fetch n.institution i"
+					+ " where c =:pc and an =:pan and ev =:pev and e =:pe and i =:pi").setParameter("pc", classe)
+					.setParameter("pan", annee).setParameter("pev", evaluation).setParameter("pe", d.getEleve())
+					.setParameter("pi", utilisateur.getInstitution()).list();
 //				for (Note n : listeNote) {
 //					total = total + n.getNote();
 //				}
-				for (Note n : listeNote) {
-					n.setEcole(in.getNom());
-					n.setEff("" + liste.size());
-					n.setSlogan(in.getSologan());
-					n.setTel(in.getTelephone());
-					n.setTotal1(d.getCumul());
-					n.setMoy(d.getMoy());
-					n.setAp(d.getAp());
-					n.setRang(d.getRang());
-					ExternalContext ec = FacesContext.getCurrentInstance().getExternalContext();
-					ServletContext sc = (ServletContext) ec.getContext();
-					InputStream is = sc.getResourceAsStream("/css2/logogstock.jpg");
-					n.setLogo(is);
-				}
-				d.setListeNote(listeNote);
-				listeDeli.add(d);
-
+			for (Note n : listeNote) {
+				n.setEcole(in.getNom());
+				n.setEff("" + liste.size());
+				n.setSlogan(in.getSologan());
+				n.setTel(in.getTelephone());
+				n.setTotal1(d.getCumul());
+				n.setMoy(d.getMoy());
+				n.setAp(d.getAp());
+				n.setRang(d.getRang());
+				ExternalContext ec = FacesContext.getCurrentInstance().getExternalContext();
+				ServletContext sc = (ServletContext) ec.getContext();
+				InputStream is = sc.getResourceAsStream(logo);
+				n.setLogo(is);
 			}
+			d.setListeNote(listeNote);
+			listeDeli.add(d);
+
+			// }
 		}
 
 		getFilePrintService().imprimer("ecole", "allbulletin", param, listeDeli, utilisateur, ExportOption.PDF);
@@ -584,7 +585,9 @@ public class DeliberationService implements Serializable {
 
 	@SuppressWarnings("unchecked")
 	public void imprimerToutMS() {
-		Institution in = (Institution) dataSource.createQuery("From Institution").uniqueResult();
+		Institution in = (Institution) dataSource.get(Institution.class, utilisateur.getInstitution().getId());
+		String logo = "";
+		logo = "/css2/" + in.getImage();
 		ParamInscription p = (ParamInscription) dataSource.createQuery(
 				"From ParamInscription p inner join fetch p.classe c inner join fetch p.annee pa inner join fetch p.institution i"
 						+ " where c =:pc and pa =:pa and i =:pi")
@@ -617,7 +620,7 @@ public class DeliberationService implements Serializable {
 
 			ExternalContext ec = FacesContext.getCurrentInstance().getExternalContext();
 			ServletContext sc = (ServletContext) ec.getContext();
-			InputStream is = sc.getResourceAsStream("/css2/logogstock.jpg");
+			InputStream is = sc.getResourceAsStream(logo);
 
 			listeDeliberationMS.get(0).setEcole(in.getNom());
 			listeDeliberationMS.get(0).setEff("" + liste.size());
@@ -672,7 +675,9 @@ public class DeliberationService implements Serializable {
 	public void imprimerToutAn() {
 		listeEval = new ArrayList<Evaluation>();
 		listeEval = dataSource.createQuery("From Evaluation ").list();
-		Institution in = (Institution) dataSource.get(Institution.class, utilisateur.getInstitution());
+		Institution in = (Institution) dataSource.get(Institution.class, utilisateur.getInstitution().getId());
+		String logo = "";
+		logo = "/css2/" + in.getImage();
 		listeNote = new ArrayList<Note>();
 		listeNote = new ArrayList<Note>();
 
@@ -692,7 +697,7 @@ public class DeliberationService implements Serializable {
 		listeNote = dataSource
 				.createQuery("From Note n inner join fetch n.cl c inner join fetch n.eleve e "
 						+ " inner join fetch n.evaluation ev inner join fetch n.annee an inner join fetch n.matiere "
-						+ " inner join feth n.institution i" + " where c =:pc and an =:pan and i :=pi")
+						+ " inner join fetch n.institution i" + " where c =:pc and an =:pan and i =:pi")
 				.setParameter("pc", classe).setParameter("pan", annee).setParameter("pi", utilisateur.getInstitution())
 				.list();
 		List<Deliberation> listeD = new ArrayList<Deliberation>();
@@ -708,7 +713,7 @@ public class DeliberationService implements Serializable {
 			deli.getListeNote().get(deli.getListeNote().size() - 1).setMoyan(d.getMoyans());
 			ExternalContext ec = FacesContext.getCurrentInstance().getExternalContext();
 			ServletContext sc = (ServletContext) ec.getContext();
-			InputStream is = sc.getResourceAsStream("/css2/logogstock.jpg");
+			InputStream is = sc.getResourceAsStream(logo);
 			deli.getListeNote().get(0).setLogo(is);
 
 			if (d.getDecision().equalsIgnoreCase("Passe en classe supérieure")) {
@@ -895,6 +900,8 @@ public class DeliberationService implements Serializable {
 		listeEval = new ArrayList<Evaluation>();
 		listeEval = dataSource.createQuery("From Evaluation ").list();
 		Institution in = (Institution) dataSource.get(Institution.class, utilisateur.getInstitution().getId());
+		String logo = "";
+		logo = "/css2/" + in.getImage();
 		listeNote = new ArrayList<Note>();
 		listeNote = new ArrayList<Note>();
 		listeNote = dataSource
@@ -1071,6 +1078,10 @@ public class DeliberationService implements Serializable {
 		param.put("tel", in.getTelephone());
 		param.put("moy", deli.getMoyan());
 		param.put("rang", deli.getRangan());
+		ExternalContext ec = FacesContext.getCurrentInstance().getExternalContext();
+		ServletContext sc = (ServletContext) ec.getContext();
+		InputStream is = sc.getResourceAsStream(logo);
+		param.put(logo, is);
 		if (deli.getDecision().equalsIgnoreCase("Passe en classe supérieure")) {
 			param.put("d1", "X  Passe en classe supérieure");
 		} else {
@@ -1089,6 +1100,7 @@ public class DeliberationService implements Serializable {
 
 //		param.put("app", deli.getAp());
 		param.put("eff", liste.size());
+		listeNoteD.get(0).setLogo(is);
 		getFilePrintService().imprimer("ecole", "bulletinan", param, listeNoteD, utilisateur, ExportOption.PDF);
 
 		this.setShowModal("javascript:Richfaces.showModalPanel('modalPdf')");
@@ -1096,7 +1108,7 @@ public class DeliberationService implements Serializable {
 
 	@SuppressWarnings("unchecked")
 	public void imprimerBulletin(Deliberation deli) {
-		Institution in = (Institution) dataSource.createQuery("From Institution").uniqueResult();
+		Institution in = (Institution) dataSource.get(Institution.class, utilisateur.getInstitution().getId());
 		listeNote = new ArrayList<Note>();
 		listeNote = dataSource
 				.createQuery("From Note n inner join fetch n.cl c inner join fetch n.eleve e "
@@ -1125,16 +1137,23 @@ public class DeliberationService implements Serializable {
 					.setParameter("pp", p).setParameter("ps", utilisateur.getInstitution()).list();
 
 		}
+		String logo = "";
+		logo = "/css2/" + in.getImage();
 		Map<String, Object> param = new HashMap<String, Object>();
 		param.put("ecole", in.getNom());
 		param.put("slogan", in.getSologan());
 		param.put("tel", in.getTelephone());
 		param.put("moy", deli.getMoy());
 		param.put("rang", deli.getRang());
-
+		ExternalContext ec = FacesContext.getCurrentInstance().getExternalContext();
+		ServletContext sc = (ServletContext) ec.getContext();
+		InputStream is = sc.getResourceAsStream(logo);
+		System.out.println("LOGO " + logo);
+		param.put(logo, is);
 		param.put("total", deli.getCumul());
 		param.put("app", deli.getAp());
 		param.put("eff", liste.size());
+		listeNote.get(0).setLogo(is);
 		getFilePrintService().imprimer("ecole", "bulletin", param, listeNote, utilisateur, ExportOption.PDF);
 		this.setShowModal("javascript:Richfaces.showModalPanel('modalPdf')");
 	}
@@ -1148,6 +1167,12 @@ public class DeliberationService implements Serializable {
 		param.put("tel", in.getTelephone());
 		param.put("ia", in.getIa());
 		param.put("ief", in.getIef());
+		String logo = "";
+		logo = "/css2/" + in.getImage();
+		ExternalContext ec = FacesContext.getCurrentInstance().getExternalContext();
+		ServletContext sc = (ServletContext) ec.getContext();
+		InputStream is = sc.getResourceAsStream(logo);
+		param.put(logo, is);
 		ParamInscription p = (ParamInscription) dataSource.createQuery(
 				"From ParamInscription p inner join fetch p.classe c inner join fetch p.annee pa inner join fetch p.institution i"
 						+ " where c =:pc and pa =:pa and i =:pi ")
@@ -1180,6 +1205,7 @@ public class DeliberationService implements Serializable {
 				.setParameter("pan", annee).setParameter("pev", semestre).setParameter("pel", deli.getEleve())
 				.setParameter("pi", utilisateur.getInstitution()).list();
 		if (semestre.getCode().equalsIgnoreCase("1")) {
+			listeDeliberationMS.get(0).setLogo(is);
 			getFilePrintService().imprimer("ecole", "bulletinms", param, listeDeliberationMS, utilisateur,
 					ExportOption.PDF);
 		} else {
@@ -1199,6 +1225,7 @@ public class DeliberationService implements Serializable {
 				param.put("d3", "");
 			}
 			param.put("prang", getRangAnnuel(deli));
+			listeDeliberationMS.get(0).setLogo(is);
 			getFilePrintService().imprimer("ecole", "bulletinms2", param, listeDeliberationMS, utilisateur,
 					ExportOption.PDF);
 		}
@@ -1270,6 +1297,7 @@ public class DeliberationService implements Serializable {
 					listeEleves.add(in.getEleve());
 				}
 			}
+
 			List<Deliberation> deliexiste = dataSource
 					.createQuery("From Deliberation d inner join fetch d.classe c inner join fetch d.annee an"
 							+ " inner join fetch d.evaluation ev inner join fetch d.institution i where c =:pc and an =:pan and ev =:pev and i =:pi")
@@ -1296,6 +1324,8 @@ public class DeliberationService implements Serializable {
 
 			boolean existe = false;
 			listeElevesNonNote = new ArrayList<Eleve>();
+
+			System.out.println("Taille liste " + listeEleves.size());
 			for (Eleve ev : listeEleves) {
 				existe = false;
 				for (Matiere m : listeMatiere) {
@@ -1315,6 +1345,7 @@ public class DeliberationService implements Serializable {
 			}
 
 			if (listeElevesNonNote.size() == 0) {
+				System.out.println("Taille liste " + listeEleves.size());
 				listeDeliberationF = new ArrayList<Deliberation>();
 				listeDeliberation = new ArrayList<Deliberation>();
 				// Délibartion de la classe
@@ -1333,7 +1364,6 @@ public class DeliberationService implements Serializable {
 					cnote = "" + cumulnote;
 					ccf = "" + cumulcoef;
 					d.setMoy(moyens);
-
 					splitMoyenE(d);
 					d.setCumul("" + cnote);
 					d.setTotalcoef("" + ccoef);
@@ -1345,19 +1375,16 @@ public class DeliberationService implements Serializable {
 					d.setUser(utilisateur);
 					listeDeliberation.add(d);
 				}
-
+				System.out.println("Taille liste  listeDeliberation" + listeDeliberation.size());
 				rang = 1;
 				itter = listeDeliberation.size();
 				itter1 = 0;
-				while (itter > itter1) {
-
+				while (listeDeliberation.size() > 0) {
 					// listeDeliberationS = new ArrayList<Deliberation>();
 					Deliberation deli = gererSup();
 					// if (!eleveExiste(deli.getEleve())) {
-
 					List<Deliberation> liste = new ArrayList<Deliberation>();
 					liste = getMoyenEqual(deli);
-
 					if (liste.size() > 1) {
 						if (rang == 1) {
 							rangs = rang + "er ex æquo";
@@ -1372,35 +1399,59 @@ public class DeliberationService implements Serializable {
 						}
 					}
 					deli.setRang(rangs);
-
+					// listeDeliberationF.add(deli);
+					// listeDeliberationS.add(deli);
 					if (liste.size() > 0) {
-
+						// listeDeliberationF.add(deli);
 						for (Deliberation d : liste) {
 							d.setRang(rangs);
 							listeDeliberationF.add(d);
-
 							listeDeliberationS.add(d);
-
+							// itter1++;
 							rang = rang + 1;
 						}
-
 					} else {
+						listeDeliberationF.add(deli);
+						listeDeliberationS.add(deli);
+						// itter1++;
 						rang = rang + 1;
-
 					}
-
+					// System.out.println("Taille liste listeDeliberationF" +
+					// listeDeliberationF.size());
 					listeDeliberationSS = new ArrayList<Deliberation>();
 					listeDeliberationSS = listeDeliberation;
+					// System.out.println("listeDeliberationSS " + listeDeliberationSS.size());
 					listeDeliberation = new ArrayList<Deliberation>();
+					// System.out.println("Taille liste listeDeliberation avant" +
+					// listeDeliberation.size());
+					// int z = 0;
+//					for (Deliberation ad : listeDeliberationSS ) {
+//						//System.out.println("HERE");
+//						for (Deliberation ad1 : listeDeliberationF) {
+//							if (ad.getEleve().getIdeleve().equals(ad1.getEleve().getIdeleve())) {
+//								System.out.println(
+//										"Existe deja " + ad.getEleve().getPrenom() + " " + ad.getEleve().getNom());
+//							} else {
+//								z++;
+//								System.out.println("AJOUT "+z);
+//								listeDeliberation.add(ad);
+//							}
+//						}
+//					}
+					itter1 = listeDeliberationF.size();
 					for (Deliberation dddd : listeDeliberationSS) {
 						if (dddd.getUse().equalsIgnoreCase("X")) {
-							itter1++;
+							// itter1++;
+//							System.out.println("ELEVE " + dddd.getEleve().getPrenom() + " " + dddd.getEleve().getNom()
+//									+ "Moyenne " + dddd.getMoyenne());
+//							System.out.println("USE OK " + dddd.getUse());
 						} else {
 							listeDeliberation.add(dddd);
 						}
 
 					}
-
+					// System.out.println("Taille liste listeDeliberation apres" +
+					// listeDeliberation.size());
 				}
 				List<Appreciation> listeAp = new ArrayList<Appreciation>();
 				listeAp = dataSource.createQuery("From Appreciation a inner join fetch a.institution i where i =:pi")
@@ -1536,6 +1587,7 @@ public class DeliberationService implements Serializable {
 					total = total + d.getCumul();
 					listeDeliberationMS.add(d);
 				}
+				
 				List<Appreciations> listeAp = new ArrayList<Appreciations>();
 				listeAp = dataSource.createQuery("From Appreciations a inner join fetch a.institution i where i =:pi ")
 						.setParameter("pi", utilisateur.getInstitution()).list();
@@ -1546,7 +1598,9 @@ public class DeliberationService implements Serializable {
 						.setParameter("pan", annee).setParameter("pi", utilisateur.getInstitution()).list();
 				listeAbsence = dataSource.createQuery(
 						"From Absence r inner join fetch r.eleve inner join fetch r.annee an inner join fetch r.institution i  where an =:pan and i =:pi")
+				
 						.setParameter("pan", annee).setParameter("pi", utilisateur.getInstitution()).list();
+				
 				for (DeliberationMS deli : listeDeliberationMS) {
 					deli.setTotal(total);
 					moyens = "" + total;
@@ -1570,11 +1624,12 @@ public class DeliberationService implements Serializable {
 						moyens = "" + deli.getMoyenneAn();
 						deli.setMoyenneAns(moyens);
 						deli.setUsean("Y");
-						System.out.println("moyenne annuel " + deli.getMoyenneAn());
+
 					}
 					listeDeliberationMSF.add(deli);
 				}
 			}
+			
 			// rang = 1;
 			listeDeliberationMSFF = new ArrayList<DeliberationMS>();
 			listeDeliberationMSFFS = new ArrayList<DeliberationMS>();
@@ -1595,13 +1650,12 @@ public class DeliberationService implements Serializable {
 			rang = 1;
 			itter = listeDeliberationMSF1.size();
 			itter1 = 0;
-			while (itter > itter1) {
+			System.out.println("Taille liste listeDeliberationMSF1 "+listeDeliberationMSF1.size());
+			while (listeDeliberationMSF1.size() > 0) {
 				DeliberationMS deli = gererSupMS();
 				List<DeliberationMS> liste = new ArrayList<DeliberationMS>();
 				deli.setUse("X");
-
 				liste = getMoyenEqualMS(deli);
-
 				if (liste.size() > 1) {
 					if (rang == 1) {
 						rangs = rang + "er ex æquo";
@@ -1620,29 +1674,31 @@ public class DeliberationService implements Serializable {
 					for (DeliberationMS d : liste) {
 						d.setUse("X");
 						d.setRanggen(rangs);
-
 						listeDeliberationMSFF.add(d);
 						listeDeliberationMSFFS.add(d);
 						rang = rang + 1;
 					}
 				} else {
+					listeDeliberationMSFF.add(deli);
+					listeDeliberationMSFFS.add(deli);
 					rang = rang + 1;
 
 				}
 				listeDeliberationMSFFSS = new ArrayList<DeliberationMS>();
 				listeDeliberationMSFFSS = listeDeliberationMSF1;
 				listeDeliberationMSF1 = new ArrayList<DeliberationMS>();
+				//System.out.println("Taille liste listeDeliberationMSF1 BEFORE "+listeDeliberationMSF1.size()); 
+				//System.out.println("Taille liste listeDeliberationMSFFSS"+listeDeliberationMSFFSS.size());
 				for (DeliberationMS dddd : listeDeliberationMSFFSS) {
-
 					if (dddd.getUse().equalsIgnoreCase("X")) {
 						itter1++;
 					} else {
 						listeDeliberationMSF1.add(dddd);
 					}
 				}
-
+				//System.out.println("Taille liste listeDeliberationMSF1 AFTER "+listeDeliberationMSF1.size());
 			}
-
+			
 			for (DeliberationMS d : listeDeliberationMSFF) {
 				for (DeliberationMS deli : listeDeliberationMS) {
 					if (deli.getEleve().getIdeleve().equals(d.getEleve().getIdeleve())) {
@@ -1652,6 +1708,7 @@ public class DeliberationService implements Serializable {
 				}
 			}
 
+			//System.out.println("Taille liste listeDeliberationMSFF FINAL "+listeDeliberationMSFF.size());
 			if (semestre.getCode().equalsIgnoreCase("2")) {
 				listeDeliberationMSFF = new ArrayList<DeliberationMS>();
 				listeDeliberationMSFFS = new ArrayList<DeliberationMS>();
@@ -1668,7 +1725,7 @@ public class DeliberationService implements Serializable {
 				rang = 1;
 				itter = listeDeliberationMSF1.size();
 				itter1 = 0;
-				while (itter > itter1) {
+				while (listeDeliberationMSF1.size() > 0) {
 					DeliberationMS deli = gererSupMSAn();
 					List<DeliberationMS> liste = new ArrayList<DeliberationMS>();
 					deli.setUsean("X");
@@ -1731,13 +1788,13 @@ public class DeliberationService implements Serializable {
 				}
 			}
 
+			
+			
+			
 			for (DeliberationMS deli : listeDeliberationMS) {
 				splitMoyen(deli);
 				deli.setUserang("Y");
 				deli.setInstitution(utilisateur.getInstitution());
-//				System.out.println("ELEVE " + deli.getEleve().getNom() + "MATIERE " + deli.getMatiere().getLibelle()
-//						+ "MOYENNE " + deli.getCumuls());
-				// dataSource.save(deli);
 			}
 
 			for (MatiereClasse mc : listeMatClasse) {
@@ -1750,7 +1807,7 @@ public class DeliberationService implements Serializable {
 				itter = listeDeliberationRang.size();
 				itter1 = 0;
 				rang = 1;
-				while (itter > itter1) {
+				while (listeDeliberationRang.size() > 0) {
 					DeliberationMS deli = gererSupMatiere();
 					List<DeliberationMS> liste = new ArrayList<DeliberationMS>();
 					deli.setUserang("X");
@@ -1778,6 +1835,8 @@ public class DeliberationService implements Serializable {
 						}
 					} else {
 						rang = rang + 1;
+						listeDeliberationRang1.add(deli);
+						listeDeliberationRang2.add(deli);
 
 					}
 					listeDeliberationRang1 = new ArrayList<DeliberationMS>();
@@ -1806,10 +1865,16 @@ public class DeliberationService implements Serializable {
 
 			}
 
+			
+//			System.out.println("listeDeliberationMSFF "+listeDeliberationMSFF.size());
+//			System.out.println("listeDeliberationMSFF "+listeDeliberationMSFF.size());
+//			System.out.println("listeDeliberationMS "+listeDeliberationMS.size());
+//			
 			for (DeliberationMS deli : listeDeliberationMS) {
 
-				System.out.println("ELEVE " + deli.getEleve().getNom() + "MATIERE " + deli.getMatiere().getLibelle()
-						+ "MOYENNE " + deli.getCumuls() + "RANG " + deli.getRangm());
+//				System.out.println("ELEVE " + deli.getEleve().getNom() + "MATIERE " + deli.getMatiere().getLibelle()
+//						+ "MOYENNE " + deli.getCumuls() + "APP1 " + deli.getAppreciation().getLibelle() + "APP2"
+//						+ deli.getAppreciationgen().getLibelle());
 				dataSource.save(deli);
 			}
 
@@ -2054,11 +2119,10 @@ public class DeliberationService implements Serializable {
 		for (Appreciations ap : listeAp) {
 			if (ap.getInf() <= moy && ap.getSup() >= moy) {
 				p = ap;
-
 				break;
 			}
 		}
-
+        System.out.println("Moyenne "+moy + "Appréciation "+p.getLibelle());
 		return p;
 	}
 
@@ -2084,13 +2148,17 @@ public class DeliberationService implements Serializable {
 
 	public Deliberation gererSup() {
 		Deliberation d = listeDeliberation.get(0);
+		int j = 0;
 		for (int i = 1; i < listeDeliberation.size(); i++) {
 			if (d.getMoyenne() < listeDeliberation.get(i).getMoyenne()) {
 				d = listeDeliberation.get(i);
-				d.setUse("X");
+
+				j = i;
 			}
 		}
-
+		d.setUse("X");
+		listeDeliberation.get(j).setUse("X");
+		;
 		// itter = itter - 1;
 
 		return d;
@@ -2108,10 +2176,11 @@ public class DeliberationService implements Serializable {
 
 	public DeliberationMS gererSupMS() {
 		DeliberationMS d = listeDeliberationMSF1.get(0);
+		int j = 0;
 		for (int i = 1; i < listeDeliberationMSF1.size(); i++) {
 			if (d.getMoyenne() < listeDeliberationMSF1.get(i).getMoyenne()) {
 				d = listeDeliberationMSF1.get(i);
-				d.setUse("X");
+				j = i;
 			}
 		}
 
@@ -2122,45 +2191,54 @@ public class DeliberationService implements Serializable {
 //				d = listeDeliberationMSF1.get(i);
 //		}
 //		listeDeliberationMSF1.remove(d);
-
+		d.setUse("X");
+		listeDeliberationMSF1.get(j).setUse("X");
 		return d;
 	}
 
 	public DeliberationMS gererSupMSAn() {
 
 		DeliberationMS d = listeDeliberationMSF1.get(0);
+		int j = 0;
 		for (int i = 1; i < listeDeliberationMSF1.size(); i++) {
 
 			if (d.getMoyenneAn() < listeDeliberationMSF1.get(i).getMoyenneAn()) {
 				d = listeDeliberationMSF1.get(i);
-				d.setUsean("X");
+				j = i;
 			}
 		}
-
+		d.setUsean("X");
+		listeDeliberationMSF1.get(j).setUse("X");
+		;
 		return d;
 	}
 
 	public DeliberationMS gererSupMatiere() {
 
 		DeliberationMS d = listeDeliberationRang.get(0);
+		int j = 0;
 		for (int i = 1; i < listeDeliberationRang.size(); i++) {
 
 			if (Double.parseDouble(d.getCumuls()) < Double.parseDouble(listeDeliberationRang.get(i).getCumuls())) {
 				d = listeDeliberationRang.get(i);
-				d.setUserang("X");
+				j = i;
 			}
 		}
-
+		d.setUserang("X");
+		listeDeliberationRang.get(j).setUse("X");
+		;
 		return d;
 	}
 
 	public DeliberationFinal gererSupAn() {
 
 		DeliberationFinal d = listeDeliF.get(0);
+		int j = 0;
 		for (int i = 1; i < listeDeliF.size(); i++) {
 			if (d.getMoyan() < listeDeliF.get(i).getMoyan()) {
 				d = listeDeliF.get(i);
-				d.setUse("X");
+
+				j = i;
 			}
 		}
 
@@ -2170,7 +2248,8 @@ public class DeliberationService implements Serializable {
 //			System.out.println("USE DANS SUP " + deli.getUse());
 //		}
 		// itter = itter - 1;
-
+		d.setUse("X");
+		listeDeliF.get(j).setUse("X");
 		return d;
 
 //		
@@ -2207,7 +2286,7 @@ public class DeliberationService implements Serializable {
 		for (int i = 0; i < listeDeliberationMSF1.size(); i++) {
 
 			if (d.getMoyenne().equals(listeDeliberationMSF1.get(i).getMoyenne())) {
-
+				listeDeliberationMSF1.get(i).setUse("X");
 				liste.add(listeDeliberationMSF1.get(i));
 			}
 		}
@@ -2221,7 +2300,7 @@ public class DeliberationService implements Serializable {
 		for (int i = 0; i < listeDeliberationMSF1.size(); i++) {
 
 			if (d.getMoyenneAn().equals(listeDeliberationMSF1.get(i).getMoyenneAn())) {
-
+				listeDeliberationMSF1.get(i).setUse("X");
 				liste.add(listeDeliberationMSF1.get(i));
 			}
 		}
@@ -2234,6 +2313,7 @@ public class DeliberationService implements Serializable {
 		for (int i = 0; i < listeDeliberationRang.size(); i++) {
 			if (Double.parseDouble(d.getCumuls()) == Double.parseDouble(listeDeliberationRang.get(i).getCumuls())) {
 				liste.add(listeDeliberationRang.get(i));
+				listeDeliberationRang.get(i).setUse("X");
 			}
 		}
 

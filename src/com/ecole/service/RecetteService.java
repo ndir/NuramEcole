@@ -233,8 +233,10 @@ public class RecetteService implements Serializable {
 	public void retreiveInfoIncription() {
 		try {
 			inscription = (Inscription) dataSource
-					.createQuery(" From Inscription i where i.eleve=:pe and i.paramins.annee=:pa and i.institution=:pi ")
-					.setParameter("pe", this.eleve).setParameter("pa", annee).setParameter("pi", utilisateur.getInstitution()).uniqueResult();
+					.createQuery(
+							" From Inscription i where i.eleve=:pe and i.paramins.annee=:pa and i.institution=:pi ")
+					.setParameter("pe", this.eleve).setParameter("pa", annee)
+					.setParameter("pi", utilisateur.getInstitution()).uniqueResult();
 
 			codeRecette = "MENS";
 			chargerListeRecette(codeRecette);
@@ -425,8 +427,9 @@ public class RecetteService implements Serializable {
 	}
 
 	public TypeRecette getTypeRecetteByCode(String codeRecette) {
-		return (TypeRecette) dataSource.createQuery(" From TypeRecette where code=:pc").setParameter("pc", codeRecette)
-				.uniqueResult();
+		return (TypeRecette) dataSource
+				.createQuery(" From TypeRecette t inner join fetch t.institution i where code=:pc and i=:pi")
+				.setParameter("pc", codeRecette).setParameter("pi", utilisateur.getInstitution()).uniqueResult();
 	}
 
 	public String retreiveMonthByInt(int month) {

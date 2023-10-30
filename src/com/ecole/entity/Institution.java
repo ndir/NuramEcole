@@ -12,13 +12,12 @@ import javax.persistence.Id;
 import javax.persistence.Lob;
 import javax.persistence.Table;
 
-
 /**
  * @author A626257
  *
  */
 @Entity
-@Table(name="institution")
+@Table(name = "institution")
 public class Institution implements Serializable {
 
 	/**
@@ -27,24 +26,27 @@ public class Institution implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	private Long id;
-	
+
 	private byte[] logo;
-	
+
 	private String adresse;
-	
+
 	private String telephone;
-	
+
 	private String sologan;
-	
+
 	private boolean actif;
-	
+
 	private String nom;
-	
+
 	private String ia;
-	
+
 	private String ief;
-	
-   private String imp;
+
+	private String imp;
+
+	private String image;
+
 	@Id
 	@GeneratedValue
 	public Long getId() {
@@ -128,6 +130,13 @@ public class Institution implements Serializable {
 	public void setImp(String imp) {
 		this.imp = imp;
 	}
-	
-	
+
+	public String getImage() {
+		return image;
+	}
+
+	public void setImage(String image) {
+		this.image = image;
+	}
+
 }

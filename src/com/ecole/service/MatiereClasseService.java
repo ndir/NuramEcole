@@ -56,7 +56,7 @@ public class MatiereClasseService implements Serializable {
 	private String typenote;
 
 	private String niv;
-	
+
 	@In(required = false)
 	@Out(required = false)
 	private Utilisateur utilisateur;
@@ -86,8 +86,9 @@ public class MatiereClasseService implements Serializable {
 	@SuppressWarnings("unchecked")
 	public void chargerMatieres() {
 		listeMatiere = new ArrayList<Matiere>();
-		listeMatiere = dataSource.createQuery(" From Matiere m inner join fetch m.niveau n inner join fetch m.institution i "
-				+ " where n =:pn and i=:pi ")
+		listeMatiere = dataSource
+				.createQuery(" From Matiere m inner join fetch m.niveau n inner join fetch m.institution i "
+						+ " where n =:pn and i=:pi ")
 				.setParameter("pn", niveau).setParameter("pi", utilisateur.getInstitution()).list();
 
 	}
@@ -98,7 +99,8 @@ public class MatiereClasseService implements Serializable {
 		listeMatClasse = dataSource.createQuery(
 				"From MatiereClasse m inner join fetch m.matiere ma inner join fetch m.classe c left outer join fetch m.eval ev inner join fetch m.institution i"
 						+ " where  m.annee_scol =:pan and i =:pi")
-				.setParameter("pan", anneeScolaire.getAnneeScolaire()).setParameter("pi", utilisateur.getInstitution()).list();
+				.setParameter("pan", anneeScolaire.getAnneeScolaire()).setParameter("pi", utilisateur.getInstitution())
+				.list();
 
 	}
 
@@ -112,8 +114,9 @@ public class MatiereClasseService implements Serializable {
 	@SuppressWarnings("unchecked")
 	public void chargerListeClasse() {
 		listeClasse = new ArrayList<Classe>();
-		listeClasse = dataSource.createQuery(" From Classe c inner join fetch c.niveau n inner join "
-				+ " fetch c.institution i where n=:pn and i=:pi")
+		listeClasse = dataSource
+				.createQuery(" From Classe c inner join fetch c.niveau n inner join "
+						+ " fetch c.institution i where n=:pn and i=:pi")
 				.setParameter("pn", niveau).setParameter("pi", utilisateur.getInstitution()).list();
 		if (niveau.getCode().equalsIgnoreCase("ELE")) {
 			typenote = "1";
@@ -131,6 +134,7 @@ public class MatiereClasseService implements Serializable {
 	public void ajouterClasseMatiere() {
 		List<Classe> listeClasse = dataSource.createQuery("From Classe c where niv =:pniv").setParameter("pniv", niv)
 				.list();
+		List<Evaluation> listeEval = dataSource.createQuery("From Evaluation ").list();
 		for (Classe cl : listeClasse) {
 			MatiereClasse m = new MatiereClasse();
 			for (Matiere mat : listeMatiere) {
@@ -138,17 +142,19 @@ public class MatiereClasseService implements Serializable {
 					if (typenote.equalsIgnoreCase("1")) {
 						m = (MatiereClasse) dataSource.createQuery(
 								"From MatiereClasse m inner join fetch m.matiere ma inner join fetch m.classe c inner join fetch m.eval ev "
-								+ " inner join fetch m.institution i "
+										+ " inner join fetch m.institution i "
 										+ " where ma =:pma and c =:pc and m.annee_scol =:pan and ev =:pev and i=:pi")
 								.setParameter("pma", mat).setParameter("pc", matClasse.getClasse())
 								.setParameter("pan", anneeScolaire.getAnneeScolaire())
-								.setParameter("pev", matClasse.getEval()).setParameter("pi", utilisateur.getInstitution()).uniqueResult();
+								.setParameter("pev", matClasse.getEval())
+								.setParameter("pi", utilisateur.getInstitution()).uniqueResult();
 					} else {
 						m = (MatiereClasse) dataSource.createQuery(
 								"From MatiereClasse m inner join fetch m.matiere ma inner join fetch m.classe c  inner join fetch m.institution i"
 										+ " where ma =:pma and c =:pc and m.annee_scol =:pan and i=:pi  ")
 								.setParameter("pma", mat).setParameter("pc", matClasse.getClasse())
-								.setParameter("pan", anneeScolaire.getAnneeScolaire()).setParameter("pi", utilisateur.getInstitution()).uniqueResult();
+								.setParameter("pan", anneeScolaire.getAnneeScolaire())
+								.setParameter("pi", utilisateur.getInstitution()).uniqueResult();
 					}
 					if (m == null) {
 						MatiereClasse mc = new MatiereClasse();
@@ -157,9 +163,23 @@ public class MatiereClasseService implements Serializable {
 						mc.setCoef(mat.getCoef());
 						mc.setMatiere(mat);
 						mc.setInstitution(utilisateur.getInstitution());
-						if (typenote.equalsIgnoreCase("1"))
-							mc.setEval(matClasse.getEval());
+						if (typenote.equalsIgnoreCase("1")) {
+							mc.setEval(listeEval.get(0));
+						}
 						dataSource.save(mc);
+						if (typenote.equalsIgnoreCase("1")) {
+							for (int i = 1; i < listeEval.size(); i++) {
+								mc = new MatiereClasse();
+								mc.setAnnee_scol(anneeScolaire.getAnneeScolaire());
+								mc.setClasse(cl);
+								mc.setCoef(mat.getCoef());
+								mc.setMatiere(mat);
+								mc.setInstitution(utilisateur.getInstitution());
+								mc.setEval(listeEval.get(i));
+								dataSource.save(mc);
+
+							}
+						}
 					} else {
 						m.setCoef(mat.getCoef());
 						dataSource.update(m);

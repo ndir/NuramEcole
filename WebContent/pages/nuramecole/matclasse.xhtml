@@ -167,20 +167,7 @@
 
 												
 
-												<a:outputPanel
-													rendered="#{matclasseService.typenote eq '1'}">
-													<td><h:outputLabel styleClass="grey"
-															value="Evaluation" /></td>
-													<td><h:selectOneMenu class="form-control"
-															value="#{matclasseService.matClasse.eval}"
-															converter="#{evaluationConverter}" id="eval"
-															noSelectionLabel="--- Selectionnez ---">
 
-															<s:selectItems value="#{matclasseService.listeEval}"
-																var="type" label="#{type.libelle}" />
-
-														</h:selectOneMenu></td>
-												</a:outputPanel>
 
 
 												<td><h:outputLabel styleClass="grey"

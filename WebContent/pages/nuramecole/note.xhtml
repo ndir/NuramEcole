@@ -197,13 +197,13 @@
 															noSelectionLabel="--- Selectionnez ---" />
 														<a:support event="onchange"
 															action="#{noteService.chargerListeEleve()}"
-															ajaxSingle="true" reRender="eleve" status="waitStatus"></a:support>
+															ajaxSingle="true" reRender="liste" status="waitStatus"></a:support>
 													</h:selectOneMenu></td>
 											</tr>
 										</TABLE>
 
 										<rich:dataTable value="#{noteService.listeEleves}" var="mat"
-											id="eleve" style="width:100%;" rows="8"
+											id="eleve" style="width:100%;" rows="10"
 											rowClasses="row1,row2">
 											<f:facet name="header">
 												<rich:columnGroup>
@@ -248,12 +248,12 @@
 												<h:outputLabel value="#{mat.prenom}"></h:outputLabel>
 											</rich:column>
 											<rich:column>
-												<h:inputText value="#{mat.note}" class="form-control"
+												<h:inputText value="#{mat.note}" 
 													width="5px"></h:inputText>
 											</rich:column>
 
 											<rich:column>
-												<h:outputLabel value="#{mat.coef}" class="form-control"
+												<h:outputLabel value="#{mat.coef}" 
 													width="5px"></h:outputLabel>
 											</rich:column>
 
@@ -261,6 +261,8 @@
 										<rich:datascroller status="waitStatus" stepControls="auto"
 											style="width:100%" for="eleve" ajaxSingle="false"
 											rendered="#{not empty noteService.listeEleves}" />
+											
+											<BR />
 										<p align="center">
 											<a:commandLink styleClass="btn btn-danger" value=""
 												action="#{noteService.annulerAjoutNote()}"

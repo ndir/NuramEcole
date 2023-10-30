@@ -3,12 +3,17 @@
  */
 package com.ecole.service;
 
+import java.io.InputStream;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import javax.faces.context.ExternalContext;
+import javax.faces.context.FacesContext;
+import javax.servlet.ServletContext;
 
 import org.apache.poi.util.SystemOutLogger;
 import org.hibernate.Session;
@@ -179,6 +184,13 @@ public class EleveService implements Serializable {
 		param.put("slogan", in.getSologan());
 		param.put("tel", in.getTelephone());
 		param.put("etat", "LISTE DES ELEVES DE LA CLASSE " + classe.getLibelle());
+
+		String logo = "";
+		logo = "/css2/" + in.getImage();
+		ExternalContext ec = FacesContext.getCurrentInstance().getExternalContext();
+		ServletContext sc = (ServletContext) ec.getContext();
+		InputStream is = sc.getResourceAsStream(logo);
+		param.put(logo, is);
 		getFilePrintService().imprimer("ecole", "eleve", param, listeIns, utilisateur, ExportOption.PDF);
 		this.setShowModal("javascript:Richfaces.showModalPanel('modalPdf')");
 	}

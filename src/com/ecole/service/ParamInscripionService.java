@@ -85,9 +85,9 @@ public class ParamInscripionService implements Serializable {
 	@SuppressWarnings("unchecked")
 	public void chargerliste() {
 		liste = new ArrayList<ParamInscription>();
+
 		liste = dataSource
-				.createQuery(
-						"From ParamInscription p inner join fetch p.classe inner join fetch p.annee "
+				.createQuery("From ParamInscription p inner join fetch p.classe inner join fetch p.annee "
 						+ " inner join fetch p.institution i where p.annee =:pa and i=:pi")
 				.setParameter("pa", annee).setParameter("pi", utilisateur.getInstitution()).list();
 
@@ -130,7 +130,6 @@ public class ParamInscripionService implements Serializable {
 			typeNote = "4";
 		}
 	}
-	
 
 	public void versModifierInscription(ParamInscription param) {
 		this.setParam(param);
@@ -147,11 +146,13 @@ public class ParamInscripionService implements Serializable {
 			return;
 		}
 		if (param.getDroit_ins() <= 0) {
-			FacesMessages.instance().addToControlFromResourceBundle("erreurGenerique", "Droit d'inscription obligatoire");
+			FacesMessages.instance().addToControlFromResourceBundle("erreurGenerique",
+					"Droit d'inscription obligatoire");
 			return;
 		}
-		List<Classe> listeClasse = dataSource.createQuery("From Classe c where niv =:pniv").setParameter("pniv", niv)
-				.list();
+		List<Classe> listeClasse = dataSource
+				.createQuery("From Classe c  inner join fetch c.institution i  where niv =:pniv and i =:pi")
+				.setParameter("pniv", niv).setParameter("pi", utilisateur.getInstitution()).list();
 		for (Classe cl : listeClasse) {
 			ParamInscription p = new ParamInscription();
 			p.setAnnee(annee);
@@ -161,6 +162,7 @@ public class ParamInscripionService implements Serializable {
 			p.setDroit_ins(param.getDroit_ins());
 			dataSource.merge(p);
 		}
+		
 		chargerliste();
 		FacesMessages.instance().addToControlFromResourceBundle("infoGenerique", "Opération effectuée avec succés");
 
