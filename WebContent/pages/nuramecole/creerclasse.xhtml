@@ -31,7 +31,7 @@
 	content="Responsive Bootstrap 4 Dashboard Template"></meta>
 <meta name="author" content="BootstrapDash"></meta>
 
-<title>NURAMECOLE</title>
+<title>SAMAECOLE</title>
 
 <!-- vendor css -->
 <link href="lib/fontawesome-free/css/all.min.css" rel="stylesheet"></link>
@@ -164,36 +164,7 @@
 														value="/picto/edit.png" width="16" height="16" alt="" />
 
 												</a:commandLink>
-												<rich:spacer widht="30px"></rich:spacer>
-												<a:commandLink value="" status="waitStatus"
-													action="#{classeService.zoomListeMatiere(classe)}"
-													oncomplete="javascript:Richfaces.showModalPanel('matiere',{width:500, height:300})"
-													reRender="formmat" title="Liste matieres">
-													<s:graphicImage fileName="due.png" style="border:0px;"
-														value="/picto/due.png" width="16" height="16" alt="" />
-
-												</a:commandLink>
-
-												<!-- 												<rich:spacer widht="30px"></rich:spacer> -->
-												<!-- 												<a:commandLink value="" status="waitStatus" -->
-												<!-- 													action="#{eleveService.versCreerEleve(classe)}" -->
-												<!-- 													oncomplete="javascript:Richfaces.showModalPanel('eleve',{width:1300, height:500})" -->
-												<!-- 													reRender="formeleve" title="Ajouter élève"> -->
-												<!-- 													<s:graphicImage fileName="user_green.png" -->
-												<!-- 														style="border:0px;" value="/picto/user_green.png" /> -->
-
-												<!-- 												</a:commandLink> -->
-
-												<rich:spacer widht="30px"></rich:spacer>
-												<a:commandLink value="" status="waitStatus"
-													action="#{eleveService.listeEleves(classe)}"
-													oncomplete="javascript:Richfaces.showModalPanel('eleves',{width:500, height:500})"
-													reRender="formeleves" title="Liste des éléves">
-													<s:graphicImage fileName="info.png" style="border:0px;"
-														value="/picto/info.png" />
-
-												</a:commandLink>
-
+											
 											</rich:column>
 
 										</rich:dataTable>
