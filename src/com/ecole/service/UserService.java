@@ -95,28 +95,29 @@ public class UserService implements Serializable {
 		listeClEn = new ArrayList<ClasseEnseignant>();
 		listeClEn = dataSource
 				.createQuery("From ClasseEnseignant cl inner join fetch cl.classe inner join fetch cl.enseignant en "
-						+ " inner join fetch cl.annee an where an =:pan and en =:pen ")
-				.setParameter("pan", annee).setParameter("pen", u).list();
+						+ " inner join fetch cl.annee an inner join fetch cl.institution i where an =:pan and en =:pen and i=:pi ")
+				.setParameter("pan", annee).setParameter("pen", u).setParameter("pi", utilisateur.getInstitution()).list();
 	}
 
 	@SuppressWarnings("unchecked")
 	public void ajouterClasse() {
         clen.setAnnee(annee);
 		clen.setClasse(classe);
+		clen.setInstitution(utilisateur.getInstitution());
 		dataSource.save(clen);
 		listeClEn = new ArrayList<ClasseEnseignant>();
 		listeClEn = dataSource
 				.createQuery("From ClasseEnseignant cl inner join fetch cl.classe inner join fetch cl.enseignant en "
-						+ " inner join fetch cl.annee an where an =:pan and en =:pen ")
-				.setParameter("pan", annee).setParameter("pen", clen.getEnseignant()).list();
+						+ " inner join fetch cl.annee an inner join fetch cl.institution i where an =:pan and en =:pen  and i=:pi")
+				.setParameter("pan", annee).setParameter("pen", clen.getEnseignant()).setParameter("pi", utilisateur.getInstitution()).list();
 
 	}
 
 	@SuppressWarnings("unchecked")
 	public void chargerListeClasse() {
 		listeClasse = new ArrayList<Classe>();
-		listeClasse = dataSource.createQuery(" From Classe c inner join fetch c.niveau n where n=:pn")
-				.setParameter("pn", niveau).list();
+		listeClasse = dataSource.createQuery(" From Classe c inner join fetch c.niveau n inner join fetch c.institution i where n=:pn and i=:pi")
+				.setParameter("pn", niveau).setParameter("pi", utilisateur.getInstitution()).list();
 	}
 
 	@SuppressWarnings("unchecked")

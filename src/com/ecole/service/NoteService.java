@@ -21,6 +21,7 @@ import com.chaka.projet.entity.Utilisateur;
 import com.ecole.entity.Absence;
 import com.ecole.entity.AnneeScolaire;
 import com.ecole.entity.Classe;
+import com.ecole.entity.ClasseEnseignant;
 import com.ecole.entity.Eleve;
 import com.ecole.entity.Evaluation;
 import com.ecole.entity.Inscription;
@@ -244,10 +245,27 @@ public class NoteService implements Serializable {
 	@SuppressWarnings("unchecked")
 	public void chargerListeClasse() {
 		setListeClasse(new ArrayList<Classe>());
-		setListeClasse(dataSource
-				.createQuery(" From Classe c inner join fetch c.niveau n inner join fetch c.institution i"
-						+ "  where n=:pn and i =:pi ")
-				.setParameter("pn", niveau).setParameter("pi", utilisateur.getInstitution()).list());
+		if (utilisateur.getProfile().getLibelle_court().equalsIgnoreCase("ENS")) {
+
+			List<ClasseEnseignant> listeClEn = dataSource
+					.createQuery(
+							"From ClasseEnseignant cl inner join fetch cl.classe c inner join fetch cl.enseignant en "
+									+ " inner join fetch cl.annee an inner join fetch cl.institution i"
+									+ " inner join fetch c.niveau n  where an =:pan and en =:pen  and i=:pi and n =:pn")
+					.setParameter("pan", annee).setParameter("pen", utilisateur)
+					.setParameter("pi", utilisateur.getInstitution()).setParameter("pn", niveau).list();
+
+			for (ClasseEnseignant cl : listeClEn) {
+				listeClasse.add(cl.getClasse());
+			}
+
+		} else {
+			setListeClasse(dataSource
+					.createQuery(" From Classe c inner join fetch c.niveau n inner join fetch c.institution i"
+							+ "  where n=:pn and i =:pi ")
+					.setParameter("pn", niveau).setParameter("pi", utilisateur.getInstitution()).list());
+		}
+
 		listeEval = new ArrayList<Evaluation>();
 		listeEval = dataSource.createQuery("From  Evaluation ").list();
 		if (niveau.getCode().equalsIgnoreCase("ELE") || niveau.getCode().equalsIgnoreCase("PRE")) {
