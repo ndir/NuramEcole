@@ -175,6 +175,8 @@ public class DeliberationService implements Serializable {
 		listeDeliberationMSVIEW = new ArrayList<DeliberationMS>();
 		return "/pages/nuramecole/deliberation.xhtml";
 	}
+	
+	
 
 	@SuppressWarnings("unchecked")
 	public String versDeliberationAn() {
@@ -1325,7 +1327,7 @@ public class DeliberationService implements Serializable {
 			boolean existe = false;
 			listeElevesNonNote = new ArrayList<Eleve>();
 
-			System.out.println("Taille liste " + listeEleves.size());
+			
 			for (Eleve ev : listeEleves) {
 				existe = false;
 				for (Matiere m : listeMatiere) {
@@ -1375,14 +1377,13 @@ public class DeliberationService implements Serializable {
 					d.setUser(utilisateur);
 					listeDeliberation.add(d);
 				}
-				System.out.println("Taille liste  listeDeliberation" + listeDeliberation.size());
+				
 				rang = 1;
 				itter = listeDeliberation.size();
 				itter1 = 0;
 				while (listeDeliberation.size() > 0) {
-					// listeDeliberationS = new ArrayList<Deliberation>();
 					Deliberation deli = gererSup();
-					// if (!eleveExiste(deli.getEleve())) {
+
 					List<Deliberation> liste = new ArrayList<Deliberation>();
 					liste = getMoyenEqual(deli);
 					if (liste.size() > 1) {
@@ -1399,15 +1400,14 @@ public class DeliberationService implements Serializable {
 						}
 					}
 					deli.setRang(rangs);
-					// listeDeliberationF.add(deli);
-					// listeDeliberationS.add(deli);
+
 					if (liste.size() > 0) {
-						// listeDeliberationF.add(deli);
+
 						for (Deliberation d : liste) {
 							d.setRang(rangs);
 							listeDeliberationF.add(d);
 							listeDeliberationS.add(d);
-							// itter1++;
+
 							rang = rang + 1;
 						}
 					} else {
@@ -1416,42 +1416,22 @@ public class DeliberationService implements Serializable {
 						// itter1++;
 						rang = rang + 1;
 					}
-					// System.out.println("Taille liste listeDeliberationF" +
-					// listeDeliberationF.size());
+
 					listeDeliberationSS = new ArrayList<Deliberation>();
 					listeDeliberationSS = listeDeliberation;
-					// System.out.println("listeDeliberationSS " + listeDeliberationSS.size());
+
 					listeDeliberation = new ArrayList<Deliberation>();
-					// System.out.println("Taille liste listeDeliberation avant" +
-					// listeDeliberation.size());
-					// int z = 0;
-//					for (Deliberation ad : listeDeliberationSS ) {
-//						//System.out.println("HERE");
-//						for (Deliberation ad1 : listeDeliberationF) {
-//							if (ad.getEleve().getIdeleve().equals(ad1.getEleve().getIdeleve())) {
-//								System.out.println(
-//										"Existe deja " + ad.getEleve().getPrenom() + " " + ad.getEleve().getNom());
-//							} else {
-//								z++;
-//								System.out.println("AJOUT "+z);
-//								listeDeliberation.add(ad);
-//							}
-//						}
-//					}
+
 					itter1 = listeDeliberationF.size();
 					for (Deliberation dddd : listeDeliberationSS) {
 						if (dddd.getUse().equalsIgnoreCase("X")) {
-							// itter1++;
-//							System.out.println("ELEVE " + dddd.getEleve().getPrenom() + " " + dddd.getEleve().getNom()
-//									+ "Moyenne " + dddd.getMoyenne());
-//							System.out.println("USE OK " + dddd.getUse());
+
 						} else {
 							listeDeliberation.add(dddd);
 						}
 
 					}
-					// System.out.println("Taille liste listeDeliberation apres" +
-					// listeDeliberation.size());
+
 				}
 				List<Appreciation> listeAp = new ArrayList<Appreciation>();
 				listeAp = dataSource.createQuery("From Appreciation a inner join fetch a.institution i where i =:pi")

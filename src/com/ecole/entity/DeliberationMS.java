@@ -20,7 +20,7 @@ import javax.persistence.Transient;
  *
  */
 @Entity
-@Table(name = "DeliberationMS")
+@Table(name = "deliberationMS")
 public class DeliberationMS implements Serializable {
 
 	/**

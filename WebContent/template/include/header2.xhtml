@@ -198,6 +198,35 @@
 											rendered="#{droitsService.estAutorise('Délibération Annuelle')}">
 											<s:conversationPropagation propagation="none" />
 										</a:commandLink></li>
+
+									<li><a:commandLink value="Défi">
+										</a:commandLink>
+										<ul>
+											<li><a:commandLink value="Defi" status="waitStatus"
+													action="#{defiService.versDefi}"
+													rendered="#{droitsService.estAutorise('Defi')}">
+													<s:conversationPropagation propagation="none" />
+												</a:commandLink></li>
+											<li><a:commandLink value="Matières-DEFI"
+													status="waitStatus" action="#{defiService.versDefiMatiere}"
+													rendered="#{droitsService.estAutorise('Matières-DEFI')}">
+													<s:conversationPropagation propagation="none" />
+												</a:commandLink></li>
+											<li><a:commandLink value="NOTE-DEFI" status="waitStatus"
+													action="#{defiService.versNoteDefi}"
+													rendered="#{droitsService.estAutorise('NOTE-DEFI')}">
+													<s:conversationPropagation propagation="none" />
+												</a:commandLink></li>
+											<li><a:commandLink value="DELIBERATION-DEFI"
+													status="waitStatus"
+													action="#{defiService.versDelibererDefi}"
+													rendered="#{droitsService.estAutorise('DELIBERATION-DEFI')}">
+													<s:conversationPropagation propagation="none" />
+												</a:commandLink></li>
+										</ul></li>
+
+
+
 								</ul></li>
 						</f:subview>
 						<f:subview id="comptabilite">

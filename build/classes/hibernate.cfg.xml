@@ -55,6 +55,13 @@
 		<mapping class="com.ecole.entity.DeliObservtions" />
 		<mapping class="com.ecole.entity.Appreciations" />
 		<mapping class="com.ecole.entity.Etats" />
+		<mapping class="com.ecole.entity.Defi" />
+		<mapping class="com.ecole.entity.NoteDefi" />
+		<mapping class="com.ecole.entity.DefiMatiere" />
+		<mapping class="com.ecole.entity.DeliberationDefi" />
+		
+
+
 		<!-- <property name="show_sql">false</property> <property name="use_sql_comments">false</property> 
 			<property name="order_updates">true</property> <property name="transaction.flush_before_completion">true</property> 
 			<property name="transaction.factory_class">org.hibernate.transaction.JDBCTransactionFactory</property> 

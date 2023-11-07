@@ -1,0 +1,252 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="bulletin" language="groovy" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="89af52a8-d2ec-4f35-8f4d-da069730ec92">
+	<property name="ireport.zoom" value="1.5"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="96"/>
+	<parameter name="logo" class="java.io.InputStream"/>
+	<parameter name="ecole" class="java.lang.String"/>
+	<parameter name="slogan" class="java.lang.String"/>
+	<parameter name="tel" class="java.lang.String"/>
+	<parameter name="total" class="java.lang.String"/>
+	<parameter name="moy" class="java.lang.String"/>
+	<parameter name="rang" class="java.lang.String"/>
+	<parameter name="app" class="java.lang.String"/>
+	<parameter name="eff" class="java.lang.String"/>
+	<queryString language="hql">
+		<![CDATA[from NoteDefi]]>
+	</queryString>
+	<field name="annee" class="com.ecole.entity.AnneeScolaire"/>
+	<field name="ap" class="java.lang.String"/>
+	<field name="ap1" class="java.lang.String"/>
+	<field name="ap2" class="java.lang.String"/>
+	<field name="ap3" class="java.lang.String"/>
+	<field name="cl" class="com.ecole.entity.Classe"/>
+	<field name="coef" class="java.lang.Integer"/>
+	<field name="coef1" class="java.lang.Integer"/>
+	<field name="coef2" class="java.lang.Integer"/>
+	<field name="coef3" class="java.lang.Integer"/>
+	<field name="defi" class="com.ecole.entity.Defi"/>
+	<field name="ecole" class="java.lang.String"/>
+	<field name="eff" class="java.lang.String"/>
+	<field name="eleve" class="com.ecole.entity.Eleve"/>
+	<field name="idNote" class="java.lang.Long"/>
+	<field name="institution" class="com.ecole.entity.Institution"/>
+	<field name="logo" class="java.io.InputStream"/>
+	<field name="matiere" class="com.ecole.entity.Matiere"/>
+	<field name="moy" class="java.lang.String"/>
+	<field name="moy1" class="java.lang.String"/>
+	<field name="moy2" class="java.lang.String"/>
+	<field name="moy3" class="java.lang.String"/>
+	<field name="moyan" class="java.lang.String"/>
+	<field name="note" class="java.lang.Float"/>
+	<field name="note1" class="java.lang.Float"/>
+	<field name="note2" class="java.lang.Float"/>
+	<field name="note3" class="java.lang.Float"/>
+	<field name="slogan" class="java.lang.String"/>
+	<field name="tel" class="java.lang.String"/>
+	<field name="total" class="java.lang.Double"/>
+	<field name="total1" class="java.lang.String"/>
+	<field name="total2" class="java.lang.String"/>
+	<field name="total3" class="java.lang.String"/>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="247" splitType="Stretch">
+			<image>
+				<reportElement x="3" y="5" width="100" height="50" uuid="2e970148-b146-41b9-99cd-da53529800c5"/>
+				<imageExpression><![CDATA[$F{logo}]]></imageExpression>
+			</image>
+			<textField>
+				<reportElement x="0" y="59" width="543" height="20" uuid="9fb14f85-97f4-4793-bb0f-8ac3e9db9c6a"/>
+				<textElement>
+					<font size="12" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{ecole}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="3" y="158" width="546" height="20" uuid="e2ef9c59-6a1c-415b-8c3a-41ecd36eacb8"/>
+				<textElement>
+					<font size="12" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA["PRENOM ET NOM "+$F{eleve}.getPrenom().toUpperCase() + " " +$F{eleve}.getNom().toUpperCase()]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="3" y="180" width="546" height="20" uuid="8a03dedc-1684-41fb-b4b0-3904d77e6a0a"/>
+				<textElement>
+					<font size="12" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA["CLASSE  "+$F{cl}.getLibelle().toUpperCase()]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="3" y="202" width="546" height="20" uuid="039d8eb2-3b03-47b0-bf6d-d6b81cff79b3"/>
+				<textElement>
+					<font size="12" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA["ANNEE SCOLAIRE "+$F{annee}.getAnneeScolaire()]]></textFieldExpression>
+			</textField>
+			<textField pattern="EEEEE dd MMMMM yyyy">
+				<reportElement x="302" y="0" width="251" height="20" uuid="3086e59e-a433-440c-9699-cbffcfb1be00"/>
+				<textElement textAlignment="Right">
+					<font size="12" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[new java.util.Date()]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="0" y="87" width="543" height="20" uuid="ce9ce57f-d4fe-4dc5-9065-91d0d5bb4177"/>
+				<textElement>
+					<font size="12" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{tel}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="0" y="73" width="543" height="20" uuid="4471c004-3592-4e61-8586-75c8ad4a0948"/>
+				<textElement>
+					<font size="12" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{slogan}]]></textFieldExpression>
+			</textField>
+			<line>
+				<reportElement x="3" y="115" width="550" height="1" uuid="d1a933ef-a8ea-498b-960e-d9b6f466da61"/>
+				<graphicElement>
+					<pen lineWidth="2.0" lineStyle="Double"/>
+				</graphicElement>
+			</line>
+			<line>
+				<reportElement x="4" y="151" width="550" height="1" uuid="dfcb6fde-4dcd-41e1-988d-2a865c3477a9"/>
+				<graphicElement>
+					<pen lineWidth="2.0" lineStyle="Double"/>
+				</graphicElement>
+			</line>
+			<textField>
+				<reportElement x="6" y="123" width="546" height="20" uuid="ee90cc1a-2320-45b1-9b0b-70f16d1b0606"/>
+				<textElement textAlignment="Center">
+					<font size="12" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA["RELEVE DE NOTES DU "+$F{defi}.getLibelle() + " MOIS DE "+ $F{defi}.getMois() +"  "+ $F{defi}.getAnnee().getAnneeScolaire()]]></textFieldExpression>
+			</textField>
+		</band>
+	</title>
+	<columnHeader>
+		<band height="36" splitType="Stretch">
+			<rectangle>
+				<reportElement x="0" y="15" width="299" height="20" uuid="c8b62943-cfb4-480c-81db-de11450dfa17"/>
+			</rectangle>
+			<rectangle>
+				<reportElement x="299" y="15" width="123" height="20" uuid="fe33adc6-c1b5-407c-9748-bfc3f100917e"/>
+			</rectangle>
+			<rectangle>
+				<reportElement x="422" y="15" width="133" height="20" uuid="49e3a82b-23dd-422a-bc9b-9d26c50f6e41"/>
+			</rectangle>
+			<staticText>
+				<reportElement x="0" y="16" width="299" height="20" uuid="2a55ee60-3cf0-4451-95ca-e1c85042af94"/>
+				<textElement textAlignment="Center">
+					<font size="12"/>
+				</textElement>
+				<text><![CDATA[Matière]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="299" y="16" width="123" height="20" uuid="59c16bdf-ed11-4d34-9e4d-cee214a1f7ae"/>
+				<textElement textAlignment="Center">
+					<font size="12"/>
+				</textElement>
+				<text><![CDATA[Note]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="422" y="16" width="133" height="20" uuid="d2db3690-f284-438f-aaf7-d309acbb3c96"/>
+				<textElement textAlignment="Center">
+					<font size="12"/>
+				</textElement>
+				<text><![CDATA[Coéfficient]]></text>
+			</staticText>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="21" splitType="Stretch">
+			<rectangle>
+				<reportElement x="0" y="0" width="299" height="20" uuid="248607d6-bc79-47af-83a2-2f3544503f75"/>
+			</rectangle>
+			<rectangle>
+				<reportElement x="299" y="0" width="123" height="20" uuid="3dad4e31-c8f5-4f4a-8a47-8749ea642825"/>
+			</rectangle>
+			<rectangle>
+				<reportElement x="422" y="0" width="133" height="20" uuid="ae1888b6-a91a-4286-bbe8-a1177d9a4e1d"/>
+			</rectangle>
+			<textField>
+				<reportElement x="3" y="1" width="296" height="20" uuid="3a7242f1-3208-45b4-b3f0-baea8a883584"/>
+				<textElement textAlignment="Center">
+					<font size="12" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{matiere}.getLibelle()]]></textFieldExpression>
+			</textField>
+			<textField pattern="#,##0">
+				<reportElement x="299" y="1" width="123" height="20" uuid="c5f2128b-52c8-44f2-b944-66767ed9fa45"/>
+				<textElement textAlignment="Center">
+					<font size="12"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{note}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="422" y="1" width="131" height="20" uuid="32645632-7887-44fe-8dbc-3a7d829ba4fb"/>
+				<textElement textAlignment="Center">
+					<font size="12"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{coef}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<summary>
+		<band height="173">
+			<rectangle>
+				<reportElement x="0" y="10" width="299" height="20" uuid="56d8ff0c-5212-4f33-b792-df649f5d74e3"/>
+			</rectangle>
+			<rectangle>
+				<reportElement x="0" y="30" width="299" height="20" uuid="c6beb7f4-fbd7-48e9-98ab-dc03692aaf1c"/>
+			</rectangle>
+			<staticText>
+				<reportElement x="3" y="11" width="296" height="20" uuid="6389ee5a-3494-4871-8f4d-d40868868370"/>
+				<textElement textAlignment="Center">
+					<font size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[TOTAL]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="3" y="31" width="296" height="20" uuid="55899f6f-901e-4a5d-a897-63d249d5348f"/>
+				<textElement textAlignment="Center">
+					<font size="12"/>
+				</textElement>
+				<text><![CDATA[Moyenne]]></text>
+			</staticText>
+			<rectangle>
+				<reportElement x="299" y="10" width="255" height="20" uuid="815bdd0f-ac89-490a-b7e4-84e9cc2846c9"/>
+			</rectangle>
+			<rectangle>
+				<reportElement x="299" y="30" width="123" height="20" uuid="a89a024f-5dd6-4ce2-9d4e-425e321dc4f9"/>
+			</rectangle>
+			<textField pattern="#,##0">
+				<reportElement x="302" y="10" width="251" height="20" uuid="79c4eeac-69e0-4437-94d7-0f184d808fbc"/>
+				<textElement textAlignment="Center">
+					<font size="12" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{total1}]]></textFieldExpression>
+			</textField>
+			<textField pattern="###0.00">
+				<reportElement x="299" y="31" width="123" height="20" uuid="23f941dd-c130-44e1-9b17-4be90037ee09"/>
+				<textElement textAlignment="Center">
+					<font size="12" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{moy}]]></textFieldExpression>
+			</textField>
+			<rectangle>
+				<reportElement x="422" y="30" width="133" height="20" uuid="a3ca74a0-a94b-4cab-9cd3-f9952b7917c4"/>
+			</rectangle>
+			<textField>
+				<reportElement x="422" y="31" width="132" height="20" uuid="6f07982a-4c5b-46e1-94d6-7c6f0773cfa7"/>
+				<textElement textAlignment="Center">
+					<font size="12" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{moy1}]]></textFieldExpression>
+			</textField>
+		</band>
+	</summary>
+</jasperReport>

@@ -401,7 +401,7 @@
 
 											</p>
 											<rich:dataTable value="#{dService.listeDeliberationMSF1}"
-												var="mat" id="delise2" style="width:100%;" rows="8"
+												var="mat" id="delise2" style="width:100%;" rows="10"
 												rowClasses="row1,row2">
 												<f:facet name="header">
 													<rich:columnGroup>
@@ -510,7 +510,7 @@
 											</rich:dataTable>
 											<rich:datascroller status="waitStatus" stepControls="auto"
 												style="width:100%" for="delise2" ajaxSingle="false"
-												rendered="#{not empty dServicelisteDeliberationMSF1}" />
+												rendered="#{not empty dService.listeDeliberationMSF1}" />
 										</a:outputPanel>
 
 									</div>

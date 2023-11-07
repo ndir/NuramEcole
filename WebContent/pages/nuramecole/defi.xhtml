@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:a="https://ajax4jsf.dev.java.net/ajax"
+	xmlns:rich="http://richfaces.ajax4jsf.org/rich"
+	xmlns:s="http://jboss.com/products/seam/taglib"
+	xmlns:t="http://myfaces.apache.org/tomahawk">
+<head>
+<!-- Global site tag (gtag.js) - Google Analytics -->
+
+<script>
+	window.dataLayer = window.dataLayer || [];
+	function gtag() {
+		dataLayer.push(arguments);
+	}
+	gtag('js', new Date());
+
+	gtag('config', 'UA-90680653-2');
+</script>
+
+<!-- Required meta tags -->
+<meta charset="utf-8"></meta>
+<meta name="viewport"
+	content="width=device-width, initial-scale=1, shrink-to-fit=no"></meta>
+
+
+<!-- Meta -->
+<meta name="description"
+	content="Responsive Bootstrap 4 Dashboard Template"></meta>
+<meta name="author" content="BootstrapDash"></meta>
+
+<title>SAMAECOLE</title>
+
+<!-- vendor css -->
+<link href="lib/fontawesome-free/css/all.min.css" rel="stylesheet"></link>
+<link href="lib/ionicons/css/ionicons.min.css" rel="stylesheet"></link>
+<link href="lib/typicons.font/typicons.css" rel="stylesheet"></link>
+<link href="lib/flag-icon-css/css/flag-icon.min.css" rel="stylesheet"></link>
+
+<!-- azia CSS -->
+<link rel="stylesheet" href="css/azia.css"></link>
+
+</head>
+<body>
+
+	<div class="az-header">
+		<div class="container">
+
+			<div class="az-header-center"></div>
+
+			<ui:include src="/template/include/header2.xhtml" />
+
+
+		</div>
+	</div>
+	<a:status id="waitStatusHaut" forceId="true"
+		onstart="javascript:Richfaces.showModalPanel('waitModalPanelHaut');"
+		onstop="javascript:Richfaces.hideModalPanel('waitModalPanelHaut');" />
+	<a:status id="waitStatus" forceId="true"
+		onstart="javascript:Richfaces.showModalPanel('waitModalPanel');"
+		onstop="javascript:Richfaces.hideModalPanel('waitModalPanel');" />
+	<rich:modalPanel id="waitModalPanel" autosized="false" width="500"
+		height="100" styleClass="popupAttente" moveable="false"
+		resizeable="false">
+		<div style="text-align: center; height: 40px;">
+			<img src="../../picto/loading.gif" alt="" width="32" height="32" />
+		</div>
+		<span> <h:outputText
+				value="#{msgBundle['label.traitementencours']}" />
+		</span>
+	</rich:modalPanel>
+	<a:outputPanel id="erreurStd" ajaxRendered="true">
+		<h:message infoClass="informationGenerique"
+			errorClass="informationGenerique" warnClass="informationGenerique"
+			for="infoGenerique" />
+		<h:inputHidden id="infoGenerique" />
+		<h:message infoClass="confirmationerrorGenerique"
+			errorClass="confirmationerrorGenerique"
+			warnClass="confirmationerrorGenerique" for="erreurGenerique" />
+		<h:inputHidden id="erreurGenerique" style="font-size:12px;" />
+	</a:outputPanel>
+
+	<div class="az-content az-content-dashboard">
+		<div class="container">
+			<div class="az-content-body">
+				<div class="row row-sm mg-b-20">
+					<div class="col-lg-12"></div>
+				</div>
+				<h:form id="liste">
+					<rich:panel header="GESTION DES MATIERES"
+						styleclass="panel panel-success">
+						<div class="row row-sm mg-b-20">
+							<div class="col-lg-12">
+								<div class="row row-sm">
+
+									<p align="left">
+
+										<a:commandLink styleClass="btn btn-success" value=""
+											oncomplete="javascript:Richfaces.showModalPanel('sim',{width:500, height:300})"
+											reRender="form" status="waitStatus">
+																		
+																		AJOUTER DEFI		
+																				</a:commandLink>
+
+									</p>
+
+									<div class="table-responsive">
+
+										<rich:dataTable value="#{defiService.listeDefi}" var="classe"
+											id="lstdemande" style="width:100%;" rows="10"
+											rowClasses="row1,row2">
+											<f:facet name="header">
+												<rich:columnGroup>
+
+													<rich:column>
+														<h:outputLabel value="Libellé:"
+															style="color:white;font-size:12px;font-family: Arial;text-align:center;" />
+													</rich:column>
+
+													<rich:column>
+														<h:outputLabel value="Mois:"
+															style="color:white;font-size:12px;font-family: Arial;text-align:center;" />
+													</rich:column>
+
+													<rich:column>
+														<h:outputLabel value="Action"
+															style="color:white;font-size:12px;font-family: Arial;text-align:center;" />
+													</rich:column>
+
+
+												</rich:columnGroup>
+											</f:facet>
+
+
+											<rich:column filterBy="#{classe.libelle}"
+												filterEvent="onkeyup">
+												<h:outputText value="#{classe.libelle}" styleClass="grey" />
+											</rich:column>
+
+											<rich:column>
+												<h:outputText value="#{classe.mois}" styleClass="grey" />
+											</rich:column>
+
+
+											<rich:column>
+
+
+												<a:commandLink value="" status="waitStatus"
+													action="#{defiService.versModifieDefi(classe)}"
+													onclick="if (!confirm('Voulez-vous vraiment modifier ?')) return false"
+													oncomplete="javascript:Richfaces.showModalPanel('sim',{width:700, height:300})"
+													reRender="form" title="Modifier">
+													<s:graphicImage fileName="edit.png" style="border:0px;"
+														value="/picto/edit.png" width="16" height="16" alt="" />
+
+												</a:commandLink>
+
+											</rich:column>
+
+										</rich:dataTable>
+										<rich:datascroller status="waitStatus" stepControls="auto"
+											style="width:100%" for="lstdemande"
+											rendered="#{not empty defiService.listeDefi}" />
+
+
+
+									</div>
+								</div>
+
+
+
+
+
+
+
+							</div>
+						</div>
+
+					</rich:panel>
+
+				</h:form>
+
+				<rich:modalPanel id="sim"
+					style="background:url('../img2/fond.jpg') repeat-x scroll 0 0 #FFF;height:210; width:400"
+					moveable="true" styleClass="popupAttente">
+					<f:facet name="controls">
+
+						<a:commandLink value="" status="waitStatus" title="Fermer "
+							onclick="javascript:Richfaces.hideModalPanel('sim')">
+							<s:graphicImage fileName="cross.png" style="border:0px;"
+								value="/picto/cross.png" width="16" height="16" alt="" />
+						</a:commandLink>
+					</f:facet>
+					<f:facet name="header">
+			 CREER DEFI
+			</f:facet>
+					<rich:spacer height="10px" />
+					<h:form class="note-form" id="form">
+
+
+
+						<div class="row">
+							<div class="col-md-12">
+								<div class="panel panel-success">
+									<div class="panel-heading"></div>
+
+									<div class="panel-body">
+										<div class="form-group has-success">
+											<TABLE class="table">
+												<tr>
+													<td><h:outputLabel styleClass="grey" value="Libellé" /></td>
+													<td><h:inputText value="#{defiService.defi.libelle}"
+															required="true" class="form-control" /></td>
+												</tr>
+												<tr>
+													<td><h:outputLabel styleClass="grey" value="Mois" /></td>
+													<td><h:selectOneMenu value="#{defiService.defi.mois}"
+															class="form-control">
+
+															<f:selectItem itemValue="Décembre" itemLabel="Décembre" />
+															<f:selectItem itemValue="Janvier" itemLabel="Janvier" />
+															<f:selectItem itemValue="Février" itemLabel="Février" />
+															<f:selectItem itemValue="Mars" itemLabel="Mars" />
+															<f:selectItem itemValue="Avril" itemLabel="Avril" />
+															<f:selectItem itemValue="Mai" itemLabel="Mai" />
+														</h:selectOneMenu></td>
+												</tr>
+											</TABLE>
+
+											<p align="center">
+
+
+
+												<a:commandLink styleClass="btn btn-success" value=""
+													oncomplete="javascript:Richfaces.hideModalPanel('sim',{width:1300, height:500})"
+													action="#{defiService.ajouterDefi()}" reRender="form,liste"
+													status="waitStatus">
+																		
+																		Valider			
+																				</a:commandLink>
+
+											</p>
+										</div>
+
+									</div>
+
+								</div>
+							</div>
+						</div>
+
+
+					</h:form>
+				</rich:modalPanel>
+
+			</div>
+
+
+		</div>
+	</div>
+	<!-- az-content -->
+
+	<div class="az-footer ht-20">
+		<div class="container ht-100p pd-t-0-f">
+			<span
+				class="text-muted d-block text-center text-sm-left d-sm-inline-block">Copyright
+				© NUMRAMTECH 2023</span> <span
+				class="float-none float-sm-right d-block mt-1 mt-sm-0 text-center">
+				<a href="#" target="_blank"></a>
+			</span>
+		</div>
+		<!-- container -->
+	</div>
+	<!-- az-footer -->
+
+</body>
+</html>

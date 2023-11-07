@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="allbulletin" language="groovy" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="fd73ed90-4fae-4518-9d71-b498d64016fe">
+	<property name="ireport.zoom" value="1.0"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<parameter name="SUBREPORT_DIR" class="java.lang.String" isForPrompting="false">
+		<defaultValueExpression><![CDATA["C:\\Users\\A626257\\git\\ecole\\NuramEcole\\WebContent\\report\\ecole\\"]]></defaultValueExpression>
+	</parameter>
+	<queryString language="hql">
+		<![CDATA[From DeliberationDefi]]>
+	</queryString>
+	<field name="admis" class="java.lang.String"/>
+	<field name="annee" class="com.ecole.entity.AnneeScolaire"/>
+	<field name="choix" class="java.lang.Boolean"/>
+	<field name="classe" class="com.ecole.entity.Classe"/>
+	<field name="cumul" class="java.lang.String"/>
+	<field name="dec" class="java.lang.String"/>
+	<field name="defi" class="com.ecole.entity.Defi"/>
+	<field name="ecole" class="java.lang.String"/>
+	<field name="eff" class="java.lang.String"/>
+	<field name="eleve" class="com.ecole.entity.Eleve"/>
+	<field name="id" class="java.lang.Long"/>
+	<field name="institution" class="com.ecole.entity.Institution"/>
+	<field name="listeNote" class="java.util.List"/>
+	<field name="moy" class="java.lang.String"/>
+	<field name="moyenne" class="java.lang.Double"/>
+	<field name="rang" class="java.lang.String"/>
+	<field name="slogan" class="java.lang.String"/>
+	<field name="tel" class="java.lang.String"/>
+	<field name="total" class="java.lang.Double"/>
+	<field name="totalcoef" class="java.lang.String"/>
+	<field name="use" class="java.lang.String"/>
+	<field name="user" class="com.chaka.projet.entity.Utilisateur"/>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<detail>
+		<band height="39" splitType="Stretch">
+			<subreport>
+				<reportElement x="-4" y="0" width="555" height="38" uuid="8319ccf1-71b5-4a46-9d18-d6346b541d06"/>
+				<subreportParameter name="logo"/>
+				<subreportParameter name="ecole"/>
+				<subreportParameter name="slogan"/>
+				<subreportParameter name="tel"/>
+				<subreportParameter name="total"/>
+				<subreportParameter name="moy"/>
+				<subreportParameter name="rang"/>
+				<subreportParameter name="app"/>
+				<subreportParameter name="eff"/>
+				<dataSourceExpression><![CDATA[new net.sf.jasperreports.engine.data.JRBeanCollectionDataSource($F{listeNote})]]></dataSourceExpression>
+				<subreportExpression><![CDATA[$P{SUBREPORT_DIR} + "bulletinsupdefi.jasper"]]></subreportExpression>
+			</subreport>
+		</band>
+	</detail>
+</jasperReport>
